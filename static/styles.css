@@ -1,7 +1,4 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,7 +39,7 @@ button {
     padding: 10px 20px;
     width: 101px;
     display: block;
-  margin: 0 auto;
+    margin: 0 auto;
     background: rgba(254, 201, 201);
     color: #a77f7f;
     border: 1px solid #de8181;
