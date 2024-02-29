@@ -1,9 +1,20 @@
+:root {
+    --main-bg-color: rgba(235, 158, 158, 0.23);
+    --input-color: #fceeeb;
+    --button-sign-in-bg-color: rgba(254, 201, 201);
+    --button-sign-in-color: #a77f7f;
+    --button-sign-in-border-color: #de8181;
+    --link-sign-up-color: #de8787;
+}
+
 body {
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: rgba(235, 158, 158, 0.23);
+    min-width: 100vh;
+    background-color: var(--main-bg-color);
 }
 
 .login-form {
@@ -20,7 +31,7 @@ body {
     border: 1px solid #000;
     border-radius: 5px;
     font-size: 16px;
-    background-color: #fceeeb;
+    background-color: var(--input-color);
     border-radius: 30px;
 }
 
@@ -35,14 +46,14 @@ body {
     margin-bottom: 96px;
 }
 
-button {
+.button-sign-in {
     padding: 10px 20px;
     width: 101px;
     display: block;
     margin: 0 auto;
-    background: rgba(254, 201, 201);
-    color: #a77f7f;
-    border: 1px solid #de8181;
+    background-color: var(--button-sign-in-bg-color);
+    color: var(--button-sign-in-color);
+    border: 1px solid var(--button-sign-in-border-color);
     border-radius: 30px;
     font-size: 16px;
     cursor: pointer;
@@ -51,11 +62,11 @@ button {
 }
 
 button:hover {
-    background: rgba(254, 201, 201);
+    background-color: var(--button-color);
 }
 
 .link_sign_up {
-    color: #de8787;
+    color: var(--link-sign-up-color);
     display: block;
     text-align: center;
     margin-top: 20px;
