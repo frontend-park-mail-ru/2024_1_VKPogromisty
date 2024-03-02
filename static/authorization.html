@@ -8,27 +8,31 @@
         <link rel="stylesheet" href="authorization.css" />
     </head>
     <body>
-        <div>
-            <div class="image-container">
-                <img src="images/Logo.png" width="124px" alt="Logo" />
+        <div class="form-wrapper">
+            <div class="form">
+                <div class="image-container">
+                    <img src="images/Logo.png" width="124px" alt="Logo" />
+                </div>
+                <form class="login-form" action="/submit" method="POST">
+                    <div class="input-group">
+                        <input type="text" id="username" name="username"
+                        placeholder="Email" required" />
+                    </div>
+                    <div class="input-group" aria-po>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                        />
+                    </div>
+                    <button type="submit" class="button-sign-in">
+                        Sign in
+                    </button>
+                    <a href="" class="link_sign_up">Sign up</a>
+                </form>
             </div>
-            <form class="login-form" action="/submit" method="POST">
-                <div class="input-group">
-                    <input type="text" id="username" name="username"
-                    placeholder="Email" required" />
-                </div>
-                <div class="input-group" aria-po>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Password"
-                        required
-                    />
-                </div>
-                <button type="submit" class="button-sign-in">Sign in</button>
-                <a href="" class="link_sign_up">Sign up</a>
-            </form>
         </div>
     </body>
 </html>
