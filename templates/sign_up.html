@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../static/styles/reset.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../static/styles/sign_up.css"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Socio - Sign up</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="shortcut icon"
+            href="../static/images/pngwing.com.png"
+            type="image/x-icon"
+        />
+    </head>
+    <body>
+        <div class="form-wrapper">
+            <div class="form">
+                <div class="logo">
+                    <img src="../static/images/pngwing.com.png" id="logo-img" />
+                </div>
+                <div class="register-form">
+                    <form
+                        method="post"
+                        action="#logo-img"
+                        enctype="multipart/form-data"
+                    >
+                        <div class="vertical-stack">
+                            <input
+                                class="main-input"
+                                type="text"
+                                name="last_name"
+                                placeholder="Last name"
+                                required
+                            />
+                            <input
+                                class="main-input"
+                                type="text"
+                                name="first_name"
+                                placeholder="First name"
+                                required
+                            />
+                            <input
+                                class="main-input"
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                minlength="6"
+                                required
+                            />
+                            <input
+                                class="main-input"
+                                type="password"
+                                placeholder="Repeat password"
+                                minlength="6"
+                                required
+                            />
+                            <input
+                                class="main-input"
+                                type="email"
+                                placeholder="Email"
+                                name="email"
+                                required
+                            />
+                            <label for="date-birthday" class="form-label"
+                                >Date of birthday</label
+                            >
+                            <div id="date-birthday">
+                                <input
+                                    id="day"
+                                    type="text"
+                                    required
+                                    placeholder="DD"
+                                />
+                                <input
+                                    id="month"
+                                    type="text"
+                                    required
+                                    placeholder="MM"
+                                />
+                                <input
+                                    id="year"
+                                    type="text"
+                                    required
+                                    placeholder="YYYY"
+                                />
+                            </div>
+                        </div>
+                        <div class="file-input">
+                            <label class="input-avatar">
+                                <input type="file" name="avatar" />
+                                <span>Upload</span>
+                            </label>
+                        </div>
+                        <input type="submit" id="submit-form" value="Sign up" />
+                    </form>
+                </div>
+                <div class="to-auth-page">
+                    <a href="#logo-img" id="sign-in-button">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
