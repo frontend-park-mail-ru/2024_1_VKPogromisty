@@ -51,6 +51,11 @@ body {
     color: var(--text-input-color);
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
 #date-birthday input {
     margin: 10px 5px;
     border-radius: 8px;

@@ -1,0 +1,21 @@
+{
+  "name": "socio",
+  "version": "1.0.0",
+  "description": "<b>Название команды:</b> VKPogromisty<br>\r <b>Название проекта:</b> Socio",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start:dev": "nodemon ./server/index.js",
+    "start": "node ./server/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "express": "^4.18.3",
+    "handlebars": "^4.7.8"
+  }
+}
