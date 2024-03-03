@@ -10,7 +10,6 @@ const app = express();
 
 app.use(cors())
 app.use(express.static(path.resolve(__dirname, 'static')));
-app.use(express.static(path.resolve(__dirname, 'node_modules')));
 app.use(express.static(path.resolve(__dirname, 'public')));
 app.use(express.json());
 app.use(body.json);
