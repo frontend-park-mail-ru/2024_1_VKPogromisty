@@ -2,6 +2,7 @@ import {AuthService, PostService} from "./modules/services.js";
     
 const authService = new AuthService();
 const postService = new PostService();
+import { validateDateOfBirth, validateEmail, validatePasswords, validateName } from "./modules/validators.js";
 
 const pageHeader = document.getElementById('header');
 const pageMain = document.getElementById('main');
@@ -66,4 +67,3 @@ document.getElementById('posts-btn').addEventListener('click', async () => {
     const result = await postService.getPosts();
     console.log(result)
 });
-
