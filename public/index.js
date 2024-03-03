@@ -53,8 +53,17 @@ if (!result) {
     goToPage("feed");
 }
 
+document.getElementById('login-btn').addEventListener('click', async () => {
+    const result = await authService.login("petr09mitin@mail.ru", "admin");
+    console.log(result)
+});
+
+document.getElementById('logout-btn').addEventListener('click', async () => {
+    await authService.logout("petr09mitin@mail.ru", "admin");
+});
+
 document.getElementById('posts-btn').addEventListener('click', async () => {
-    console.log('here')
     const result = await postService.getPosts();
+    console.log(result)
 });
 

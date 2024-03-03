@@ -91,9 +91,11 @@ export class AuthService {
 }
 
 export class PostService {
+    
     baseUrl = "http://localhost:8080/api/v1/posts/";
 
     async getPosts() {
+
         const response = await fetch(this.baseUrl, {
             method: 'GET',
             headers: {
@@ -102,11 +104,11 @@ export class PostService {
             credentials: 'include',
         });
 
-        const data = await response.json();
-
-        console.log(data)
-
-        return;
+        if (response.ok) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
