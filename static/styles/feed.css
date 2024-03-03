@@ -275,8 +275,7 @@ header {
 }
 
 .show-comments {
-    padding-top: 6px;
-    margin-right: 20px;
+    align-items: center;
 }
 
 .comment-menu {
@@ -314,7 +313,7 @@ header {
 
 .comment-author {
     font-size: 10px;
-    cursor: grab;
+    cursor: pointer;
 }
 
 .post-give-comment {
@@ -342,10 +341,6 @@ header {
     justify-content: space-between;
     align-content: center;
     margin-right: 20px;
-}
-
-.send-button {
-    transform: rotate(25deg);
 }
 
 .user-comment {
