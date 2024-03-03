@@ -37,6 +37,5 @@
   <li>бэкенд:</li>
     https://github.com/go-park-mail-ru/2024_1_VKPogromisty
 </ul>
-
 Ссылка на `Figma`:
 https://www.figma.com/team_invite/redeem/hy0ulPbEV6KUagSWyjBc0E

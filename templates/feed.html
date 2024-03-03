@@ -1,234 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="../static/styles/reset.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Jim+Nightshade&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Socio - Feed</title>
-  <link rel="stylesheet" href="../static/styles/feed.css">
-  <link rel="shortcut icon" href="../static/images/pngwing.com.png" type="image/x-icon">
-</head>
-<body>
-  <header class="header">
-    <div class="left-side">
-      <img id="logo_img" src="../static/images/pngwing.com.png">
-      <div class="logo">ocio</div>
-      <div class="search">
-        <input type="text" placeholder="Поиск">
-      </div>
-    </div>
-    <div class="user">
-      <span class="username">Имя пользователя</span>
-      <img class="user-avatar" src="../static/images/pngwing.com.png">
-    </div>
-  </header>
-  <main class="main-content">
-    <div class="sidebar">
-      <ul>
-        <li><a href="">Профиль</a></li>
-        <li><a href="">Новости</a></li>
-        <li><a href="">Мессенджер</a></li>
-        <li><a href="">Друзья</a></li>
-        <li><a href="">Сообщества</a></li>
-        <li><a href="">Настройки</a></li>
-        <li><a href="">Стикеры</a></li>
-      </ul>
-      <ul id="help-sidebar">
-        <li><a href="">Помощь</a></li>
-      </ul>
-    </div>
-
-    <div class="activity">
-      <div class="create-post">
-        <div id="news-avatar">
-          <img id="user-avatar-news" src="../static/images/pngwing.com.png">
-        </div>
-        <div class="news">
-          <input id="user-news"type="text" placeholder="Что нового?">
-          <button class="include-button"><svg class="include" fill="#858080" width="16px" height="16px" viewBox="-4.5 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9.818 0c-3.012 0-5.455 2.442-5.455 5.455v9.818c0 1.808 1.465 3.273 3.273 3.273s3.273-1.465 3.273-3.273v-5.665c-.017-.589-.499-1.061-1.091-1.061s-1.074.471-1.091 1.059v.002 5.665.031c0 .603-.489 1.091-1.091 1.091s-1.091-.489-1.091-1.091c0-.011 0-.021 0-.032v.002-9.818c0-1.808 1.465-3.273 3.273-3.273s3.273 1.465 3.273 3.273v10.906c0 3.012-2.442 5.455-5.455 5.455s-5.455-2.442-5.455-5.455v-10.906c0-.009 0-.02 0-.031 0-.603-.489-1.091-1.091-1.091s-1.091.489-1.091 1.091v.032-.002 10.906c0 4.217 3.419 7.636 7.636 7.636s7.636-3.419 7.636-7.636v-10.906c-.003-3.011-2.444-5.452-5.455-5.455z"/></svg></button>
-        </div>
-        <div class="publish">
-          <button class="publish-button">Опубликовать</button>
-        </div>
-      </div>
-
-      <div class="post" id="post1">
-        <div class="post-header">
-          <div class="post-author">
-            <img class="user-avatar-post" src="../static/images/pngwing.com.png">
-            <span class="author-name">VKPogromisty</span>
-          </div>
-          <div class="post-menu">
-            <svg class="ellipsees" fill="#000000" width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m18.783 12.208c0-1.44 1.168-2.607 2.608-2.607s2.608 1.168 2.608 2.608-1.168 2.608-2.608 2.608c-1.44 0-2.608-1.168-2.608-2.608zm-9.392 0c0-1.44 1.168-2.608 2.609-2.608s2.609 1.168 2.609 2.609-1.168 2.609-2.609 2.609c-1.441 0-2.609-1.168-2.609-2.609zm-9.391 0c0-1.44 1.168-2.608 2.609-2.608s2.609 1.168 2.609 2.609-1.168 2.609-2.609 2.609h-.001c-1.44 0-2.608-1.168-2.608-2.608 0-.001 0-.001 0-.002z"/>
-            </svg>
-          </div>
-        </div>
-        <div class="post-content">
-        </div>
-        <div class="post-reaction">
-          <div class="reactions">
-            <button class="like">
-              <svg fill="#000000" height="40px" width="40px" version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-                viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-              <g>
-                <g>
-                  <path d="M20,27.3c-0.1,0-0.2,0-0.3,0c-0.9-0.2-4.1-1.2-6.6-5.1c-1.2-1.8-1.1-4.2,0.3-5.8c0.9-1,2.2-1.6,3.5-1.6
-                    c1.1,0,2.2,0.4,3.1,1.1c0.9-0.7,1.9-1.1,3.1-1.1c1.4,0,2.6,0.6,3.5,1.6c1.4,1.5,1.5,3.9,0.3,5.8c-2.5,3.9-5.7,4.9-6.6,5.1
-                    C20.2,27.2,20.1,27.3,20,27.3z M16.9,15.7c-1.1,0-2.1,0.5-2.8,1.3c-1.1,1.2-1.2,3.1-0.2,4.6c2.3,3.6,5.2,4.5,6,4.7l0.1,0
-                    c0,0,0.1,0,0.1,0c0.8-0.2,3.7-1.1,6-4.7c0.9-1.5,0.9-3.4-0.2-4.6c-0.7-0.8-1.7-1.3-2.8-1.3c-1,0-1.9,0.4-2.6,1.1
-                    c0,0-0.1,0.1-0.1,0.1c-0.2,0.2-0.5,0.2-0.7,0c0,0-0.1-0.1-0.1-0.1C18.9,16.1,17.9,15.7,16.9,15.7z"/>
-                </g>
-              </g>
-              </svg>
-            </button>
-            <button class="show-comments">
-              <svg fill="#000000" width="16px" height="16px" viewBox="0 -2 28 28" xmlns="http://www.w3.org/2000/svg"><path d="m10 10c0 1.105-.895 2-2 2-1.104 0-2-.896-2-2s.895-2 2-2c.552 0 1.052.224 1.414.586.361.351.586.841.586 1.384v.032zm6 0c0 1.105-.895 2-2 2-.552 0-1.052-.224-1.414-.586-.377-.364-.611-.874-.611-1.439 0-1.105.895-2 2-2 .565 0 1.074.234 1.438.61l.001.001c.362.351.587.841.587 1.385v.031-.002zm6 0c0 1.104-.896 2-2 2s-2-.895-2-2 .895-2 2-2c.552 0 1.052.224 1.414.586.361.351.586.841.586 1.384v.032zm-8-8c-.038 0-.083-.001-.128-.001-2.098 0-4.102.399-5.942 1.124l.11-.038c-1.74.644-3.217 1.645-4.4 2.922l-.007.007c-.99 1.036-1.608 2.436-1.633 3.98v.005c.013 1.258.432 2.415 1.131 3.351l-.011-.015c.835 1.131 1.885 2.053 3.096 2.719l.049.025 1.36.782-.426 1.498c-.272 1.021-.646 1.915-1.122 2.741l.029-.054c1.651-.691 3.071-1.59 4.313-2.686l-.017.014.672-.594.89.094c.607.077 1.312.122 2.028.125h.004c.038 0 .083.001.128.001 2.098 0 4.102-.399 5.942-1.124l-.11.038c1.74-.644 3.217-1.645 4.4-2.922l.007-.007c1.009-1.025 1.632-2.432 1.632-3.984s-.623-2.96-1.633-3.985l.001.001c-1.19-1.284-2.666-2.286-4.329-2.904l-.078-.025c-1.73-.687-3.735-1.086-5.833-1.086-.044 0-.088 0-.132.001h.007zm14 8c-.012 1.924-.72 3.681-1.884 5.033l.009-.01c-1.349 1.592-3.059 2.837-5.008 3.611l-.086.03c-2.023.846-4.374 1.337-6.839 1.337-.068 0-.135 0-.202-.001h.01c-.8-.002-1.588-.047-2.363-.134l.097.009c-1.981 1.759-4.399 3.072-7.069 3.756l-.118.026c-.503.145-1.107.266-1.726.339l-.055.005h-.08c-.163 0-.311-.062-.422-.164-.123-.111-.212-.258-.249-.424l-.001-.005v-.016c-.017-.029-.027-.064-.027-.102 0-.033.008-.063.021-.091l-.001.001c.02-.047.031-.101.031-.159 0-.001 0-.001 0-.002q-.008-.031.07-.149l.094-.141.11-.133.125-.141q.11-.125.484-.539l.539-.594q.164-.18.484-.617c.174-.231.343-.493.491-.767l.017-.033q.187-.359.422-.922c.137-.317.276-.712.39-1.117l.017-.07c-1.558-.861-2.852-2.018-3.844-3.405l-.024-.035c-.878-1.216-1.407-2.735-1.414-4.377v-.002c.005-1.438.418-2.779 1.128-3.914l-.018.031c.781-1.276 1.778-2.34 2.951-3.173l.033-.022c1.281-.904 2.766-1.632 4.361-2.105l.108-.027c1.603-.501 3.446-.789 5.357-.789h.085-.004.083c1.911 0 3.754.288 5.488.824l-.132-.035c1.703.501 3.188 1.229 4.517 2.165l-.048-.032c1.206.855 2.203 1.92 2.958 3.149l.026.046c.691 1.104 1.103 2.445 1.107 3.882v.001z"/>
-              </svg>
-            </button>
-            <span class="show-comments-label">Показать комментарии</span>
-          </div>
-          <div class="comment-menu">
-            <svg class="ellipsees" fill="#000000" width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m18.783 12.208c0-1.44 1.168-2.607 2.608-2.607s2.608 1.168 2.608 2.608-1.168 2.608-2.608 2.608c-1.44 0-2.608-1.168-2.608-2.608zm-9.392 0c0-1.44 1.168-2.608 2.609-2.608s2.609 1.168 2.609 2.609-1.168 2.609-2.609 2.609c-1.441 0-2.609-1.168-2.609-2.609zm-9.391 0c0-1.44 1.168-2.608 2.609-2.608s2.609 1.168 2.609 2.609-1.168 2.609-2.609 2.609h-.001c-1.44 0-2.608-1.168-2.608-2.608 0-.001 0-.001 0-.002z"/>
-            </svg>
-          </div>
-        </div>
-        <div class="post-comment">
-          <div class="comment">
-            <img class="user-avatar-post" src="../static/images/pngwing.com.png">
-            <div>
-              <span class="comment-author">Катя Кириллова</span>
-              <span class="comment-text">Ребята молодцы, очень достойная Figma!!!</span>
+    <head>
+        <meta charset="UTF-8" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../static/styles/reset.css"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+            rel="stylesheet"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Socio - Feed</title>
+        <link rel="stylesheet" href="../static/styles/feed.css" />
+        <link
+            rel="shortcut icon"
+            href="../static/images/logo.png"
+            type="image/x-icon"
+        />
+    </head>
+    <body>
+        <header class="header">
+            <div class="left-side">
+                <img
+                    id="logo_img"
+                    src="../static/images/logo.png"
+                    style="cursor: pointer"
+                />
+                <div class="search">
+                    <input type="text" placeholder="Поиск" />
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="post-give-comment">
-          <div class="post-footer">
-            <img class="user-avatar-post" src="../static/images/pngwing.com.png">
-            <input type="text" name="user-comment" class="user-comment" placeholder="Оставить комментарий"></span>
-          </div>
-          <div class="comment-buttons">
-            <button class="include-button">
-              <svg class="include" fill="#858080" width="16px" height="16px" viewBox="-4.5 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9.818 0c-3.012 0-5.455 2.442-5.455 5.455v9.818c0 1.808 1.465 3.273 3.273 3.273s3.273-1.465 3.273-3.273v-5.665c-.017-.589-.499-1.061-1.091-1.061s-1.074.471-1.091 1.059v.002 5.665.031c0 .603-.489 1.091-1.091 1.091s-1.091-.489-1.091-1.091c0-.011 0-.021 0-.032v.002-9.818c0-1.808 1.465-3.273 3.273-3.273s3.273 1.465 3.273 3.273v10.906c0 3.012-2.442 5.455-5.455 5.455s-5.455-2.442-5.455-5.455v-10.906c0-.009 0-.02 0-.031 0-.603-.489-1.091-1.091-1.091s-1.091.489-1.091 1.091v.032-.002 10.906c0 4.217 3.419 7.636 7.636 7.636s7.636-3.419 7.636-7.636v-10.906c-.003-3.011-2.444-5.452-5.455-5.455z"/></svg>
-            </button>
-            <button class="send-button">
-              <svg fill="#858080" width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m23.615.161c.228.152.376.408.376.698 0 .056-.006.111-.016.164l.001-.005-3.426 20.56c-.045.261-.204.478-.424.6l-.004.002c-.117.067-.257.107-.406.107-.003 0-.007 0-.01 0-.116-.003-.226-.027-.326-.069l.006.002-7.054-2.88-3.989 4.377c-.146.172-.362.281-.604.281-.009 0-.018 0-.026 0h.001c-.008 0-.017 0-.026 0-.102 0-.198-.02-.287-.056l.005.002c-.167-.061-.304-.17-.398-.311l-.002-.003c-.092-.135-.147-.302-.147-.482 0-.003 0-.005 0-.008v-6.047l-6.32-2.583c-.311-.107-.531-.395-.535-.736-.003-.028-.005-.06-.005-.092 0-.304.173-.567.427-.696l.004-.002 22.275-12.85c.122-.084.274-.135.437-.135.179 0 .344.061.475.162l-.002-.001zm-4.578 20.065 2.96-17.709-19.196 11.07 4.498 1.834 11.551-8.553-6.4 10.668z"/></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="post" id="post2">
-        <div class="post-header">
-          <img class="user-avatar-post" src="../static/images/pngwing.com.png">
-          <span class="author-name">VKPogromisty</span>
-        </div>
-        <div class="post-content">
-        </div>
-        <div class="post-reaction">
-          <button class="like">
-            <svg fill="#000000" height="40px" width="40px" version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-              viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-            <g>
-              <g>
-                <path d="M20,27.3c-0.1,0-0.2,0-0.3,0c-0.9-0.2-4.1-1.2-6.6-5.1c-1.2-1.8-1.1-4.2,0.3-5.8c0.9-1,2.2-1.6,3.5-1.6
-                  c1.1,0,2.2,0.4,3.1,1.1c0.9-0.7,1.9-1.1,3.1-1.1c1.4,0,2.6,0.6,3.5,1.6c1.4,1.5,1.5,3.9,0.3,5.8c-2.5,3.9-5.7,4.9-6.6,5.1
-                  C20.2,27.2,20.1,27.3,20,27.3z M16.9,15.7c-1.1,0-2.1,0.5-2.8,1.3c-1.1,1.2-1.2,3.1-0.2,4.6c2.3,3.6,5.2,4.5,6,4.7l0.1,0
-                  c0,0,0.1,0,0.1,0c0.8-0.2,3.7-1.1,6-4.7c0.9-1.5,0.9-3.4-0.2-4.6c-0.7-0.8-1.7-1.3-2.8-1.3c-1,0-1.9,0.4-2.6,1.1
-                  c0,0-0.1,0.1-0.1,0.1c-0.2,0.2-0.5,0.2-0.7,0c0,0-0.1-0.1-0.1-0.1C18.9,16.1,17.9,15.7,16.9,15.7z"/>
-              </g>
-            </g>
-            </svg>
-          </button>
-          <button class="show-comments">
-            <svg fill="#000000" width="16px" height="16px" viewBox="0 -2 28 28" xmlns="http://www.w3.org/2000/svg"><path d="m10 10c0 1.105-.895 2-2 2-1.104 0-2-.896-2-2s.895-2 2-2c.552 0 1.052.224 1.414.586.361.351.586.841.586 1.384v.032zm6 0c0 1.105-.895 2-2 2-.552 0-1.052-.224-1.414-.586-.377-.364-.611-.874-.611-1.439 0-1.105.895-2 2-2 .565 0 1.074.234 1.438.61l.001.001c.362.351.587.841.587 1.385v.031-.002zm6 0c0 1.104-.896 2-2 2s-2-.895-2-2 .895-2 2-2c.552 0 1.052.224 1.414.586.361.351.586.841.586 1.384v.032zm-8-8c-.038 0-.083-.001-.128-.001-2.098 0-4.102.399-5.942 1.124l.11-.038c-1.74.644-3.217 1.645-4.4 2.922l-.007.007c-.99 1.036-1.608 2.436-1.633 3.98v.005c.013 1.258.432 2.415 1.131 3.351l-.011-.015c.835 1.131 1.885 2.053 3.096 2.719l.049.025 1.36.782-.426 1.498c-.272 1.021-.646 1.915-1.122 2.741l.029-.054c1.651-.691 3.071-1.59 4.313-2.686l-.017.014.672-.594.89.094c.607.077 1.312.122 2.028.125h.004c.038 0 .083.001.128.001 2.098 0 4.102-.399 5.942-1.124l-.11.038c1.74-.644 3.217-1.645 4.4-2.922l.007-.007c1.009-1.025 1.632-2.432 1.632-3.984s-.623-2.96-1.633-3.985l.001.001c-1.19-1.284-2.666-2.286-4.329-2.904l-.078-.025c-1.73-.687-3.735-1.086-5.833-1.086-.044 0-.088 0-.132.001h.007zm14 8c-.012 1.924-.72 3.681-1.884 5.033l.009-.01c-1.349 1.592-3.059 2.837-5.008 3.611l-.086.03c-2.023.846-4.374 1.337-6.839 1.337-.068 0-.135 0-.202-.001h.01c-.8-.002-1.588-.047-2.363-.134l.097.009c-1.981 1.759-4.399 3.072-7.069 3.756l-.118.026c-.503.145-1.107.266-1.726.339l-.055.005h-.08c-.163 0-.311-.062-.422-.164-.123-.111-.212-.258-.249-.424l-.001-.005v-.016c-.017-.029-.027-.064-.027-.102 0-.033.008-.063.021-.091l-.001.001c.02-.047.031-.101.031-.159 0-.001 0-.001 0-.002q-.008-.031.07-.149l.094-.141.11-.133.125-.141q.11-.125.484-.539l.539-.594q.164-.18.484-.617c.174-.231.343-.493.491-.767l.017-.033q.187-.359.422-.922c.137-.317.276-.712.39-1.117l.017-.07c-1.558-.861-2.852-2.018-3.844-3.405l-.024-.035c-.878-1.216-1.407-2.735-1.414-4.377v-.002c.005-1.438.418-2.779 1.128-3.914l-.018.031c.781-1.276 1.778-2.34 2.951-3.173l.033-.022c1.281-.904 2.766-1.632 4.361-2.105l.108-.027c1.603-.501 3.446-.789 5.357-.789h.085-.004.083c1.911 0 3.754.288 5.488.824l-.132-.035c1.703.501 3.188 1.229 4.517 2.165l-.048-.032c1.206.855 2.203 1.92 2.958 3.149l.026.046c.691 1.104 1.103 2.445 1.107 3.882v.001z"/>
-            </svg>
-          </button>
-          <span class="show-comments-label">Показать комментарии</span>
-        </div>
-        <div class="post-comment">
-          <div class="comment">
-            <img class="user-avatar-post" src="../static/images/pain.jpg">
-            <div>
-              <span class="comment-author">Катя Кириллова</span>
-              <span class="comment-text">Ребята молодцы, очень достойная Figma!!!</span>
+            <div class="user">
+                <span class="username" style="cursor: pointer"
+                    >Имя пользователя</span
+                >
+                <img class="user-avatar" src="../static/images/logo.png" />
             </div>
-          </div>
-        </div>
-        <div class="post-give-comment">
-          <div class="post-footer">
-            <img class="user-avatar-post" src="../static/images/pngwing.com.png">
-            <input type="text" name="user-comment" class="user-comment" placeholder="Оставить комментарий"></span>
-          </div>
-          <div class="comment-buttons">
-            <button class="include-button">
-              <svg class="include" fill="#858080" width="16px" height="16px" viewBox="-4.5 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9.818 0c-3.012 0-5.455 2.442-5.455 5.455v9.818c0 1.808 1.465 3.273 3.273 3.273s3.273-1.465 3.273-3.273v-5.665c-.017-.589-.499-1.061-1.091-1.061s-1.074.471-1.091 1.059v.002 5.665.031c0 .603-.489 1.091-1.091 1.091s-1.091-.489-1.091-1.091c0-.011 0-.021 0-.032v.002-9.818c0-1.808 1.465-3.273 3.273-3.273s3.273 1.465 3.273 3.273v10.906c0 3.012-2.442 5.455-5.455 5.455s-5.455-2.442-5.455-5.455v-10.906c0-.009 0-.02 0-.031 0-.603-.489-1.091-1.091-1.091s-1.091.489-1.091 1.091v.032-.002 10.906c0 4.217 3.419 7.636 7.636 7.636s7.636-3.419 7.636-7.636v-10.906c-.003-3.011-2.444-5.452-5.455-5.455z"/></svg>
-            </button>
-            <button class="send-button">
-              <svg fill="#858080" width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m23.615.161c.228.152.376.408.376.698 0 .056-.006.111-.016.164l.001-.005-3.426 20.56c-.045.261-.204.478-.424.6l-.004.002c-.117.067-.257.107-.406.107-.003 0-.007 0-.01 0-.116-.003-.226-.027-.326-.069l.006.002-7.054-2.88-3.989 4.377c-.146.172-.362.281-.604.281-.009 0-.018 0-.026 0h.001c-.008 0-.017 0-.026 0-.102 0-.198-.02-.287-.056l.005.002c-.167-.061-.304-.17-.398-.311l-.002-.003c-.092-.135-.147-.302-.147-.482 0-.003 0-.005 0-.008v-6.047l-6.32-2.583c-.311-.107-.531-.395-.535-.736-.003-.028-.005-.06-.005-.092 0-.304.173-.567.427-.696l.004-.002 22.275-12.85c.122-.084.274-.135.437-.135.179 0 .344.061.475.162l-.002-.001zm-4.578 20.065 2.96-17.709-19.196 11.07 4.498 1.834 11.551-8.553-6.4 10.668z"/></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="post" id="post3">
-        <div class="post-header">
-          <img class="user-avatar-post" src="../static/images/pngwing.com.png">
-          <span class="author-name">VKPogromisty</span>
-        </div>
-        <div class="post-content">
-        </div>
-        <div class="post-reaction">
-          <button class="like">
-            <svg fill="#000000" height="40px" width="40px" version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-              viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-            <g>
-              <g>
-                <path d="M20,27.3c-0.1,0-0.2,0-0.3,0c-0.9-0.2-4.1-1.2-6.6-5.1c-1.2-1.8-1.1-4.2,0.3-5.8c0.9-1,2.2-1.6,3.5-1.6
-                  c1.1,0,2.2,0.4,3.1,1.1c0.9-0.7,1.9-1.1,3.1-1.1c1.4,0,2.6,0.6,3.5,1.6c1.4,1.5,1.5,3.9,0.3,5.8c-2.5,3.9-5.7,4.9-6.6,5.1
-                  C20.2,27.2,20.1,27.3,20,27.3z M16.9,15.7c-1.1,0-2.1,0.5-2.8,1.3c-1.1,1.2-1.2,3.1-0.2,4.6c2.3,3.6,5.2,4.5,6,4.7l0.1,0
-                  c0,0,0.1,0,0.1,0c0.8-0.2,3.7-1.1,6-4.7c0.9-1.5,0.9-3.4-0.2-4.6c-0.7-0.8-1.7-1.3-2.8-1.3c-1,0-1.9,0.4-2.6,1.1
-                  c0,0-0.1,0.1-0.1,0.1c-0.2,0.2-0.5,0.2-0.7,0c0,0-0.1-0.1-0.1-0.1C18.9,16.1,17.9,15.7,16.9,15.7z"/>
-              </g>
-            </g>
-            </svg>
-          </button>
-          <button class="show-comments">
-            <svg fill="#000000" width="16px" height="16px" viewBox="0 -2 28 28" xmlns="http://www.w3.org/2000/svg"><path d="m10 10c0 1.105-.895 2-2 2-1.104 0-2-.896-2-2s.895-2 2-2c.552 0 1.052.224 1.414.586.361.351.586.841.586 1.384v.032zm6 0c0 1.105-.895 2-2 2-.552 0-1.052-.224-1.414-.586-.377-.364-.611-.874-.611-1.439 0-1.105.895-2 2-2 .565 0 1.074.234 1.438.61l.001.001c.362.351.587.841.587 1.385v.031-.002zm6 0c0 1.104-.896 2-2 2s-2-.895-2-2 .895-2 2-2c.552 0 1.052.224 1.414.586.361.351.586.841.586 1.384v.032zm-8-8c-.038 0-.083-.001-.128-.001-2.098 0-4.102.399-5.942 1.124l.11-.038c-1.74.644-3.217 1.645-4.4 2.922l-.007.007c-.99 1.036-1.608 2.436-1.633 3.98v.005c.013 1.258.432 2.415 1.131 3.351l-.011-.015c.835 1.131 1.885 2.053 3.096 2.719l.049.025 1.36.782-.426 1.498c-.272 1.021-.646 1.915-1.122 2.741l.029-.054c1.651-.691 3.071-1.59 4.313-2.686l-.017.014.672-.594.89.094c.607.077 1.312.122 2.028.125h.004c.038 0 .083.001.128.001 2.098 0 4.102-.399 5.942-1.124l-.11.038c1.74-.644 3.217-1.645 4.4-2.922l.007-.007c1.009-1.025 1.632-2.432 1.632-3.984s-.623-2.96-1.633-3.985l.001.001c-1.19-1.284-2.666-2.286-4.329-2.904l-.078-.025c-1.73-.687-3.735-1.086-5.833-1.086-.044 0-.088 0-.132.001h.007zm14 8c-.012 1.924-.72 3.681-1.884 5.033l.009-.01c-1.349 1.592-3.059 2.837-5.008 3.611l-.086.03c-2.023.846-4.374 1.337-6.839 1.337-.068 0-.135 0-.202-.001h.01c-.8-.002-1.588-.047-2.363-.134l.097.009c-1.981 1.759-4.399 3.072-7.069 3.756l-.118.026c-.503.145-1.107.266-1.726.339l-.055.005h-.08c-.163 0-.311-.062-.422-.164-.123-.111-.212-.258-.249-.424l-.001-.005v-.016c-.017-.029-.027-.064-.027-.102 0-.033.008-.063.021-.091l-.001.001c.02-.047.031-.101.031-.159 0-.001 0-.001 0-.002q-.008-.031.07-.149l.094-.141.11-.133.125-.141q.11-.125.484-.539l.539-.594q.164-.18.484-.617c.174-.231.343-.493.491-.767l.017-.033q.187-.359.422-.922c.137-.317.276-.712.39-1.117l.017-.07c-1.558-.861-2.852-2.018-3.844-3.405l-.024-.035c-.878-1.216-1.407-2.735-1.414-4.377v-.002c.005-1.438.418-2.779 1.128-3.914l-.018.031c.781-1.276 1.778-2.34 2.951-3.173l.033-.022c1.281-.904 2.766-1.632 4.361-2.105l.108-.027c1.603-.501 3.446-.789 5.357-.789h.085-.004.083c1.911 0 3.754.288 5.488.824l-.132-.035c1.703.501 3.188 1.229 4.517 2.165l-.048-.032c1.206.855 2.203 1.92 2.958 3.149l.026.046c.691 1.104 1.103 2.445 1.107 3.882v.001z"/>
-            </svg>
-          </button>
-          <span class="show-comments-label">Показать комментарии</span>
-        </div>
-        <div class="post-comment">
-          <div class="comment">
-            <img class="user-avatar-post" src="../static/images/pngwing.com.png">
-            <div>
-              <span class="comment-author">Катя Кириллова</span>
-              <span class="comment-text">Ребята молодцы, очень достойная Figma!!!</span>
+        </header>
+        <main class="main-content">
+            <div class="sidebar">
+                <ul>
+                    <li><a href="#">Профиль</a></li>
+                    <li><a href="#">Новости</a></li>
+                    <li><a href="#">Мессенджер</a></li>
+                    <li><a href="#">Друзья</a></li>
+                    <li><a href="#">Сообщества</a></li>
+                    <li><a href="#">Настройки</a></li>
+                    <li><a href="#">Стикеры</a></li>
+                </ul>
+                <ul id="help-sidebar">
+                    <li><a href="#">Помощь</a></li>
+                </ul>
             </div>
-          </div>
-        </div>
-        <div class="post-give-comment">
-          <div class="post-footer">
-            <img class="user-avatar-post" src="../static/images/pngwing.com.png">
-            <input type="text" name="user-comment" class="user-comment" placeholder="Оставить комментарий"></span>
-          </div>
-          <div class="comment-buttons">
-            <button class="include-button">
-              <svg class="include" fill="#858080" width="16px" height="16px" viewBox="-4.5 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9.818 0c-3.012 0-5.455 2.442-5.455 5.455v9.818c0 1.808 1.465 3.273 3.273 3.273s3.273-1.465 3.273-3.273v-5.665c-.017-.589-.499-1.061-1.091-1.061s-1.074.471-1.091 1.059v.002 5.665.031c0 .603-.489 1.091-1.091 1.091s-1.091-.489-1.091-1.091c0-.011 0-.021 0-.032v.002-9.818c0-1.808 1.465-3.273 3.273-3.273s3.273 1.465 3.273 3.273v10.906c0 3.012-2.442 5.455-5.455 5.455s-5.455-2.442-5.455-5.455v-10.906c0-.009 0-.02 0-.031 0-.603-.489-1.091-1.091-1.091s-1.091.489-1.091 1.091v.032-.002 10.906c0 4.217 3.419 7.636 7.636 7.636s7.636-3.419 7.636-7.636v-10.906c-.003-3.011-2.444-5.452-5.455-5.455z"/></svg>
-            </button>
-            <button class="send-button">
-              <svg fill="#858080" width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m23.615.161c.228.152.376.408.376.698 0 .056-.006.111-.016.164l.001-.005-3.426 20.56c-.045.261-.204.478-.424.6l-.004.002c-.117.067-.257.107-.406.107-.003 0-.007 0-.01 0-.116-.003-.226-.027-.326-.069l.006.002-7.054-2.88-3.989 4.377c-.146.172-.362.281-.604.281-.009 0-.018 0-.026 0h.001c-.008 0-.017 0-.026 0-.102 0-.198-.02-.287-.056l.005.002c-.167-.061-.304-.17-.398-.311l-.002-.003c-.092-.135-.147-.302-.147-.482 0-.003 0-.005 0-.008v-6.047l-6.32-2.583c-.311-.107-.531-.395-.535-.736-.003-.028-.005-.06-.005-.092 0-.304.173-.567.427-.696l.004-.002 22.275-12.85c.122-.084.274-.135.437-.135.179 0 .344.061.475.162l-.002-.001zm-4.578 20.065 2.96-17.709-19.196 11.07 4.498 1.834 11.551-8.553-6.4 10.668z"/></svg>
-            </button>
-          </div>
-        </div>
-      </div>
 
-    </div>
-  </main>
-</body>
+            <div class="activity">
+                <div class="create-post">
+                    <div id="news-avatar">
+                        <img
+                            id="user-avatar-news"
+                            src="../static/images/logo.png"
+                        />
+                    </div>
+                    <div class="news">
+                        <input
+                            id="user-news"
+                            type="text"
+                            placeholder="Что нового?"
+                        />
+
+                        <button class="include-button">
+                            <img
+                                src="../static/images/attach-paperclip-symbol.png"
+                                style="width: 28px; height: 28px"
+                            />
+                        </button>
+                    </div>
+                    <div class="publish">
+                        <button class="publish-button">Опубликовать</button>
+                    </div>
+                </div>
+
+                <div class="post" id="post1">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <img
+                                class="user-avatar-post"
+                                src="../static/images/logo.png"
+                            />
+                            <span class="author-name" style="cursor: pointer"
+                                >VKPogromisty</span
+                            >
+                        </div>
+                        <div class="post-menu">
+                            <img
+                                src="../static/images/more.png"
+                                style="
+                                    width: 16px;
+                                    height: 16px;
+                                    cursor: pointer;
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="post-content"></div>
+                    <div class="post-reaction">
+                        <div class="reactions">
+                            <button class="like">
+                                <img
+                                    src="../static/images/heart.png"
+                                    style="width: 16px; height: 16px"
+                                />
+                            </button>
+                            <button class="show-comments">
+                                <img
+                                    src="../static/images/messenger.png"
+                                    style="width: 16px; height: 16px"
+                                />
+                            </button>
+                            <span
+                                class="show-comments-label"
+                                style="cursor: pointer"
+                                >Показать комментарии</span
+                            >
+                        </div>
+                        <div class="comment-menu">
+                            <img
+                                src="../static/images/more.png"
+                                style="
+                                    width: 16px;
+                                    height: 16px;
+                                    cursor: pointer;
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="post-comment">
+                        <div class="comment">
+                            <img
+                                class="user-avatar-post"
+                                src="../static/images/logo.png"
+                            />
+                            <div>
+                                <span class="comment-author"
+                                    >Катя Кириллова</span
+                                >
+                                <span class="comment-text"
+                                    >Ребята молодцы, очень достойная
+                                    Figma!!!</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-give-comment">
+                        <div class="post-footer">
+                            <img
+                                class="user-avatar-post"
+                                src="../static/images/logo.png"
+                            />
+                            <input
+                                type="text"
+                                name="user-comment"
+                                class="user-comment"
+                                placeholder="Оставить комментарий"
+                            />
+                        </div>
+                        <div class="comment-buttons">
+                            <button class="include-button">
+                                <img
+                                    src="../static/images/attach-paperclip-symbol.png"
+                                    style="width: 20px; height: 20px"
+                                />
+                            </button>
+                            <button class="send-button">
+                                <img
+                                    class="post-comment img"
+                                    src="../static/images/send.png"
+                                    style="width: 24px; height: 24px"
+                                />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post" id="post1">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <img
+                                class="user-avatar-post"
+                                src="../static/images/logo.png"
+                            />
+                            <span class="author-name" style="cursor: pointer"
+                                >VKPogromisty</span
+                            >
+                        </div>
+                        <div class="post-menu">
+                            <img
+                                src="../static/images/more.png"
+                                style="
+                                    width: 16px;
+                                    height: 16px;
+                                    cursor: pointer;
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="post-content"></div>
+                    <div class="post-reaction">
+                        <div class="reactions">
+                            <button class="like">
+                                <img
+                                    src="../static/images/heart.png"
+                                    style="width: 16px; height: 16px"
+                                />
+                            </button>
+                            <button class="show-comments">
+                                <img
+                                    src="../static/images/messenger.png"
+                                    style="width: 16px; height: 16px"
+                                />
+                            </button>
+                            <span
+                                class="show-comments-label"
+                                style="cursor: pointer"
+                                >Показать комментарии</span
+                            >
+                        </div>
+                        <div class="comment-menu">
+                            <img
+                                src="../static/images/more.png"
+                                style="
+                                    width: 16px;
+                                    height: 16px;
+                                    cursor: pointer;
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="post-comment">
+                        <div class="comment">
+                            <img
+                                class="user-avatar-post"
+                                src="../static/images/logo.png"
+                            />
+                            <div>
+                                <span class="comment-author"
+                                    >Катя Кириллова</span
+                                >
+                                <span class="comment-text"
+                                    >Ребята молодцы, очень достойная
+                                    Figma!!!</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-give-comment">
+                        <div class="post-footer">
+                            <img
+                                class="user-avatar-post"
+                                src="../static/images/logo.png"
+                            />
+                            <input
+                                type="text"
+                                name="user-comment"
+                                class="user-comment"
+                                placeholder="Оставить комментарий"
+                            />
+                        </div>
+                        <div class="comment-buttons">
+                            <button class="include-button">
+                                <img
+                                    src="../static/images/attach-paperclip-symbol.png"
+                                    style="width: 20px; height: 20px"
+                                />
+                            </button>
+                            <button class="send-button">
+                                <img
+                                    class="post-comment img"
+                                    src="../static/images/send.png"
+                                    style="width: 24px; height: 24px"
+                                />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="post" id="post1">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <img
+                                class="user-avatar-post"
+                                src="../static/images/logo.png"
+                            />
+                            <span class="author-name" style="cursor: pointer"
+                                >VKPogromisty</span
+                            >
+                        </div>
+                        <div class="post-menu">
+                            <img
+                                src="../static/images/more.png"
+                                style="
+                                    width: 16px;
+                                    height: 16px;
+                                    cursor: pointer;
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="post-content"></div>
+                    <div class="post-reaction">
+                        <div class="reactions">
+                            <button class="like">
+                                <img
+                                    src="../static/images/heart.png"
+                                    style="width: 16px; height: 16px"
+                                />
+                            </button>
+                            <button class="show-comments">
+                                <img
+                                    src="../static/images/messenger.png"
+                                    style="width: 16px; height: 16px"
+                                />
+                            </button>
+                            <span
+                                class="show-comments-label"
+                                style="cursor: pointer"
+                                >Показать комментарии</span
+                            >
+                        </div>
+                        <div class="comment-menu">
+                            <img
+                                src="../static/images/more.png"
+                                style="
+                                    width: 16px;
+                                    height: 16px;
+                                    cursor: pointer;
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="post-comment">
+                        <div class="comment">
+                            <img
+                                class="user-avatar-post"
+                                src="../static/images/logo.png"
+                            />
+                            <div>
+                                <span class="comment-author"
+                                    >Катя Кириллова</span
+                                >
+                                <span class="comment-text"
+                                    >Ребята молодцы, очень достойная
+                                    Figma!!!</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-give-comment">
+                        <div class="post-footer">
+                            <img
+                                class="user-avatar-post"
+                                src="../static/images/logo.png"
+                            />
+                            <input
+                                type="text"
+                                name="user-comment"
+                                class="user-comment"
+                                placeholder="Оставить комментарий"
+                            />
+                        </div>
+                        <div class="comment-buttons">
+                            <button class="include-button">
+                                <img
+                                    src="../static/images/attach-paperclip-symbol.png"
+                                    style="width: 20px; height: 20px"
+                                />
+                            </button>
+                            <button class="send-button">
+                                <img
+                                    class="post-comment img"
+                                    src="../static/images/send.png"
+                                    style="width: 24px; height: 24px"
+                                />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
 </html>
-

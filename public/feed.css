@@ -1,13 +1,32 @@
 :root {
     --cursive-text: "Jim Nightshade", cursive;
     --ordinary-text: "Inter", sans-serif;
-    --borders-color: 1px solid #E35F7F;
+    --borders-color: 1px solid #e35f7f;
+}
+* {
+    border: none;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 body {
-    background-color: rgb(248,238,238);
+    background-color: rgb(248, 238, 238);
     margin: 0px;
     min-width: 1100px;
+    display: flexbox;
+}
+input,
+textarea,
+button,
+select {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background-color: transparent;
 }
 
 header {
@@ -26,6 +45,8 @@ header {
 #logo_img {
     width: 30px;
     margin-right: 50px;
+    max-width: 100%;
+    height: auto;
 }
 
 .logo {
@@ -48,7 +69,7 @@ header {
     height: 30px;
     padding-left: 7px;
     font-family: var(--ordinary-text);
-    color: #A59191;
+    color: #a59191;
     background-color: rgba(217, 217, 217, 0.22);
     border-color: rgb(143, 135, 135);
     font-weight: 400;
@@ -60,19 +81,22 @@ header {
     margin-left: auto;
     align-items: center;
     display: flex;
-    font-family: var(--ordinary-text)
+    font-family: var(--ordinary-text);
 }
 
 .user-avatar {
     margin-left: 23px;
     border-radius: 50%;
     width: 40px;
-    border: 1px solid #B73636;
+    border: 1px solid #b73636;
+    max-width: 100%;
+    height: auto;
 }
 
 .main-content {
     display: flex;
     margin: 20px 70px 0px 45px;
+    justify-content: center;
 }
 
 .sidebar {
@@ -90,6 +114,7 @@ header {
 .sidebar ul {
     padding-left: 0px;
     line-height: 40px;
+    list-style: none;
 }
 
 .sidebar li {
@@ -101,6 +126,7 @@ header {
 
 .sidebar a {
     color: black;
+    text-decoration: none;
 }
 
 .activity {
@@ -125,9 +151,7 @@ header {
 }
 
 .news {
-    min-width: 300px;
     width: 480px;
-    min-width: 200px;
     margin-left: 20px;
     border-left: var(--borders-color);
     border-right: var(--borders-color);
@@ -170,12 +194,12 @@ header {
 .user-avatar-post {
     border-radius: 50%;
     width: 40px;
-    border: 1px solid #B73636;
+    border: 1px solid #b73636;
 }
 
 .post {
     border-radius: 20px;
-    background-color: #F4E3E3;
+    background-color: #f4e3e3;
     border: var(--borders-color);
     margin: 30px 0px;
 }
@@ -200,14 +224,15 @@ header {
 }
 
 .post-header .author-name {
-    margin-top: 15px;
+    display: flex;
+    align-items: center;
 }
 
 .post-menu {
     width: 30px;
     height: 30px;
     margin-top: 15px;
-    background-color:rgba(234, 169, 169, 0.16);
+    background-color: rgba(234, 169, 169, 0.16);
     text-align: center;
     vertical-align: middle;
     padding-top: 5px;
@@ -240,6 +265,7 @@ header {
 
 .like {
     padding: 0px;
+    width: 40px;
 }
 
 .show-comments-label {
@@ -249,15 +275,14 @@ header {
 }
 
 .show-comments {
-    padding-top: 6px;
-    margin-right: 20px;
+    align-items: center;
 }
 
 .comment-menu {
     width: 30px;
     height: 30px;
     margin-top: 5px;
-    background-color:rgba(234, 169, 169, 0.16);
+    background-color: rgba(234, 169, 169, 0.16);
     text-align: center;
     vertical-align: middle;
     padding-top: 5px;
@@ -288,6 +313,7 @@ header {
 
 .comment-author {
     font-size: 10px;
+    cursor: pointer;
 }
 
 .post-give-comment {
@@ -315,10 +341,6 @@ header {
     justify-content: space-between;
     align-content: center;
     margin-right: 20px;
-}
-
-.send-button {
-    transform: rotate(25deg);
 }
 
 .user-comment {
