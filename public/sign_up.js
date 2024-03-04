@@ -68,7 +68,7 @@ document.getElementById('submit-form').addEventListener('click', async () => {
     const dateOfBirth = `${year.value}-${month.value}-${day.value}`;
 
     const result = await authService.sign_up(firstName.value, lastName.value, email.value, password.value, 
-        repeatPassword.value, dateOfBirth, avatar.value);
+        repeatPassword.value, dateOfBirth, avatar.files);
     if (result) {
         window.location.replace('/feed');
     } else {
