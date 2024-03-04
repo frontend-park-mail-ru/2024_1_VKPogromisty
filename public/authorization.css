@@ -73,3 +73,8 @@ button:hover {
     text-align: center;
     margin-top: 20px;
 }
+
+.incorrect-data {
+    font-size: medium;
+    color: var(--input-color);
+}

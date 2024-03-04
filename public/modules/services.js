@@ -13,11 +13,7 @@ export class AuthService {
             credentials: 'include',
         });
 
-        if (response.ok) {
-            return true;
-        } else {
-            return false;
-        }
+        return response.ok;
     }
 
     async isAuthorized() {
@@ -104,11 +100,7 @@ export class PostService {
             credentials: 'include',
         });
 
-        if (response.ok) {
-            return true;
-        } else {
-            return false;
-        }
+        return response.ok;
     }
 
 }
