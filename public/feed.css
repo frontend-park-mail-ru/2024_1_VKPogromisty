@@ -17,7 +17,6 @@ body {
     background-color: rgb(248, 238, 238);
     margin: 0px;
     min-width: 1100px;
-    display: flexbox;
 }
 input,
 textarea,
@@ -88,9 +87,9 @@ header {
     margin-left: 23px;
     border-radius: 50%;
     width: 40px;
+    height: 40px;
     border: 1px solid #b73636;
     max-width: 100%;
-    height: auto;
 }
 
 #logout-button {
@@ -102,10 +101,15 @@ header {
 .main-content {
     display: flex;
     margin: 20px 70px 0px 45px;
-    justify-content: center;
+    justify-content: space-between;
+    max-width: 1500px;
 }
 
 .sidebar {
+    height: 440px;
+}
+
+.sidebar, .right-sidebar {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -113,34 +117,36 @@ header {
     width: 240px;
     border-radius: 15px;
     padding-left: 20px;
-    height: 440px;
     min-width: 200px;
 }
 
-.sidebar ul {
+.right-sidebar {
+    height: 180px;
+}
+
+.sidebar ul, .right-sidebar ul {
     padding-left: 0px;
     line-height: 40px;
     list-style: none;
 }
 
-.sidebar li {
+.sidebar li, .right-sidebar li {
     list-style-type: none;
     margin-left: 0px;
     font-family: var(--ordinary-text);
     font-size: 18px;
 }
 
-.sidebar a {
+.sidebar a, .right-sidebar a {
     color: black;
     text-decoration: none;
 }
 
-.activity {
+#activity {
     width: 700px;
-    margin-left: 150px;
 }
 
-.create-post {
+#create-post {
     display: flex;
     flex-direction: row;
     height: 60px;
@@ -200,7 +206,6 @@ header {
 .user-avatar-post {
     border-radius: 50%;
     width: 40px;
-    border: 1px solid #b73636;
 }
 
 .post {
@@ -246,9 +251,22 @@ header {
 }
 
 .post-content {
-    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 10px 20px 10px;
     border-bottom: var(--borders-color);
     line-height: 3px;
+}
+
+.content-text {
+    margin-bottom: 20px;
+    font-family: var(--ordinary-text);
+}
+
+.content-img {
+    max-width: 400px;
+    margin: 10px 0px;
 }
 
 .post-content p {

@@ -83,20 +83,15 @@ document.getElementById("submit-form").addEventListener("click", async () => {
 
     const dateOfBirth = `${year.value}-${month.value}-${day.value}`;
 
-    const result = await authService.sign_up(
-        firstName.value,
-        lastName.value,
-        email.value,
-        password.value,
-        repeatPassword.value,
-        dateOfBirth,
-        avatar.files[0]
-    );
-    if (result) {
-        localStorage.setItem('userAvatar', avatar.files[0].name);
-        localStorage.setItem('userName', `${firstName.value} ${lastName.value}`);
-
-        window.location.replace("/feed");
+    const result = await authService.sign_up(firstName.value, lastName.value, email.value, password.value, 
+        repeatPassword.value, dateOfBirth, avatar.files[0]);
+    if (result !== null) {
+        console.log(result);
+        const {avatar, firstName, lastName} = result.body.user;
+        localStorage.setItem('avatar', avatar);
+        localStorage.setItem('firstName', firstName);
+        localStorage.setItem('lastName', lastName);
+        window.location.replace('/feed');
     } else {
         errorMessage.innerHTML = "Почта уже используется";
         return;

@@ -42,18 +42,25 @@ document
             incorrectPassword.innerHTML = "";
         }
 
+<<<<<<< HEAD
         if (!flag) {
             return;
         }
+=======
+    const result = await authService.login(email.value, password.value);
+    if (result !== null) {
+        const {avatar, firstName, lastName} = result.body.user;
+        localStorage.setItem('avatar', avatar);
+        localStorage.setItem('firstName', firstName);
+        localStorage.setItem('lastName', lastName);
+        window.location.replace('/feed');
+    } else {
+        incorrectEmail.innerHTML = "Некорректные данные";
+        incorrectPassword.innerHTML = "Некорректные данные";
+        return;
+    }
+>>>>>>> origin/VKP-33-posts
 
-        const result = await authService.login(email.value, password.value);
-        if (result) {
-            window.location.replace("/feed");
-        } else {
-            incorrectEmail.innerHTML = "Некорректные данные";
-            incorrectPassword.innerHTML = "Некорректные данные";
-            return;
-        }
     });
 
 document.getElementById("button-sign-up").addEventListener("click", () => {

@@ -18,7 +18,7 @@ export function validatePassword(password) {
 }
 
 export function validateEmail(email) {
-    if (email.match(/^(\w)+@(\w)+\.(\w)+$/) === null) {
+    if (email.match(/^[\w.]+@[\w.]+\.[\w.]+$/) === null) {
         return errors.incorrectEmail;
     }
     
