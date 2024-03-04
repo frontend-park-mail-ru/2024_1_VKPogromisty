@@ -44,7 +44,6 @@ export class AuthService {
         const response = await fetch(this.baseUrl + "signup", {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
             },
             body: formData,
             credentials: 'include',

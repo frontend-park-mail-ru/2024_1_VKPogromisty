@@ -69,7 +69,7 @@ export function validateDateOfBirth(inDay, inMonth, inYear) {
 }
 
 export function validateName(name) {
-    if (name.match(/^[А-Яа-я]+$/) === null) {
+    if (name.match(/^[А-Яа-яA-Za-z]+$/) === null) {
         return errors.incorrectName;
     }
 

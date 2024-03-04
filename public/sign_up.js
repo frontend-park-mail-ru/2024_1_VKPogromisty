@@ -65,7 +65,7 @@ document.getElementById('submit-form').addEventListener('click', async () => {
         return;
     }
 
-    const dateOfBirth = `${year.value}-${day.value}-${month.value}`;
+    const dateOfBirth = `${year.value}-${month.value}-${day.value}`;
 
     const result = await authService.sign_up(firstName.value, lastName.value, email.value, password.value, 
         repeatPassword.value, dateOfBirth, avatar.value);
