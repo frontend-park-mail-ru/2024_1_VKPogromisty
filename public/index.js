@@ -1,3 +1,5 @@
+window.location.replace('/login');
+
 import {AuthService, PostService} from "./modules/services.js";
     
 const authService = new AuthService();
@@ -44,14 +46,6 @@ function renderSignUp() {
 }
 
 function goToPage(target) {
-}
-
-const result = await authService.isAuthorized();
-
-if (!result) {
-    goToPage("authorization");
-} else {
-    goToPage("feed");
 }
 
 document.getElementById('login-btn').addEventListener('click', async () => {

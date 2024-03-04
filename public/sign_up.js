@@ -3,6 +3,12 @@ import {AuthService} from './modules/services.js';
 
 const authService = new AuthService();
 
+const result = await authService.isAuthorized();
+
+if (result) {
+    window.location.replace('/feed');
+}
+
 const email = document.getElementById('email');
 const password = document.getElementById('password');
 const repeatPassword = document.getElementById('repeat-password');
@@ -11,6 +17,7 @@ const lastName = document.getElementById('last-name');
 const day = document.getElementById('day');
 const month = document.getElementById('month');
 const year = document.getElementById('year');
+const avatar = document.getElementById('avatar');
 
 const incorrectEmail = document.getElementById('incorrect-email');
 const incorrectPassword = document.getElementById('incorrect-password');
@@ -58,7 +65,10 @@ document.getElementById('submit-form').addEventListener('click', async () => {
         return;
     }
 
-    const result = await authService.login(email, password);
+    const dateOfBirth = `${year.value}-${day.value}-${month.value}`;
+
+    const result = await authService.sign_up(firstName.value, lastName.value, email.value, password.value, 
+        repeatPassword.value, dateOfBirth, avatar.value);
     if (result) {
         window.location.replace('/feed');
     } else {

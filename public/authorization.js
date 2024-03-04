@@ -3,6 +3,12 @@ import {AuthService} from './modules/services.js';
 
 const authService = new AuthService();
 
+const result = await authService.isAuthorized();
+
+if (result) {
+    window.location.replace('/feed');
+}
+
 const email = document.getElementById('email');
 const password = document.getElementById('password');
 
@@ -22,7 +28,6 @@ document.getElementById('button-sign-in').addEventListener('click', async () => 
 
     if (passwordErr !== null) {
         //incorrectPassword.innerHTML = passwordErr;
-        console.log('here')
         flag = false;
     }
 
@@ -30,11 +35,11 @@ document.getElementById('button-sign-in').addEventListener('click', async () => 
         return;
     }
 
-    const result = await authService.login(email, password);
+    const result = await authService.login(email.value, password.value);
     if (result) {
         window.location.replace('/feed');
     } else {
-        return;//некорректные данные
+        return;//вписать "некорректные данные"
     }
 
 });

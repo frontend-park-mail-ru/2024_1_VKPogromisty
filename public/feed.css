@@ -30,7 +30,7 @@ select {
 }
 
 header {
-    padding: 15px 35px 15px 35px;
+    padding: 15px 25px 15px 35px;
     width: 100%;
     display: flex;
     background-color: white;
@@ -91,6 +91,12 @@ header {
     border: 1px solid #b73636;
     max-width: 100%;
     height: auto;
+}
+
+#logout-button {
+    margin-left: 15px;
+    border: 1px solid #858080;
+    border-radius: 15px;
 }
 
 .main-content {
