@@ -136,3 +136,7 @@ input::-webkit-inner-spin-button {
 .input-avatar:hover span {
     filter: brightness(105%);
 }
+
+.error {
+    color: red;
+}

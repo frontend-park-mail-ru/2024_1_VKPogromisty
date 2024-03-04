@@ -11,14 +11,25 @@
         <div class="form-wrapper">
             <div class="form">
                 <div class="image-container">
-                    <img src="../static/images/Logo.png" width="124px" alt="Logo" />
+                    <img
+                        src="../static/images/Logo.png"
+                        width="124px"
+                        alt="Logo"
+                    />
                 </div>
                 <form class="login-form" action="/submit" method="POST">
                     <div class="input-group">
-                        <input type="text" id="email" name="email"
-                        placeholder="Email" required />
+                        <div class="error" id="incorrect-email"></div>
+                        <input
+                            type="text"
+                            id="email"
+                            name="email"
+                            placeholder="Email"
+                            required
+                        />
                     </div>
                     <div class="input-group" aria-po>
+                        <div class="error" id="incorrect-password"></div>
                         <input
                             type="password"
                             id="password"
@@ -27,10 +38,16 @@
                             required
                         />
                     </div>
-                    <button type="button" class="button-sign-in" id="button-sign-in">
+                    <button
+                        type="button"
+                        class="button-sign-in"
+                        id="button-sign-in"
+                    >
                         Sign in
                     </button>
-                    <a href="/signup" class="link_sign_up" id='button-sign-up'>Sign up</a>
+                    <a href="/signup" class="link_sign_up" id="button-sign-up"
+                        >Sign up</a
+                    >
                 </form>
             </div>
         </div>
