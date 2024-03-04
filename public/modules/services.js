@@ -25,9 +25,6 @@ export class AuthService {
     async isAuthorized() {
         const response = await fetch(this.baseUrl + 'is-authorized', {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             credentials: 'include',
         });
 
@@ -49,8 +46,6 @@ export class AuthService {
 
         const response = await fetch(this.baseUrl + "signup", {
             method: 'POST',
-            headers: {
-            },
             body: formData,
             credentials: 'include',
         });
@@ -59,34 +54,24 @@ export class AuthService {
         
         if (response.ok) {
             return data;
-        } else {
-            return null;
-        }
+        } 
 
+        return null;
     }
 
     async logout() {
 
-        try{
-            const response = await fetch(this.baseUrl + 'logout', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            });
-    
-            if (response.ok) {
-                return;
-            } else {
-                const data = await response.json();
-                throw new Error(data.error);
-            }
+        const response = await fetch(this.baseUrl + 'logout', {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+
+        if (response.ok) {
+            return;
         }
 
-        catch (e){
-            console.log(e)
-        }
+        const data = await response.json();
+        throw new Error(data.error);
     }
 
 }
@@ -99,9 +84,6 @@ export class PostService {
 
         const response = await fetch(this.baseUrl, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             credentials: 'include',
         });
 
@@ -109,10 +91,9 @@ export class PostService {
 
         if (response.ok) {
             return data.body.posts;
-        } else {
-            throw new Error(data.message);
         }
 
+        throw new Error(data.message);
     }
 
 }
