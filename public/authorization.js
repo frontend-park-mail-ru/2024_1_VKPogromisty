@@ -21,12 +21,12 @@ document.getElementById('button-sign-in').addEventListener('click', async () => 
     const emailErr = validateEmail(email.value);
     const passwordErr = validatePassword(password.value);
 
-    if (emailErr !== null) {
+    if (!emailErr) {
         // вставить ошибку: например, incorrectEmail.innerHTML = emailErr;
         flag = false;
     }
 
-    if (passwordErr !== null) {
+    if (!passwordErr) {
         //incorrectPassword.innerHTML = passwordErr;
         flag = false;
     }

@@ -95,5 +95,4 @@ export class PostService {
 
         throw new Error(data.message);
     }
-
 }
