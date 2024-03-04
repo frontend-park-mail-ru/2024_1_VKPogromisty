@@ -68,8 +68,13 @@ document.getElementById('submit-form').addEventListener('click', async () => {
     const dateOfBirth = `${year.value}-${month.value}-${day.value}`;
 
     const result = await authService.sign_up(firstName.value, lastName.value, email.value, password.value, 
-        repeatPassword.value, dateOfBirth, avatar.files);
-    if (result) {
+        repeatPassword.value, dateOfBirth, avatar.files[0]);
+    if (result !== null) {
+        console.log(result);
+        const {avatar, firstName, lastName} = result.body.user;
+        localStorage.setItem('avatar', avatar);
+        localStorage.setItem('firstName', firstName);
+        localStorage.setItem('lastName', lastName);
         window.location.replace('/feed');
     } else {
         return;//тоже добавь типо "этот емейл уже занят"

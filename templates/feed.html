@@ -33,10 +33,10 @@
                 </div>
             </div>
             <div class="user">
-                <span class="username" style="cursor: pointer"
+                <span id="username" class="username" style="cursor: pointer"
                     >Имя пользователя</span
                 >
-                <img class="user-avatar" src="../static/images/logo.png" />
+                <img id="user-avatar" class="user-avatar" src="" />
                 <div class="logout">
                     <button id="logout-button">Выйти</button>
                 </div>
@@ -58,8 +58,8 @@
                 </ul>
             </div>
 
-            <div class="activity">
-                <div class="create-post">
+            <div id="activity">
+                <div id="create-post">
                     <div id="news-avatar">
                         <img
                             id="user-avatar-news"
@@ -76,7 +76,7 @@
                         <button class="include-button">
                             <img
                                 src="../static/images/attach-paperclip-symbol.png"
-                                style="width: 28px; height: 28px"
+                                style="width: 16px; height: 16px"
                             />
                         </button>
                     </div>
@@ -84,312 +84,16 @@
                         <button class="publish-button">Опубликовать</button>
                     </div>
                 </div>
-
-                <div class="post" id="post1">
-                    <div class="post-header">
-                        <div class="post-author">
-                            <img
-                                class="user-avatar-post"
-                                src="../static/images/logo.png"
-                            />
-                            <span class="author-name" style="cursor: pointer"
-                                >VKPogromisty</span
-                            >
-                        </div>
-                        <div class="post-menu">
-                            <img
-                                src="../static/images/more.png"
-                                style="
-                                    width: 16px;
-                                    height: 16px;
-                                    cursor: pointer;
-                                "
-                            />
-                        </div>
-                    </div>
-                    <div class="post-content"></div>
-                    <div class="post-reaction">
-                        <div class="reactions">
-                            <button class="like">
-                                <img
-                                    src="../static/images/heart.png"
-                                    style="width: 16px; height: 16px"
-                                />
-                            </button>
-                            <button class="show-comments">
-                                <img
-                                    src="../static/images/messenger.png"
-                                    style="width: 16px; height: 16px"
-                                />
-                            </button>
-                            <span
-                                class="show-comments-label"
-                                style="cursor: pointer"
-                                >Показать комментарии</span
-                            >
-                        </div>
-                        <div class="comment-menu">
-                            <img
-                                src="../static/images/more.png"
-                                style="
-                                    width: 16px;
-                                    height: 16px;
-                                    cursor: pointer;
-                                "
-                            />
-                        </div>
-                    </div>
-                    <div class="post-comment">
-                        <div class="comment">
-                            <img
-                                class="user-avatar-post"
-                                src="../static/images/logo.png"
-                            />
-                            <div>
-                                <span class="comment-author"
-                                    >Катя Кириллова</span
-                                >
-                                <span class="comment-text"
-                                    >Ребята молодцы, очень достойная
-                                    Figma!!!</span
-                                >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="post-give-comment">
-                        <div class="post-footer">
-                            <img
-                                class="user-avatar-post"
-                                src="../static/images/logo.png"
-                            />
-                            <input
-                                type="text"
-                                name="user-comment"
-                                class="user-comment"
-                                placeholder="Оставить комментарий"
-                            />
-                        </div>
-                        <div class="comment-buttons">
-                            <button class="include-button">
-                                <img
-                                    src="../static/images/attach-paperclip-symbol.png"
-                                    style="width: 20px; height: 20px"
-                                />
-                            </button>
-                            <button class="send-button">
-                                <img
-                                    class="post-comment img"
-                                    src="../static/images/send.png"
-                                    style="width: 24px; height: 24px"
-                                />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="post" id="post1">
-                    <div class="post-header">
-                        <div class="post-author">
-                            <img
-                                class="user-avatar-post"
-                                src="../static/images/logo.png"
-                            />
-                            <span class="author-name" style="cursor: pointer"
-                                >VKPogromisty</span
-                            >
-                        </div>
-                        <div class="post-menu">
-                            <img
-                                src="../static/images/more.png"
-                                style="
-                                    width: 16px;
-                                    height: 16px;
-                                    cursor: pointer;
-                                "
-                            />
-                        </div>
-                    </div>
-                    <div class="post-content"></div>
-                    <div class="post-reaction">
-                        <div class="reactions">
-                            <button class="like">
-                                <img
-                                    src="../static/images/heart.png"
-                                    style="width: 16px; height: 16px"
-                                />
-                            </button>
-                            <button class="show-comments">
-                                <img
-                                    src="../static/images/messenger.png"
-                                    style="width: 16px; height: 16px"
-                                />
-                            </button>
-                            <span
-                                class="show-comments-label"
-                                style="cursor: pointer"
-                                >Показать комментарии</span
-                            >
-                        </div>
-                        <div class="comment-menu">
-                            <img
-                                src="../static/images/more.png"
-                                style="
-                                    width: 16px;
-                                    height: 16px;
-                                    cursor: pointer;
-                                "
-                            />
-                        </div>
-                    </div>
-                    <div class="post-comment">
-                        <div class="comment">
-                            <img
-                                class="user-avatar-post"
-                                src="../static/images/logo.png"
-                            />
-                            <div>
-                                <span class="comment-author"
-                                    >Катя Кириллова</span
-                                >
-                                <span class="comment-text"
-                                    >Ребята молодцы, очень достойная
-                                    Figma!!!</span
-                                >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="post-give-comment">
-                        <div class="post-footer">
-                            <img
-                                class="user-avatar-post"
-                                src="../static/images/logo.png"
-                            />
-                            <input
-                                type="text"
-                                name="user-comment"
-                                class="user-comment"
-                                placeholder="Оставить комментарий"
-                            />
-                        </div>
-                        <div class="comment-buttons">
-                            <button class="include-button">
-                                <img
-                                    src="../static/images/attach-paperclip-symbol.png"
-                                    style="width: 20px; height: 20px"
-                                />
-                            </button>
-                            <button class="send-button">
-                                <img
-                                    class="post-comment img"
-                                    src="../static/images/send.png"
-                                    style="width: 24px; height: 24px"
-                                />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="post" id="post1">
-                    <div class="post-header">
-                        <div class="post-author">
-                            <img
-                                class="user-avatar-post"
-                                src="../static/images/logo.png"
-                            />
-                            <span class="author-name" style="cursor: pointer"
-                                >VKPogromisty</span
-                            >
-                        </div>
-                        <div class="post-menu">
-                            <img
-                                src="../static/images/more.png"
-                                style="
-                                    width: 16px;
-                                    height: 16px;
-                                    cursor: pointer;
-                                "
-                            />
-                        </div>
-                    </div>
-                    <div class="post-content"></div>
-                    <div class="post-reaction">
-                        <div class="reactions">
-                            <button class="like">
-                                <img
-                                    src="../static/images/heart.png"
-                                    style="width: 16px; height: 16px"
-                                />
-                            </button>
-                            <button class="show-comments">
-                                <img
-                                    src="../static/images/messenger.png"
-                                    style="width: 16px; height: 16px"
-                                />
-                            </button>
-                            <span
-                                class="show-comments-label"
-                                style="cursor: pointer"
-                                >Показать комментарии</span
-                            >
-                        </div>
-                        <div class="comment-menu">
-                            <img
-                                src="../static/images/more.png"
-                                style="
-                                    width: 16px;
-                                    height: 16px;
-                                    cursor: pointer;
-                                "
-                            />
-                        </div>
-                    </div>
-                    <div class="post-comment">
-                        <div class="comment">
-                            <img
-                                class="user-avatar-post"
-                                src="../static/images/logo.png"
-                            />
-                            <div>
-                                <span class="comment-author"
-                                    >Катя Кириллова</span
-                                >
-                                <span class="comment-text"
-                                    >Ребята молодцы, очень достойная
-                                    Figma!!!</span
-                                >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="post-give-comment">
-                        <div class="post-footer">
-                            <img
-                                class="user-avatar-post"
-                                src="../static/images/logo.png"
-                            />
-                            <input
-                                type="text"
-                                name="user-comment"
-                                class="user-comment"
-                                placeholder="Оставить комментарий"
-                            />
-                        </div>
-                        <div class="comment-buttons">
-                            <button class="include-button">
-                                <img
-                                    src="../static/images/attach-paperclip-symbol.png"
-                                    style="width: 20px; height: 20px"
-                                />
-                            </button>
-                            <button class="send-button">
-                                <img
-                                    class="post-comment img"
-                                    src="../static/images/send.png"
-                                    style="width: 24px; height: 24px"
-                                />
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
+
+            <div class="right-sidebar">
+                <ul>
+                    <li><a href="#">Друзья</a></li>
+                    <li><a href="#">Фотографии</a></li>
+                    <li><a href="#">Рекомендации</a></li>
+                </ul>
+            </div>
+
         </main>
     </body>
     <script type="module" src="public/feed.js"></script>

@@ -13,7 +13,13 @@ export class AuthService {
             credentials: 'include',
         });
 
-        return response.ok;
+        const data = await response.json();
+
+        if (response.ok) {
+            return data;
+        } else {
+            return null;
+        }
     }
 
     async isAuthorized() {
@@ -50,11 +56,11 @@ export class AuthService {
         });
 
         const data = await response.json();
-
+        
         if (response.ok) {
             return data;
         } else {
-            throw new Error(data.message);
+            return null;
         }
 
     }
@@ -99,7 +105,14 @@ export class PostService {
             credentials: 'include',
         });
 
-        return response.ok;
+        const data = await response.json();
+
+        if (response.ok) {
+            return data.body.posts;
+        } else {
+            throw new Error(data.message);
+        }
+
     }
 
 }

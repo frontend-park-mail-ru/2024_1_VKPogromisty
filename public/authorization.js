@@ -36,7 +36,11 @@ document.getElementById('button-sign-in').addEventListener('click', async () => 
     }
 
     const result = await authService.login(email.value, password.value);
-    if (result) {
+    if (result !== null) {
+        const {avatar, firstName, lastName} = result.body.user;
+        localStorage.setItem('avatar', avatar);
+        localStorage.setItem('firstName', firstName);
+        localStorage.setItem('lastName', lastName);
         window.location.replace('/feed');
     } else {
         return;//вписать "некорректные данные"
