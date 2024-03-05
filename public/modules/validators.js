@@ -1,9 +1,9 @@
 const errors = {
-    incorrectPasswordLength: "Пароль должен быть длиной в не менее 6 символов",
+    incorrectPasswordLength: "Пароль должен иметь длину не менее 6 символов",
     passwordMismatch: "Пароли должны совпадать",
-    incorrectEmail: "Неправильная почта",
+    incorrectEmail: "Некорректная почта",
     incorrectName: "Некорретное имя",
-    impossibleDate: "Невозможная дата",
+    impossibleDate: "Некорректная дата",
     incorrectPassword: "Некорректный пароль",
 }
 
