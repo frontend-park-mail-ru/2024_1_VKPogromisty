@@ -42,11 +42,9 @@ document
             incorrectPassword.innerHTML = "";
         }
 
-<<<<<<< HEAD
         if (!flag) {
             return;
         }
-=======
     const result = await authService.login(email.value, password.value);
     if (result !== null) {
         const {avatar, firstName, lastName} = result.body.user;
@@ -59,7 +57,6 @@ document
         incorrectPassword.innerHTML = "Некорректные данные";
         return;
     }
->>>>>>> origin/VKP-33-posts
 
     });
 
