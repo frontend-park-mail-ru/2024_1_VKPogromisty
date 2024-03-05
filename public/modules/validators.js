@@ -24,7 +24,7 @@ export function validatePasswords(password, repeatPassword) {
 
 export function validateDateOfBirth(inDay, inMonth, inYear) {
 
-    if (Number.isNaN(inDay) || Number.isNaN(inMonth) || Number.isNaN(inYear)) {
+    if (Number.isNaN(Number(inDay)) || Number.isNaN(Number(inMonth)) || Number.isNaN(Number(inYear))) {
         return false;
     }
 
@@ -45,11 +45,11 @@ export function validateDateOfBirth(inDay, inMonth, inYear) {
 
     const dayInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-    if (day > dayInMonths[month - 1] && day < 1) {
+    if (day > dayInMonths[month - 1] || day < 1) {
         return false;
     }
 
-    return null;
+    return true;
 }
 
 export function validateName(name) {
