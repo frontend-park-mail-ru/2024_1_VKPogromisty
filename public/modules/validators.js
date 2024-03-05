@@ -11,9 +11,6 @@ export function validatePassword(password) {
     if (password.length < 6) {
         return errors.incorrectPasswordLength;
     }
-    if (password.match(/^[!+-A-Za-z]+$/) === null) {
-        return errors.incorrectPassword;
-    }
     return null;
 }
 
