@@ -4,5 +4,4 @@ export const errors = {
     incorrectEmail: "Некорректная почта",
     incorrectName: "Некорретное имя",
     impossibleDate: "Некорректная дата",
-    incorrectPassword: "Некорректный пароль",
 };
