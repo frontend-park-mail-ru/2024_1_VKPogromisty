@@ -1,4 +1,4 @@
-import { API_URL } from "./consts.js";
+import { API_URL, responses } from "./consts.js";
 
 export class AuthService {
     
@@ -17,11 +17,7 @@ export class AuthService {
 
         const data = await response.json();
 
-        if (response.ok) {
-            return data;
-        } else {
-            return null;
-        }
+        return responses(response.ok, data.body, data.message);
     }
 
     async isAuthorized() {
@@ -32,7 +28,7 @@ export class AuthService {
 
         const data = await response.json();
 
-        return data.body?.isAuthorized;
+        return responses(response.ok, data.body.isAuthorized, data.message);
     }
 
     async sign_up(firstName, lastName, email, password, repeatPassword, dateOfBirth, avatar) {
@@ -53,12 +49,8 @@ export class AuthService {
         });
 
         const data = await response.json();
-        
-        if (response.ok) {
-            return data;
-        } 
 
-        return null;
+        return responses(response.ok, data, data.message);
     }
 
     async logout() {
@@ -72,8 +64,7 @@ export class AuthService {
             return;
         }
 
-        const data = await response.json();
-        throw new Error(data.error);
+        return responses(response.ok, null, data.message);
     }
 
 }
@@ -91,11 +82,7 @@ export class PostService {
 
         const data = await response.json();
 
-        if (response.ok) {
-            return data.body.posts;
-        }
-
-        throw new Error(data.message);
+        return responses(response.ok, data.body.posts, data.message);
     }
 
 }
