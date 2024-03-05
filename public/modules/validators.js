@@ -1,44 +1,31 @@
-const errors = {
-    incorrectPasswordLength: "Пароль должен иметь длину не менее 6 символов",
-    passwordMismatch: "Пароли должны совпадать",
-    incorrectEmail: "Некорректная почта",
-    incorrectName: "Некорретное имя",
-    impossibleDate: "Некорректная дата",
-    incorrectPassword: "Некорректный пароль",
-}
-
 export function validatePassword(password) {
     if (password.length < 6) {
-        return errors.incorrectPasswordLength;
+        return false;
     }
-    return null;
+    return true;
 }
 
 export function validateEmail(email) {
     if (email.match(/^[\w.]+@[\w.]+\.[\w.]+$/) === null) {
-        return errors.incorrectEmail;
+        return false;
     }
     
-    return null;
+    return true;
 }
 
 export function validatePasswords(password, repeatPassword) {
 
     if (password !== repeatPassword) {
-        return errors.passwordMismatch;
+        return false;
     }
 
-    if (validatePassword(password) !== null) {
-        return errors.incorrectPassword;
-    }
-
-    return null;
+    return true;
 }
 
 export function validateDateOfBirth(inDay, inMonth, inYear) {
 
     if (Number.isNaN(inDay) || Number.isNaN(inMonth) || Number.isNaN(inYear)) {
-        return errors.impossibleDate;
+        return false;
     }
 
     const day = Number(inDay);
@@ -47,19 +34,19 @@ export function validateDateOfBirth(inDay, inMonth, inYear) {
     const isVis = (year % 100 !== 0 || year % 400 === 0) && (year % 4 === 0);
 
     if (month === 2 && isVis && day === 29) {
-        return null;
+        return true;
     }
 
     const date = new Date();
 
     if (date.getFullYear() - year >= 120) {
-        return errors.impossibleDate;
+        return false;
     }
 
     const dayInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
     if (day > dayInMonths[month - 1] && day < 1) {
-        return errors.impossibleDate;
+        return false;
     }
 
     return null;
@@ -67,8 +54,8 @@ export function validateDateOfBirth(inDay, inMonth, inYear) {
 
 export function validateName(name) {
     if (name.match(/^[А-Яа-яA-Za-z]+$/) === null) {
-        return errors.incorrectName;
+        return false;
     }
 
-    return null;
+    return true;
 }
