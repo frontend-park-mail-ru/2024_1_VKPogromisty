@@ -1,6 +1,8 @@
+import { API_URL } from "./consts";
+
 export class AuthService {
     
-    baseUrl = "http://localhost:8080/api/v1/auth/";
+    baseUrl = `${API_URL}/auth/`;
 
     async login(email, password) {
 
@@ -93,7 +95,7 @@ export class AuthService {
 
 export class PostService {
     
-    baseUrl = "http://localhost:8080/api/v1/posts/";
+    baseUrl = `${API_URL}/posts/`;
 
     async getPosts() {
 

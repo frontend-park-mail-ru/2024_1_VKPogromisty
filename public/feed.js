@@ -1,5 +1,5 @@
 import { PostService, AuthService } from "./modules/services.js";
-import { API_URL } from "./utils/consts.js";
+import { API_URL } from "./modules/consts.js";
 
 const authService = new AuthService();
 
