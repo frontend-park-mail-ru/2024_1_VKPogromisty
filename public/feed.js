@@ -5,7 +5,7 @@ const authService = new AuthService();
 
 const result = await authService.isAuthorized();
 
-if (!result) {
+if (!result.body) {
     window.location.replace('/login');
 }
 
@@ -82,7 +82,8 @@ function createInput(type, name, className, placeholder) {
 const posts = await postService.getPosts();
 const activity = document.getElementById('activity');
 const create_post = document.getElementById('create-post');
-for (let i of posts) {
+
+for (let i of posts.body) {
     const post = createDivPost('post');
     post.setAttribute('id', `post${i.post.postId}`);
     activity.insertBefore(post, create_post.nextElementSibling);
@@ -164,10 +165,5 @@ for (let i of posts) {
     for (let j of i.post.attachments) {
         post_content.appendChild(createImg('content-img', `${staticUrl}/${j}`));
     }
-
-/*
-    <div class="post" id="post1">
-        <div class="post-content"></div>
-    </div>*/
 }
 

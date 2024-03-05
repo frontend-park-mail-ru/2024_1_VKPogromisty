@@ -3,14 +3,16 @@ import {
     validatePasswords,
     validateName,
     validateDateOfBirth,
+    validatePassword,
 } from "./modules/validators.js";
 import { AuthService } from "./modules/services.js";
+import {errors} from "./modules/errors.js";
 
 const authService = new AuthService();
 
 const result = await authService.isAuthorized();
 
-if (result) {
+if (result.body) {
     window.location.replace("/feed");
 }
 
@@ -34,49 +36,50 @@ const incorrectLastName = document.getElementById("incorrect-last-name");
 const incorrectDateOfBirthday = document.getElementById(
     "incorrect-date-of-birthday"
 );
+const repeatEmail = document.getElementById('repeat-email');
+
+function clearIncorrects() {
+    incorrectEmail.innerHTML = '';
+    incorrectRepeatPassword.innerHTML = '';
+    incorrectPassword.innerHTML = '';
+    incorrectFirstName.innerHTML = '';
+    incorrectLastName.innerHTML = '';
+    incorrectDateOfBirthday.innerHTML = '';
+}
 
 document.getElementById("submit-form").addEventListener("click", async () => {
+
+    clearIncorrects();
+
     let flag = true;
 
-    let errEmail = validateEmail(email.value);
-
-    if (errEmail !== null) {
-        incorrectEmail.innerHTML = errEmail;
+    if (!validateEmail(email.value)) {
+        incorrectEmail.innerHTML = errors.incorrectEmail;
         flag = false;
     }
 
-    let errRepeatPasswords = validatePasswords(
-        password.value,
-        repeatPassword.value
-    );
-
-    if (errRepeatPasswords !== null) {
-        incorrectRepeatPassword.innerHTML = errRepeatPasswords;
+    if (!validatePasswords(password.value, repeatPassword.value)) {
+        incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
         flag = false;
     }
 
-    let errFirstName = validateName(firstName.value);
-
-    if (errFirstName !== null) {
-        incorrectFirstName.innerHTML = errFirstName;
+    if (!validatePassword(password.value)) {
+        incorrectPassword.innerHTML = errors.incorrectPasswordLength;
         flag = false;
     }
 
-    let errLastName = validateName(lastName.value);
-
-    if (errLastName !== null) {
-        incorrectLastName.innerHTML = "Некорректная фамилия";
+    if (!validateName(firstName.value)) {
+        incorrectFirstName.innerHTML = errors.incorrectName;
         flag = false;
     }
 
-    let errDateOfBirth = validateDateOfBirth(
-        day.value,
-        month.value,
-        year.value
-    );
+    if (!validateName(lastName.value)) {
+        incorrectLastName.innerHTML = errors.incorrectName;
+        flag = false;
+    }
 
-    if (errDateOfBirth !== null) {
-        incorrectDateOfBirthday.innerHTML = errDateOfBirth;
+    if (!validateDateOfBirth(day.value, month.value, year.value)) {
+        incorrectDateOfBirthday.innerHTML = errors.impossibleDate;
         flag = false;
     }
 
@@ -84,11 +87,11 @@ document.getElementById("submit-form").addEventListener("click", async () => {
         return;
     }
 
-    const dateOfBirth = `${year.value}-${month.value}-${day.value}`;
+    const dateOfBirth = `${year.value}-${month.value.length === 1 ? '0' : ''}${month.value}-${day.value.length === 1 ? '0' : ''}${day.value}`;
 
     const result = await authService.sign_up(firstName.value, lastName.value, email.value, password.value, 
         repeatPassword.value, dateOfBirth, avatar.files[0]);
-    if (result !== null) {
+    if (result.ok) {
         console.log(result);
         const {avatar, firstName, lastName} = result.body.user;
         localStorage.setItem('avatar', avatar);
@@ -96,7 +99,7 @@ document.getElementById("submit-form").addEventListener("click", async () => {
         localStorage.setItem('lastName', lastName);
         window.location.replace('/feed');
     } else {
-        errorMessage.innerHTML = "Почта уже используется";
+        repeatEmail.innerHTML = "Почта уже используется";
         return;
     }
 });
