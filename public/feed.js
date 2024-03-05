@@ -1,4 +1,5 @@
 import { PostService, AuthService } from "./modules/services.js";
+import { API_URL } from "./utils/consts.js";
 
 const authService = new AuthService();
 
@@ -10,8 +11,11 @@ if (!result) {
 
 const postService = new PostService();
 
-document.getElementById('user-avatar').setAttribute('src', 'http://localhost:8080/api/v1/static/' + localStorage.getItem('avatar'));
-document.getElementById('username').innerHTML = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
+const staticUrl = `${API_URL}/static`;
+const fullUserName = `${localStorage.getItem('firstName')} ${localStorage.getItem('lastName')}`;
+
+document.getElementById('user-avatar').setAttribute('src', `${staticUrl}/${localStorage.getItem('avatar')}`);
+document.getElementById('username').innerHTML = fullUserName;
 
 document.getElementById('logout-button').addEventListener('click', async () => {
     if (confirm("Вы уверены, что хотите выйти из аккаунта?")) {
@@ -117,7 +121,7 @@ for (let i of posts) {
     comment.appendChild(createImg('user-avatar-post', '../static/images/logo.png'));
     comment.appendChild(text_comment);
 
-    post_author.appendChild(createImg('user-avatar-post', 'http://localhost:8080/api/v1/static/' + i.author.avatar));
+    post_author.appendChild(createImg('user-avatar-post', `${staticUrl}/${i.author.avatar}`));
     post_author.appendChild(createSpan('author-name', i.author.firstName + ' ' + i.author.lastName));
 
     post_menu.appendChild(createLowImage('../static/images/more.png', 16, 16));
@@ -138,7 +142,7 @@ for (let i of posts) {
     text_comment.appendChild(createSpan('comment-author', 'Катя Киррилова'));
     text_comment.appendChild(createSpan('comment-text', 'Ребята молодцы, очень достойная Figma!!!'));
 
-    post_footer.appendChild(createImg('user-avatar-post', 'http://localhost:8080/api/v1/static/' + localStorage.getItem('avatar')));
+    post_footer.appendChild(createImg('user-avatar-post', `${staticUrl}/${localStorage.getItem('avatar')}`));
     post_footer.appendChild(createInput('text', 'user-comment', 'user-comment', 'Оставить комментарий'));
 
     comment_buttons.appendChild(buttonInclude);
@@ -158,7 +162,7 @@ for (let i of posts) {
     post_content.appendChild(createSpan('content-text', i.post.text));
 
     for (let j of i.post.attachments) {
-        post_content.appendChild(createImg('content-img', 'http://localhost:8080/api/v1/static/' + j));
+        post_content.appendChild(createImg('content-img', `${staticUrl}/${j}`));
     }
 
 /*

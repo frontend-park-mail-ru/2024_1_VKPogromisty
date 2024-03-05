@@ -58,12 +58,14 @@ document.getElementById("submit-form").addEventListener("click", async () => {
     let errFirstName = validateName(firstName.value);
 
     if (errFirstName !== null) {
+        incorrectFirstName.innerHTML = errFirstName;
         flag = false;
     }
 
     let errLastName = validateName(lastName.value);
 
     if (errLastName !== null) {
+        incorrectLastName.innerHTML = "Некорректная фамилия";
         flag = false;
     }
 
@@ -74,6 +76,7 @@ document.getElementById("submit-form").addEventListener("click", async () => {
     );
 
     if (errDateOfBirth !== null) {
+        incorrectDateOfBirthday.innerHTML = errDateOfBirth;
         flag = false;
     }
 
