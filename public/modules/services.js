@@ -50,7 +50,7 @@ export class AuthService {
 
         const data = await response.json();
 
-        return responses(response.ok, data, data.message);
+        return responses(response.ok, data.body, data.message);
     }
 
     async logout() {
