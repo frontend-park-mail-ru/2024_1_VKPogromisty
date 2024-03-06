@@ -24,28 +24,20 @@ export function validatePasswords(password, repeatPassword) {
 
 export function validateDateOfBirth(inDay, inMonth, inYear) {
 
-    if (Number.isNaN(Number(inDay)) || Number.isNaN(Number(inMonth)) || Number.isNaN(Number(inYear))) {
+    if (Number.isNaN(inDay) || Number.isNaN(inMonth) || Number.isNaN(inYear)) {
         return false;
     }
 
-    const day = Number(inDay);
-    const month = Number(inMonth);
-    const year = Number(inYear);
-    const isVis = (year % 100 !== 0 || year % 400 === 0) && (year % 4 === 0);
+    const providedDate = new Date(inYear, inMonth - 1, inDay);
 
-    if (month === 2 && isVis && day === 29) {
-        return true;
-    }
-
-    const date = new Date();
-
-    if (date.getFullYear() - year >= 120) {
+    if (providedDate.getDate() !== inDay || providedDate.getMonth() + 1 !== inMonth || providedDate.getFullYear() !== inYear) {
         return false;
     }
 
-    const dayInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const currentDate = new Date();
+    const age = currentDate.getFullYear() - providedDate.getFullYear();
 
-    if (day > dayInMonths[month - 1] || day < 1) {
+    if (age > 120) {
         return false;
     }
 

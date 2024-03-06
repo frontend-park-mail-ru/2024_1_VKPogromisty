@@ -21,6 +21,22 @@ function clearIncorrects() {
     incorrectPassword.innerHTML = '';
 }
 
+email.addEventListener("focusout", () => {
+    email.innerHTML = '';
+
+    if (!validateEmail(email.value)) {
+        incorrectEmail.innerHTML = errors.incorrectEmail;
+    }
+});
+
+password.addEventListener("focusout", () => {
+    password.innerHTML = '';
+
+    if (!validatePassword(password.value)) {
+        incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+    }
+});
+
 document
     .getElementById("button-sign-in")
     .addEventListener("click", async () => {

@@ -47,6 +47,54 @@ function clearIncorrects() {
     incorrectDateOfBirthday.innerHTML = '';
 }
 
+email.addEventListener("focusout", () => {
+    incorrectEmail.innerHTML = '';
+    
+    if (!validateEmail(email.value)) {
+        incorrectEmail.innerHTML = errors.incorrectEmail;
+    }
+});
+
+password.addEventListener("focusout", () => {
+    incorrectPassword.innerHTML = '';
+
+    if (!validatePassword(password.value)) {
+        incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+    }
+});
+
+repeatPassword.addEventListener("focusout", () => {
+    incorrectRepeatPassword.innerHTML = '';
+
+    if (!validatePasswords(password.value, repeatPassword.value)) {
+        incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
+    }
+});
+
+firstName.addEventListener("focusout", () => {
+    incorrectFirstName.innerHTML = '';
+
+    if (!validateName(firstName.value)) {
+        incorrectFirstName.innerHTML = errors.incorrectName;
+    }
+});
+
+lastName.addEventListener("focusout", () => {
+    incorrectLastName.innerHTML = '';
+
+    if (!validateName(lastName.value)) {
+        incorrectLastName.innerHTML = errors.incorrectName;
+    }
+});
+
+year.addEventListener("focusout", () => {
+    incorrectDateOfBirthday.innerHTML = '';
+
+    if (!validateDateOfBirth(day.value, month.value, year.value)) {
+        incorrectDateOfBirthday.innerHTML = errors.impossibleDate;
+    }
+});
+
 document.getElementById("submit-form").addEventListener("click", async () => {
 
     clearIncorrects();
