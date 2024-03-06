@@ -20,8 +20,8 @@ document.getElementById('username').innerHTML = fullUserName;
 document.getElementById('logout-button').addEventListener('click', async () => {
     if (confirm("Вы уверены, что хотите выйти из аккаунта?")) {
         await authService.logout();
+        window.location.replace('/login');
     }
-    window.location.replace('/login');
 });
 
 function createDivPost(className) {
