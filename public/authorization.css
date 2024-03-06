@@ -77,7 +77,7 @@ button:hover {
 }
 
 .incorrect-data {
-    font-size: medium;
+    font-size: 30px;
     color: var(--input-color);
 }
 .error {
