@@ -110,4 +110,3 @@ for (let i of posts.body) {
         postContent.appendChild(bse.createImage('', `${staticUrl}/${j}`), 'content-img');
     }
 }
-

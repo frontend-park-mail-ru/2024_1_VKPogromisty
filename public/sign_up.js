@@ -1,6 +1,5 @@
 import {
     validateEmail,
-    validatePasswords,
     validateName,
     validateDateOfBirth,
     validatePassword,
@@ -66,7 +65,7 @@ password.addEventListener("focusout", () => {
 repeatPassword.addEventListener("focusout", () => {
     incorrectRepeatPassword.innerHTML = '';
 
-    if (!validatePasswords(password.value, repeatPassword.value)) {
+    if (password.value != repeatPassword.value) {
         incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
     }
 });
