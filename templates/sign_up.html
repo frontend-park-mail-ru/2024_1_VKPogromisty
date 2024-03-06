@@ -2,16 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="../public/reset.css"
-        />
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="../public/sign_up.css"
-        />
+        <link rel="stylesheet" type="text/css" href="../public/index.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Socio - Sign up</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -33,8 +24,7 @@
                     <div class="logo">
                         <img src="../static/images/logo.png" id="logo-img" />
                     </div>
-                    <div id="repeat-email" class="error">
-                    </div>
+                    <div id="repeat-email" class="error"></div>
                     <div class="register-form">
                         <form
                             method="post"
@@ -42,8 +32,10 @@
                             enctype="multipart/form-data"
                         >
                             <div class="vertical-stack">
-                                <div class="error" id="incorrect-last-name">
-                                </div>
+                                <div
+                                    class="error"
+                                    id="incorrect-last-name"
+                                ></div>
                                 <input
                                     class="main-input"
                                     id="last-name"
@@ -52,8 +44,10 @@
                                     placeholder="Last name"
                                     required
                                 />
-                                <div class="error" id="incorrect-first-name">
-                                </div>
+                                <div
+                                    class="error"
+                                    id="incorrect-first-name"
+                                ></div>
                                 <input
                                     class="main-input"
                                     id="first-name"
@@ -62,8 +56,10 @@
                                     placeholder="First name"
                                     required
                                 />
-                                <div class="error" id="incorrect-password">
-                                </div>
+                                <div
+                                    class="error"
+                                    id="incorrect-password"
+                                ></div>
                                 <input
                                     class="main-input"
                                     id="password"
@@ -73,8 +69,10 @@
                                     minlength="6"
                                     required
                                 />
-                                <div class="error" id="incorrect-repeat-password">
-                                </div>
+                                <div
+                                    class="error"
+                                    id="incorrect-repeat-password"
+                                ></div>
                                 <input
                                     class="main-input"
                                     id="repeat-password"
@@ -83,8 +81,7 @@
                                     minlength="6"
                                     required
                                 />
-                                <div class="error" id="incorrect-email">
-                                </div>
+                                <div class="error" id="incorrect-email"></div>
                                 <input
                                     class="main-input"
                                     id="email"
@@ -96,8 +93,10 @@
                                 <label for="date-birthday" class="form-label"
                                     >Date of birthday</label
                                 >
-                                <div class="error" id="incorrect-date-of-birthday">
-                                </div>
+                                <div
+                                    class="error"
+                                    id="incorrect-date-of-birthday"
+                                ></div>
                                 <div id="date-birthday">
                                     <input
                                         id="day"
@@ -121,11 +120,17 @@
                             </div>
                             <div class="file-input">
                                 <label class="input-avatar">
-                                    <input type="file" name="avatar" id="avatar" />
+                                    <input
+                                        type="file"
+                                        name="avatar"
+                                        id="avatar"
+                                    />
                                     <span>Upload</span>
                                 </label>
                             </div>
-                            <button type="button" id="submit-form">Sign up</button>
+                            <button type="button" id="submit-form">
+                                Sign up
+                            </button>
                         </form>
                     </div>
                     <div class="to-auth-page">

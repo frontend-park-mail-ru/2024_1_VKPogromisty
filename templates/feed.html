@@ -3,17 +3,28 @@
     <head>
         <meta charset="UTF-8" />
         <link
-            rel="stylesheet"
-            type="text/css"
-            href="../public/reset.css"
-        />
-        <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
             rel="stylesheet"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Socio - Feed</title>
-        <link rel="stylesheet" href="../public/feed.css" />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+            input,
+            textarea,
+            button,
+            select {
+                font-family: inherit;
+                font-size: inherit;
+                color: inherit;
+                background-color: transparent;
+            }
+        </style>
+        <link rel="stylesheet" href="../public/index.css" />
         <link
             rel="shortcut icon"
             href="../static/images/logo.png"
@@ -42,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <div class="main" id="main">
+        <div class="main-feed" id="main">
             <div class="sidebar">
                 <ul>
                     <li><a href="#">Профиль</a></li>
@@ -60,8 +71,7 @@
 
             <div id="activity">
                 <div id="create-post">
-                    <div id="news-avatar">
-                    </div>
+                    <div id="news-avatar"></div>
                     <div class="news">
                         <input
                             id="user-news"
@@ -89,7 +99,6 @@
                     <li><a href="#">Рекомендации</a></li>
                 </ul>
             </div>
-
         </div>
     </body>
     <script type="module" src="public/feed.js"></script>
