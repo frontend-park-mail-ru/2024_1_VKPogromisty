@@ -1,25 +1,9 @@
 export function validatePassword(password) {
-    if (password.length < 6) {
-        return false;
-    }
-    return true;
+    return password.length >= 6;
 }
 
 export function validateEmail(email) {
-    if (email.match(/^[\w.]+@[\w.]+\.[\w.]+$/) === null) {
-        return false;
-    }
-    
-    return true;
-}
-
-export function validatePasswords(password, repeatPassword) {
-
-    if (password !== repeatPassword) {
-        return false;
-    }
-
-    return true;
+    return (email.match(/^[\w.]+@[\w.]+\.[\w.]+$/) !== null);
 }
 
 export function validateDateOfBirth(inDay, inMonth, inYear) {
@@ -37,17 +21,9 @@ export function validateDateOfBirth(inDay, inMonth, inYear) {
     const currentDate = new Date();
     const age = currentDate.getFullYear() - providedDate.getFullYear();
 
-    if (age > 120) {
-        return false;
-    }
-
     return true;
 }
 
 export function validateName(name) {
-    if (name.match(/^[А-Яа-яA-Za-z]+$/) === null) {
-        return false;
-    }
-
-    return true;
+    return name.match(/^[a-z ,.'-]+$/i) !== null;
 }
