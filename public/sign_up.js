@@ -106,7 +106,7 @@ document.getElementById("submit-form").addEventListener("click", async () => {
         flag = false;
     }
 
-    if (!validatePasswords(password.value, repeatPassword.value)) {
+    if (password.value != repeatPassword.value) {
         incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
         flag = false;
     }
@@ -135,12 +135,11 @@ document.getElementById("submit-form").addEventListener("click", async () => {
         return;
     }
 
-    const dateOfBirth = `${year.value}-${month.value.length === 1 ? '0' : ''}${month.value}-${day.value.length === 1 ? '0' : ''}${day.value}`;
+    const dateOfBirth = `${year.value}-${month.value.padStart(2, '0')}-${day.value.padStart(2, '0')}`;
 
     const result = await authService.sign_up(firstName.value, lastName.value, email.value, password.value, 
         repeatPassword.value, dateOfBirth, avatar.files[0]);
     if (result.ok) {
-        console.log(result);
         const {avatar, firstName, lastName} = result.body.user;
         localStorage.setItem('avatar', avatar);
         localStorage.setItem('firstName', firstName);

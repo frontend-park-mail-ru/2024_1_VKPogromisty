@@ -61,7 +61,6 @@ document
         const result = await authService.login(email.value, password.value);
 
         if (result.ok) {
-            console.log(result.body);
             const {avatar, firstName, lastName} = result.body.user;
             localStorage.setItem('avatar', avatar);
             localStorage.setItem('firstName', firstName);
