@@ -29,6 +29,6 @@ templates['login.hbs'] = template({"1":function(container,depth0,helpers,partial
 
   return "<div class=\"form-wrapper\">\r\n    <div class=\"form\">\r\n        <div class=\"image-container\">\r\n            <img\r\n                src=\"../static/images/Logo.png\"\r\n                width=\"124px\"\r\n                alt=\"Logo\"\r\n            />\r\n        </div>\r\n        <form class=\"login-form\" action=\"/submit\" method=\"POST\">\r\n"
     + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"inputs") : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":11,"column":12},"end":{"line":22,"column":21}}})) != null ? stack1 : "")
-    + "            <button\r\n                class=\"button-sign-in\"\r\n                id=\"button-sign-in\"\r\n            >\r\n                Sign in\r\n            </button>\r\n            <a href=\"/signup\" class=\"link_sign_up\" id=\"button-sign-up\">Sign up</a\r\n            >\r\n        </form>\r\n    </div>\r\n</div>";
+    + "            <button\r\n                type=\"button\"\r\n                class=\"button-sign-in\"\r\n                id=\"button-sign-in\"\r\n            >\r\n                Sign in\r\n            </button>\r\n            <a href=\"/signup\" class=\"link_sign_up\" id=\"button-sign-up\">Sign up</a\r\n            >\r\n        </form>\r\n    </div>\r\n</div>";
 },"useData":true});
 })();

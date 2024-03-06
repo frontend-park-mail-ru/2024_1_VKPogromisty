@@ -9,7 +9,9 @@
     "prestart": "npm run compile:templates",
     "compile:templates": "handlebars ./public/components/Login/login.hbs -f ./public/components/Login/loginForm.precompiled.js",
     "start:dev": "nodemon ./server/index.js",
-    "start": "node ./server/index.js"
+    "start": "node ./server/index.js",
+    "prepare": "node .husky/install.mjs",
+    "test": "echo \"Error: no test specified\""
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +21,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
+    "husky": "^9.0.11",
     "nodemon": "^3.1.0"
   },
   "dependencies": {

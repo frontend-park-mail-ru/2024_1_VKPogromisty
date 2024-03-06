@@ -41,9 +41,9 @@ function multiAppend(el, ...args) {
     });
 }
 
-for (let i of posts.body) {
-    const post = bse.createDiv(`post${i.post.postId}`, '', 'post');
-    activity.insertBefore(post, createPost.nextElementSibling);
+for (const post of posts.body) {
+    const postMain = bse.createDiv(`post${post.post.postId}`, '', 'post');
+    activity.insertBefore(postMain, createPost.nextElementSibling);
 
     const postHeader = bse.createDiv('', '', 'post-header');
     const postAuthor = bse.createDiv('', '', 'post-author');
@@ -66,7 +66,7 @@ for (let i of posts.body) {
     
     const imgPostComment = bse.createImage('', '../static/images/send.png', 'post-comment-img')
 
-    multiAppend(post, postHeader, postContent, postReaction, postGiveComment);
+    multiAppend(postMain, postHeader, postContent, postReaction, postGiveComment);
 
     //post.appendChild(postComment);
 
@@ -78,8 +78,8 @@ for (let i of posts.body) {
     multiAppend(postGiveComment, postFooter, commentButtons);
     multiAppend(comment, bse.createImage('', '../static/images/logo.png', 'user-avatar-post'), textComment)
     multiAppend(postAuthor, 
-                bse.createImage('', `${staticUrl}/${i.author.avatar}`, 'user-avatar-post'),
-                bse.createSpan('', i.author.firstName + ' ' + i.author.lastName, 'author-name')
+                bse.createImage('', `${staticUrl}/${post.author.avatar}`, 'user-avatar-post'),
+                bse.createSpan('', post.author.firstName + ' ' + post.author.lastName, 'author-name')
                 );
 
     postMenu.appendChild(bse.createImage('', '../static/images/more.png', 'ellipsees'));
@@ -97,16 +97,16 @@ for (let i of posts.body) {
 
     multiAppend(postFooter,
                 bse.createImage('', `${staticUrl}/${localStorage.getItem('avatar')}`, 'user-avatar-post'),
-                bse.createInput('text', 'user-comment', 'Оставить комментарий', `user-comment${i.post.postId}`, 'user-comment')
+                bse.createInput('text', 'user-comment', 'Оставить комментарий', `user-comment${post.post.postId}`, 'user-comment')
                 );
     multiAppend(commentButtons, buttonInclude, buttonSend);
 
     buttonInclude.appendChild(bse.createImage('', '../static/images/attach-paperclip-symbol.png', 'paper-clip'));
     buttonSend.appendChild(imgPostComment);
     
-    postContent.appendChild(bse.createSpan('', i.post.text, 'content-text'));
+    postContent.appendChild(bse.createSpan('', post.post.text, 'content-text'));
 
-    for (let j of i.post.attachments) {
-        postContent.appendChild(bse.createImage('', `${staticUrl}/${j}`), 'content-img');
+    for (const imageURL of post.post.attachments) {
+        postContent.appendChild(bse.createImage('', `${staticUrl}/${imageURL}`), 'content-img');
     }
 }
