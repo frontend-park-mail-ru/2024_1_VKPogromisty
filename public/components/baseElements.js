@@ -39,3 +39,4 @@ export class BaseElements {
     createButton = this.createBaseElement('button');
     createSpan = this.createBaseElement('span');
 }
+

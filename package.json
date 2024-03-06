@@ -11,7 +11,7 @@
     "start:dev": "nodemon ./server/index.js",
     "start": "node ./server/index.js",
     "prepare": "node .husky/install.mjs",
-    "test": "echo \"Error: no test specified\""
+    "test": "echo \"There are no tests\""
   },
   "author": "",
   "license": "ISC",
