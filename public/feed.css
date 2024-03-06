@@ -28,7 +28,7 @@ select {
     background-color: transparent;
 }
 
-header {
+.header {
     padding: 15px 25px 15px 35px;
     width: 100%;
     display: flex;
@@ -98,7 +98,7 @@ header {
     border-radius: 15px;
 }
 
-.main-content {
+.main{
     display: flex;
     margin: 20px 70px 0px 45px;
     justify-content: space-between;
@@ -188,10 +188,6 @@ header {
     width: 400px;
     min-width: 120px;
     font-size: larger;
-}
-
-.include-button {
-    margin-right: 15px;
 }
 
 .include {
@@ -285,21 +281,17 @@ header {
 .reactions {
     display: flex;
     flex-direction: row;
+    align-self: center;
 }
 
 .like {
     padding: 0px;
-    width: 40px;
+    width: 30px;
 }
 
 .show-comments-label {
-    margin-top: 10px;
     font-family: var(--ordinary-text);
     color: #858080;
-}
-
-.show-comments {
-    align-items: center;
 }
 
 .comment-menu {
@@ -318,7 +310,7 @@ header {
     font-family: var(--ordinary-text);
 }
 
-.post-comment img[class="user-avatar-post"] {
+.post-comment img[class="post-comment-img"] {
     margin: 10px;
 }
 
@@ -348,6 +340,11 @@ header {
     font-size: 18px;
 }
 
+.post-comment-img {
+    width: 24px;
+    height: 24px;
+}
+
 .post-footer {
     display: flex;
 }
@@ -370,4 +367,19 @@ header {
 .user-comment {
     min-width: 220px;
     width: 500px;
+}
+
+.img-post-comment {
+    width: 24px;
+    height: 24px;
+}
+
+.ellipsees, .heart, .messenger {
+    width: 16px;
+    height: 16px;
+}
+
+.paper-clip {
+    width: 20px;
+    height: 20px;
 }
