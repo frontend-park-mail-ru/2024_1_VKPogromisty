@@ -6,6 +6,8 @@
     "doc": "docs"
   },
   "scripts": {
+    "prestart": "npm run compile:templates",
+    "compile:templates": "handlebars ./public/components/Login/login.hbs -f ./public/components/Login/loginForm.precompiled.js",
     "start:dev": "nodemon ./server/index.js",
     "start": "node ./server/index.js"
   },
