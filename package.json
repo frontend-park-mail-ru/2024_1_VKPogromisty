@@ -14,7 +14,6 @@
     "compile:templates": "handlebars ./public/components/Login/login.hbs -f ./public/components/Login/loginForm.precompiled.js && handlebars ./public/components/Signup/signup.hbs -f ./public/components/Signup/signup.precompiled.js && handlebars ./public/components/Feed/feedHeader.hbs -f ./public/components/Feed/feedHeader.precompiled.js && handlebars ./public/components/Feed/feedMain.hbs -f ./public/components/Feed/feedMain.precompiled.js && handlebars ./public/components/Feed/post.hbs -f ./public/components/Feed/post.precompiled.js",
     "start:dev": "nodemon ./server/index.js",
     "start": "node ./server/index.js",
-    "prepare": "node .husky/install.mjs",
     "test": "echo \"There are no tests\"",
     "eslint": "npx eslint \"./public\" \"./server\" || npx prettier --check \"./public\"",
     "precommit": "lint-staged"
