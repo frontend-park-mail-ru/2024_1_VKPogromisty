@@ -9,6 +9,6 @@ if (result.body) {
   window.location.replace("/feed");
 }
 
-const loginForm = new LoginForm(document.getElementById('main'));
+const loginForm = new LoginForm(document.getElementById("main"));
 
 loginForm.renderForm();

@@ -11,13 +11,13 @@ if (!result.body) {
 
 const postService = new PostService();
 
-const feedHeader = new FeedHeader(document.getElementById('header'));
-const feedMain = new FeedMain(document.getElementById('main'));
+const feedHeader = new FeedHeader(document.getElementById("header"));
+const feedMain = new FeedMain(document.getElementById("main"));
 
 feedHeader.renderForm();
 feedMain.renderForm();
 
-const post = new FeedPost(document.getElementById('activity'));
+const post = new FeedPost(document.getElementById("activity"));
 const posts = await postService.getPosts();
 
 post.renderPosts(posts.body);

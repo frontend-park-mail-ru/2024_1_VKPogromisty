@@ -1,6 +1,6 @@
-import {validateEmail, validatePassword} from '/public/modules/validators.js';
-import {errors} from '/public/modules/errors.js';
-import { AuthService } from '../../modules/services.js';
+import { validateEmail, validatePassword } from "/public/modules/validators.js";
+import { errors } from "/public/modules/errors.js";
+import { AuthService } from "../../modules/services.js";
 
 const authService = new AuthService();
 
@@ -92,8 +92,8 @@ export class LoginForm {
         }
       });
 
-      document.getElementById("button-sign-up").addEventListener("click", () => {
-        window.location.replace("/sign_up");
-      });
+    document.getElementById("button-sign-up").addEventListener("click", () => {
+      window.location.replace("/sign_up");
+    });
   }
 }
