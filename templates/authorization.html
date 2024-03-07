@@ -8,48 +8,10 @@
         <link rel="stylesheet" href="../public/authorization.css" />
     </head>
     <body>
-        <div class="form-wrapper">
-            <div class="form">
-                <div class="image-container">
-                    <img
-                        src="../static/images/Logo.png"
-                        width="124px"
-                        alt="Logo"
-                    />
-                </div>
-                <form class="login-form" action="/submit" method="POST">
-                    <div class="input-group">
-                        <div class="error" id="incorrect-email"></div>
-                        <input
-                            type="text"
-                            id="email"
-                            name="email"
-                            placeholder="Email"
-                            required
-                        />
-                    </div>
-                    <div class="input-group" aria-po>
-                        <div class="error" id="incorrect-password"></div>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Password"
-                            required
-                        />
-                    </div>
-                    <button
-                        type="button"
-                        class="button-sign-in"
-                        id="button-sign-in"
-                    >
-                        Sign in
-                    </button>
-                    <a href="/signup" class="link_sign_up" id="button-sign-up">Sign up</a
-                    >
-                </form>
-            </div>
+        <div id='main'>
         </div>
     </body>
     <script type="module" src="public/authorization.js"></script>
+    <script type"text/javascript" src="handlebars/handlebars.runtime.js"></script>
+    <script type"text/javascript" src="public/components/Login/loginForm.precompiled.js"></script>
 </html>

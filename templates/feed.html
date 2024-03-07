@@ -22,75 +22,13 @@
     </head>
     <body>
         <div class="header" id="header">
-            <div class="left-side">
-                <img
-                    id="logo_img"
-                    src="../static/images/logo.png"
-                    style="cursor: pointer"
-                />
-                <div class="search">
-                    <input type="text" placeholder="Поиск" />
-                </div>
-            </div>
-            <div class="user">
-                <span id="username" class="username" style="cursor: pointer"
-                    >Имя пользователя</span
-                >
-                <img id="user-avatar" class="user-avatar" src="" />
-                <div class="logout">
-                    <button id="logout-button">Выйти</button>
-                </div>
-            </div>
         </div>
         <div class="main" id="main">
-            <div class="sidebar">
-                <ul>
-                    <li><a href="#">Профиль</a></li>
-                    <li><a href="#">Новости</a></li>
-                    <li><a href="#">Мессенджер</a></li>
-                    <li><a href="#">Друзья</a></li>
-                    <li><a href="#">Сообщества</a></li>
-                    <li><a href="#">Настройки</a></li>
-                    <li><a href="#">Стикеры</a></li>
-                </ul>
-                <ul id="help-sidebar">
-                    <li><a href="#">Помощь</a></li>
-                </ul>
-            </div>
-
-            <div id="activity">
-                <div id="create-post">
-                    <div id="news-avatar">
-                    </div>
-                    <div class="news">
-                        <input
-                            id="user-news"
-                            type="text"
-                            placeholder="Что нового?"
-                        />
-
-                        <button class="include-button">
-                            <img
-                                src="../static/images/attach-paperclip-symbol.png"
-                                style="width: 16px; height: 16px"
-                            />
-                        </button>
-                    </div>
-                    <div class="publish">
-                        <button class="publish-button">Опубликовать</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="right-sidebar">
-                <ul>
-                    <li><a href="#">Друзья</a></li>
-                    <li><a href="#">Фотографии</a></li>
-                    <li><a href="#">Рекомендации</a></li>
-                </ul>
-            </div>
-
         </div>
     </body>
     <script type="module" src="public/feed.js"></script>
+    <script type"text/javascript" src="handlebars/handlebars.runtime.js"></script>
+    <script type"text/javascript" src="public/components/Feed/feedHeader.precompiled.js"></script>
+    <script type"text/javascript" src="public/components/Feed/feedMain.precompiled.js"></script>
+    <script type"text/javascript" src="public/components/Feed/post.precompiled.js"></script>
 </html>
