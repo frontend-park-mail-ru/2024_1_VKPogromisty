@@ -27,91 +27,10 @@
         />
     </head>
     <body>
-        <div class="form-wrapper">
-            <div class="form">
-                <div class="logo">
-                    <img src="../static/images/logo.png" id="logo-img" />
-                </div>
-                <div class="register-form">
-                    <form
-                        method="post"
-                        action="#logo-img"
-                        enctype="multipart/form-data"
-                    >
-                        <div class="vertical-stack">
-                            <input
-                                class="main-input"
-                                type="text"
-                                name="last_name"
-                                placeholder="Last name"
-                                required
-                            />
-                            <input
-                                class="main-input"
-                                type="text"
-                                name="first_name"
-                                placeholder="First name"
-                                required
-                            />
-                            <input
-                                class="main-input"
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                minlength="6"
-                                required
-                            />
-                            <input
-                                class="main-input"
-                                type="password"
-                                placeholder="Repeat password"
-                                minlength="6"
-                                required
-                            />
-                            <input
-                                class="main-input"
-                                type="email"
-                                placeholder="Email"
-                                name="email"
-                                required
-                            />
-                            <label for="date-birthday" class="form-label"
-                                >Date of birthday</label
-                            >
-                            <div id="date-birthday">
-                                <input
-                                    id="day"
-                                    type="text"
-                                    required
-                                    placeholder="DD"
-                                />
-                                <input
-                                    id="month"
-                                    type="text"
-                                    required
-                                    placeholder="MM"
-                                />
-                                <input
-                                    id="year"
-                                    type="text"
-                                    required
-                                    placeholder="YYYY"
-                                />
-                            </div>
-                        </div>
-                        <div class="file-input">
-                            <label class="input-avatar">
-                                <input type="file" name="avatar" />
-                                <span>Upload</span>
-                            </label>
-                        </div>
-                        <input type="submit" id="submit-form" value="Sign up" />
-                    </form>
-                </div>
-                <div class="to-auth-page">
-                    <a href="#logo-img" id="sign-in-button">Sign in</a>
-                </div>
-            </div>
+        <div id="main" class="main">
         </div>
     </body>
+    <script type="module" src="public/sign_up.js"></script>
+    <script type"text/javascript" src="handlebars/handlebars.runtime.js"></script>
+    <script type"text/javascript" src="public/components/Signup/signup.precompiled.js"></script>
 </html>

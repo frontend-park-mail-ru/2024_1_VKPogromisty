@@ -26,6 +26,8 @@ body {
 
 .input-group {
     margin-bottom: 26px;
+    align-items: center;
+    justify-content: center;
 }
 
 .input-group input {
@@ -72,4 +74,12 @@ button:hover {
     display: block;
     text-align: center;
     margin-top: 20px;
+}
+
+.incorrect-data {
+    font-size: 30px;
+    color: var(--input-color);
+}
+.error {
+    color: red;
 }

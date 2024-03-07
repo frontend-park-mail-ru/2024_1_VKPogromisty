@@ -1,0 +1,66 @@
+{{#each posts}}
+<div id="post{{this.post.postId}}" class="post">
+  <div class="post-header">
+    <div class="post-author">
+      <img
+        class="user-avatar-post"
+        src="http://localhost:8080/api/v1/static/default_avatar.png"
+      />
+      <span class="author-name">{{this.author.firstName}}
+        {{this.author.lastName}}</span>
+    </div>
+    <div class="post-menu">
+      <img class="ellipsees" src="../static/images/more.png" />
+    </div>
+  </div>
+  <div class="post-content">
+    <span class="content-text">{{this.post.text}}</span>
+    {{#each this.post.attachments}}
+      <img
+        class="content-img"
+        src="{{../../staticUrl}}/{{this}}"
+      />
+    {{/each}}
+  </div>
+  <div class="post-reaction">
+    <div class="reactions">
+      <button class="like">
+        <img class="heart" src="../static/images/heart.png" />
+      </button>
+      <button class="show-comments">
+        <img class="messenger" src="../static/images/messenger.png" />
+      </button>
+      <span class="show-comments-label">Показать комментарии</span>
+    </div>
+    <div class="comment-menu">
+      <img class="ellipsees" src="../static/images/more.png" />
+    </div>
+  </div>
+  <div class="post-give-comment">
+    <div class="post-footer">
+      <img
+        class="user-avatar-post"
+        src="{{../userAvatar}}"
+      />
+      <input
+        id="user-comment{{this.post.postId}}"
+        class="user-comment"
+        type="text"
+        name="user-comment"
+        placeholder="Оставить комментарий"
+      />
+    </div>
+    <div class="comment-buttons">
+      <button class="include-button">
+        <img
+          class="paper-clip"
+          src="../static/images/attach-paperclip-symbol.png"
+        />
+      </button>
+      <button class="send-button">
+        <img class="post-comment-img" src="../static/images/send.png" />
+      </button>
+    </div>
+  </div>
+</div>
+{{/each}}

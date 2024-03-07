@@ -1,114 +1,98 @@
+import { API_URL } from "./consts.js";
+
+const genResponse = (ok, body, error) => {
+  return {
+    ok: ok,
+    body: body,
+    error: error,
+  };
+};
+
 export class AuthService {
-    
-    baseUrl = "http://localhost:8080/api/v1/auth/";
+  baseUrl = `${API_URL}/auth/`;
 
-    async login(email, password) {
+  async login(email, password) {
+    const response = await fetch(this.baseUrl + "login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+      credentials: "include",
+    });
 
-        const response = await fetch(this.baseUrl + "login", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-            credentials: 'include',
-        });
+    const data = await response.json();
 
-        if (response.ok) {
-            return true;
-        } else {
-            return false;
-        }
+    return genResponse(response.ok, data.body, data.message);
+  }
+
+  async isAuthorized() {
+    const response = await fetch(this.baseUrl + "is-authorized", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body.isAuthorized, data.message);
+  }
+
+  async sign_up(
+    firstName,
+    lastName,
+    email,
+    password,
+    repeatPassword,
+    dateOfBirth,
+    avatar,
+  ) {
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("repeatPassword", repeatPassword);
+    formData.append("dateOfBirth", dateOfBirth);
+    formData.append("avatar", avatar);
+
+    const response = await fetch(this.baseUrl + "signup", {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+
+  async logout() {
+    const response = await fetch(this.baseUrl + "logout", {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      return;
     }
 
-    async isAuthorized() {
-        const response = await fetch(this.baseUrl + 'is-authorized', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-        });
+    const data = await response.json();
 
-        const data = await response.json();
-
-        return data.body?.isAuthorized;
-    }
-
-    async sign_up(firstName, lastName, email, password, repeatPassword, dateOfBirth, avatar) {
-
-        const formData = new FormData();
-        formData.append('firstName', firstName);
-        formData.append('lastName', lastName);
-        formData.append('email', email);
-        formData.append('password', password);
-        formData.append('repeatPassword', repeatPassword);
-        formData.append('dateOfBirth', dateOfBirth);
-        formData.append('avatar', avatar);
-
-        const response = await fetch(this.baseUrl + "signup", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            body: formData,
-            credentials: 'include',
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            return data;
-        } else {
-            throw new Error(data.message);
-        }
-
-    }
-
-    async logout() {
-
-        try{
-            const response = await fetch(this.baseUrl + 'logout', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            });
-    
-            if (response.ok) {
-                return;
-            } else {
-                const data = await response.json();
-                throw new Error(data.error);
-            }
-        }
-
-        catch (e){
-            console.log(e)
-        }
-    }
-
+    return genResponse(response.ok, null, data.message);
+  }
 }
 
 export class PostService {
-    
-    baseUrl = "http://localhost:8080/api/v1/posts/";
+  baseUrl = `${API_URL}/posts/`;
 
-    async getPosts() {
+  async getPosts() {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+      credentials: "include",
+    });
 
-        const response = await fetch(this.baseUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-        });
+    const data = await response.json();
 
-        if (response.ok) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    return genResponse(response.ok, data.body.posts, data.message);
+  }
 }
