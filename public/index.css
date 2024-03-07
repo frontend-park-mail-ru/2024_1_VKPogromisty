@@ -25,6 +25,11 @@ body {
     font-family: var(--page-font-family);
 }
 
+.main {
+    display: flex;
+    justify-content: space-between;
+}
+
 .form-wrapper {
     display: flex;
     justify-content: center;
