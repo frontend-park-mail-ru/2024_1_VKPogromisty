@@ -75,14 +75,16 @@ export class FeedHeader {
 
   renderForm() {
     const template = Handlebars.templates["feedHeader.hbs"];
-    this.#parent.innerHTML = template({userAvatar, fullUserName});
+    this.#parent.innerHTML = template({ userAvatar, fullUserName });
 
-    document.getElementById("logout-button").addEventListener("click", async () => {
-      if (confirm("Вы уверены, что хотите выйти из аккаунта?")) {
-        await authService.logout();
-        window.location.replace("/login");
-      }
-    });
+    document
+      .getElementById("logout-button")
+      .addEventListener("click", async () => {
+        if (confirm("Вы уверены, что хотите выйти из аккаунта?")) {
+          await authService.logout();
+          window.location.replace("/login");
+        }
+      });
   }
 }
 
@@ -95,6 +97,11 @@ export class FeedPost {
 
   renderPosts(posts) {
     const template = Handlebars.templates["post.hbs"];
-    this.#parent.innerHTML += template({ posts, userAvatar, fullUserName, staticUrl });
+    this.#parent.innerHTML += template({
+      posts,
+      userAvatar,
+      fullUserName,
+      staticUrl,
+    });
   }
 }

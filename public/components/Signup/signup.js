@@ -1,6 +1,11 @@
-import {validateEmail, validatePassword, validateDateOfBirth, validateName} from '/public/modules/validators.js';
-import {errors} from '/public/modules/errors.js';
-import { AuthService } from '../../modules/services.js';
+import {
+  validateEmail,
+  validatePassword,
+  validateDateOfBirth,
+  validateName,
+} from "/public/modules/validators.js";
+import { errors } from "/public/modules/errors.js";
+import { AuthService } from "../../modules/services.js";
 
 const authService = new AuthService();
 
@@ -67,7 +72,7 @@ export class SignUpForm {
   renderForm() {
     const template = Handlebars.templates["signup.hbs"];
     this.#parent.innerHTML = template({ main_inputs, part_of_date });
-    console.log(this.#parent)
+    console.log(this.#parent);
 
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -148,71 +153,72 @@ export class SignUpForm {
       }
     });
 
-    document.getElementById("submit-form").addEventListener("click", async () => {
-      clearIncorrects();
+    document
+      .getElementById("submit-form")
+      .addEventListener("click", async () => {
+        clearIncorrects();
 
-      let flag = true;
+        let flag = true;
 
-      if (!validateEmail(email.value)) {
-        incorrectEmail.innerHTML = errors.incorrectEmail;
-        flag = false;
-      }
+        if (!validateEmail(email.value)) {
+          incorrectEmail.innerHTML = errors.incorrectEmail;
+          flag = false;
+        }
 
-      if (password.value != repeatPassword.value) {
-        incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
-        flag = false;
-      }
+        if (password.value != repeatPassword.value) {
+          incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
+          flag = false;
+        }
 
-      if (!validatePassword(password.value)) {
-        incorrectPassword.innerHTML = errors.incorrectPasswordLength;
-        flag = false;
-      }
+        if (!validatePassword(password.value)) {
+          incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+          flag = false;
+        }
 
-      if (!validateName(firstName.value)) {
-        incorrectFirstName.innerHTML = errors.incorrectName;
-        flag = false;
-      }
+        if (!validateName(firstName.value)) {
+          incorrectFirstName.innerHTML = errors.incorrectName;
+          flag = false;
+        }
 
-      if (!validateName(lastName.value)) {
-        incorrectLastName.innerHTML = errors.incorrectName;
-        flag = false;
-      }
+        if (!validateName(lastName.value)) {
+          incorrectLastName.innerHTML = errors.incorrectName;
+          flag = false;
+        }
 
-      if (!validateDateOfBirth(day.value, month.value, year.value)) {
-        incorrectDateOfBirthday.innerHTML = errors.impossibleDate;
-        flag = false;
-      }
+        if (!validateDateOfBirth(day.value, month.value, year.value)) {
+          incorrectDateOfBirthday.innerHTML = errors.impossibleDate;
+          flag = false;
+        }
 
-      if (!flag) {
-        return;
-      }
+        if (!flag) {
+          return;
+        }
 
-      const dateOfBirth = `${year.value}-${month.value.padStart(2, "0")}-${day.value.padStart(2, "0")}`;
+        const dateOfBirth = `${year.value}-${month.value.padStart(2, "0")}-${day.value.padStart(2, "0")}`;
 
-      const result = await authService.sign_up(
-        firstName.value,
-        lastName.value,
-        email.value,
-        password.value,
-        repeatPassword.value,
-        dateOfBirth,
-        avatar.files[0],
-      );
-      if (result.ok) {
-        const { avatar, firstName, lastName } = result.body.user;
-        localStorage.setItem("avatar", avatar);
-        localStorage.setItem("firstName", firstName);
-        localStorage.setItem("lastName", lastName);
-        window.location.replace("/feed");
-      } else {
-        repeatEmail.innerHTML = "Почта уже используется";
-        return;
-      }
-    });
+        const result = await authService.sign_up(
+          firstName.value,
+          lastName.value,
+          email.value,
+          password.value,
+          repeatPassword.value,
+          dateOfBirth,
+          avatar.files[0],
+        );
+        if (result.ok) {
+          const { avatar, firstName, lastName } = result.body.user;
+          localStorage.setItem("avatar", avatar);
+          localStorage.setItem("firstName", firstName);
+          localStorage.setItem("lastName", lastName);
+          window.location.replace("/feed");
+        } else {
+          repeatEmail.innerHTML = "Почта уже используется";
+          return;
+        }
+      });
 
     document.getElementById("sign-in-button").addEventListener("click", () => {
       window.location.replace("/login");
     });
-
   }
 }

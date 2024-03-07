@@ -9,6 +9,6 @@ if (result.body) {
   window.location.replace("/feed");
 }
 
-const signupForm = new SignUpForm(document.getElementById('main'));
+const signupForm = new SignUpForm(document.getElementById("main"));
 
 signupForm.renderForm();
