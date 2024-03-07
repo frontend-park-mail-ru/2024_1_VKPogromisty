@@ -1,19 +1,13 @@
 <div class="left-side">
-    <img
-        id="logo_img"
-        src="../static/images/logo.png"
-        style="cursor: pointer"
-    />
-    <div class="search">
-        <input type="text" placeholder="Поиск" />
-    </div>
+  <img id="logo_img" src="../static/images/Logo.png" style="cursor: pointer" />
+  <div class="search">
+    <input type="text" placeholder="Поиск" />
+  </div>
 </div>
 <div class="user">
-    <span id="username" class="username" style="cursor: pointer"
-        >Имя пользователя</span
-    >
-    <img id="user-avatar" class="user-avatar" src="" />
-    <div class="logout">
-        <button id="logout-button">Выйти</button>
-    </div>
+  <span id="username" class="username" style="cursor: pointer">{{fullUserName}}</span>
+  <img id="user-avatar" class="user-avatar" src="{{userAvatar}}" />
+  <div class="logout">
+    <button id="logout-button">Выйти</button>
+  </div>
 </div>
