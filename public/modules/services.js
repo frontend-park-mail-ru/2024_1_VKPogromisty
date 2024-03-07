@@ -76,6 +76,8 @@ export class AuthService {
       return;
     }
 
+    const data = await response.json();
+
     return genResponse(response.ok, null, data.message);
   }
 }

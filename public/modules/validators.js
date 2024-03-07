@@ -7,16 +7,20 @@ export function validateEmail(email) {
 }
 
 export function validateDateOfBirth(inDay, inMonth, inYear) {
-  if (Number.isNaN(inDay) || Number.isNaN(inMonth) || Number.isNaN(inYear)) {
+  const intDay = parseInt(inDay);
+  const intMonth = parseInt(inMonth);
+  const intYear = parseInt(inYear);
+
+  if (Number.isNaN(intDay) || Number.isNaN(intMonth) || Number.isNaN(intYear)) {
     return false;
   }
 
-  const providedDate = new Date(inYear, inMonth - 1, inDay);
+  const providedDate = new Date(intYear, intMonth - 1, intDay);
 
   if (
-    providedDate.getDate() != inDay ||
-    providedDate.getMonth() + 1 != inMonth ||
-    providedDate.getFullYear() != inYear
+    providedDate.getDate() !== intDay ||
+    providedDate.getMonth() + 1 !== intMonth ||
+    providedDate.getFullYear() !== intYear
   ) {
     return false;
   }
