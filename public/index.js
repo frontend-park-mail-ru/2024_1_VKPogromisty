@@ -11,7 +11,7 @@ function clearHeaderMain() {
     main.innerHTML = '';
 }
 
-async function renderLogin() {
+function renderLogin() {
     clearHeaderMain();
 
     const loginForm = new LoginForm(main);
@@ -23,7 +23,7 @@ async function renderLogin() {
     });
 
     document.getElementById('button-sign-in').addEventListener('click', async () => {
-        if (loginForm.isValidForm()) {
+        if (await loginForm.isValidForm()) {
             renderFeed();
         }
     });
@@ -52,7 +52,7 @@ async function renderFeed() {
     });
 }
 
-async function renderSignUp() {
+function renderSignUp() {
     clearHeaderMain();
 
     const signupForm = new SignUpForm(main);
@@ -64,7 +64,7 @@ async function renderSignUp() {
     });
 
     document.getElementById("submit-form").addEventListener("click", async () => {
-        if (signupForm.isValidForm()) {
+        if (await signupForm.isValidForm()) {
             renderFeed();
         }
     });
@@ -73,10 +73,10 @@ async function renderSignUp() {
 
 const authService = new AuthService();
 
-const result = await authService.isAuthorized();
-
-if (result.body) {
-    renderFeed();
-} else {
-    renderLogin();
-}
+authService.isAuthorized().then((result) => {
+    if (result.body) {
+        renderFeed();
+    } else {
+        renderLogin();
+    }
+});
