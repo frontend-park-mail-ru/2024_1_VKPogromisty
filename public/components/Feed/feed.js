@@ -76,15 +76,6 @@ export class FeedHeader {
   renderForm() {
     const template = Handlebars.templates["feedHeader.hbs"];
     this.#parent.innerHTML = template({ userAvatar, fullUserName });
-
-    document
-      .getElementById("logout-button")
-      .addEventListener("click", async () => {
-        if (confirm("Вы уверены, что хотите выйти из аккаунта?")) {
-          await authService.logout();
-          window.location.replace("/login");
-        }
-      });
   }
 }
 
