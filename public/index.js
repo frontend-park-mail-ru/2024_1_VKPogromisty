@@ -12,6 +12,7 @@ function clearHeaderMain() {
 }
 
 function renderLogin() {
+    history.pushState("", "", "/login")
     clearHeaderMain();
 
     const loginForm = new LoginForm(main);
@@ -30,6 +31,7 @@ function renderLogin() {
 }
 
 async function renderFeed() {
+    history.pushState("", "", "/feed")
     clearHeaderMain();
 
     const postService = new PostService();
@@ -53,6 +55,7 @@ async function renderFeed() {
 }
 
 function renderSignUp() {
+    history.pushState("", "", "/signup")
     clearHeaderMain();
 
     const signupForm = new SignUpForm(main);
