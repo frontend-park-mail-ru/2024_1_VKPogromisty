@@ -11,6 +11,11 @@ function clearHeaderMain() {
     main.innerHTML = '';
 }
 
+/**
+ * Renders the login form, 
+ * changes the URL to /login
+ * @returns {void}
+ */
 function renderLogin() {
     history.pushState("", "", "/login")
     clearHeaderMain();
@@ -30,6 +35,11 @@ function renderLogin() {
     });
 }
 
+/**
+ * Renders the feed,
+ * changes the URL to /feed
+ * @returns {Promise<void>}
+ */ 
 async function renderFeed() {
     history.pushState("", "", "/feed")
     clearHeaderMain();
@@ -54,6 +64,11 @@ async function renderFeed() {
     });
 }
 
+/**
+ * Renders the sign up form,
+ * changes the URL to /signup
+ * @returns {void}
+ */
 function renderSignUp() {
     history.pushState("", "", "/signup")
     clearHeaderMain();

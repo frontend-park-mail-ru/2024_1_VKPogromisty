@@ -62,6 +62,13 @@ const part_of_date = [
   },
 ];
 
+/**
+ * Class for rendering the sign up form
+ * @class
+ * @property {HTMLElement} #parent - The parent element
+ * @method renderForm - Renders the sign up form
+ * @method isValidForm - Checks if the form is valid
+ */
 export class SignUpForm {
   #parent;
 
@@ -69,6 +76,16 @@ export class SignUpForm {
     this.#parent = parent;
   }
 
+  /**
+   * Renders the sign up form from handlebars template, adds event listeners to the inputs:
+   * - Checks if the email is valid
+   * - Checks if the password is valid
+   * - Checks if the repeated password is the same as the password
+   * - Checks if the first name is valid
+   * - Checks if the last name is valid
+   * - Checks if the date of birth is valid
+   * @returns {void}
+   */
   renderForm() {
     const template = Handlebars.templates["signup.hbs"];
     this.#parent.innerHTML = template({ main_inputs, part_of_date });
@@ -144,6 +161,16 @@ export class SignUpForm {
 
   }
 
+  /**
+   * Checks if the form is valid:
+   * - Checks if the email is valid
+   * - Checks if the password is valid
+   * - Checks if the repeated password is the same as the password
+   * - Checks if the first name is valid
+   * - Checks if the last name is valid
+   * - Checks if the date of birth is valid
+   * @returns {Promise<boolean>}
+   */
   async isValidForm() {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
