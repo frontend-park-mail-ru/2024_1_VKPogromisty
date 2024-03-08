@@ -2,8 +2,6 @@ import { API_URL } from "/public/modules/consts.js";
 import { AuthService } from "/public/modules/services.js";
 
 const staticUrl = `${API_URL}/static`;
-const fullUserName = `${localStorage.getItem("firstName")} ${localStorage.getItem("lastName")}`;
-const userAvatar = `${staticUrl}/${localStorage.getItem("avatar")}`;
 
 const authService = new AuthService();
 
@@ -67,14 +65,27 @@ export class FeedMain {
 }
 
 export class FeedHeader {
+
+  #fullUserName;
+  #userAvatar;
+
   #parent;
 
   constructor(parent) {
     this.#parent = parent;
   }
 
+  updateUser() {
+    this.#fullUserName = `${localStorage.getItem("firstName")} ${localStorage.getItem("lastName")}`;
+    this.#userAvatar = `${staticUrl}/${localStorage.getItem("avatar")}`;
+  }
+
   renderForm() {
     const template = Handlebars.templates["feedHeader.hbs"];
+    this.updateUser();
+    
+    const userAvatar = this.#userAvatar;
+    const fullUserName = this.#fullUserName;
     this.#parent.innerHTML = template({ userAvatar, fullUserName });
   }
 }
@@ -82,12 +93,24 @@ export class FeedHeader {
 export class FeedPost {
   #parent;
 
+  #fullUserName;
+  #userAvatar;
+
   constructor(parent) {
     this.#parent = parent;
   }
 
+  updateUser() {
+    this.#fullUserName = `${localStorage.getItem("firstName")} ${localStorage.getItem("lastName")}`;
+    this.#userAvatar = `${staticUrl}/${localStorage.getItem("avatar")}`;
+  }
+
   renderPosts(posts) {
     const template = Handlebars.templates["post.hbs"];
+    this.updateUser();
+
+    const userAvatar = this.#userAvatar;
+    const fullUserName = this.#fullUserName;
     this.#parent.innerHTML += template({
       posts,
       userAvatar,
