@@ -9,6 +9,16 @@
     "./public/*.{js,jsx,ts,tsx}": "npx eslint",
     "./public/*.{js,jsx,ts,tsx,html,css}": "npx prettier --check ./public"
   },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "**/*.hbs",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
   "scripts": {
     "prestart": "npm run compile:templates",
     "compile:templates": "handlebars ./public/components/Login/login.hbs -f ./public/components/Login/loginForm.precompiled.js && handlebars ./public/components/Signup/signup.hbs -f ./public/components/Signup/signup.precompiled.js && handlebars ./public/components/Feed/feedHeader.hbs -f ./public/components/Feed/feedHeader.precompiled.js && handlebars ./public/components/Feed/feedMain.hbs -f ./public/components/Feed/feedMain.precompiled.js && handlebars ./public/components/Feed/post.hbs -f ./public/components/Feed/post.precompiled.js",

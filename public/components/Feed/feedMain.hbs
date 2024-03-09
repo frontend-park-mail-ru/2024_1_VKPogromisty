@@ -1,8 +1,10 @@
 <div class="sidebar">
   {{#each sidebar}}
-    <ul>
-      <li><a href="{{this.href}}">{{this.text}}</a></li>
-    </ul>
+  <ul>
+    <li>
+      <a href="{{ this.href }}">{{ this.text }}</a>
+    </li>
+  </ul>
   {{/each}}
   <ul id="help-sidebar">
     <li><a href="#">Помощь</a></li>
@@ -33,7 +35,9 @@
 <div class="right-sidebar">
   <ul>
     {{#each right_sidebar}}
-      <li><a href="{{this.href}}">{{this.text}}</a></li>
+    <li>
+      <a href="{{ this.href }}">{{ this.text }}</a>
+    </li>
     {{/each}}
   </ul>
 </div>

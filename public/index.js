@@ -3,16 +3,17 @@ import { FeedHeader, FeedMain, FeedPost } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
 import { SignUpForm } from "./components/Signup/signup.js";
 
-const main = document.getElementById('main');
-const header = document.getElementById('header');
+document.addEventListener("DOMContentLoaded", async () => {
+  const main = document.getElementById("main");
+  const header = document.getElementById("header");
 
-function clearHeaderMain() {
-    header.innerHTML = '';
-    main.innerHTML = '';
-}
+  function clearHeaderMain() {
+    header.innerHTML = "";
+    main.innerHTML = "";
+  }
 
-function renderLogin() {
-    history.pushState("", "", "/login")
+  function renderLogin() {
+    history.replaceState("", "", "/login");
     clearHeaderMain();
 
     const loginForm = new LoginForm(main);
@@ -20,18 +21,20 @@ function renderLogin() {
     loginForm.renderForm();
 
     document.getElementById("button-sign-up").addEventListener("click", () => {
-        renderSignUp();
+      renderSignUp();
     });
 
-    document.getElementById('button-sign-in').addEventListener('click', async () => {
+    document
+      .getElementById("button-sign-in")
+      .addEventListener("click", async () => {
         if (await loginForm.isValidForm()) {
-            renderFeed();
+          renderFeed();
         }
-    });
-}
+      });
+  }
 
-async function renderFeed() {
-    history.pushState("", "", "/feed")
+  async function renderFeed() {
+    history.replaceState("", "", "/feed");
     clearHeaderMain();
 
     const postService = new PostService();
@@ -46,40 +49,43 @@ async function renderFeed() {
 
     post.renderPosts(posts.body);
 
-    document.getElementById("logout-button").addEventListener("click", async () => {
+    document
+      .getElementById("logout-button")
+      .addEventListener("click", async () => {
         if (confirm("Вы уверены, что хотите выйти из аккаунта?")) {
           await authService.logout();
           renderLogin();
         }
-    });
-}
+      });
+  }
 
-function renderSignUp() {
-    history.pushState("", "", "/signup")
+  function renderSignUp() {
+    history.replaceState("", "", "/signup");
     clearHeaderMain();
 
     const signupForm = new SignUpForm(main);
-    
+
     signupForm.renderForm();
 
     document.getElementById("sign-in-button").addEventListener("click", () => {
-        renderLogin();
+      renderLogin();
     });
 
-    document.getElementById("submit-form").addEventListener("click", async () => {
+    document
+      .getElementById("submit-form")
+      .addEventListener("click", async () => {
         if (await signupForm.isValidForm()) {
-            renderFeed();
+          renderFeed();
         }
-    });
+      });
+  }
 
-}
+  const authService = new AuthService();
+  const isAuthorized = await authService.isAuthorized();
 
-const authService = new AuthService();
-
-authService.isAuthorized().then((result) => {
-    if (result.body) {
-        renderFeed();
-    } else {
-        renderLogin();
-    }
+  if (isAuthorized.body) {
+    await renderFeed();
+  } else {
+    renderLogin();
+  }
 });

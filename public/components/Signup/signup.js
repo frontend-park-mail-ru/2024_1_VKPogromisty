@@ -92,7 +92,6 @@ export class SignUpForm {
     const incorrectDateOfBirthday = document.getElementById(
       "incorrect-date-of-birthday",
     );
-   
 
     email.addEventListener("focusout", () => {
       incorrectEmail.innerHTML = "";
@@ -141,7 +140,6 @@ export class SignUpForm {
         incorrectDateOfBirthday.innerHTML = errors.impossibleDate;
       }
     });
-
   }
 
   async isValidForm() {
@@ -236,5 +234,4 @@ export class SignUpForm {
       return false;
     }
   }
-
 }

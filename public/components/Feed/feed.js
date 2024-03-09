@@ -65,7 +65,6 @@ export class FeedMain {
 }
 
 export class FeedHeader {
-
   #fullUserName;
   #userAvatar;
 
@@ -83,7 +82,7 @@ export class FeedHeader {
   renderForm() {
     const template = Handlebars.templates["feedHeader.hbs"];
     this.updateUser();
-    
+
     const userAvatar = this.#userAvatar;
     const fullUserName = this.#fullUserName;
     this.#parent.innerHTML = template({ userAvatar, fullUserName });

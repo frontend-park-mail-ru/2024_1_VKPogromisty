@@ -3,34 +3,31 @@
     <div class="logo">
       <img src="../static/images/Logo.png" id="logo-img" />
     </div>
-    <div id="repeat-email" class="error">
-    </div>
+    <div id="repeat-email" class="error"></div>
     <div class="register-form">
       <form method="post" action="#" enctype="multipart/form-data">
         <div class="vertical-stack">
           {{#each main_inputs}}
-            <div class="error" id="{{this.incorrect}}">
-            </div>
-            <input
-              class="main-input"
-              id="{{this.id}}"
-              type="{{this.type}}"
-              name="{{this.name}}"
-              placeholder="{{this.placeholder}}"
-              required
-            />
+          <div class="error" id="{{ this.incorrect }}"></div>
+          <input
+            class="main-input"
+            id="{{ this.id }}"
+            type="{{ this.type }}"
+            name="{{ this.name }}"
+            placeholder="{{ this.placeholder }}"
+            required
+          />
           {{/each}}
           <label for="date-birthday" class="form-label">Date of birthday</label>
-          <div class="error" id="incorrect-date-of-birthday">
-          </div>
+          <div class="error" id="incorrect-date-of-birthday"></div>
           <div id="date-birthday">
             {{#each part_of_date}}
-              <input
-                id="{{this.id}}"
-                type="text"
-                required
-                placeholder="{{this.placeholder}}"
-              />
+            <input
+              id="{{ this.id }}"
+              type="text"
+              required
+              placeholder="{{ this.placeholder }}"
+            />
             {{/each}}
           </div>
         </div>
@@ -44,7 +41,7 @@
       </form>
     </div>
     <div class="to-auth-page">
-      <button type="button" id="sign-in-button">Sign in</a>
+      <button type="button" id="sign-in-button">Sign in</button>
     </div>
   </div>
 </div>
