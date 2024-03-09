@@ -6,18 +6,20 @@ const authService = new AuthService();
 
 const inputs = [
   {
+    inscription: "Электронная почта",
     incorrect: "incorrect-email",
     type: "text",
     id: "email",
     name: "email",
-    placeholder: "Email",
+    placeholder: "Электронная почта",
   },
   {
+    inscription: "Пароль",
     incorrect: "incorrect-password",
     type: "password",
     id: "password",
     name: "password",
-    placeholder: "Password",
+    placeholder: "Пароль",
   },
 ];
 
