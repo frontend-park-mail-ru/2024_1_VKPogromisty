@@ -89,14 +89,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   const authService = new AuthService();
   const isAuthorized = await authService.isAuthorized();
 
-  if (isAuthorized.body) {
-    await renderFeed();
-  } else {
-    const currentPageUrl = window.location.href;
-    if (currentPageUrl === "/signup") {
-      renderSignUp();
+  async function route() {
+    if (isAuthorized.body) {
+      await renderFeed();
     } else {
-      renderLogin();
+      const currentPageUrl = window.location.pathname;
+      if (currentPageUrl === "/signup") {
+        renderSignUp();
+      } else {
+        renderLogin();
+      }
     }
   }
+
+  document.addEventListener("navigate", route);
+  route();
 });
