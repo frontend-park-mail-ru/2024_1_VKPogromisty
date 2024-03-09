@@ -38,7 +38,7 @@ export class AuthService {
    * Logs in the user
    * @param {string} email 
    * @param {string} password 
-   * @returns {APIResponse} {@link APIResponse}
+   * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async login(email, password) {
     const response = await fetch(this.baseUrl + "login", {
@@ -57,7 +57,7 @@ export class AuthService {
 
   /**
    * Checks if the user is authorized
-   * @returns {APIResponse} {@link APIResponse}
+   * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async isAuthorized() {
     const response = await fetch(this.baseUrl + "is-authorized", {
@@ -79,7 +79,7 @@ export class AuthService {
    * @param {string} repeatPassword
    * @param {string} dateOfBirth
    * @param {File} avatar
-   * @returns {APIResponse} {@link APIResponse}
+   * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async sign_up(
     firstName,
@@ -112,7 +112,7 @@ export class AuthService {
 
   /**
    * Logs out the user
-   * @returns {APIResponse} {@link APIResponse}
+   * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async logout() {
     const response = await fetch(this.baseUrl + "logout", {
@@ -141,7 +141,7 @@ export class PostService {
 
   /**
    * Gets the posts from the server
-   * @returns {APIResponse} {@link APIResponse}
+   * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async getPosts() {
     const response = await fetch(this.baseUrl, {
