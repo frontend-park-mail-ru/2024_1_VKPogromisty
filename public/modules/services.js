@@ -9,9 +9,9 @@ import { API_URL } from "./consts.js";
 
 /**
  * Turns the response into a standard object
- * @param {boolean} ok 
- * @param {object} body 
- * @param {string} error 
+ * @param {boolean} ok
+ * @param {object} body
+ * @param {string} error
  * @returns {APIResponse} {@link APIResponse}
  */
 const genResponse = (ok, body, error) => {
@@ -36,8 +36,8 @@ export class AuthService {
 
   /**
    * Logs in the user
-   * @param {string} email 
-   * @param {string} password 
+   * @param {string} email
+   * @param {string} password
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async login(email, password) {

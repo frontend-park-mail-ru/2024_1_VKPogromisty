@@ -1,6 +1,6 @@
 /**
  * Validates the password, checks if it's at least 6 characters long
- * @param {string} password 
+ * @param {string} password
  * @returns {boolean}
  */
 export function validatePassword(password) {
@@ -9,7 +9,7 @@ export function validatePassword(password) {
 
 /**
  * Validates the email
- * @param {string} email 
+ * @param {string} email
  * @returns {boolean}
  */
 export function validateEmail(email) {
