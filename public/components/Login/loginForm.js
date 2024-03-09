@@ -21,6 +21,13 @@ const inputs = [
   },
 ];
 
+/**
+ * Class for rendering the login form
+ * @class
+ * @property {HTMLElement} #parent - The parent element
+ * @method renderForm - Renders the login form
+ * @method isValidForm - Checks if the form is valid
+ */
 export class LoginForm {
   #parent;
 
@@ -28,6 +35,12 @@ export class LoginForm {
     this.#parent = parent;
   }
 
+  /**
+   * Renders the login form from handlebars template, adds event listeners to the inputs:
+   * - Checks if the email is valid
+   * - Checks if the password is valid
+   * @returns {void}
+   */
   renderForm() {
     const template = Handlebars.templates["login.hbs"];
     this.#parent.innerHTML = template({ inputs });
@@ -54,6 +67,12 @@ export class LoginForm {
     });
   }
 
+  /**
+   * Checks if the form is valid:
+   * - Checks if the email is valid
+   * - Checks if the password is valid
+   * @returns {Promise<boolean>}
+   */
   async isValidForm() {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
