@@ -1,6 +1,6 @@
-import {validateEmail, validatePassword} from '/public/modules/validators.js';
-import {errors} from '/public/modules/errors.js';
-import { AuthService } from '../../modules/services.js';
+import { validateEmail, validatePassword } from "/public/modules/validators.js";
+import { errors } from "/public/modules/errors.js";
+import { AuthService } from "../../modules/services.js";
 
 const authService = new AuthService();
 
@@ -21,6 +21,13 @@ const inputs = [
   },
 ];
 
+/**
+ * Class for rendering the login form
+ * @class
+ * @property {HTMLElement} #parent - The parent element
+ * @method renderForm - Renders the login form
+ * @method isValidForm - Checks if the form is valid
+ */
 export class LoginForm {
   #parent;
 
@@ -28,6 +35,12 @@ export class LoginForm {
     this.#parent = parent;
   }
 
+  /**
+   * Renders the login form from handlebars template, adds event listeners to the inputs:
+   * - Checks if the email is valid
+   * - Checks if the password is valid
+   * @returns {void}
+   */
   renderForm() {
     const template = Handlebars.templates["login.hbs"];
     this.#parent.innerHTML = template({ inputs });
@@ -36,11 +49,6 @@ export class LoginForm {
 
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
-
-    function clearIncorrects() {
-      incorrectEmail.innerHTML = "";
-      incorrectPassword.innerHTML = "";
-    }
 
     email.addEventListener("focusout", () => {
       email.innerHTML = "";
@@ -57,43 +65,55 @@ export class LoginForm {
         incorrectPassword.innerHTML = errors.incorrectPasswordLength;
       }
     });
-
-    document
-      .getElementById("button-sign-in")
-      .addEventListener("click", async () => {
-        clearIncorrects();
-
-        let flag = true;
-
-        if (!validateEmail(email.value)) {
-          incorrectEmail.innerHTML = errors.incorrectEmail;
-          flag = false;
-        }
-        if (!validatePassword(password.value)) {
-          incorrectPassword.innerHTML = errors.incorrectPasswordLength;
-          flag = false;
-        }
-
-        if (!flag) {
-          return;
-        }
-
-        const result = await authService.login(email.value, password.value);
-
-        if (result.ok) {
-          const { avatar, firstName, lastName } = result.body.user;
-          localStorage.setItem("avatar", avatar);
-          localStorage.setItem("firstName", firstName);
-          localStorage.setItem("lastName", lastName);
-          window.location.replace("/feed");
-        } else {
-          incorrectEmail.innerHTML = "Некорректные данные";
-          return;
-        }
-      });
-
-      document.getElementById("button-sign-up").addEventListener("click", () => {
-        window.location.replace("/sign_up");
-      });
   }
+
+  /**
+   * Checks if the form is valid:
+   * - Checks if the email is valid
+   * - Checks if the password is valid
+   * @returns {Promise<boolean>}
+   */
+  async isValidForm() {
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const incorrectEmail = document.getElementById("incorrect-email");
+    const incorrectPassword = document.getElementById("incorrect-password");
+
+    function clearIncorrects() {
+      incorrectEmail.innerHTML = "";
+      incorrectPassword.innerHTML = "";
+    }
+
+    clearIncorrects();
+
+    let flag = true;
+
+    if (!validateEmail(email.value)) {
+      incorrectEmail.innerHTML = errors.incorrectEmail;
+      flag = false;
+    }
+    if (!validatePassword(password.value)) {
+      incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+      flag = false;
+    }
+
+    if (!flag) {
+      return false;
+    }
+
+    const result = await authService.login(email.value, password.value);
+
+    if (result.ok) {
+      const { avatar, firstName, lastName } = result.body.user;
+      localStorage.setItem("avatar", avatar);
+      localStorage.setItem("firstName", firstName);
+      localStorage.setItem("lastName", lastName);
+      return true;
+    } else {
+      incorrectEmail.innerHTML = "Некорректные данные";
+      return false;
+    }
+
+  }
+
 }
