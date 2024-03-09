@@ -1,11 +1,18 @@
 import { API_URL } from "./consts.js";
 
 /**
+ * @typedef {Object} APIResponse
+ * @property {boolean} ok
+ * @property {object} body
+ * @property {string} error
+ */
+
+/**
  * Turns the response into a standard object
  * @param {boolean} ok 
  * @param {object} body 
  * @param {string} error 
- * @returns {{ok: boolean, body: object, error: string}}
+ * @returns {APIResponse} {@link APIResponse}
  */
 const genResponse = (ok, body, error) => {
   return {
@@ -31,7 +38,7 @@ export class AuthService {
    * Logs in the user
    * @param {string} email 
    * @param {string} password 
-   * @returns {Promise<{ok: boolean, body: object, error: string}>}
+   * @returns {APIResponse} {@link APIResponse}
    */
   async login(email, password) {
     const response = await fetch(this.baseUrl + "login", {
@@ -50,7 +57,7 @@ export class AuthService {
 
   /**
    * Checks if the user is authorized
-   * @returns {Promise<{ok: boolean, body: object, error: string}>}
+   * @returns {APIResponse} {@link APIResponse}
    */
   async isAuthorized() {
     const response = await fetch(this.baseUrl + "is-authorized", {
@@ -72,7 +79,7 @@ export class AuthService {
    * @param {string} repeatPassword
    * @param {string} dateOfBirth
    * @param {File} avatar
-   * @returns {Promise<{ok: boolean, body: object, error: string}>}
+   * @returns {APIResponse} {@link APIResponse}
    */
   async sign_up(
     firstName,
@@ -105,7 +112,7 @@ export class AuthService {
 
   /**
    * Logs out the user
-   * @returns {Promise<{ok: boolean, body: object, error: string}>}
+   * @returns {APIResponse} {@link APIResponse}
    */
   async logout() {
     const response = await fetch(this.baseUrl + "logout", {
@@ -134,7 +141,7 @@ export class PostService {
 
   /**
    * Gets the posts from the server
-   * @returns {Promise<{ok: boolean, body: object, error: string}>}
+   * @returns {APIResponse} {@link APIResponse}
    */
   async getPosts() {
     const response = await fetch(this.baseUrl, {
