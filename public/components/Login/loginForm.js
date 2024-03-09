@@ -113,7 +113,5 @@ export class LoginForm {
       incorrectEmail.innerHTML = "Некорректные данные";
       return false;
     }
-
   }
-
 }

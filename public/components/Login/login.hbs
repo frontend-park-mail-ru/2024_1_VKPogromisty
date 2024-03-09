@@ -5,21 +5,23 @@
     </div>
     <form class="login-form" action="/submit" method="POST">
       {{#each inputs}}
-        <div class="input-group">
-          <div class="error" id="{{this.incorrect}}"></div>
-          <input
-            type="{{this.type}}"
-            id="{{this.id}}"
-            name="{{this.name}}"
-            placeholder="{{this.placeholder}}"
-            required
-          />
-        </div>
+      <div class="input-group">
+        <div class="error" id="{{ this.incorrect }}"></div>
+        <input
+          type="{{ this.type }}"
+          id="{{ this.id }}"
+          name="{{ this.name }}"
+          placeholder="{{ this.placeholder }}"
+          required
+        />
+      </div>
       {{/each}}
       <button type="button" class="button-sign-in" id="button-sign-in">
         Sign in
       </button>
-      <button type="button" class="link_sign_up" id="button-sign-up">Sign up</a>
+      <button type="button" class="link_sign_up" id="button-sign-up">
+        Sign up
+      </button>
     </form>
   </div>
 </div>

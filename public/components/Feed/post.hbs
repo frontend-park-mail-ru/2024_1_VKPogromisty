@@ -1,25 +1,23 @@
 {{#each posts}}
-<div id="post{{this.post.postId}}" class="post">
+<div id="post{{ this.post.postId }}" class="post">
   <div class="post-header">
     <div class="post-author">
       <img
         class="user-avatar-post"
         src="http://localhost:8080/api/v1/static/default_avatar.png"
       />
-      <span class="author-name">{{this.author.firstName}}
-        {{this.author.lastName}}</span>
+      <span class="author-name"
+        >{{ this.author.firstName }} {{ this.author.lastName }}</span
+      >
     </div>
     <div class="post-menu">
       <img class="ellipsees" src="../static/images/more.png" />
     </div>
   </div>
   <div class="post-content">
-    <span class="content-text">{{this.post.text}}</span>
+    <span class="content-text">{{ this.post.text }}</span>
     {{#each this.post.attachments}}
-      <img
-        class="content-img"
-        src="{{../../staticUrl}}/{{this}}"
-      />
+    <img class="content-img" src="{{../../staticUrl}}/{{ this }}" />
     {{/each}}
   </div>
   <div class="post-reaction">
@@ -38,12 +36,9 @@
   </div>
   <div class="post-give-comment">
     <div class="post-footer">
-      <img
-        class="user-avatar-post"
-        src="{{../userAvatar}}"
-      />
+      <img class="user-avatar-post" src="{{../userAvatar}}" />
       <input
-        id="user-comment{{this.post.postId}}"
+        id="user-comment{{ this.post.postId }}"
         class="user-comment"
         type="text"
         name="user-comment"
