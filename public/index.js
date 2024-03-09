@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     loginForm.renderForm();
 
     document.getElementById("button-sign-up").addEventListener("click", () => {
+      event.preventDefault();
       renderSignUp();
     });
 
@@ -68,6 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     signupForm.renderForm();
 
     document.getElementById("sign-in-button").addEventListener("click", () => {
+      event.preventDefault();
       renderLogin();
     });
 
@@ -86,6 +88,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (isAuthorized.body) {
     await renderFeed();
   } else {
-    renderLogin();
+    const currentPageUrl = window.location.href;
+    if (currentPageUrl === "/signup"){
+      renderSignUp();
+    } 
+    else {
+      renderLogin();
+    }
   }
 });
