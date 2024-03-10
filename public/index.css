@@ -15,6 +15,7 @@
   --ordinary-text: "Inter", sans-serif;
   --borders-color: 1px solid #e35f7f;
   --feed-header-color: #483d3d;
+  --button-feed: #5d5151;
 }
 * {
   border: none;
@@ -251,6 +252,8 @@ input::-webkit-inner-spin-button {
 
 .sidebar {
   height: 440px;
+  margin-right: 5%;
+  margin-top: 2%;
 }
 
 .sidebar,
@@ -259,11 +262,12 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid black;
   width: 240px;
-  border-radius: 15px;
   padding-left: 20px;
   min-width: 200px;
+  margin-top: 2%;
+  margin-left: 5%;
+  font-size: 24;
 }
 
 .right-sidebar {
@@ -285,7 +289,8 @@ input::-webkit-inner-spin-button {
   list-style-type: none;
   margin-left: 0px;
   font-family: var(--ordinary-text);
-  font-size: 18px;
+  font-size: 24px;
+  font-weight: 600;
   ::before {
     box-sizing: border-box;
   }
@@ -303,7 +308,8 @@ input::-webkit-inner-spin-button {
 
 #activity {
   box-sizing: border-box;
-  width: 700px;
+  width: 969px;
+  margin-top: 2%;
 }
 
 #create-post {
@@ -339,16 +345,16 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   align-content: center;
   margin: 0px 10px 0px 10px;
+  background-color: var(--button-feed);
 }
 
 .publish-button {
   box-sizing: border-box;
   font-family: var(--ordinary-text);
-  color: #858080;
+  color: #ffffff;
   font-family: inherit;
   font-size: inherit;
-  color: inherit;
-  background-color: transparent;
+  background-color: var(--button-feed);
 }
 
 #user-news {
@@ -433,7 +439,7 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   padding: 20px 10px 20px 10px;
   border-bottom: var(--borders-color);
   line-height: 3px;
@@ -483,6 +489,9 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   font-family: var(--ordinary-text);
   color: #858080;
+  align-content: center;
+  justify-content: center;
+  font-size: 24px;
 }
 
 .comment-menu {
@@ -571,6 +580,7 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   min-width: 220px;
   width: 500px;
+  background-color: var(--background-input-color);
 }
 
 .img-post-comment {
@@ -686,4 +696,10 @@ input::-webkit-inner-spin-button {
   font-size: 20px;
   cursor: pointer;
   margin-bottom: 10px;
+}
+
+.feed-main {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
