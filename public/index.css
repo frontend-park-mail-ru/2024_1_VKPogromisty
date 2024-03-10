@@ -115,6 +115,7 @@ button:hover {
   display: block;
   text-align: center;
   font-size: 16px;
+  margin-bottom: 20px;
 }
 
 .incorrect-data {
@@ -143,6 +144,7 @@ button:hover {
 .register-form {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .vertical-stack {
@@ -159,20 +161,22 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
-
+.date-birthday {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
 .date-birthday input {
   margin: 10px 5px;
-  border-radius: 8px;
   width: 60px;
   height: 22px;
   text-align: center;
   padding: 10px;
-  flex-direction:row;
   border: 1px solid rgb(0, 0, 0, 0.3);
-  border-radius: 5px;
+  border-radius: 12px;
   font-size: 16px;
   background-color: var(--input-color);
-  border-radius: 12px;
 }
 
 #submit-form {
@@ -665,6 +669,7 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   display: flex;
   align-items: start;
+
 }
 .header {
   box-sizing: border-box;
