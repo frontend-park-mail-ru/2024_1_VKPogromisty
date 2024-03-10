@@ -55,10 +55,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document
       .getElementById("logout-button")
       .addEventListener("click", async () => {
-        if (confirm("Вы уверены, что хотите выйти из аккаунта?")) {
-          await authService.logout();
+        await authService.logout();
           renderLogin();
-        }
       });
   }
 
