@@ -11,54 +11,60 @@ const authService = new AuthService();
 
 const main_inputs = [
   {
+    inscription: "Фамилия",
     incorrect: "incorrect-last-name",
     id: "last-name",
     type: "text",
     name: "last_name",
-    placeholder: "Last name",
+    placeholder: "Фамилия",
   },
   {
+    inscription: "Имя",
     incorrect: "incorrect-first-name",
     id: "first-name",
     type: "text",
     name: "first_name",
-    placeholder: "First name",
+    placeholder: "Имя",
   },
   {
-    incorrect: "incorrect-password",
-    id: "password",
-    type: "password",
-    name: "password",
-    placeholder: "Password",
-  },
-  {
-    incorrect: "incorrect-repeat-password",
-    id: "repeat-password",
-    type: "password",
-    name: "repeat_password",
-    placeholder: "Repeat password",
-  },
-  {
+    inscription: "Почта",
     incorrect: "incorrect-email",
     id: "email",
     type: "email",
     name: "email",
-    placeholder: "Email",
+    placeholder: "Почта",
   },
+  {
+    inscription: "Пароль",
+    incorrect: "incorrect-password",
+    id: "password",
+    type: "password",
+    name: "password",
+    placeholder: "Пароль",
+  },
+  {
+    inscription: "Повторите пароль",
+    incorrect: "incorrect-repeat-password",
+    id: "repeat-password",
+    type: "password",
+    name: "repeat_password",
+    placeholder: "Повторите пароль",
+  },
+
 ];
 
 const part_of_date = [
   {
     id: "day",
-    placeholder: "DD",
+    placeholder: "ДД",
   },
   {
     id: "month",
-    placeholder: "MM",
+    placeholder: "ММ",
   },
   {
     id: "year",
-    placeholder: "YYYY",
+    placeholder: "ГГГГ",
   },
 ];
 
