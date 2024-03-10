@@ -453,7 +453,8 @@ input::-webkit-inner-spin-button {
 
 .content-img {
   box-sizing: border-box;
-  max-width: 400px;
+  width:100%;
+  
   margin: 10px 0px;
 }
 
