@@ -9,12 +9,12 @@
     </div>
 
     <div class="register-form">
-      <form method="post" action="#" enctype="multipart/form-data">
+      <form method="post" action="#" enctype="multipart/form-data" class="sign-up-form">
         {{#each main_inputs}}
         <div class="input-group">
-          <div class="inscription-form">
+          <span class="inscription-form">
             {{ this.inscription }}
-          </div>
+          </span>
           <input
             class="main-input"
             id="{{ this.id }}"
@@ -38,22 +38,22 @@
             required
             placeholder="{{ this.placeholder }}"
           />
-          <div class="error" id="incorrect-date-of-birthday"></div>
           {{/each}}
         </div>
+        <div class="error" id="incorrect-date-of-birthday"></div>
         <div class="inscription-form">
           Аватарка пользователя (необязательно)
         </div>
         <div class="file-input">
           <label class="input-avatar">
             <input type="file" name="avatar" id="avatar" />
-            <span>Загрузить изображение</span>
+            <span class="upload-image">Загрузить изображение</span>
           </label>
         </div>
         <button type="button" class="button-sign-in" id="button-sign-up">
           Зарегистрироваться
         </button>
-        <a href="/signup" class="link_sign_up" id="button-sign-up"
+        <a href="/login" class="link_sign_up" id="button-sign-in"
           >Уже есть аккаунт? Войти</a
         >
       </form>

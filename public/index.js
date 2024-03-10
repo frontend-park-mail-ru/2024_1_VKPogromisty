@@ -71,14 +71,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     signupForm.renderForm();
 
     document
-      .getElementById("sign-in-button")
+      .getElementById("button-sign-in")
       .addEventListener("click", (event) => {
         event.preventDefault();
         renderLogin();
       });
 
     document
-      .getElementById("submit-form")
+      .getElementById("button-sign-up")
       .addEventListener("click", async () => {
         if (await signupForm.isValidForm()) {
           renderFeed();

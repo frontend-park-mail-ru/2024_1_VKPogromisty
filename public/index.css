@@ -63,23 +63,22 @@ body {
 }
 
 .input-group {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 24px;
-  align-items: center;
   justify-content: center;
   color: var(--text-input-color);
   font-size: 16px;
 }
 
 .input-group input {
-  padding: 10px;
+  padding: 10px 0px;
   border: 1px solid rgb(0, 0, 0, 0.3);
-  border-radius: 5px;
-  font-size: 16px;
+  font-size: 18px;
   background-color: var(--input-color);
   border-radius: 12px;
-  width: 384px;
-  max-width: 364px;
   height: 22px;
+  width: 100%;
 }
 
 .image-container {
@@ -104,7 +103,7 @@ body {
   border-radius: 12px;
   font-size: 20px;
   cursor: pointer;
-  margin-top: 90px;
+  margin-top: 20px;
   margin-bottom: 10px;
 }
 
@@ -131,8 +130,10 @@ button:hover {
   font-size: 14px;
 }
 
+
+
 .main-input {
-  margin: 12px;
+  margin: 12px 0px;
   height: 34px;
   width: 250px;
   border: 1px solid black;
@@ -147,6 +148,7 @@ button:hover {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 400px;
 }
 
 .vertical-stack {
@@ -167,7 +169,7 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 .date-birthday input {
   margin: 10px 5px;
@@ -214,14 +216,12 @@ input::-webkit-inner-spin-button {
   position: relative;
   display: inline-block;
   transition-duration: var(--tramsform-duration);
-  margin: 10px;
   min-height: fit-content;
 }
 
 .input-avatar span {
   padding: 10px 20px;
   display: block;
-  margin: 0 auto;
   background-color: var(--background-input-color);
   color: #000;
   border: 1px solid #000;
@@ -242,12 +242,17 @@ input::-webkit-inner-spin-button {
   height: 0;
 }
 
-.input-avatar:hover {
-  transform: scale(1.05, 1.05);
+.upload-image {
+  transition-duration: .5s;
 }
 
-.input-avatar:hover span {
+.upload-image:hover {
   filter: brightness(105%);
+}
+
+.sign-up-form {
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar {
