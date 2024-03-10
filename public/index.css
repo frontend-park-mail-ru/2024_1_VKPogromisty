@@ -14,6 +14,7 @@
   --cursive-text: "Jim Nightshade", cursive;
   --ordinary-text: "Inter", sans-serif;
   --borders-color: 1px solid #e35f7f;
+  --feed-header-color: #483d3d;
 }
 * {
   border: none;
@@ -618,6 +619,9 @@ input::-webkit-inner-spin-button {
   display: flex;
   font-family: var(--ordinary-text);
 }
+.user span {
+  color: #fff;
+}
 
 .user-avatar {
   box-sizing: border-box;
@@ -628,19 +632,10 @@ input::-webkit-inner-spin-button {
   max-width: 100%;
 }
 
-#logout-button {
-  box-sizing: border-box;
-  margin-left: 15px;
-  border: 1px solid #858080;
-  border-radius: 15px;
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background-color: transparent;
-}
-.search {
+.search input {
   box-sizing: border-box;
   margin-top: 0px;
+  background-color: var(--background-input-color);
 }
 #logo_img {
   box-sizing: border-box;
@@ -648,6 +643,7 @@ input::-webkit-inner-spin-button {
   margin-right: 50px;
   max-width: 100%;
   height: auto;
+  cursor: pointer;
 }
 .main-feed {
   box-sizing: border-box;
@@ -669,13 +665,25 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   display: flex;
   align-items: start;
-
 }
 .header {
   box-sizing: border-box;
   padding: 15px 25px 15px 35px;
   width: 100%;
   display: flex;
-  background-color: white;
+  background-color: var(--feed-header-color);
   align-items: center;
+}
+
+.logout {
+  padding: 10px 20px;
+  display: block;
+  margin: 0 auto;
+  background-color: var(--background-input-color);
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
