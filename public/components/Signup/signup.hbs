@@ -1,14 +1,20 @@
 <div class="form-wrapper">
   <div class="form">
-    <div class="logo">
-      <img src="../static/images/Logo.png" id="logo-img" />
+    <div class="image-container">
+      <img src="../static/images/Logo.png" alt="Logo" />
     </div>
-    <div id="repeat-email" class="error"></div>
+    <div class="sign-in-text">
+      <div class="text-sign-in-first-part">Зарегистрируйтесь в</div>
+      <div class="text-sign-in-second-part">Socio</div>
+    </div>
+
     <div class="register-form">
       <form method="post" action="#" enctype="multipart/form-data">
-        <div class="vertical-stack">
-          {{#each main_inputs}}
-          <div class="error" id="{{ this.incorrect }}"></div>
+        {{#each main_inputs}}
+        <div class="input-group">
+          <div class="inscription-form">
+            {{ this.inscription }}
+          </div>
           <input
             class="main-input"
             id="{{ this.id }}"
@@ -17,31 +23,40 @@
             placeholder="{{ this.placeholder }}"
             required
           />
-          {{/each}}
-          <label for="date-birthday" class="form-label">Date of birthday</label>
+          <div class="error" id="{{ this.incorrect }}"></div>
+        </div>
+        {{/each}}
+        <label for="date-birthday" class="inscription-form"
+          >Дата рождения</label
+        >
+
+        <div class="date-birthday">
+          {{#each part_of_date}}
+          <input
+            id="{{ this.id }}"
+            type="text"
+            required
+            placeholder="{{ this.placeholder }}"
+          />
           <div class="error" id="incorrect-date-of-birthday"></div>
-          <div id="date-birthday">
-            {{#each part_of_date}}
-            <input
-              id="{{ this.id }}"
-              type="text"
-              required
-              placeholder="{{ this.placeholder }}"
-            />
-            {{/each}}
-          </div>
+          {{/each}}
+        </div>
+        <div class="inscription-form">
+          Аватарка пользователя (необязательно)
         </div>
         <div class="file-input">
           <label class="input-avatar">
             <input type="file" name="avatar" id="avatar" />
-            <span>Upload</span>
+            <span>Загрузить изображение</span>
           </label>
         </div>
-        <button type="button" id="submit-form">Sign up</button>
+        <button type="button" class="button-sign-in" id="button-sign-up">
+          Зарегистрироваться
+        </button>
+        <a href="/signup" class="link_sign_up" id="button-sign-up"
+          >Уже есть аккаунт? Войти</a
+        >
       </form>
-    </div>
-    <div class="to-auth-page">
-      <button type="button" id="sign-in-button">Sign in</button>
     </div>
   </div>
 </div>

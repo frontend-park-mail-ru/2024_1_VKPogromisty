@@ -36,15 +36,19 @@ const sidebar = [
 const right_sidebar = [
   {
     href: "#",
+    text: "Новости",
+  },
+  {
+    href: "#",
+    text: "Сообщества",
+  },
+  {
+    href: "#",
     text: "Друзья",
   },
   {
     href: "#",
     text: "Фотографии",
-  },
-  {
-    href: "#",
-    text: "Рекомендации",
   },
 ];
 
