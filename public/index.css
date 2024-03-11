@@ -2,11 +2,10 @@
 :root {
   --main-bg-color: rgba(235, 158, 158, 0.23);
   --input-color: #fceeeb;
-  --button-sign-in-bg-color: rgba(254, 201, 201);
-  --button-sign-in-color: #a77f7f;
-  --button-sign-in-border-color: #de8181;
-  --link-sign-up-color: #de8787;
-  --text-input-color: #af9a9a;
+  --button-sign-in-bg-color: #000000;
+  --button-sign-in-color: #ffffff;
+  --link-sign-up-color: #000000;
+  --text-input-color: #858080;
   --page-font-family: "Inter", sans-serif;
   --sign-buttons: #de8181;
   --background-input-color: #fceeeb;
@@ -15,6 +14,8 @@
   --cursive-text: "Jim Nightshade", cursive;
   --ordinary-text: "Inter", sans-serif;
   --borders-color: 1px solid #e35f7f;
+  --feed-header-color: #483d3d;
+  --button-feed: #5d5151;
 }
 * {
   border: none;
@@ -26,31 +27,58 @@ body {
 }
 
 .form-wrapper {
+  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   min-width: fit-content;
 }
+.form {
+  height: 900px;
+}
+.sign-in-text {
+  color: #000000;
+}
+.text-sign-in-first-part {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+.text-sign-in-second-part {
+  font-size: 64px;
+  font-weight: 900;
+  margin-bottom: 100px;
+}
 
 .login-form {
   display: flex;
   flex-direction: column;
 }
+.inscription-form {
+  font-size: 14px;
+  color: #000;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 5px;
+}
 
 .input-group {
-  margin-bottom: 26px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
   justify-content: center;
+  color: var(--text-input-color);
+  font-size: 16px;
 }
 
 .input-group input {
-  padding: 10px;
-  border: 1px solid #000;
-  border-radius: 5px;
-  font-size: 16px;
+  padding: 10px 0px 10px 10px;
+  border: 1px solid rgb(0, 0, 0, 0.3);
+  font-size: 18px;
   background-color: var(--input-color);
-  border-radius: 30px;
+  border-radius: 12px;
+  height: 22px;
+  width: 100%;
 }
 
 .image-container {
@@ -58,64 +86,52 @@ body {
 }
 
 .image-container img {
-  max-width: 184px;
-  max-height: 154px;
+  width: 184px;
+  height: 154px;
   display: inline-block;
-  margin-bottom: 96px;
+  margin-bottom: 40px;
 }
 
 .button-sign-in {
   padding: 10px 20px;
-  width: 101px;
+  width: 100%;
   display: block;
   margin: 0 auto;
   background-color: var(--button-sign-in-bg-color);
   color: var(--button-sign-in-color);
   border: 1px solid var(--button-sign-in-border-color);
-  border-radius: 30px;
-  font-size: 16px;
+  border-radius: 12px;
+  font-size: 20px;
   cursor: pointer;
-  margin-top: 38px;
-  margin-bottom: 30px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 button:hover {
-  background-color: var(--button-color);
+  background-color: #001;
 }
 
 .link_sign_up {
   color: var(--link-sign-up-color);
   display: block;
   text-align: center;
-  margin-top: 20px;
+  font-size: 16px;
+  margin-bottom: 20px;
 }
 
 .incorrect-data {
   font-size: 30px;
   color: var(--input-color);
 }
+
 .error {
   color: red;
-}
-.form-wrapper {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  min-width: fit-content;
-}
-
-.logo {
-  margin: 20px 0px 10px 0px;
-}
-
-#logo-img {
-  height: 154px;
+  text-align: left;
+  font-size: 14px;
 }
 
 .main-input {
-  margin: 12px;
+  margin: 12px 0px;
   height: 34px;
   width: 250px;
   border: 1px solid black;
@@ -123,7 +139,14 @@ button:hover {
   background-color: var(--background-input-color);
   color: var(--text-input-color);
   font-size: 18px;
-  padding-left: 8px;
+  padding-left: 20px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 400px;
 }
 
 .vertical-stack {
@@ -140,16 +163,22 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
-
-#date-birthday input {
+.date-birthday {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.date-birthday input {
   margin: 10px 5px;
-  border-radius: 8px;
   width: 60px;
-  height: 30px;
+  height: 22px;
   text-align: center;
-  color: var(--text-input-color);
-  border: 1px solid black;
-  background-color: var(--background-input-color);
+  padding: 10px;
+  border: 1px solid rgb(0, 0, 0, 0.3);
+  border-radius: 12px;
+  font-size: 16px;
+  background-color: var(--input-color);
 }
 
 #submit-form {
@@ -172,7 +201,6 @@ input::-webkit-inner-spin-button {
 
 #sign-in-button {
   color: var(--sign-buttons);
-
   text-decoration: underline;
   font-size: large;
   transition-duration: var(--tramsform-duration);
@@ -186,23 +214,21 @@ input::-webkit-inner-spin-button {
   position: relative;
   display: inline-block;
   transition-duration: var(--tramsform-duration);
-  margin: 10px;
   min-height: fit-content;
 }
 
 .input-avatar span {
-  position: relative;
-  cursor: pointer;
-  vertical-align: middle;
-  color: var(--text-input-color);
-  text-align: center;
-  border-radius: 20px;
-  background-color: rgb(252, 201, 201);
-  height: 40px;
   padding: 10px 20px;
-  border: 1px solid var(--sign-buttons);
-
-  transition-duration: var(--tramsform-duration);
+  display: block;
+  background-color: var(--background-input-color);
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  width: 384px;
+  max-width: 364px;
 }
 
 .input-avatar input[type="file"] {
@@ -214,19 +240,23 @@ input::-webkit-inner-spin-button {
   height: 0;
 }
 
-.input-avatar:hover {
-  transform: scale(1.05, 1.05);
+.upload-image {
+  transition-duration: .5s;
 }
 
-.input-avatar:hover span {
+.upload-image:hover {
   filter: brightness(105%);
 }
 
-.error {
-  color: red;
+.sign-up-form {
+  display: flex;
+  flex-direction: column;
 }
+
 .sidebar {
   height: 440px;
+  margin-right: 5%;
+  margin-top: 2%;
 }
 
 .sidebar,
@@ -235,11 +265,12 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid black;
   width: 240px;
-  border-radius: 15px;
   padding-left: 20px;
   min-width: 200px;
+  margin-top: 2%;
+  margin-left: 5%;
+  font-size: 24;
 }
 
 .right-sidebar {
@@ -261,7 +292,8 @@ input::-webkit-inner-spin-button {
   list-style-type: none;
   margin-left: 0px;
   font-family: var(--ordinary-text);
-  font-size: 18px;
+  font-size: 24px;
+  font-weight: 600;
   ::before {
     box-sizing: border-box;
   }
@@ -279,7 +311,8 @@ input::-webkit-inner-spin-button {
 
 #activity {
   box-sizing: border-box;
-  width: 700px;
+  width: 969px;
+  margin-top: 2%;
 }
 
 #create-post {
@@ -315,16 +348,16 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   align-content: center;
   margin: 0px 10px 0px 10px;
+  background-color: var(--button-feed);
 }
 
 .publish-button {
   box-sizing: border-box;
   font-family: var(--ordinary-text);
-  color: #858080;
+  color: #ffffff;
   font-family: inherit;
   font-size: inherit;
-  color: inherit;
-  background-color: transparent;
+  background-color: var(--button-feed);
 }
 
 #user-news {
@@ -391,6 +424,7 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  font-size: 24px;
 }
 
 .post-menu {
@@ -409,7 +443,7 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   padding: 20px 10px 20px 10px;
   border-bottom: var(--borders-color);
   line-height: 3px;
@@ -423,7 +457,8 @@ input::-webkit-inner-spin-button {
 
 .content-img {
   box-sizing: border-box;
-  max-width: 400px;
+  width: 100%;
+
   margin: 10px 0px;
 }
 
@@ -459,6 +494,9 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   font-family: var(--ordinary-text);
   color: #858080;
+  align-content: center;
+  justify-content: center;
+  font-size: 24px;
 }
 
 .comment-menu {
@@ -547,6 +585,7 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   min-width: 220px;
   width: 500px;
+  background-color: var(--background-input-color);
 }
 
 .img-post-comment {
@@ -594,6 +633,10 @@ input::-webkit-inner-spin-button {
   align-items: center;
   display: flex;
   font-family: var(--ordinary-text);
+  font-size: 26px;
+}
+.user span {
+  color: #fff;
 }
 
 .user-avatar {
@@ -605,19 +648,10 @@ input::-webkit-inner-spin-button {
   max-width: 100%;
 }
 
-#logout-button {
-  box-sizing: border-box;
-  margin-left: 15px;
-  border: 1px solid #858080;
-  border-radius: 15px;
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background-color: transparent;
-}
-.search {
+.search input {
   box-sizing: border-box;
   margin-top: 0px;
+  background-color: var(--background-input-color);
 }
 #logo_img {
   box-sizing: border-box;
@@ -625,6 +659,7 @@ input::-webkit-inner-spin-button {
   margin-right: 50px;
   max-width: 100%;
   height: auto;
+  cursor: pointer;
 }
 .main-feed {
   box-sizing: border-box;
@@ -652,6 +687,26 @@ input::-webkit-inner-spin-button {
   padding: 15px 25px 15px 35px;
   width: 100%;
   display: flex;
-  background-color: white;
+  background-color: var(--feed-header-color);
   align-items: center;
+}
+
+.logout {
+  padding: 10px 20px;
+  display: block;
+  margin: 0 auto;
+  background-color: var(--background-input-color);
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.feed-main {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }

@@ -1,12 +1,18 @@
 <div class="form-wrapper">
   <div class="form">
     <div class="image-container">
-      <img src="../static/images/Logo.png" width="124px" alt="Logo" />
+      <img src="../static/images/Logo.png" alt="Logo" />
+    </div>
+    <div class="sign-in-text">
+      <div class="text-sign-in-first-part">Войдите в</div>
+      <div class="text-sign-in-second-part">Socio</div>
     </div>
     <form class="login-form" action="/submit" method="POST">
       {{#each inputs}}
       <div class="input-group">
-        <div class="error" id="{{ this.incorrect }}"></div>
+        <div class="inscription-form">
+          {{ this.inscription }}
+        </div>
         <input
           type="{{ this.type }}"
           id="{{ this.id }}"
@@ -14,14 +20,15 @@
           placeholder="{{ this.placeholder }}"
           required
         />
+        <div class="error" id="{{ this.incorrect }}"></div>
       </div>
       {{/each}}
       <button type="button" class="button-sign-in" id="button-sign-in">
-        Sign in
+        Войти
       </button>
-      <button type="button" class="link_sign_up" id="button-sign-up">
-        Sign up
-      </button>
+      <a href="/signup" class="link_sign_up" id="button-sign-up"
+        >Ещё нет аккаунта? Зарегистрироваться</a
+      >
     </form>
   </div>
 </div>

@@ -20,15 +20,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     loginForm.renderForm();
 
-    document.getElementById("button-sign-up").addEventListener("click", () => {
-      renderSignUp();
-    });
+    document
+      .getElementById("button-sign-up")
+      .addEventListener("click", (event) => {
+        event.preventDefault();
+        renderSignUp();
+      });
 
     document
       .getElementById("button-sign-in")
       .addEventListener("click", async () => {
         if (await loginForm.isValidForm()) {
-          renderFeed();
+          await renderFeed();
         }
       });
   }
@@ -52,10 +55,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document
       .getElementById("logout-button")
       .addEventListener("click", async () => {
-        if (confirm("Вы уверены, что хотите выйти из аккаунта?")) {
-          await authService.logout();
+        await authService.logout();
           renderLogin();
-        }
       });
   }
 
@@ -67,12 +68,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     signupForm.renderForm();
 
-    document.getElementById("sign-in-button").addEventListener("click", () => {
-      renderLogin();
-    });
+    document
+      .getElementById("button-sign-in")
+      .addEventListener("click", (event) => {
+        event.preventDefault();
+        renderLogin();
+      });
 
     document
-      .getElementById("submit-form")
+      .getElementById("button-sign-up")
       .addEventListener("click", async () => {
         if (await signupForm.isValidForm()) {
           renderFeed();
@@ -83,9 +87,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   const authService = new AuthService();
   const isAuthorized = await authService.isAuthorized();
 
-  if (isAuthorized.body) {
-    await renderFeed();
-  } else {
-    renderLogin();
+  async function route() {
+    if (isAuthorized.body) {
+      await renderFeed();
+    } else {
+      const currentPageUrl = window.location.pathname;
+      if (currentPageUrl === "/signup") {
+        renderSignUp();
+      } else {
+        renderLogin();
+      }
+    }
   }
+
+  document.addEventListener("navigate", route);
+  route();
 });

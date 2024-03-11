@@ -36,15 +36,19 @@ const sidebar = [
 const right_sidebar = [
   {
     href: "#",
+    text: "Новости",
+  },
+  {
+    href: "#",
+    text: "Сообщества",
+  },
+  {
+    href: "#",
     text: "Друзья",
   },
   {
     href: "#",
     text: "Фотографии",
-  },
-  {
-    href: "#",
-    text: "Рекомендации",
   },
 ];
 
@@ -64,7 +68,7 @@ export class FeedMain {
   /**
    * Renders the main feed handlebars template
    * @returns {void}
-  */
+   */
   renderForm() {
     const template = Handlebars.templates["feedMain.hbs"];
     this.#parent.innerHTML = template({ sidebar, right_sidebar });

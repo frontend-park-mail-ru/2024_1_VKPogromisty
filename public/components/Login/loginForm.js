@@ -6,18 +6,20 @@ const authService = new AuthService();
 
 const inputs = [
   {
+    inscription: "Электронная почта",
     incorrect: "incorrect-email",
     type: "text",
     id: "email",
     name: "email",
-    placeholder: "Email",
+    placeholder: "Электронная почта",
   },
   {
+    inscription: "Пароль",
     incorrect: "incorrect-password",
     type: "password",
     id: "password",
     name: "password",
-    placeholder: "Password",
+    placeholder: "Пароль",
   },
 ];
 
@@ -51,7 +53,7 @@ export class LoginForm {
     const incorrectPassword = document.getElementById("incorrect-password");
 
     email.addEventListener("focusout", () => {
-      email.innerHTML = "";
+      incorrectEmail.innerHTML = "";
 
       if (!validateEmail(email.value)) {
         incorrectEmail.innerHTML = errors.incorrectEmail;
@@ -59,7 +61,7 @@ export class LoginForm {
     });
 
     password.addEventListener("focusout", () => {
-      password.innerHTML = "";
+      incorrectPassword.innerHTML = "";
 
       if (!validatePassword(password.value)) {
         incorrectPassword.innerHTML = errors.incorrectPasswordLength;
