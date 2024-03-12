@@ -13,7 +13,7 @@ export function validatePassword(password) {
  * @returns {boolean}
  */
 export function validateEmail(email) {
-  return email.match(/^[\w.]+@[\w.]+\.[\w.]+$/) !== null;
+  return email.match(/@/) !== null;
 }
 
 /**

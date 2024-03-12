@@ -8,6 +8,7 @@ const inputs = [
   {
     inscription: "Электронная почта",
     incorrect: "incorrect-email",
+    incorrectText: errors.incorrectEmail,
     type: "text",
     id: "email",
     name: "email",
@@ -16,6 +17,7 @@ const inputs = [
   {
     inscription: "Пароль",
     incorrect: "incorrect-password",
+    incorrectText: errors.incorrectPasswordLength,
     type: "password",
     id: "password",
     name: "password",
@@ -53,18 +55,18 @@ export class LoginForm {
     const incorrectPassword = document.getElementById("incorrect-password");
 
     email.addEventListener("focusout", () => {
-      incorrectEmail.innerHTML = "";
+      incorrectEmail.classList.remove('correct');
 
-      if (!validateEmail(email.value)) {
-        incorrectEmail.innerHTML = errors.incorrectEmail;
+      if (validateEmail(email.value)) {
+        incorrectEmail.classList.add('correct')
       }
     });
 
     password.addEventListener("focusout", () => {
-      incorrectPassword.innerHTML = "";
+      incorrectPassword.classList.remove('correct');
 
-      if (!validatePassword(password.value)) {
-        incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+      if (validatePassword(password.value)) {
+        incorrectPassword.classList.add('correct');
       }
     });
   }

@@ -78,7 +78,6 @@ body {
   background-color: var(--input-color);
   border-radius: 12px;
   height: 22px;
-  width: 100%;
 }
 
 .image-container {
@@ -129,7 +128,6 @@ body {
 .main-input {
   margin: 12px 0px;
   height: 34px;
-  width: 250px;
   border: 1px solid black;
   border-radius: 30px;
   background-color: var(--background-input-color);
@@ -211,6 +209,7 @@ input::-webkit-inner-spin-button {
   display: inline-block;
   transition-duration: var(--tramsform-duration);
   min-height: fit-content;
+  width: 100%;
 }
 
 .input-avatar span {
@@ -223,7 +222,6 @@ input::-webkit-inner-spin-button {
   font-size: 20px;
   cursor: pointer;
   margin-bottom: 10px;
-  width: 384px;
   max-width: 364px;
 }
 
@@ -376,9 +374,9 @@ input::-webkit-inner-spin-button {
 }
 
 .user-avatar-post {
-  box-sizing: border-box;
   border-radius: 50%;
   width: 40px;
+  height: 40px;
   cursor: pointer;
 }
 
@@ -466,6 +464,8 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  flex-wrap: wrap;
+  align-content: center;
   border-bottom: 1px solid #000000;
   height: 40px;
   padding-right: 15px;
@@ -490,12 +490,13 @@ input::-webkit-inner-spin-button {
 }
 
 .show-comments-label {
-  box-sizing: border-box;
+  display: flex;
   font-family: var(--ordinary-text);
   color: #858080;
   align-content: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 18px;
+  cursor: pointer;
 }
 
 .comment-menu {
@@ -548,6 +549,8 @@ input::-webkit-inner-spin-button {
   height: 60px;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  align-content: center;
   font-family: var(--ordinary-text);
   font-size: 18px;
 }
@@ -556,6 +559,7 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   width: 24px;
   height: 24px;
+  cursor: pointer;
 }
 
 .post-footer {
@@ -577,7 +581,9 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   align-content: center;
+  width: 60px;
   margin-right: 20px;
 }
 
@@ -606,6 +612,7 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   width: 20px;
   height: 20px;
+  cursor: pointer;
 }
 .search input {
   box-sizing: border-box;
@@ -695,9 +702,10 @@ input::-webkit-inner-spin-button {
 
 .notification {
   width: 30px;
-  filter: invert(60%);
+  filter: brightness(2400%);
   margin-right: 20px;
   cursor: pointer;
+  
 }
 
 #logout-button {
@@ -717,4 +725,8 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+.correct {
+  visibility: hidden;
 }

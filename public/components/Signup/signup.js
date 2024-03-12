@@ -13,6 +13,7 @@ const main_inputs = [
   {
     inscription: "Фамилия",
     incorrect: "incorrect-last-name",
+    incorrectText: errors.incorrectName,
     id: "last-name",
     type: "text",
     name: "last_name",
@@ -21,6 +22,7 @@ const main_inputs = [
   {
     inscription: "Имя",
     incorrect: "incorrect-first-name",
+    incorrectText: errors.incorrectName,
     id: "first-name",
     type: "text",
     name: "first_name",
@@ -29,6 +31,7 @@ const main_inputs = [
   {
     inscription: "Почта",
     incorrect: "incorrect-email",
+    incorrectText: errors.incorrectEmail,
     id: "email",
     type: "email",
     name: "email",
@@ -37,6 +40,7 @@ const main_inputs = [
   {
     inscription: "Пароль",
     incorrect: "incorrect-password",
+    incorrectText: errors.incorrectPasswordLength,
     id: "password",
     type: "password",
     name: "password",
@@ -45,6 +49,7 @@ const main_inputs = [
   {
     inscription: "Повторите пароль",
     incorrect: "incorrect-repeat-password",
+    incorrectText: errors.passwordMismatch,
     id: "repeat-password",
     type: "password",
     name: "repeat_password",
@@ -116,50 +121,50 @@ export class SignUpForm {
     );
 
     email.addEventListener("focusout", () => {
-      incorrectEmail.innerHTML = "";
+      incorrectEmail.classList.remove('correct');
 
-      if (!validateEmail(email.value)) {
-        incorrectEmail.innerHTML = errors.incorrectEmail;
+      if (validateEmail(email.value)) {
+        incorrectEmail.classList.add('correct');
       }
     });
 
     password.addEventListener("focusout", () => {
-      incorrectPassword.innerHTML = "";
+      incorrectPassword.classList.remove('correct');
 
-      if (!validatePassword(password.value)) {
-        incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+      if (validatePassword(password.value)) {
+        incorrectPassword.classList.add('correct')
       }
     });
 
     repeatPassword.addEventListener("focusout", () => {
-      incorrectRepeatPassword.innerHTML = "";
+      incorrectRepeatPassword.classList.remove('correct');
 
-      if (password.value != repeatPassword.value) {
-        incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
+      if (password.value === repeatPassword.value) {
+        incorrectRepeatPassword.classList.add('correct')
       }
     });
 
     firstName.addEventListener("focusout", () => {
-      incorrectFirstName.innerHTML = "";
+      incorrectFirstName.classList.remove('correct');
 
-      if (!validateName(firstName.value)) {
-        incorrectFirstName.innerHTML = errors.incorrectName;
+      if (validateName(firstName.value)) {
+        incorrectFirstName.classList.add('correct')
       }
     });
 
     lastName.addEventListener("focusout", () => {
-      incorrectLastName.innerHTML = "";
+      incorrectLastName.classList.remove('correct');
 
-      if (!validateName(lastName.value)) {
-        incorrectLastName.innerHTML = errors.incorrectName;
+      if (validateName(lastName.value)) {
+        incorrectLastName.classList.add('correct')
       }
     });
 
     year.addEventListener("focusout", () => {
-      incorrectDateOfBirthday.innerHTML = "";
+      incorrectDateOfBirthday.classList.remove('correct');
 
-      if (!validateDateOfBirth(day.value, month.value, year.value)) {
-        incorrectDateOfBirthday.innerHTML = errors.impossibleDate;
+      if (validateDateOfBirth(day.value, month.value, year.value)) {
+        incorrectDateOfBirthday.classList.add('correct')
       }
     });
   }

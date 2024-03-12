@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     history.replaceState("", "", "/login");
     clearHeaderMain();
 
+    document.title = 'Socio - Login';
+
     const loginForm = new LoginForm(main);
 
     loginForm.renderForm();
@@ -40,6 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     history.replaceState("", "", "/feed");
     clearHeaderMain();
 
+    document.title = 'Socio - Feed';
+
     const postService = new PostService();
     const feedHeader = new FeedHeader(header);
     const feedMain = new FeedMain(main);
@@ -63,6 +67,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderSignUp() {
     history.replaceState("", "", "/signup");
     clearHeaderMain();
+
+    document.title = 'Socio - Signup';
 
     const signupForm = new SignUpForm(main);
 
