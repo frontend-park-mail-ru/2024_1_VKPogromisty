@@ -82,28 +82,27 @@ export class LoginForm {
     const password = document.getElementById("password");
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
+    const incorrectFormLogin = document.getElementById('incorrect-form-login');
 
-    function clearIncorrects() {
-      incorrectEmail.innerHTML = "";
-      incorrectPassword.innerHTML = "";
-    }
-
-    clearIncorrects();
+    incorrectEmail.classList.add('correct');
+    incorrectPassword.classList.add('correct');
 
     let flag = true;
 
     if (!validateEmail(email.value)) {
-      incorrectEmail.innerHTML = errors.incorrectEmail;
+      incorrectEmail.classList.remove('correct');
       flag = false;
     }
     if (!validatePassword(password.value)) {
-      incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+      incorrectPassword.classList.remove('correct');
       flag = false;
     }
 
     if (!flag) {
       return false;
     }
+
+    incorrectFormLogin.classList.add('correct');
 
     const result = await authService.login(email.value, password.value);
 
@@ -114,7 +113,7 @@ export class LoginForm {
       localStorage.setItem("lastName", lastName);
       return true;
     } else {
-      incorrectEmail.innerHTML = "Некорректные данные";
+      incorrectFormLogin.classList.remove('correct');
       return false;
     }
   }

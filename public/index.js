@@ -74,6 +74,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     signupForm.renderForm();
 
+    const uploadImg = document.getElementById('sign-up-upload-img');
+
     document
       .getElementById("button-sign-in")
       .addEventListener("click", (event) => {
@@ -87,6 +89,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (await signupForm.isValidForm()) {
           renderFeed();
         }
+      });
+
+    document
+      .getElementById('avatar')
+      .addEventListener('change', () => {
+        uploadImg.classList.remove('correct');
       });
   }
 

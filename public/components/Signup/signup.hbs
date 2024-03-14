@@ -10,7 +10,7 @@
 
     <div class="register-form">
       <form method="post" action="#" enctype="multipart/form-data" class="sign-up-form">
-        <div id="repeat-email" class="error"></div>
+        <div id="repeat-email" class="error correct">Почта уже используется</div>
         {{#each main_inputs}}
         <div class="input-group">
           <span class="inscription-form">
@@ -41,14 +41,16 @@
           />
           {{/each}}
         </div>
-        <div class="error" id="incorrect-date-of-birthday"></div>
+        <div class="error correct" id="incorrect-date-of-birthday">Некорректная дата</div>
         <div class="inscription-form">
           Аватарка пользователя (необязательно)
         </div>
         <div class="file-input">
           <label class="input-avatar">
             <input type="file" name="avatar" id="avatar" />
-            <span class="upload-image">Загрузить изображение</span>
+            <span class="upload-image">Загрузить изображение
+              <img class="sign-up-upload-img correct" src="../static/images/upload.png" id="sign-up-upload-img">
+            </span>
           </label>
         </div>
         <button type="button" class="button-sign-in" id="button-sign-up">

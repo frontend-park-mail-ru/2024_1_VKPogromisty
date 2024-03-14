@@ -35,7 +35,9 @@ body {
   min-width: fit-content;
 }
 .form {
-  height: 900px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .sign-in-text {
   color: #000000;
@@ -141,6 +143,11 @@ body {
   flex-direction: column;
   justify-content: center;
   width: 400px;
+}
+
+.sign-up-upload-img {
+  width: 20px;
+  margin-left: 15px;
 }
 
 .vertical-stack {

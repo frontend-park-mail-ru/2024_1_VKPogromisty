@@ -121,50 +121,66 @@ export class SignUpForm {
     );
 
     email.addEventListener("focusout", () => {
-      incorrectEmail.classList.remove('correct');
+      incorrectEmail.classList.add('correct');
 
-      if (validateEmail(email.value)) {
-        incorrectEmail.classList.add('correct');
+      if (!validateEmail(email.value)) {
+        incorrectEmail.classList.remove('correct');
       }
     });
 
     password.addEventListener("focusout", () => {
-      incorrectPassword.classList.remove('correct');
+      incorrectPassword.classList.add('correct');
 
-      if (validatePassword(password.value)) {
-        incorrectPassword.classList.add('correct')
+      if (!validatePassword(password.value)) {
+        incorrectPassword.classList.remove('correct');
       }
     });
 
     repeatPassword.addEventListener("focusout", () => {
-      incorrectRepeatPassword.classList.remove('correct');
+      incorrectRepeatPassword.classList.add('correct');
 
-      if (password.value === repeatPassword.value) {
-        incorrectRepeatPassword.classList.add('correct')
+      if (!password.value === repeatPassword.value) {
+        incorrectRepeatPassword.classList.remove('correct');
       }
     });
 
     firstName.addEventListener("focusout", () => {
-      incorrectFirstName.classList.remove('correct');
+      incorrectFirstName.classList.add('correct');
 
-      if (validateName(firstName.value)) {
-        incorrectFirstName.classList.add('correct')
+      if (!validateName(firstName.value)) {
+        incorrectFirstName.classList.remove('correct');
       }
     });
 
     lastName.addEventListener("focusout", () => {
-      incorrectLastName.classList.remove('correct');
+      incorrectLastName.classList.add('correct');
 
-      if (validateName(lastName.value)) {
-        incorrectLastName.classList.add('correct')
+      if (!validateName(lastName.value)) {
+        incorrectLastName.classList.remove('correct');
+      }
+    });
+
+    day.addEventListener("focusout", () => {
+      incorrectDateOfBirthday.classList.add('correct');
+
+      if (!validateDateOfBirth(day.value, month.value, year.value)) {
+        incorrectDateOfBirthday.classList.remove('correct');
+      }
+    });
+
+    month.addEventListener("focusout", () => {
+      incorrectDateOfBirthday.classList.add('correct');
+
+      if (!validateDateOfBirth(day.value, month.value, year.value)) {
+        incorrectDateOfBirthday.classList.remove('correct');
       }
     });
 
     year.addEventListener("focusout", () => {
-      incorrectDateOfBirthday.classList.remove('correct');
+      incorrectDateOfBirthday.classList.add('correct');
 
-      if (validateDateOfBirth(day.value, month.value, year.value)) {
-        incorrectDateOfBirthday.classList.add('correct')
+      if (!validateDateOfBirth(day.value, month.value, year.value)) {
+        incorrectDateOfBirthday.classList.remove('correct');
       }
     });
   }
@@ -201,46 +217,42 @@ export class SignUpForm {
     );
     const repeatEmail = document.getElementById("repeat-email");
 
-    function clearIncorrects() {
-      incorrectEmail.innerHTML = "";
-      incorrectRepeatPassword.innerHTML = "";
-      incorrectPassword.innerHTML = "";
-      incorrectFirstName.innerHTML = "";
-      incorrectLastName.innerHTML = "";
-      incorrectDateOfBirthday.innerHTML = "";
-    }
-
-    clearIncorrects();
+    incorrectEmail.classList.add('correct');
+    incorrectRepeatPassword.classList.add('correct');
+    incorrectPassword.classList.add('correct');
+    incorrectFirstName.classList.add('correct');
+    incorrectLastName.classList.add('correct');
+    incorrectDateOfBirthday.classList.add('correct');
 
     let flag = true;
 
     if (!validateEmail(email.value)) {
-      incorrectEmail.innerHTML = errors.incorrectEmail;
+      incorrectEmail.classList.remove('correct');
       flag = false;
     }
 
     if (password.value != repeatPassword.value) {
-      incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
+      incorrectRepeatPassword.classList.remove('correct');
       flag = false;
     }
 
     if (!validatePassword(password.value)) {
-      incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+      incorrectPassword.classList.remove('correct');
       flag = false;
     }
 
     if (!validateName(firstName.value)) {
-      incorrectFirstName.innerHTML = errors.incorrectName;
+      incorrectFirstName.classList.remove('correct');
       flag = false;
     }
 
     if (!validateName(lastName.value)) {
-      incorrectLastName.innerHTML = errors.incorrectName;
+      incorrectLastName.classList.remove('correct');
       flag = false;
     }
 
     if (!validateDateOfBirth(day.value, month.value, year.value)) {
-      incorrectDateOfBirthday.innerHTML = errors.impossibleDate;
+      incorrectDateOfBirthday.classList.remove('correct');
       flag = false;
     }
 
@@ -260,6 +272,8 @@ export class SignUpForm {
       avatar.files[0],
     );
 
+    repeatEmail.classList.add('correct');
+
     if (result.ok) {
       const { avatar, firstName, lastName } = result.body.user;
       localStorage.setItem("avatar", avatar);
@@ -267,7 +281,7 @@ export class SignUpForm {
       localStorage.setItem("lastName", lastName);
       return true;
     } else {
-      repeatEmail.innerHTML = "Почта уже используется";
+      repeatEmail.classList.remove('correct');
       return false;
     }
   }
