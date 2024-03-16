@@ -22,6 +22,11 @@
           required
         />
         <div class="error correct" id="{{ this.incorrect }}">{{this.incorrectText}}</div>
+        {{#if this.isPassword}}
+        <div class="show-password" id="login-show-password">
+          <img src="../static/images/close_eye.png" class="show-password-button">
+        </div>
+        {{/if}}
       </div>
       {{/each}}
       <button type="button" class="button-sign-in" id="button-sign-in">

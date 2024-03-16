@@ -43,11 +43,11 @@ body {
   color: #000000;
 }
 .text-sign-in-first-part {
-  font-size: 50px;
+  font-size: 40px;
   margin-bottom: 10px;
 }
 .text-sign-in-second-part {
-  font-size: 64px;
+  font-size: 44px;
   font-weight: 900;
   margin-bottom: 100px;
 }
@@ -494,6 +494,22 @@ input::-webkit-inner-spin-button {
 
 .show-comments {
   background-color: inherit;
+}
+
+.show-password {
+  position: absolute;
+  margin-left: 290px;
+  cursor: pointer;
+}
+
+.show-password-button {
+  width: 30px;
+}
+
+.signup-show-password {
+  position: absolute;
+  margin-left: 360px;
+  cursor: pointer;
 }
 
 .show-comments-label {

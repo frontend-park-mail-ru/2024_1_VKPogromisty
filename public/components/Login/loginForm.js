@@ -13,6 +13,7 @@ const inputs = [
     id: "email",
     name: "email",
     placeholder: "Электронная почта",
+    isPassword: false,
   },
   {
     inscription: "Пароль",
@@ -22,6 +23,7 @@ const inputs = [
     id: "password",
     name: "password",
     placeholder: "Пароль",
+    isPassword: true,
   },
 ];
 
@@ -53,6 +55,7 @@ export class LoginForm {
 
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
+    const loginShowPassword = document.getElementById("login-show-password");
 
     email.addEventListener("focusout", () => {
       incorrectEmail.classList.remove('correct');
@@ -69,6 +72,15 @@ export class LoginForm {
         incorrectPassword.classList.add('correct');
       }
     });
+
+    loginShowPassword.addEventListener('click', () => {
+      if (password.getAttribute('type') == 'password') {
+        password.setAttribute('type', 'text');
+      } else {
+        password.setAttribute('type', 'password');
+      }
+    });
+
   }
 
   /**

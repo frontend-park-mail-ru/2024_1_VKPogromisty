@@ -18,6 +18,7 @@ const main_inputs = [
     type: "text",
     name: "last_name",
     placeholder: "Фамилия",
+    isPassword: false,
   },
   {
     inscription: "Имя",
@@ -27,6 +28,7 @@ const main_inputs = [
     type: "text",
     name: "first_name",
     placeholder: "Имя",
+    isPassword: false,
   },
   {
     inscription: "Почта",
@@ -36,6 +38,7 @@ const main_inputs = [
     type: "email",
     name: "email",
     placeholder: "Почта",
+    isPassword: false,
   },
   {
     inscription: "Пароль",
@@ -45,6 +48,7 @@ const main_inputs = [
     type: "password",
     name: "password",
     placeholder: "Пароль",
+    isPassword: true,
   },
   {
     inscription: "Повторите пароль",
@@ -54,6 +58,7 @@ const main_inputs = [
     type: "password",
     name: "repeat_password",
     placeholder: "Повторите пароль",
+    isPassword: true,
   },
 ];
 
@@ -108,6 +113,8 @@ export class SignUpForm {
     const day = document.getElementById("day");
     const month = document.getElementById("month");
     const year = document.getElementById("year");
+    const signupShowPassword = document.getElementById("signup-show-password");
+    const signupShowRepeatPassword = document.getElementById("signup-show-repeat-password");
 
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
@@ -181,6 +188,22 @@ export class SignUpForm {
 
       if (!validateDateOfBirth(day.value, month.value, year.value)) {
         incorrectDateOfBirthday.classList.remove('correct');
+      }
+    });
+
+    signupShowPassword.addEventListener('click', () => {
+      if (password.getAttribute('type') == 'password') {
+        password.setAttribute('type', 'text');
+      } else {
+        password.setAttribute('type', 'password');
+      }
+    });
+
+    signupShowRepeatPassword.addEventListener('click', () => {
+      if (repeatPassword.getAttribute('type') == 'password') {
+        repeatPassword.setAttribute('type', 'text');
+      } else {
+        repeatPassword.setAttribute('type', 'password');
       }
     });
   }

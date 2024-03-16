@@ -24,6 +24,11 @@
             placeholder="{{ this.placeholder }}"
             required
           />
+          {{#if this.isPassword}}
+          <div class="signup-show-password" id="signup-show-{{this.id}}">
+            <img src="../static/images/close_eye.png" class="show-password-button">
+          </div>
+        {{/if}}
           <div class="error correct" id="{{ this.incorrect }}">{{this.incorrectText}}</div>
         </div>
         {{/each}}
