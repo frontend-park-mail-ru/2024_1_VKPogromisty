@@ -39,14 +39,14 @@ body {
   flex-direction: column;
   justify-content: center;
 }
-.sign-in-text {
+.login-signup-text {
   color: #000000;
 }
-.text-sign-in-first-part {
+.login-signup-text__first-part {
   font-size: 40px;
   margin-bottom: 10px;
 }
-.text-sign-in-second-part {
+.login-signup-text__second-part {
   font-size: 44px;
   font-weight: 900;
   margin-bottom: 100px;
@@ -82,11 +82,11 @@ body {
   height: 22px;
 }
 
-.image-container {
+.image-container-login-signup {
   text-align: center;
 }
 
-.image-container img {
+.image-container-login-signup__img {
   width: 184px;
   height: 154px;
   display: inline-block;

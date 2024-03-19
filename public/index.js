@@ -4,6 +4,13 @@ import { LoginForm } from "./components/Login/loginForm.js";
 import { SignUpForm } from "./components/Signup/signup.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  document.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
+  });
+
   const main = document.getElementById("main");
   const header = document.getElementById("header");
 
@@ -24,8 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document
       .getElementById("button-sign-up")
-      .addEventListener("click", (event) => {
-        event.preventDefault();
+      .addEventListener("click", () => {
         renderSignUp();
       });
 
