@@ -71,7 +71,7 @@ export class FeedMain {
    */
   renderForm() {
     const template = Handlebars.templates["feedMain.hbs"];
-    this.#parent.innerHTML = template({ sidebar, right_sidebar });
+    this.#parent.innerHTML += template({ sidebar, right_sidebar });
   }
 }
 
@@ -119,7 +119,7 @@ export class FeedHeader {
 
     const userAvatar = this.#userAvatar;
     const fullUserName = this.#fullUserName;
-    this.#parent.innerHTML = template({ userAvatar, fullUserName });
+    this.#parent.innerHTML += template({ userAvatar, fullUserName });
   }
 }
 
@@ -146,6 +146,7 @@ export class FeedPost {
    */
   constructor(parent) {
     this.#parent = parent;
+    this.updateUser;
   }
 
   /**
@@ -163,8 +164,7 @@ export class FeedPost {
    * @returns {void}
    */
   renderPosts(posts) {
-    const template = Handlebars.templates["post.hbs"];
-    this.updateUser();
+    const template = Handlebars.templates["feedPost.hbs"];
 
     const userAvatar = this.#userAvatar;
     const fullUserName = this.#fullUserName;

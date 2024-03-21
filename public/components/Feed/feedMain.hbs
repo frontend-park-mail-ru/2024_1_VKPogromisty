@@ -1,40 +1,40 @@
-<div class="feed-main">
-  <div class="sidebar">
-    {{#each sidebar}}
-    <ul>
-      <li>
-        <a href="{{ this.href }}">{{ this.text }}</a>
-      </li>
-    </ul>
-    {{/each}}
-    <ul id="help-sidebar">
-      <li><a href="#">Помощь</a></li>
-    </ul>
-  </div>
-
-  <div id="activity">
-    <div id="create-post">
-      <div id="news-avatar">
-        <img id="user-avatar-news" src="../static/images/Logo.png" />
-      </div>
-      <div class="news">
-        <input id="user-news" type="text" placeholder="Что нового?" readonly />
-        <img
-          src="../static/images/attach-paperclip-symbol.png"
-          style="width: 16px; height: 16px"
-        />
-      </div>
-      <button class="publish-button">Опубликовать</button>
-    </div>
-  </div>
-
-  <div class="right-sidebar">
-    <ul>
-      {{#each right_sidebar}}
-      <li>
-        <a href="{{ this.href }}">{{ this.text }}</a>
-      </li>
+<div id="main">
+  <div class="feed-main">
+    <div class="sidebar">
+      {{#each sidebar}}
+      <ul>
+        <li>
+          <a href="{{ this.href }}">{{ this.text }}</a>
+        </li>
+      </ul>
       {{/each}}
-    </ul>
+      <ul id="help-sidebar">
+        <li><a href="#">Помощь</a></li>
+      </ul>
+    </div>
+
+    <div id="activity">
+      <div id="create-post">
+        <div id="news-avatar">
+          <img id="user-avatar-news" src="../static/images/Logo.png" />
+        </div>
+        <div class="news">
+          <input id="user-news" type="text" placeholder="Что нового?" readonly />
+          <img
+            src="../static/images/attach-paperclip-symbol.png"
+            style="width: 16px; height: 16px"
+          />
+        </div>
+        <button class="publish-button">Опубликовать</button>
+      </div>
+
+      <div class="right-sidebar">
+          {{#each right_sidebar}}
+          <span>
+            <a href="{{ this.href }}">{{ this.text }}</a>
+          </span>
+          {{/each}}
+      </div>
+    </div>
   </div>
 </div>

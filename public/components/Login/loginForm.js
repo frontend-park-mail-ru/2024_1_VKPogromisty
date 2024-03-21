@@ -58,18 +58,18 @@ export class LoginForm {
     const loginShowPassword = document.getElementById("login-show-password");
 
     email.addEventListener("focusout", () => {
-      incorrectEmail.classList.remove('correct');
+      incorrectEmail.classList.remove('form__input__correct');
 
       if (validateEmail(email.value)) {
-        incorrectEmail.classList.add('correct')
+        incorrectEmail.classList.add('form__input__correct')
       }
     });
 
     password.addEventListener("focusout", () => {
-      incorrectPassword.classList.remove('correct');
+      incorrectPassword.classList.remove('form__input__correct');
 
       if (validatePassword(password.value)) {
-        incorrectPassword.classList.add('correct');
+        incorrectPassword.classList.add('form__input__correct');
       }
     });
 
@@ -96,17 +96,17 @@ export class LoginForm {
     const incorrectPassword = document.getElementById("incorrect-password");
     const incorrectFormLogin = document.getElementById('incorrect-form-login');
 
-    incorrectEmail.classList.add('correct');
-    incorrectPassword.classList.add('correct');
+    incorrectEmail.classList.add('form__input__correct');
+    incorrectPassword.classList.add('form__input__correct');
 
     let flag = true;
 
     if (!validateEmail(email.value)) {
-      incorrectEmail.classList.remove('correct');
+      incorrectEmail.classList.remove('form__input__correct');
       flag = false;
     }
     if (!validatePassword(password.value)) {
-      incorrectPassword.classList.remove('correct');
+      incorrectPassword.classList.remove('form__input__correct');
       flag = false;
     }
 
@@ -114,7 +114,7 @@ export class LoginForm {
       return false;
     }
 
-    incorrectFormLogin.classList.add('correct');
+    incorrectFormLogin.classList.add('form__input__correct');
 
     const result = await authService.login(email.value, password.value);
 
@@ -125,7 +125,7 @@ export class LoginForm {
       localStorage.setItem("lastName", lastName);
       return true;
     } else {
-      incorrectFormLogin.classList.remove('correct');
+      incorrectFormLogin.classList.remove('form__input__correct');
       return false;
     }
   }

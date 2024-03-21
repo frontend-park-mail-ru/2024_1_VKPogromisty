@@ -2,60 +2,57 @@ import { PostService, AuthService } from "./modules/services.js";
 import { FeedHeader, FeedMain, FeedPost } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
 import { SignUpForm } from "./components/Signup/signup.js";
+import { Routing } from "./routes.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  const config = {
+    '/login': renderLogin,
+    '/signup': renderSignUp,
+    '/feed': renderFeed
+  }
+
+  const router = new Routing(config);
 
   document.querySelectorAll('a').forEach((a) => {
     a.addEventListener('click', (event) => {
       event.preventDefault();
+      router.redirect(a.getAttribute('href'));
     });
   });
 
-  const main = document.getElementById("main");
-  const header = document.getElementById("header");
-
-  function clearHeaderMain() {
-    header.innerHTML = "";
-    main.innerHTML = "";
-  }
+  const body = document.getElementsByTagName('body')[0];
 
   function renderLogin() {
-    history.replaceState("", "", "/login");
-    clearHeaderMain();
+    body.innerHTML = '';
 
     document.title = 'Socio - Login';
 
-    const loginForm = new LoginForm(main);
+    const loginForm = new LoginForm(body);
 
     loginForm.renderForm();
-
-    document
-      .getElementById("button-sign-up")
-      .addEventListener("click", () => {
-        renderSignUp();
-      });
 
     document
       .getElementById("button-sign-in")
       .addEventListener("click", async () => {
         if (await loginForm.isValidForm()) {
-          await renderFeed();
+          await router.redirect('/feed');
         }
       });
   }
 
   async function renderFeed() {
-    history.replaceState("", "", "/feed");
-    clearHeaderMain();
+    body.innerHTML = '';
 
     document.title = 'Socio - Feed';
 
-    const postService = new PostService();
-    const feedHeader = new FeedHeader(header);
-    const feedMain = new FeedMain(main);
+    const feedHeader = new FeedHeader(body);
+    const feedMain = new FeedMain(body);
 
     feedHeader.renderForm();
     feedMain.renderForm();
+
+    const postService = new PostService();
 
     const post = new FeedPost(document.getElementById("activity"));
     const posts = await postService.getPosts();
@@ -66,34 +63,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       .getElementById("logout-button")
       .addEventListener("click", async () => {
         await authService.logout();
-          renderLogin();
+        router.redirect('/login');
       });
   }
 
   function renderSignUp() {
-    history.replaceState("", "", "/signup");
-    clearHeaderMain();
+    body.innerHTML = '';
 
     document.title = 'Socio - Signup';
 
-    const signupForm = new SignUpForm(main);
+    const signupForm = new SignUpForm(body);
 
     signupForm.renderForm();
 
     const uploadImg = document.getElementById('sign-up-upload-img');
 
     document
-      .getElementById("button-sign-in")
-      .addEventListener("click", (event) => {
-        event.preventDefault();
-        renderLogin();
-      });
-
-    document
       .getElementById("button-sign-up")
       .addEventListener("click", async () => {
         if (await signupForm.isValidForm()) {
-          renderFeed();
+          router.redirect('/feed');
         }
       });
 
@@ -109,13 +98,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function route() {
     if (isAuthorized.body) {
-      await renderFeed();
+      await router.redirect('/feed');
     } else {
       const currentPageUrl = window.location.pathname;
       if (currentPageUrl === "/signup") {
-        renderSignUp();
+        router.redirect('/signup');
       } else {
-        renderLogin();
+        router.redirect('/login');
       }
     }
   }
