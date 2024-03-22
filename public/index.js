@@ -1,32 +1,70 @@
-import { PostService, AuthService } from "./modules/services.js";
-import { FeedHeader, FeedMain, FeedPost } from "./components/Feed/feed.js";
+import { PostService, AuthService, ChatService } from "./modules/services.js";
+import { Header } from './components/Header/header.js';
+import { FeedMain, FeedPost } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
 import { SignUpForm } from "./components/Signup/signup.js";
+import { ProfileMain, ProfilePost } from "./components/Profile/profile.js";
+import { MessengerMain } from "./components/Messenger/messenger.js";
+import { ChatMain } from './components/Chat/chat.js';
 import { Routing } from "./routes.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
   const config = {
-    '/login': renderLogin,
-    '/signup': renderSignUp,
-    '/feed': renderFeed
+    paths: {
+      '/': {
+        func: renderLogin,
+        title: 'Login',
+      },
+      '/login': {
+        func: renderLogin,
+        title: 'Login',
+      },
+      '/signup': {
+        func: renderSignUp,
+        title: 'Signup',
+      },
+      '/feed': {
+        func: renderFeed,
+        title: 'Feed',
+      },
+      '/profile': {
+        func: renderProfile,
+        title: 'Profile',
+      },
+      '/messenger': {
+        func: renderMessenger,
+        title: 'Messenger',
+      },
+    },
+    prestart: [
+      prestart,
+    ],
+    poststart: [
+      removeLinking,
+    ],
   }
 
   const router = new Routing(config);
 
-  document.querySelectorAll('a').forEach((a) => {
-    a.addEventListener('click', (event) => {
-      event.preventDefault();
-      router.redirect(a.getAttribute('href'));
+  function removeLinking() {
+    document.querySelectorAll('a').forEach((a) => {
+      a.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (window.location.pathname !== a.getAttribute('href')){
+          router.redirect(a.getAttribute('href'));
+        }
+      });
     });
-  });
+  }
 
   const body = document.getElementsByTagName('body')[0];
 
-  function renderLogin() {
+  function prestart() {
     body.innerHTML = '';
+  }
 
-    document.title = 'Socio - Login';
+  function renderLogin() {
 
     const loginForm = new LoginForm(body);
 
@@ -42,11 +80,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function renderFeed() {
-    body.innerHTML = '';
 
-    document.title = 'Socio - Feed';
-
-    const feedHeader = new FeedHeader(body);
+    const feedHeader = new Header(body);
     const feedMain = new FeedMain(body);
 
     feedHeader.renderForm();
@@ -65,12 +100,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         await authService.logout();
         router.redirect('/login');
       });
+
+    document
+      .getElementById('user__avatar-img')
+      .addEventListener('click', async () => {
+        await router.redirect('/profile');
+      })
   }
 
   function renderSignUp() {
-    body.innerHTML = '';
-
-    document.title = 'Socio - Signup';
 
     const signupForm = new SignUpForm(body);
 
@@ -97,16 +135,83 @@ document.addEventListener("DOMContentLoaded", async () => {
   const isAuthorized = await authService.isAuthorized();
 
   async function route() {
-    if (isAuthorized.body) {
-      await router.redirect('/feed');
-    } else {
-      const currentPageUrl = window.location.pathname;
-      if (currentPageUrl === "/signup") {
-        router.redirect('/signup');
-      } else {
-        router.redirect('/login');
-      }
+    const currentPageUrl = window.location.pathname;
+    switch (currentPageUrl) {
+      case '/profile':
+      case '/messenger':
+      case '/feed':
+        if (!isAuthorized.body) {
+          router.redirect('/login');
+        } else {
+          await router.redirect(currentPageUrl);
+        }
+        return;
+      case '/login':
+      case '/signup':
+      case '/':
+        if (isAuthorized.body){
+          await router.redirect('/feed');
+        } else {
+          router.redirect(currentPageUrl);
+        }
+        return;
+      default:
+        router.redirect(currentPageUrl);
     }
+  }
+
+  async function renderProfile() {
+
+    const profileHeader = new Header(body);
+    const profileMain = new ProfileMain(body);
+
+    profileHeader.renderForm();
+    profileMain.renderForm();
+
+    /*
+    const postService = new PostService();
+    const profilePost = new ProfilePost(document.getElementById('activity'));
+
+    const posts = await postService.getPosts();
+    profilePost.renderPosts(posts.body);
+    */
+
+    document
+      .getElementById("logout-button")
+      .addEventListener("click", async () => {
+        await authService.logout();
+        router.redirect('/login');
+      });
+  }
+
+  async function renderMessenger() {
+    const messengerHeader = new Header(body);
+    const messengerMain = new MessengerMain(body);
+
+    /*
+    const chatService = new ChatService();
+
+    chats = chatService.getChats();
+    */
+    const chats = [];
+    messengerHeader.renderForm();
+    messengerMain.renderForm(chats);
+
+    document
+      .querySelectorAll('.dialog')
+      .forEach((elem) => {
+        elem.addEventListener('click', () => {
+          const chatterId = elem.getAttribute('id');
+          router.redirect(`/profile/${chatterId}`);
+        });
+      });
+
+  }
+
+  async function renderChat() {
+    const chatMain = new ChatMain(body);
+
+    chatMain.renderForm();
   }
 
   document.addEventListener("navigate", route);

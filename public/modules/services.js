@@ -154,3 +154,31 @@ export class PostService {
     return genResponse(response.ok, data.body.posts, data.message);
   }
 }
+
+export class ChatService {
+  baseUrl = `${API_URL}/...`;
+
+  async getChats(id) {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+}
+
+export class MessengeService {
+  baseUrl = `${API_URL}/...`;
+
+  async getMessenges(idFirst, idSecond) {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+    });
+
+    const data = await response.json();
+    
+    return genResponse(response.ok, data.body, data.message);
+  }
+}

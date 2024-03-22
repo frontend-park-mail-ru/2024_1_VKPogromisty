@@ -1,25 +1,11 @@
 <div class="feed-main">
-    <div class="sidebar">
-        {{#each sidebar}}
-        <ul>
-            <li>
-            <a href="{{ this.href }}">{{ this.text }}</a>
-            </li>
-        </ul>
-        {{/each}}
-        <ul id="help-sidebar">
-            <li><a href="#">Помощь</a></li>
-        </ul>
+    <div class="sidebar" id="sidebar">
     </div>
 
-    <div id="activity">
-        <div id="profile-poster" class="profile-wrapper">
-            <div class="profile-wrapper">
-                <img class="profile-wrapper__settings-img" />
-                <img class="profile-wrapper__back-img" />
-            </div>
+    <div id="activity" class="activity">
+        <div id="profile-poster" class="profile-poster">
             <div class="profile-poster-view">
-                <img class="profile-poster__avatar-img" />
+                <img class="profile-poster__avatar-img" src="{{this.userAvatar}}" />
                 <div class="profile-brief">
                     <span class="profile-brief__name-span">{{this.fullName}}</span>
                     <div class="profile-brief-info">
@@ -28,17 +14,21 @@
                     </div>
                 </div>
             </div>
+            <div class="profile-wrapper">
+                <img class="profile-wrapper__settings-img" src="../static/images/setting.png" />
+                <img class="profile-wrapper__back-img" src="../static/images/forest.jpg" />
+            </div>
         </div>
-        <div id="create-post">
-            <div id="news-avatar">
-                <img id="user-avatar-news" src="../static/images/Logo.png" />
+        <div id="create-post" class="create-post">
+            <div id="news-avatar" class="news-avatar">
+            <img id="user-avatar-news" class="news-avatar__img" src="{{this.userAvatar}}" />
             </div>
             <div class="news">
-                <input id="user-news" type="text" placeholder="Что нового?" readonly />
-                <img
+            <input id="user-news" class="news__input" type="text" placeholder="Что нового?" readonly />
+            <img
+                class="news__img"
                 src="../static/images/attach-paperclip-symbol.png"
-                style="width: 16px; height: 16px"
-                />
+            />
             </div>
             <button class="publish-button">Опубликовать</button>
         </div>

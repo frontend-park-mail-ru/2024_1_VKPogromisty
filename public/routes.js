@@ -7,12 +7,23 @@ export class Routing {
     }
 
     redirect(url) {
-        if (this.#config[url] === undefined){
+        if (this.#config.paths[url] === undefined){
             console.log('path does not exist');
             return;
         }
         history.replaceState("", "", url);
-        this.#config[url]();
+        document.title = `Socio - ${this.#config.paths[url].title}`;
+
+        this.#config.prestart.forEach((func) => {
+            func();
+        })
+
+        this.#config.paths[url].func();
+
+        this.#config.poststart.forEach((func) => {
+            func();
+        });
+
     }
 
 }
