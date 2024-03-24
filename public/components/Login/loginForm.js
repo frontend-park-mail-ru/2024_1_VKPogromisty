@@ -119,10 +119,12 @@ export class LoginForm {
     const result = await authService.login(email.value, password.value);
 
     if (result.ok) {
-      const { avatar, firstName, lastName } = result.body.user;
+      const { avatar, firstName, lastName, userId, dateOfBirth } = result.body.user;
       localStorage.setItem("avatar", avatar);
       localStorage.setItem("firstName", firstName);
       localStorage.setItem("lastName", lastName);
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("dateOfBirth", dateOfBirth);
       return true;
     } else {
       incorrectFormLogin.classList.remove('form__input__correct');

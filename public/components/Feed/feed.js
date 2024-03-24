@@ -3,7 +3,7 @@ import { Sidebar } from "/public/components/Sidebar/sidebar.js";
 
 const staticUrl = `${API_URL}/static`;
 
-const right_sidebar = [
+const rightSidebar = [
   {
     href: "#",
     text: "НОВОСТИ",
@@ -30,8 +30,8 @@ const right_sidebar = [
  */
 export class FeedMain {
   #parent;
-  #fullUserName;
   #userAvatar;
+  #userId;
 
   constructor(parent) {
     this.#parent = parent;
@@ -42,8 +42,8 @@ export class FeedMain {
    * @returns {void}
    */
   updateUser() {
-    this.#fullUserName = `${localStorage.getItem("firstName")} ${localStorage.getItem("lastName")}`;
     this.#userAvatar = `${staticUrl}/${localStorage.getItem("avatar")}`;
+    this.#userId = localStorage.getItem('userId');
   }
 
   /**
@@ -55,8 +55,9 @@ export class FeedMain {
     this.updateUser();
 
     const userAvatar = this.#userAvatar;
+    const userId = this.#userId;
 
-    this.#parent.innerHTML += template({ userAvatar, right_sidebar });
+    this.#parent.innerHTML += template({ userAvatar, rightSidebar, userId });
 
     const sidebar = new Sidebar(document.getElementById('sidebar'));
 

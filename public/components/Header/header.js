@@ -14,6 +14,7 @@ const staticUrl = `${API_URL}/static`;
 export class Header {
     #fullUserName;
     #userAvatar;
+    #userId;
   
     #parent;
   
@@ -34,6 +35,7 @@ export class Header {
     updateUser() {
       this.#fullUserName = `${localStorage.getItem("firstName")} ${localStorage.getItem("lastName")}`;
       this.#userAvatar = `${staticUrl}/${localStorage.getItem("avatar")}`;
+      this.#userId = localStorage.getItem('userId');
     }
   
     /**
@@ -46,6 +48,7 @@ export class Header {
   
       const userAvatar = this.#userAvatar;
       const fullUserName = this.#fullUserName;
-      this.#parent.innerHTML += template({ userAvatar, fullUserName });
+      const userId = this.#userId;
+      this.#parent.innerHTML += template({ userAvatar, fullUserName, userId });
     }
   }

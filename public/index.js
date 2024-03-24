@@ -14,27 +14,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     paths: {
       '/': {
         func: renderLogin,
-        title: 'Login',
+        title: 'Вход',
       },
       '/login': {
         func: renderLogin,
-        title: 'Login',
+        title: 'Вход',
       },
       '/signup': {
         func: renderSignUp,
-        title: 'Signup',
+        title: 'Регистрация',
       },
       '/feed': {
         func: renderFeed,
-        title: 'Feed',
+        title: 'Новости',
       },
-      '/profile': {
+      '/profile/{userId}': {
         func: renderProfile,
-        title: 'Profile',
+        title: 'Профиль',
       },
       '/messenger': {
         func: renderMessenger,
-        title: 'Messenger',
+        title: 'Мессенджер',
       },
     },
     prestart: [
@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   const router = new Routing(config);
+  var ownUserId;
 
   function removeLinking() {
     document.querySelectorAll('a').forEach((a) => {
@@ -81,6 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function renderFeed() {
 
+    ownUserId = localStorage.getItem('userId');
     const feedHeader = new Header(body);
     const feedMain = new FeedMain(body);
 
@@ -104,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document
       .getElementById('user__avatar-img')
       .addEventListener('click', async () => {
-        await router.redirect('/profile');
+        await router.redirect(`/profile/${ownUserId}`);
       })
   }
 
@@ -127,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document
       .getElementById('avatar')
       .addEventListener('change', () => {
-        uploadImg.classList.remove('correct');
+        uploadImg.classList.remove('form__input__correct');
       });
   }
 
@@ -137,15 +139,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function route() {
     const currentPageUrl = window.location.pathname;
     switch (currentPageUrl) {
-      case '/profile':
-      case '/messenger':
-      case '/feed':
-        if (!isAuthorized.body) {
-          router.redirect('/login');
-        } else {
-          await router.redirect(currentPageUrl);
-        }
-        return;
       case '/login':
       case '/signup':
       case '/':
@@ -156,25 +149,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         return;
       default:
-        router.redirect(currentPageUrl);
+        if (!isAuthorized.body) {
+          router.redirect('/login');
+        } else {
+          await router.redirect(currentPageUrl);
+        }
+        return;
     }
   }
 
-  async function renderProfile() {
+  async function renderProfile(userId) {
 
     const profileHeader = new Header(body);
     const profileMain = new ProfileMain(body);
 
     profileHeader.renderForm();
-    profileMain.renderForm();
+    profileMain.renderForm(userId);
 
-    /*
     const postService = new PostService();
     const profilePost = new ProfilePost(document.getElementById('activity'));
 
     const posts = await postService.getPosts();
     profilePost.renderPosts(posts.body);
-    */
 
     document
       .getElementById("logout-button")
@@ -191,8 +187,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     /*
     const chatService = new ChatService();
 
-    chats = chatService.getChats();
-    */
+    chats = chatService.getChats();*/
+    
     const chats = [];
     messengerHeader.renderForm();
     messengerMain.renderForm(chats);

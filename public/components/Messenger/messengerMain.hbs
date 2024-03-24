@@ -5,7 +5,14 @@
 
     <div id="activity" class="activity">
         <div class="dialogs">
-            <div class="search-dialog">
+            <div class="search-place">
+                <div class="search-dialog">
+                    <img class="search-dialog__magnifier-img" src="../static/images/magnifying-glass.png" />
+                    <input class="search-dialog__input" type="text" placeholder="Поиск" />
+                </div>
+                <div class="search-buttons">
+                    <img class="search-buttons__menu-img" src="../static/images/menu.png" />
+                </div>
             </div>
             {{#each chats}}
             <div class="dialog" id="dialog-id">

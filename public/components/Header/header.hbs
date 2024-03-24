@@ -8,7 +8,7 @@
   <div class="user">
     <img class="user__notification-img" src="../static/images/notification.png" />
     <span id="user__username-span" class="user__username-span">{{ fullUserName }}</span>
-    <img id="user__avatar-img" class="user__avatar-img" src="{{ userAvatar }}" />
+    <a href="/profile/{{this.userId}}"><img id="user__avatar-img" class="user__avatar-img" src="{{ userAvatar }}" /></a>
     <button id="logout-button" class="user__logout-button">Выйти</button>
   </div>
 </div>

@@ -4,10 +4,6 @@ const sidebar = [
         text: "Новости",
     },
     {
-        href: "/profile",
-        text: "Профиль",
-    },
-    {
         href: "/messenger",
         text: "Мессенджер",
     },
@@ -31,15 +27,25 @@ const sidebar = [
 
 export class Sidebar {
     #parent;
+    #userId;
 
     constructor(parent) {
         this.#parent = parent;
+        this.#userId = localStorage.getItem('userId');
     }
 
     renderSidebar() {
         const template = Handlebars.templates["sidebar.hbs"];
+        const userId = this.#userId;
 
-        this.#parent.innerHTML = template({ sidebar });
+        const fullSidebar = sidebar.concat(
+            {
+                href: `/profile/${userId}`,
+                text: "Профиль",
+            },
+        );
+
+        this.#parent.innerHTML = template({ fullSidebar });
     }
 
 }
