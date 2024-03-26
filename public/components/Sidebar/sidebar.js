@@ -8,7 +8,7 @@ const sidebar = [
         text: "Мессенджер",
     },
     {
-        href: "friends",
+        href: "/friends",
         text: "Друзья",
     },
     {

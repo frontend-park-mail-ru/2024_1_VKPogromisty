@@ -1,4 +1,4 @@
-import { PostService, AuthService, ChatService } from "./modules/services.js";
+import { PostService, AuthService, ChatService, FriendsService } from "./modules/services.js";
 import { Header } from './components/Header/header.js';
 import { FeedMain, FeedPost } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
@@ -6,6 +6,7 @@ import { SignUpForm } from "./components/Signup/signup.js";
 import { ProfileMain, ProfilePost } from "./components/Profile/profile.js";
 import { MessengerMain } from "./components/Messenger/messenger.js";
 import { ChatMain } from './components/Chat/chat.js';
+import { FriendsMain } from "./components/Friends/friends.js";
 import { Routing } from "./routes.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -36,6 +37,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         path: /\/messenger/,
         func: renderMessenger,
         title: 'Мессенджер',
+      },
+      {
+        path: /\/friends/,
+        func: renderFriends,
+        title: 'Друзья',
       },
       {
         path: /\//,
@@ -207,6 +213,28 @@ document.addEventListener("DOMContentLoaded", async () => {
           const chatterId = elem.getAttribute('id');
           router.redirect(`/profile/${chatterId}`);
         });
+      });
+
+  }
+
+  async function renderFriends() {
+    body.innerHTML = '';
+
+    const friendsHeader = new Header(body);
+    const friendsMain = new FriendsMain(body);
+
+    friendsHeader.renderForm();
+
+    const friendsService = new FriendsService();
+    const friends = await friendsService.getFriends();
+
+    friendsMain.renderForm(friends.body.friends);
+
+    document
+      .getElementById("logout-button")
+      .addEventListener("click", async () => {
+        await authService.logout();
+        router.redirect('/login');
       });
 
   }

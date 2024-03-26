@@ -169,6 +169,21 @@ export class ChatService {
   }
 }
 
+export class FriendsService {
+  baseUrl = `${API_URL}/subscriptions/friends`;
+
+  async getFriends() {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+}
+
 export class MessengeService {
   baseUrl = `${API_URL}/...`;
 

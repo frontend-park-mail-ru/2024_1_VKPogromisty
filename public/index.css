@@ -927,3 +927,89 @@ input::-webkit-inner-spin-button {
   width: 16px;
   height: 16px;
 }
+
+.search-place {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 7px;
+  border: 1px solid black;
+  height: 60px;
+  padding-left: 10px;
+  margin-bottom: 20px;
+}
+
+.search-friend {
+  display: flex;
+  flex-direction: row;
+  border-radius: 7px;
+  border: 1px solid black;
+  height: 30px;
+  align-items: center;
+  padding-left: 10px;
+  width: 500px;
+  min-width: 100px;
+  background-color: #FCEEEB;
+}
+
+.search-friend__magnifier-img {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.search-friend__input {
+  background-color: inherit;
+}
+
+.friends {
+  width: 100%;
+  border-radius: 7px;
+  border: 1px solid black;
+}
+
+.friend__avatar-img {
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.friend {
+  display: flex;
+}
+
+.friends-field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 20px;
+  height: 70px;
+}
+
+.friends-field:not(:last-child) {
+  border-bottom: 1px solid var(--sign-buttons);
+}
+
+.friend-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.friend-info__name-span {
+  font-weight: bolder;
+}
+
+.friend-content__date-of-birth-span {
+  color: var(--button-feed);
+  font-size: 13px;
+}
+
+.friend-ables__button {
+  background-color: #E0908D;
+  color: white;
+  border-radius: 7px;
+  height: 30px;
+}
