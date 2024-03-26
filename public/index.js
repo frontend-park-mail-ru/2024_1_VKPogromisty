@@ -11,59 +11,62 @@ import { Routing } from "./routes.js";
 document.addEventListener("DOMContentLoaded", async () => {
 
   const config = {
-    paths: {
-      '/': {
+    paths: [
+      {
+        path: /\/login/,
         func: renderLogin,
         title: 'Вход',
       },
-      '/login': {
-        func: renderLogin,
-        title: 'Вход',
-      },
-      '/signup': {
+      {
+        path: /\/signup/,
         func: renderSignUp,
         title: 'Регистрация',
       },
-      '/feed': {
+      {
+        path: /\/feed/,
         func: renderFeed,
         title: 'Новости',
       },
-      '/profile/{userId}': {
+      {
+        path: /\/profile\/([0-9].*?)/,
         func: renderProfile,
         title: 'Профиль',
       },
-      '/messenger': {
+      {
+        path: /\/messenger/,
         func: renderMessenger,
         title: 'Мессенджер',
       },
-    },
-    prestart: [
-      prestart,
-    ],
-    poststart: [
-      removeLinking,
+      {
+        path: /\//,
+        func: renderLogin,
+        title: 'Вход',
+      },
     ],
   }
 
   const router = new Routing(config);
   var ownUserId;
 
-  function removeLinking() {
-    document.querySelectorAll('a').forEach((a) => {
-      a.addEventListener('click', (event) => {
-        event.preventDefault();
-        if (window.location.pathname !== a.getAttribute('href')){
-          router.redirect(a.getAttribute('href'));
-        }
-      });
-    });
-  }
-
   const body = document.getElementsByTagName('body')[0];
 
-  function prestart() {
-    body.innerHTML = '';
-  }
+  body
+    .addEventListener('click', (event) => {
+      let target = event.target;
+
+      while (target.nodeName.toLowerCase() !== 'body') {
+        if (target.nodeName.toLowerCase() === 'a') {
+          event.preventDefault();
+
+          const url = target.getAttribute('href');
+
+          router.redirect(url);
+          break;
+        }
+        
+        target = target.parentNode;
+      }
+    });
 
   function renderLogin() {
 
@@ -81,6 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function renderFeed() {
+    body.innerHTML = '';
 
     ownUserId = localStorage.getItem('userId');
     const feedHeader = new Header(body);
@@ -89,12 +93,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     feedHeader.renderForm();
     feedMain.renderForm();
 
-    const postService = new PostService();
+    //const postService = new PostService();
 
-    const post = new FeedPost(document.getElementById("activity"));
-    const posts = await postService.getPosts();
+    //const post = new FeedPost(document.getElementById("activity"));
+    //const posts = await postService.getPosts();
 
-    post.renderPosts(posts.body);
+    //post.renderPosts(posts.body);
 
     document
       .getElementById("logout-button")
@@ -159,6 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function renderProfile(userId) {
+    body.innerHTML = '';
 
     const profileHeader = new Header(body);
     const profileMain = new ProfileMain(body);
@@ -166,11 +171,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     profileHeader.renderForm();
     profileMain.renderForm(userId);
 
-    const postService = new PostService();
-    const profilePost = new ProfilePost(document.getElementById('activity'));
+    //const postService = new PostService();
+    //const profilePost = new ProfilePost(document.getElementById('activity'));
 
-    const posts = await postService.getPosts();
-    profilePost.renderPosts(posts.body);
+    //const posts = await postService.getPosts();
+    //profilePost.renderPosts(posts.body);
 
     document
       .getElementById("logout-button")
@@ -181,6 +186,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function renderMessenger() {
+    body.innerHTML = '';
+
     const messengerHeader = new Header(body);
     const messengerMain = new MessengerMain(body);
 
@@ -205,6 +212,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function renderChat() {
+    body.innerHTML = '';
+
     const chatMain = new ChatMain(body);
 
     chatMain.renderForm();
