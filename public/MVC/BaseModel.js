@@ -1,4 +1,4 @@
-import EventBus from "./EventBus";
+
 
 /**
  * BaseModel - класс для обработки данных, общения с бэком.

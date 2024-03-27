@@ -42,7 +42,7 @@ export class Routing {
 
   /**
    * Redirects to the current page
-   * @param {string} url 
+   * @param {string} url
    * @returns {void}
    */
   redirect(url) {
