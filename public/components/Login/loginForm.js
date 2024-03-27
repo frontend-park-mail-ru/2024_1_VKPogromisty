@@ -8,18 +8,22 @@ const inputs = [
   {
     inscription: "Электронная почта",
     incorrect: "incorrect-email",
+    incorrectText: errors.incorrectEmail,
     type: "text",
     id: "email",
     name: "email",
     placeholder: "Электронная почта",
+    isPassword: false,
   },
   {
     inscription: "Пароль",
     incorrect: "incorrect-password",
+    incorrectText: errors.incorrectPasswordLength,
     type: "password",
     id: "password",
     name: "password",
     placeholder: "Пароль",
+    isPassword: true,
   },
 ];
 
@@ -51,20 +55,29 @@ export class LoginForm {
 
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
+    const loginShowPassword = document.getElementById("login-show-password");
 
     email.addEventListener("focusout", () => {
-      incorrectEmail.innerHTML = "";
+      incorrectEmail.classList.remove("form__input__correct");
 
-      if (!validateEmail(email.value)) {
-        incorrectEmail.innerHTML = errors.incorrectEmail;
+      if (validateEmail(email.value)) {
+        incorrectEmail.classList.add("form__input__correct");
       }
     });
 
     password.addEventListener("focusout", () => {
-      incorrectPassword.innerHTML = "";
+      incorrectPassword.classList.remove("form__input__correct");
 
-      if (!validatePassword(password.value)) {
-        incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+      if (validatePassword(password.value)) {
+        incorrectPassword.classList.add("form__input__correct");
+      }
+    });
+
+    loginShowPassword.addEventListener("click", () => {
+      if (password.getAttribute("type") == "password") {
+        password.setAttribute("type", "text");
+      } else {
+        password.setAttribute("type", "password");
       }
     });
   }
@@ -80,22 +93,19 @@ export class LoginForm {
     const password = document.getElementById("password");
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
+    const incorrectFormLogin = document.getElementById("incorrect-form-login");
 
-    function clearIncorrects() {
-      incorrectEmail.innerHTML = "";
-      incorrectPassword.innerHTML = "";
-    }
-
-    clearIncorrects();
+    incorrectEmail.classList.add("form__input__correct");
+    incorrectPassword.classList.add("form__input__correct");
 
     let flag = true;
 
     if (!validateEmail(email.value)) {
-      incorrectEmail.innerHTML = errors.incorrectEmail;
+      incorrectEmail.classList.remove("form__input__correct");
       flag = false;
     }
     if (!validatePassword(password.value)) {
-      incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+      incorrectPassword.classList.remove("form__input__correct");
       flag = false;
     }
 
@@ -103,16 +113,21 @@ export class LoginForm {
       return false;
     }
 
+    incorrectFormLogin.classList.add("form__input__correct");
+
     const result = await authService.login(email.value, password.value);
 
     if (result.ok) {
-      const { avatar, firstName, lastName } = result.body.user;
+      const { avatar, firstName, lastName, userId, dateOfBirth } =
+        result.body.user;
       localStorage.setItem("avatar", avatar);
       localStorage.setItem("firstName", firstName);
       localStorage.setItem("lastName", lastName);
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("dateOfBirth", dateOfBirth);
       return true;
     } else {
-      incorrectEmail.innerHTML = "Некорректные данные";
+      incorrectFormLogin.classList.remove("form__input__correct");
       return false;
     }
   }

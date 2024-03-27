@@ -1,63 +1,105 @@
-<div class="form-wrapper">
-  <div class="form">
-    <div class="image-container">
-      <img src="../static/images/Logo.png" alt="Logo" />
-    </div>
-    <div class="sign-in-text">
-      <div class="text-sign-in-first-part">Зарегистрируйтесь в</div>
-      <div class="text-sign-in-second-part">Socio</div>
-    </div>
+<div id="main">
+  <div class="form-wrapper">
+    <div class="form">
+      <div class="image-container-login-signup">
+        <img
+          src="../static/images/Logo.png"
+          alt="Logo"
+          class="image-container-login-signup__img"
+        />
+      </div>
+      <div class="login-signup-text">
+        <div class="login-signup-text__first-part">Зарегистрируйтесь в</div>
+        <div class="login-signup-text__second-part">Socio</div>
+      </div>
 
-    <div class="register-form">
-      <form method="post" action="#" enctype="multipart/form-data" class="sign-up-form">
-        <div id="repeat-email" class="error"></div>
-        {{#each main_inputs}}
-        <div class="input-group">
-          <span class="inscription-form">
-            {{ this.inscription }}
-          </span>
-          <input
-            class="main-input"
-            id="{{ this.id }}"
-            type="{{ this.type }}"
-            name="{{ this.name }}"
-            placeholder="{{ this.placeholder }}"
-            required
-          />
-          <div class="error" id="{{ this.incorrect }}"></div>
-        </div>
-        {{/each}}
-        <label for="date-birthday" class="inscription-form"
-          >Дата рождения</label
+      <div class="register-form">
+        <form
+          method="post"
+          action="#"
+          enctype="multipart/form-data"
+          class="sign-up-form"
         >
-
-        <div class="date-birthday">
-          {{#each part_of_date}}
-          <input
-            id="{{ this.id }}"
-            type="text"
-            required
-            placeholder="{{ this.placeholder }}"
-          />
+          <div
+            id="repeat-email"
+            class="form__input__error form__input__correct"
+          >
+            Почта уже используется
+          </div>
+          {{#each main_inputs}}
+          <div class="input-group">
+            <span class="inscription-form">
+              {{ this.inscription }}
+            </span>
+            <input
+              class="input-group__input"
+              id="{{ this.id }}"
+              type="{{ this.type }}"
+              name="{{ this.name }}"
+              placeholder="{{ this.placeholder }}"
+              required
+            />
+            {{#if this.isPassword}}
+            <div class="signup-show-password" id="signup-show-{{ this.id }}">
+              <img
+                src="../static/images/close_eye.png"
+                class="show-password__button"
+              />
+            </div>
+            {{/if}}
+            <div
+              class="form__input__error form__input__correct"
+              id="{{ this.incorrect }}"
+            >
+              {{ this.incorrectText }}
+            </div>
+          </div>
           {{/each}}
-        </div>
-        <div class="error" id="incorrect-date-of-birthday"></div>
-        <div class="inscription-form">
-          Аватарка пользователя (необязательно)
-        </div>
-        <div class="file-input">
-          <label class="input-avatar">
-            <input type="file" name="avatar" id="avatar" />
-            <span class="upload-image">Загрузить изображение</span>
-          </label>
-        </div>
-        <button type="button" class="button-sign-in" id="button-sign-up">
-          Зарегистрироваться
-        </button>
-        <a href="/login" class="link_sign_up" id="button-sign-in"
-          >Уже есть аккаунт? Войти</a
-        >
-      </form>
+          <label for="date-birthday" class="inscription-form"
+            >Дата рождения</label
+          >
+
+          <div class="date-birthday" id="date-birthday">
+            {{#each part_of_date}}
+            <input
+              class="date-birthday__input"
+              id="{{ this.id }}"
+              type="text"
+              required
+              placeholder="{{ this.placeholder }}"
+            />
+            {{/each}}
+          </div>
+          <div
+            class="form__input__error form__input__correct"
+            id="incorrect-date-of-birthday"
+          >
+            Некорректная дата
+          </div>
+          <div class="inscription-form">
+            Аватарка пользователя (необязательно)
+          </div>
+          <div class="file-input">
+            <label class="input-avatar">
+              <input type="file" name="avatar" id="avatar" />
+              <span class="upload-image"
+                >Загрузить изображение
+                <img
+                  class="sign-up-upload-img form__input__correct"
+                  src="../static/images/upload.png"
+                  id="sign-up-upload-img"
+                />
+              </span>
+            </label>
+          </div>
+          <button type="button" class="button-sign-in" id="button-sign-up">
+            Зарегистрироваться
+          </button>
+          <a href="/login" class="link-sign-up" id="button-sign-in"
+            >Уже есть аккаунт? Войти</a
+          >
+        </form>
+      </div>
     </div>
   </div>
 </div>

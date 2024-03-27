@@ -154,3 +154,76 @@ export class PostService {
     return genResponse(response.ok, data.body.posts, data.message);
   }
 }
+
+export class ChatService {
+  baseUrl = `${API_URL}/...`;
+
+  async getChats(id) {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+}
+
+export class FriendsService {
+  baseUrl = `${API_URL}/subscriptions/friends`;
+
+  async getFriends() {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+}
+
+export class SubscribersService {
+  baseUrl = `${API_URL}/subscriptions/subscribers`;
+
+  async getSubscribers() {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+}
+
+export class SubscriptionsService {
+  baseUrl = `${API_URL}/subscriptions/subscriptions`;
+
+  async getSubscriptions() {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+}
+
+export class MessengeService {
+  baseUrl = `${API_URL}/...`;
+
+  async getMessenges(idFirst, idSecond) {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+}

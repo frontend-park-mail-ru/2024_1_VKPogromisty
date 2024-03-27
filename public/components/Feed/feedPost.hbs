@@ -4,7 +4,7 @@
     <div class="post-author">
       <img
         class="user-avatar-post"
-        src="{{../staticUrl}}/{{this.author.avatar}}"
+        src="{{ staticUrl }}/{{ this.author.avatar }}"
       />
       <span class="author-name"
         >{{ this.author.firstName }} {{ this.author.lastName }}</span
@@ -17,7 +17,7 @@
   <div class="post-content">
     <span class="content-text">{{ this.post.text }}</span>
     {{#each this.post.attachments}}
-    <img class="content-img" src="{{../../staticUrl}}/{{ this }}" />
+    <img class="content-img" src="{{ staticUrl }}/{{ this }}" />
     {{/each}}
   </div>
   <div class="post-reaction">
@@ -28,33 +28,30 @@
       <button class="show-comments">
         <img class="messenger" src="../static/images/messenger.png" />
       </button>
+      <span class="show-comments-label">Показать комментарии</span>
     </div>
-    <span class="show-comments-label">Показать комментарии</span>
     <div class="comment-menu">
       <img class="ellipsees" src="../static/images/more.png" />
     </div>
   </div>
   <div class="post-give-comment">
     <div class="post-footer">
-      <img class="user-avatar-post" src="{{../userAvatar}}" />
+      <img class="user-avatar-post" src="{{ userAvatar }}" />
       <input
         id="user-comment{{ this.post.postId }}"
         class="user-comment"
         type="text"
         name="user-comment"
         placeholder="Оставить комментарий"
+        readonly
       />
     </div>
     <div class="comment-buttons">
-      <button class="include-button">
-        <img
-          class="paper-clip"
-          src="../static/images/attach-paperclip-symbol.png"
-        />
-      </button>
-      <button class="send-button">
-        <img class="post-comment-img" src="../static/images/send.png" />
-      </button>
+      <img
+        class="paper-clip"
+        src="../static/images/attach-paperclip-symbol.png"
+      />
+      <img class="post-comment-img" src="../static/images/send.png" />
     </div>
   </div>
 </div>

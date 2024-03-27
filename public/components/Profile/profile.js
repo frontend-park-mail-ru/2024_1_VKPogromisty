@@ -1,26 +1,7 @@
 import { API_URL } from "/public/modules/consts.js";
-import { Sidebar } from "/public/components/Sidebar/sidebar.js";
+import { Sidebar } from "../Sidebar/sidebar.js";
 
 const staticUrl = `${API_URL}/static`;
-
-const rightSidebar = [
-  {
-    href: "#",
-    text: "НОВОСТИ",
-  },
-  {
-    href: "#",
-    text: "СООБЩЕСТВА",
-  },
-  {
-    href: "#",
-    text: "ДРУЗЬЯ",
-  },
-  {
-    href: "#",
-    text: "ФОТОГРАФИИ",
-  },
-];
 
 /**
  * Class for rendering the main feed
@@ -28,8 +9,9 @@ const rightSidebar = [
  * @property {HTMLElement} #parent - The parent element
  * @method renderForm - Renders the main feed
  */
-export class FeedMain {
+export class ProfileMain {
   #parent;
+  #fullUserName;
   #userAvatar;
   #userId;
 
@@ -42,6 +24,7 @@ export class FeedMain {
    * @returns {void}
    */
   updateUser() {
+    this.#fullUserName = `${localStorage.getItem("firstName")} ${localStorage.getItem("lastName")}`;
     this.#userAvatar = `${staticUrl}/${localStorage.getItem("avatar")}`;
     this.#userId = localStorage.getItem("userId");
   }
@@ -51,13 +34,21 @@ export class FeedMain {
    * @returns {void}
    */
   renderForm() {
-    const template = Handlebars.templates["feedMain.hbs"];
     this.updateUser();
-
     const userAvatar = this.#userAvatar;
+    const fullName = this.#fullUserName;
     const userId = this.#userId;
+    const date = "1 января 2024";
+    const place = "Москва";
 
-    this.#parent.innerHTML += template({ userAvatar, rightSidebar, userId });
+    const template = Handlebars.templates["profileMain.hbs"];
+    this.#parent.innerHTML += template({
+      userAvatar,
+      fullName,
+      date,
+      place,
+      userId,
+    });
 
     const sidebar = new Sidebar(document.getElementById("sidebar"));
 
@@ -74,7 +65,7 @@ export class FeedMain {
  * @method updateUser - Updates the user
  * @method renderPosts - Renders the feed posts
  */
-export class FeedPost {
+export class ProfilePost {
   #parent;
 
   #fullUserName;
@@ -106,7 +97,7 @@ export class FeedPost {
    * @returns {void}
    */
   renderPosts(posts) {
-    const template = Handlebars.templates["feedPost.hbs"];
+    const template = Handlebars.templates["profilePost.hbs"];
 
     const userAvatar = this.#userAvatar;
     const fullUserName = this.#fullUserName;

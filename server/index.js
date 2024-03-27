@@ -6,10 +6,10 @@ const app = express();
 
 const PORT = process.env.PORT;
 
-app.use("/static", express.static(path.resolve(__dirname, "..", "static")));
-app.use("/public", express.static(path.resolve(__dirname, "..", "public")));
+app.use("*/static", express.static(path.resolve(__dirname, "..", "static")));
+app.use("*/public", express.static(path.resolve(__dirname, "..", "public")));
 app.use(
-  "/handlebars",
+  "*/handlebars",
   express.static(path.resolve(__dirname, "..", "handlebars")),
 );
 

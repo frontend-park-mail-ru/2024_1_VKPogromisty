@@ -8,47 +8,58 @@ import { errors } from "/public/modules/errors.js";
 import { AuthService } from "../../modules/services.js";
 
 const authService = new AuthService();
+const correct = "form__input__correct";
 
 const main_inputs = [
   {
     inscription: "Фамилия",
     incorrect: "incorrect-last-name",
+    incorrectText: errors.incorrectName,
     id: "last-name",
     type: "text",
     name: "last_name",
     placeholder: "Фамилия",
+    isPassword: false,
   },
   {
     inscription: "Имя",
     incorrect: "incorrect-first-name",
+    incorrectText: errors.incorrectName,
     id: "first-name",
     type: "text",
     name: "first_name",
     placeholder: "Имя",
+    isPassword: false,
   },
   {
     inscription: "Почта",
     incorrect: "incorrect-email",
+    incorrectText: errors.incorrectEmail,
     id: "email",
     type: "email",
     name: "email",
     placeholder: "Почта",
+    isPassword: false,
   },
   {
     inscription: "Пароль",
     incorrect: "incorrect-password",
+    incorrectText: errors.incorrectPasswordLength,
     id: "password",
     type: "password",
     name: "password",
     placeholder: "Пароль",
+    isPassword: true,
   },
   {
     inscription: "Повторите пароль",
     incorrect: "incorrect-repeat-password",
+    incorrectText: errors.passwordMismatch,
     id: "repeat-password",
     type: "password",
     name: "repeat_password",
     placeholder: "Повторите пароль",
+    isPassword: true,
   },
 ];
 
@@ -103,6 +114,10 @@ export class SignUpForm {
     const day = document.getElementById("day");
     const month = document.getElementById("month");
     const year = document.getElementById("year");
+    const signupShowPassword = document.getElementById("signup-show-password");
+    const signupShowRepeatPassword = document.getElementById(
+      "signup-show-repeat-password",
+    );
 
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
@@ -116,50 +131,86 @@ export class SignUpForm {
     );
 
     email.addEventListener("focusout", () => {
-      incorrectEmail.innerHTML = "";
+      incorrectEmail.classList.add(correct);
 
       if (!validateEmail(email.value)) {
-        incorrectEmail.innerHTML = errors.incorrectEmail;
+        incorrectEmail.classList.remove(correct);
       }
     });
 
     password.addEventListener("focusout", () => {
-      incorrectPassword.innerHTML = "";
+      incorrectPassword.classList.add(correct);
 
       if (!validatePassword(password.value)) {
-        incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+        incorrectPassword.classList.remove(correct);
+      }
+
+      if (!(password.value === repeatPassword.value)) {
+        incorrectRepeatPassword.classList.remove(correct);
       }
     });
 
     repeatPassword.addEventListener("focusout", () => {
-      incorrectRepeatPassword.innerHTML = "";
+      incorrectRepeatPassword.classList.add(correct);
 
-      if (password.value != repeatPassword.value) {
-        incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
+      if (!(password.value === repeatPassword.value)) {
+        incorrectRepeatPassword.classList.remove(correct);
       }
     });
 
     firstName.addEventListener("focusout", () => {
-      incorrectFirstName.innerHTML = "";
+      incorrectFirstName.classList.add(correct);
 
       if (!validateName(firstName.value)) {
-        incorrectFirstName.innerHTML = errors.incorrectName;
+        incorrectFirstName.classList.remove(correct);
       }
     });
 
     lastName.addEventListener("focusout", () => {
-      incorrectLastName.innerHTML = "";
+      incorrectLastName.classList.add(correct);
 
       if (!validateName(lastName.value)) {
-        incorrectLastName.innerHTML = errors.incorrectName;
+        incorrectLastName.classList.remove(correct);
+      }
+    });
+
+    day.addEventListener("focusout", () => {
+      incorrectDateOfBirthday.classList.add(correct);
+
+      if (!validateDateOfBirth(day.value, month.value, year.value)) {
+        incorrectDateOfBirthday.classList.remove(correct);
+      }
+    });
+
+    month.addEventListener("focusout", () => {
+      incorrectDateOfBirthday.classList.add(correct);
+
+      if (!validateDateOfBirth(day.value, month.value, year.value)) {
+        incorrectDateOfBirthday.classList.remove(correct);
       }
     });
 
     year.addEventListener("focusout", () => {
-      incorrectDateOfBirthday.innerHTML = "";
+      incorrectDateOfBirthday.classList.add(correct);
 
       if (!validateDateOfBirth(day.value, month.value, year.value)) {
-        incorrectDateOfBirthday.innerHTML = errors.impossibleDate;
+        incorrectDateOfBirthday.classList.remove(correct);
+      }
+    });
+
+    signupShowPassword.addEventListener("click", () => {
+      if (password.getAttribute("type") == "password") {
+        password.setAttribute("type", "text");
+      } else {
+        password.setAttribute("type", "password");
+      }
+    });
+
+    signupShowRepeatPassword.addEventListener("click", () => {
+      if (repeatPassword.getAttribute("type") == "password") {
+        repeatPassword.setAttribute("type", "text");
+      } else {
+        repeatPassword.setAttribute("type", "password");
       }
     });
   }
@@ -196,46 +247,42 @@ export class SignUpForm {
     );
     const repeatEmail = document.getElementById("repeat-email");
 
-    function clearIncorrects() {
-      incorrectEmail.innerHTML = "";
-      incorrectRepeatPassword.innerHTML = "";
-      incorrectPassword.innerHTML = "";
-      incorrectFirstName.innerHTML = "";
-      incorrectLastName.innerHTML = "";
-      incorrectDateOfBirthday.innerHTML = "";
-    }
-
-    clearIncorrects();
+    incorrectEmail.classList.add(correct);
+    incorrectRepeatPassword.classList.add(correct);
+    incorrectPassword.classList.add(correct);
+    incorrectFirstName.classList.add(correct);
+    incorrectLastName.classList.add(correct);
+    incorrectDateOfBirthday.classList.add(correct);
 
     let flag = true;
 
     if (!validateEmail(email.value)) {
-      incorrectEmail.innerHTML = errors.incorrectEmail;
+      incorrectEmail.classList.remove(correct);
       flag = false;
     }
 
     if (password.value != repeatPassword.value) {
-      incorrectRepeatPassword.innerHTML = errors.passwordMismatch;
+      incorrectRepeatPassword.classList.remove(correct);
       flag = false;
     }
 
     if (!validatePassword(password.value)) {
-      incorrectPassword.innerHTML = errors.incorrectPasswordLength;
+      incorrectPassword.classList.remove(correct);
       flag = false;
     }
 
     if (!validateName(firstName.value)) {
-      incorrectFirstName.innerHTML = errors.incorrectName;
+      incorrectFirstName.classList.remove(correct);
       flag = false;
     }
 
     if (!validateName(lastName.value)) {
-      incorrectLastName.innerHTML = errors.incorrectName;
+      incorrectLastName.classList.remove(correct);
       flag = false;
     }
 
     if (!validateDateOfBirth(day.value, month.value, year.value)) {
-      incorrectDateOfBirthday.innerHTML = errors.impossibleDate;
+      incorrectDateOfBirthday.classList.remove(correct);
       flag = false;
     }
 
@@ -255,6 +302,8 @@ export class SignUpForm {
       avatar.files[0],
     );
 
+    repeatEmail.classList.add("correct");
+
     if (result.ok) {
       const { avatar, firstName, lastName } = result.body.user;
       localStorage.setItem("avatar", avatar);
@@ -262,7 +311,7 @@ export class SignUpForm {
       localStorage.setItem("lastName", lastName);
       return true;
     } else {
-      repeatEmail.innerHTML = "Почта уже используется";
+      repeatEmail.classList.remove("correct");
       return false;
     }
   }

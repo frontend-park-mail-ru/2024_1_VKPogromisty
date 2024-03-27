@@ -1,0 +1,29 @@
+<div class="header" id="header">
+  <div class="left-side">
+    <a href="/feed"
+      ><img
+        id="left-side__img"
+        class="left-side__img"
+        src="../static/images/Logo.png"
+    /></a>
+    <div class="search">
+      <input class="search__input" type="text" placeholder="Поиск" readonly />
+    </div>
+  </div>
+  <div class="user">
+    <img
+      class="user__notification-img"
+      src="../static/images/notification.png"
+    />
+    <span id="user__username-span" class="user__username-span">{{
+      fullUserName
+    }}</span>
+    <a href="/profile/{{ this.userId }}"
+      ><img
+        id="user__avatar-img"
+        class="user__avatar-img"
+        src="{{ userAvatar }}"
+    /></a>
+    <button id="logout-button" class="user__logout-button">Выйти</button>
+  </div>
+</div>
