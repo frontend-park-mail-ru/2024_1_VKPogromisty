@@ -1,6 +1,16 @@
+/**
+ * Service for redirects
+ * @class
+ * @property {object} config - The config with paths and their callbackes
+ * @method redirect - Redirects to the current page
+ */
 export class Routing {
   #config;
 
+  /**
+   * Creates router
+   * @param {string} config - The config with paths and their callbackes
+   */
   constructor(config) {
     this.#config = config;
 
@@ -30,11 +40,16 @@ export class Routing {
     );
   }
 
+  /**
+   * Redirects to the current page
+   * @param {string} url 
+   * @returns {void}
+   */
   redirect(url) {
     const foundedUrl = this.#config.paths.find(
       (elem) => elem.path.exec(url) !== null,
     );
-    const slug = foundedUrl.path.exec(url)[1];
+    const slugs = foundedUrl.path.exec(url).groups;
 
     const state = {
       title: window.location.pathname,
@@ -43,6 +58,6 @@ export class Routing {
     history.pushState(state, "", url);
     document.title = `Socio - ${foundedUrl.title}`;
 
-    foundedUrl.func(slug);
+    foundedUrl.func(slugs);
   }
 }

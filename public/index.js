@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Новости",
       },
       {
-        path: /\/profile\/([0-9].*?)/,
+        path: /\/profile\/(?<userId>[0-9]+)/,
         func: renderProfile,
         title: "Профиль",
       },
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  async function renderProfile(userId) {
+  async function renderProfile({ userId }) {
     const main = document.getElementById("main");
     const header = document.getElementById("header");
 
