@@ -1,0 +1,20 @@
+<div id="main">
+  <div class="feed-main">
+    <div class="sidebar" id="sidebar">
+      <ul class="sidebar-list">
+        {{#each fullSidebar}}
+        <li class="sidebar-list__li">
+          <a class="sidebar-list__a" href="{{ this.href }}">{{ this.text }}</a>
+        </li>
+        {{/each}}
+      </ul>
+      <ul id="help-sidebar" class="sidebar-list">
+        <li class="sidebar-list__li">
+          <a class="sidebar-list__a" href="#">Помощь</a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="activity" class="activity"></div>
+  </div>
+</div>

@@ -14,6 +14,7 @@ import { FriendsMain } from "./components/Friends/friends.js";
 import { Routing } from "./routes.js";
 import { SubscribersMain } from "./components/Subscribers/subscribers.js";
 import { SubscriptionsMain } from "./components/Subscriptions/subscriptions.js";
+import { Main } from "./components/Main/main.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const config = {
@@ -88,19 +89,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     const main = document.getElementById("main");
     const header = document.getElementById("header");
 
-    if (main !== null) {
-      main.remove();
-    }
-
     if (header === null) {
-      const subscribersHeader = new Header(body);
-      subscribersHeader.renderForm();
+      const feedHeader = new Header(body);
+      feedHeader.renderForm();
     }
 
-    const ownUserId = localStorage.getItem("userId");
-    const feedMain = new FeedMain(body);
+    if (main === null) {
+      const feedMain = new Main(body);
+      feedMain.renderForm();
+    }
+
+    const feedMain = new FeedMain(document.getElementById('activity'));
 
     feedMain.renderForm();
+
+    const ownUserId = localStorage.getItem("userId");
 
     //const postService = new PostService();
 
@@ -168,21 +171,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  async function renderProfile({userId}) {
+  async function renderProfile({ userId }) {
     const main = document.getElementById("main");
     const header = document.getElementById("header");
-
-    if (main !== null) {
-      main.remove();
-    }
 
     if (header === null) {
       const subscribersHeader = new Header(body);
       subscribersHeader.renderForm();
     }
-    const profileMain = new ProfileMain(body);
 
-    profileMain.renderForm(userId);
+    if (main === null) {
+      const profileMain = new Main(body);
+      profileMain.renderForm(userId);
+    }
+
+    const profileMain = new ProfileMain(document.getElementById('activity'));
+
+    profileMain.renderForm();
 
     //const postService = new PostService();
     //const profilePost = new ProfilePost(document.getElementById('activity'));
@@ -202,25 +207,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     const main = document.getElementById("main");
     const header = document.getElementById("header");
 
-    if (main !== null) {
-      main.remove();
-    }
-
     if (header === null) {
       const subscribersHeader = new Header(body);
       subscribersHeader.renderForm();
     }
 
-    const messengerMain = new MessengerMain(body);
+    if (main === null) {
+      const messengerMain = new Main(body);
+      messengerMain.renderForm();
+    }
+
+    const messengerMain = new MessengerMain(document.getElementById('activity'));
+
+    messengerMain.renderForm();
 
     /*
     const chatService = new ChatService();
 
     chats = chatService.getChats();*/
-
-    const chats = [];
-
-    messengerMain.renderForm(chats);
 
     document.querySelectorAll(".dialog").forEach((elem) => {
       elem.addEventListener("click", () => {
@@ -234,16 +238,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     const main = document.getElementById("main");
     const header = document.getElementById("header");
 
-    if (main !== null) {
-      main.remove();
-    }
-
     if (header === null) {
       const subscribersHeader = new Header(body);
       subscribersHeader.renderForm();
     }
 
-    const friendsMain = new FriendsMain(body);
+    if (main === null) {
+      const friendsMain = new Main(body);
+      friendsMain.renderForm();
+    }
+
+    const friendsMain = new FriendsMain(document.getElementById('activity'));
 
     const friendsService = new FriendsService();
     const friends = await friendsService.getFriends();
@@ -266,16 +271,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     const main = document.getElementById("main");
     const header = document.getElementById("header");
 
-    if (main !== null) {
-      main.remove();
-    }
-
     if (header === null) {
       const subscribersHeader = new Header(body);
       subscribersHeader.renderForm();
     }
 
-    const subscribersMain = new SubscribersMain(body);
+    if (main === null) {
+      const friendsMain = new Main(body);
+      friendsMain.renderForm();
+    }
+
+    const subscribersMain = new SubscribersMain(document.getElementById('activity'));
     const subscribersService = new SubscribersService();
     const subscribers = await subscribersService.getSubscribers();
 
@@ -297,16 +303,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     const main = document.getElementById("main");
     const header = document.getElementById("header");
 
-    if (main !== null) {
-      main.remove();
-    }
-
     if (header === null) {
       const subscribersHeader = new Header(body);
       subscribersHeader.renderForm();
     }
 
-    const subscriptionsMain = new SubscriptionsMain(body);
+    if (main === null) {
+      const friendsMain = new Main(body);
+      friendsMain.renderForm();
+    }
+
+    const subscriptionsMain = new SubscriptionsMain(document.getElementById('activity'));
 
     const subscriptionsService = new SubscriptionsService();
     const subscriptions = await subscriptionsService.getSubscriptions();

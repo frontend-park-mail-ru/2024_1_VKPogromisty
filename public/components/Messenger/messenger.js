@@ -1,5 +1,4 @@
 import { API_URL } from "/public/modules/consts.js";
-import { Sidebar } from "../Sidebar/sidebar.js";
 
 const staticUrl = `${API_URL}/static`;
 
@@ -22,10 +21,7 @@ export class MessengerMain {
    */
   renderForm(chats) {
     const template = Handlebars.templates["messengerMain.hbs"];
-    this.#parent.innerHTML += template({ chats });
-
-    const sidebar = new Sidebar(document.getElementById("sidebar"));
-
-    sidebar.renderSidebar();
+    
+    this.#parent.innerHTML = template({ chats });
   }
 }

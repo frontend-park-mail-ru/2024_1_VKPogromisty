@@ -1,5 +1,4 @@
 import { API_URL } from "/public/modules/consts.js";
-import { Sidebar } from "../Sidebar/sidebar.js";
 
 const staticUrl = `${API_URL}/static`;
 
@@ -42,17 +41,13 @@ export class ProfileMain {
     const place = "Москва";
 
     const template = Handlebars.templates["profileMain.hbs"];
-    this.#parent.innerHTML += template({
+    this.#parent.innerHTML = template({
       userAvatar,
       fullName,
       date,
       place,
       userId,
     });
-
-    const sidebar = new Sidebar(document.getElementById("sidebar"));
-
-    sidebar.renderSidebar();
   }
 }
 

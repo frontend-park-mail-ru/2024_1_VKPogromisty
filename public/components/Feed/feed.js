@@ -1,5 +1,4 @@
 import { API_URL } from "/public/modules/consts.js";
-import { Sidebar } from "/public/components/Sidebar/sidebar.js";
 
 const staticUrl = `${API_URL}/static`;
 
@@ -57,11 +56,7 @@ export class FeedMain {
     const userAvatar = this.#userAvatar;
     const userId = this.#userId;
 
-    this.#parent.innerHTML += template({ userAvatar, rightSidebar, userId });
-
-    const sidebar = new Sidebar(document.getElementById("sidebar"));
-
-    sidebar.renderSidebar();
+    this.#parent.innerHTML = template({ userAvatar, rightSidebar, userId });
   }
 }
 

@@ -21,14 +21,17 @@
 <div class="right-sidebar-friends">
   {{#each rightSidebar}}
   <span>
-    <a class="right-sidebar__a-{{ this.class }}" href="{{ this.href }}">{{
-      this.text
-    }}</a>
+    <a
+      class="right-sidebar__a-{{ this.class }}"
+      href="{{ this.href }}"
+      class="{{ this.class }}"
+      >{{ this.text }}</a
+    >
   </span>
   {{/each}}
 </div>
 <div class="friends">
-  {{#each friends}}
+  {{#each subscriptions}}
   <div class="friends-field">
     <div class="friend" id="friend-{{ this.userId }}">
       <a href="/profile/{{ this.userId }}"
@@ -49,7 +52,7 @@
     </div>
     <div class="friend-ables">
       <button type="button" class="friend-ables__button">
-        В друзьях
+        Отписаться
       </button>
     </div>
   </div>

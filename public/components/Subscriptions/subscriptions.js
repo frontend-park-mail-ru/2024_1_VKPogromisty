@@ -6,7 +6,7 @@ const rightSidebar = [
   {
     href: "/friends",
     text: "ДРУЗЬЯ",
-    class: "bigger",
+    class: "common",
   },
   {
     href: "/subscribers",
@@ -16,7 +16,7 @@ const rightSidebar = [
   {
     href: "/subscriptions",
     text: "ПОДПИСКИ",
-    class: "common",
+    class: "bigger",
   },
 ];
 
@@ -26,7 +26,7 @@ const rightSidebar = [
  * @property {HTMLElement} #parent - The parent element
  * @method renderForm - Renders the main feed
  */
-export class FriendsMain {
+export class SubscriptionsMain {
   #parent;
 
   constructor(parent) {
@@ -37,9 +37,13 @@ export class FriendsMain {
    * Renders the main feed handlebars template
    * @returns {void}
    */
-  renderForm(friends) {
-    const template = Handlebars.templates["friendsMain.hbs"];
+  renderForm(subscriptions) {
+    const template = Handlebars.templates["subscriptionsMain.hbs"];
 
-    this.#parent.innerHTML = template({ staticUrl, friends, rightSidebar });
+    this.#parent.innerHTML = template({
+      staticUrl,
+      subscriptions,
+      rightSidebar,
+    });
   }
 }
