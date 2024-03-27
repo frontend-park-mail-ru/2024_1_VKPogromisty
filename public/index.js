@@ -9,6 +9,7 @@ import { ChatMain } from './components/Chat/chat.js';
 import { FriendsMain } from "./components/Friends/friends.js";
 import { Routing } from "./routes.js";
 import { SubscribersMain } from "./components/Subscribers/subscribers.js";
+import {SubscriptionsMain} from "./components/Subscriptions/subscriptions.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -64,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const router = new Routing(config);
 
-  const body = document.getElementsByTagName('body')[0];
+  const body = document.body;
 
   function renderLogin() {
 
@@ -220,9 +221,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const friendsService = new FriendsService();
     const friends = await friendsService.getFriends();
 
-    console.log(friends)
-
-    friendsMain.renderForm(friends.body.friends);
+    if (friends.ok) {
+      friendsMain.renderForm(friends.body.friends);
+    } else {
+      friendsMain.renderForm([]);
+    }
 
     document
       .getElementById("logout-button")
@@ -244,9 +247,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const subscribersService = new SubscribersService();
     const subscribers = await subscribersService.getSubscribers();
 
-    console.log(subscribers);
-
-    subscribersMain.renderForm(subscribers.body.subscribers);
+    if (subscribers.ok) {
+      subscribersMain.renderForm(subscribers.body.subscribers);
+    } else {
+      subscribersMain.renderForm([]);
+    }
+   
 
     document
       .getElementById("logout-button")
@@ -261,16 +267,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     body.innerHTML = '';
 
     const subscriptionsHeader = new Header(body);
-    const subscriptionsMain = new SubscribersMain(body);
+    const subscriptionsMain = new SubscriptionsMain(body);
 
     subscriptionsHeader.renderForm();
 
     const subscriptionsService = new SubscriptionsService();
     const subscriptions = await subscriptionsService.getSubscriptions();
 
-    console.log(subscriptions);
-
-    subscriptionsMain.renderForm(subscriptions.body.subscriptions);
+    if (subscriptions.ok) {
+      subscriptionsMain.renderForm(subscriptions.body.subscriptions);
+    } else {
+      subscriptionsMain.renderForm([]);
+    }
+    
 
     document
       .getElementById("logout-button")

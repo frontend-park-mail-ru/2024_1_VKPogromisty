@@ -5,7 +5,7 @@ export class Routing {
     constructor(config) {
         this.#config = config;
 
-        const body = document.getElementsByTagName('body')[0];
+        const body = document.body;
 
         body.addEventListener('click', (event) => {
             let target = event.target;
