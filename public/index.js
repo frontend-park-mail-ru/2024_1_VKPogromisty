@@ -1,4 +1,4 @@
-import { PostService, AuthService, ChatService, FriendsService } from "./modules/services.js";
+import { PostService, AuthService, ChatService, FriendsService, SubscribersService, SubscriptionsService } from "./modules/services.js";
 import { Header } from './components/Header/header.js';
 import { FeedMain, FeedPost } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
@@ -8,6 +8,7 @@ import { MessengerMain } from "./components/Messenger/messenger.js";
 import { ChatMain } from './components/Chat/chat.js';
 import { FriendsMain } from "./components/Friends/friends.js";
 import { Routing } from "./routes.js";
+import { SubscribersMain } from "./components/Subscribers/subscribers.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -44,35 +45,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: 'Друзья',
       },
       {
+        path: /\/subscribers/,
+        func: renderSubscribers,
+        title: 'Подписчики',
+      },
+      {
+        path: /\/subscriptions/,
+        func: renderSubscriptions,
+        title: 'Подписки',
+      },
+      {
         path: /\//,
-        func: renderLogin,
-        title: 'Вход',
+        func: renderFeed,
+        title: 'Новости',
       },
     ],
   }
 
   const router = new Routing(config);
-  var ownUserId;
 
   const body = document.getElementsByTagName('body')[0];
-
-  body
-    .addEventListener('click', (event) => {
-      let target = event.target;
-
-      while (target.nodeName.toLowerCase() !== 'body') {
-        if (target.nodeName.toLowerCase() === 'a') {
-          event.preventDefault();
-
-          const url = target.getAttribute('href');
-
-          router.redirect(url);
-          break;
-        }
-        
-        target = target.parentNode;
-      }
-    });
 
   function renderLogin() {
 
@@ -92,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function renderFeed() {
     body.innerHTML = '';
 
-    ownUserId = localStorage.getItem('userId');
+    const ownUserId = localStorage.getItem('userId');
     const feedHeader = new Header(body);
     const feedMain = new FeedMain(body);
 
@@ -228,7 +220,57 @@ document.addEventListener("DOMContentLoaded", async () => {
     const friendsService = new FriendsService();
     const friends = await friendsService.getFriends();
 
+    console.log(friends)
+
     friendsMain.renderForm(friends.body.friends);
+
+    document
+      .getElementById("logout-button")
+      .addEventListener("click", async () => {
+        await authService.logout();
+        router.redirect('/login');
+      });
+
+  }
+
+  async function renderSubscribers() {
+    body.innerHTML = '';
+
+    const subscribersHeader = new Header(body);
+    const subscribersMain = new SubscribersMain(body);
+
+    subscribersHeader.renderForm();
+
+    const subscribersService = new SubscribersService();
+    const subscribers = await subscribersService.getSubscribers();
+
+    console.log(subscribers);
+
+    subscribersMain.renderForm(subscribers.body.subscribers);
+
+    document
+      .getElementById("logout-button")
+      .addEventListener("click", async () => {
+        await authService.logout();
+        router.redirect('/login');
+      });
+
+  }
+
+  async function renderSubscriptions() {
+    body.innerHTML = '';
+
+    const subscriptionsHeader = new Header(body);
+    const subscriptionsMain = new SubscribersMain(body);
+
+    subscriptionsHeader.renderForm();
+
+    const subscriptionsService = new SubscriptionsService();
+    const subscriptions = await subscriptionsService.getSubscriptions();
+
+    console.log(subscriptions);
+
+    subscriptionsMain.renderForm(subscriptions.body.subscriptions);
 
     document
       .getElementById("logout-button")

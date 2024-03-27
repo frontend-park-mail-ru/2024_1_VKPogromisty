@@ -4,26 +4,41 @@ export class Routing {
 
     constructor(config) {
         this.#config = config;
+
+        const body = document.getElementsByTagName('body')[0];
+
+        body.addEventListener('click', (event) => {
+            let target = event.target;
+
+            while (target.nodeName.toLowerCase() !== 'body') {
+                if (target.nodeName.toLowerCase() === 'a') {
+                event.preventDefault();
+
+                const url = target.getAttribute('href');
+
+                if (url !== window.location.pathname) {
+                    this.redirect(url);
+                }
+                break;
+                }
+                
+                target = target.parentNode;
+            }
+        }, {capture: true});
     }
 
     redirect(url) {
-        let idUrl = -1;
-        let slug;
+        const foundedUrl = this.#config.paths.find((elem) => elem.path.exec(url) !== null);
+        const slug = foundedUrl.path.exec(url)[1];
 
-        this.#config.paths.forEach((elem, id) => {
-            if (idUrl === -1){
-                const answer = elem.path.exec(url);
-                if (answer !== null) {
-                    idUrl = id;
-                    slug = answer[1];
-                }
-            }
-        });
+        const state = {
+            title: window.location.pathname,
+        };
 
-        history.pushState("", "", url);
-        document.title = `Socio - ${this.#config.paths[idUrl].title}`;
+        history.pushState(state, "", url);
+        document.title = `Socio - ${foundedUrl.title}`;
 
-        this.#config.paths[idUrl].func(slug);
+        foundedUrl.func(slug);
     }
 
 }

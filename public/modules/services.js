@@ -184,6 +184,36 @@ export class FriendsService {
   }
 }
 
+export class SubscribersService {
+  baseUrl = `${API_URL}/subscriptions/subscribers`;
+
+  async getSubscribers() {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+}
+
+export class SubscriptionsService {
+  baseUrl = `${API_URL}/subscriptions/subscriptions`;
+
+  async getSubscriptions() {
+    const response = await fetch(this.baseUrl, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.ok, data.body, data.message);
+  }
+}
+
 export class MessengeService {
   baseUrl = `${API_URL}/...`;
 

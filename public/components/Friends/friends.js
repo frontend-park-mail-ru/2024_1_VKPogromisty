@@ -3,6 +3,24 @@ import { Sidebar } from "../Sidebar/sidebar.js";
 
 const staticUrl = `${API_URL}/static`;
 
+const rightSidebar = [
+  {
+    href: "/friends",
+    text: "ДРУЗЬЯ",
+    class: 'bigger',
+  },
+  {
+    href: "/subscribers",
+    text: "ПОДПИСЧИКИ",
+    class: 'common',
+  },
+  {
+    href: "/subscriptions",
+    text: "ПОДПИСКИ",
+    class: 'common',
+  },
+];
+
 /**
  * Class for rendering the main feed
  * @class
@@ -23,7 +41,7 @@ export class FriendsMain {
   renderForm(friends) {
     const template = Handlebars.templates["friendsMain.hbs"];
 
-    this.#parent.innerHTML += template({ staticUrl, friends });
+    this.#parent.innerHTML += template({ staticUrl, friends, rightSidebar });
 
     const sidebar = new Sidebar(document.getElementById('sidebar'));
 
