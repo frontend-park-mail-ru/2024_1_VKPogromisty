@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  async function renderProfile({ userId }) {
+  async function renderProfile({userId}) {
     const main = document.getElementById("main");
     const header = document.getElementById("header");
 

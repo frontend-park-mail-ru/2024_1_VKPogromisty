@@ -1,7 +1,21 @@
 /**
+ * A direct structure
+ * @typedef {Object} Direct
+ * @property {RegExp} path - The path
+ * @property {Function} func - The callback
+ * @property {string} title - The title of the page
+ */
+
+/**
+ * The type of config
+ * @typedef {Object} Config
+ * @property {Direct[]} paths - The paths
+ */
+
+/**
  * Service for redirects
  * @class
- * @property {object} config - The config with paths and their callbackes
+ * @property {Config} config - The config with paths and their callbackes
  * @method redirect - Redirects to the current page
  */
 export class Routing {
@@ -9,7 +23,7 @@ export class Routing {
 
   /**
    * Creates router
-   * @param {string} config - The config with paths and their callbackes
+   * @param {Config} config - The config with paths and their callbackes
    */
   constructor(config) {
     this.#config = config;

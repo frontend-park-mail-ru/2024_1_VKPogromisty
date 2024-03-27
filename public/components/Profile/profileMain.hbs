@@ -1,52 +1,56 @@
-<div class="feed-main" id="main">
-  <div class="sidebar" id="sidebar"></div>
+<div id="main">
+  <div class="feed-main">
+    <div class="sidebar" id="sidebar"></div>
 
-  <div id="activity" class="activity">
-    <div id="profile-poster" class="profile-poster">
-      <div class="profile-poster-view">
-        <img class="profile-poster__avatar-img" src="{{ this.userAvatar }}" />
-        <div class="profile-brief">
-          <span class="profile-brief__name-span">{{ this.fullName }}</span>
-          <div class="profile-brief-info">
-            <span class="profile-brief-info__date-span">{{ this.date }}</span>
-            <span class="profile-brief-info__place-span">{{ this.place }}</span>
+    <div id="activity" class="activity">
+      <div id="profile-poster" class="profile-poster">
+        <div class="profile-poster-view">
+          <img class="profile-poster__avatar-img" src="{{ this.userAvatar }}" />
+          <div class="profile-brief">
+            <span class="profile-brief__name-span">{{ this.fullName }}</span>
+            <div class="profile-brief-info">
+              <span class="profile-brief-info__date-span">{{ this.date }}</span>
+              <span class="profile-brief-info__place-span">{{
+                this.place
+              }}</span>
+            </div>
           </div>
         </div>
+        <div class="profile-wrapper">
+          <img
+            class="profile-wrapper__settings-img"
+            src="../static/images/setting.png"
+          />
+          <img
+            class="profile-wrapper__back-img"
+            src="../static/images/forest.jpg"
+          />
+        </div>
       </div>
-      <div class="profile-wrapper">
-        <img
-          class="profile-wrapper__settings-img"
-          src="../static/images/setting.png"
-        />
-        <img
-          class="profile-wrapper__back-img"
-          src="../static/images/forest.jpg"
-        />
+      <div id="create-post" class="create-post">
+        <div id="news-avatar" class="news-avatar">
+          <a href="/profile/{{ this.userId }}"
+            ><img
+              id="user-avatar-news"
+              class="news-avatar__img"
+              src="{{ this.userAvatar }}"
+          /></a>
+        </div>
+        <div class="news">
+          <input
+            id="user-news"
+            class="news__input"
+            type="text"
+            placeholder="Что нового?"
+            readonly
+          />
+          <img
+            class="news__img"
+            src="../static/images/attach-paperclip-symbol.png"
+          />
+        </div>
+        <button class="publish-button">Опубликовать</button>
       </div>
-    </div>
-    <div id="create-post" class="create-post">
-      <div id="news-avatar" class="news-avatar">
-        <a href="/profile/{{ this.userId }}"
-          ><img
-            id="user-avatar-news"
-            class="news-avatar__img"
-            src="{{ this.userAvatar }}"
-        /></a>
-      </div>
-      <div class="news">
-        <input
-          id="user-news"
-          class="news__input"
-          type="text"
-          placeholder="Что нового?"
-          readonly
-        />
-        <img
-          class="news__img"
-          src="../static/images/attach-paperclip-symbol.png"
-        />
-      </div>
-      <button class="publish-button">Опубликовать</button>
     </div>
   </div>
 </div>
