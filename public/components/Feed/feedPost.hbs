@@ -17,7 +17,7 @@
   <div class="post-content">
     <span class="content-text">{{ this.post.text }}</span>
     {{#each this.post.attachments}}
-    <img class="content-img" src="{{ staticUrl }}/{{ this }}" />
+    <img class="content-img" src="{{ ../staticUrl }}/{{ this }}" />
     {{/each}}
   </div>
   <div class="post-reaction">
