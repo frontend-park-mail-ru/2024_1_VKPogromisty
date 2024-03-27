@@ -1,15 +1,25 @@
 <div id="main">
   <div class="feed-main">
-    <div class="sidebar" id="sidebar">
-    </div>
+    <div class="sidebar" id="sidebar"></div>
 
     <div id="activity" class="activity">
       <div id="create-post" class="create-post">
         <div id="news-avatar" class="news-avatar">
-          <a href="/profile/{{this.userId}}"><img id="user-avatar-news" class="news-avatar__img" src="{{this.userAvatar}}" /></a>
+          <a href="/profile/{{ this.userId }}"
+            ><img
+              id="user-avatar-news"
+              class="news-avatar__img"
+              src="{{ this.userAvatar }}"
+          /></a>
         </div>
         <div class="news">
-          <input id="user-news" class="news__input" type="text" placeholder="Что нового?" readonly />
+          <input
+            id="user-news"
+            class="news__input"
+            type="text"
+            placeholder="Что нового?"
+            readonly
+          />
           <img
             class="news__img"
             src="../static/images/attach-paperclip-symbol.png"
@@ -19,11 +29,11 @@
       </div>
 
       <div class="right-sidebar">
-          {{#each rightSidebar}}
-          <span>
-            <a class="right-sidebar__a" href="{{ this.href }}">{{ this.text }}</a>
-          </span>
-          {{/each}}
+        {{#each rightSidebar}}
+        <span>
+          <a class="right-sidebar__a" href="{{ this.href }}">{{ this.text }}</a>
+        </span>
+        {{/each}}
       </div>
     </div>
   </div>

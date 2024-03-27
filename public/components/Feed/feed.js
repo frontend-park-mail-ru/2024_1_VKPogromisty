@@ -43,7 +43,7 @@ export class FeedMain {
    */
   updateUser() {
     this.#userAvatar = `${staticUrl}/${localStorage.getItem("avatar")}`;
-    this.#userId = localStorage.getItem('userId');
+    this.#userId = localStorage.getItem("userId");
   }
 
   /**
@@ -59,7 +59,7 @@ export class FeedMain {
 
     this.#parent.innerHTML += template({ userAvatar, rightSidebar, userId });
 
-    const sidebar = new Sidebar(document.getElementById('sidebar'));
+    const sidebar = new Sidebar(document.getElementById("sidebar"));
 
     sidebar.renderSidebar();
   }

@@ -2,7 +2,11 @@
   <div class="form-wrapper">
     <div class="form">
       <div class="image-container-login-signup">
-        <img src="../static/images/Logo.png" alt="Logo" class="image-container-login-signup__img" />
+        <img
+          src="../static/images/Logo.png"
+          alt="Logo"
+          class="image-container-login-signup__img"
+        />
       </div>
       <div class="login-signup-text">
         <div class="login-signup-text__first-part">Зарегистрируйтесь в</div>
@@ -10,8 +14,18 @@
       </div>
 
       <div class="register-form">
-        <form method="post" action="#" enctype="multipart/form-data" class="sign-up-form">
-          <div id="repeat-email" class="form__input__error form__input__correct">Почта уже используется</div>
+        <form
+          method="post"
+          action="#"
+          enctype="multipart/form-data"
+          class="sign-up-form"
+        >
+          <div
+            id="repeat-email"
+            class="form__input__error form__input__correct"
+          >
+            Почта уже используется
+          </div>
           {{#each main_inputs}}
           <div class="input-group">
             <span class="inscription-form">
@@ -26,11 +40,19 @@
               required
             />
             {{#if this.isPassword}}
-            <div class="signup-show-password" id="signup-show-{{this.id}}">
-              <img src="../static/images/close_eye.png" class="show-password__button">
+            <div class="signup-show-password" id="signup-show-{{ this.id }}">
+              <img
+                src="../static/images/close_eye.png"
+                class="show-password__button"
+              />
             </div>
-          {{/if}}
-            <div class="form__input__error form__input__correct" id="{{ this.incorrect }}">{{this.incorrectText}}</div>
+            {{/if}}
+            <div
+              class="form__input__error form__input__correct"
+              id="{{ this.incorrect }}"
+            >
+              {{ this.incorrectText }}
+            </div>
           </div>
           {{/each}}
           <label for="date-birthday" class="inscription-form"
@@ -48,15 +70,25 @@
             />
             {{/each}}
           </div>
-          <div class="form__input__error form__input__correct" id="incorrect-date-of-birthday">Некорректная дата</div>
+          <div
+            class="form__input__error form__input__correct"
+            id="incorrect-date-of-birthday"
+          >
+            Некорректная дата
+          </div>
           <div class="inscription-form">
             Аватарка пользователя (необязательно)
           </div>
           <div class="file-input">
             <label class="input-avatar">
               <input type="file" name="avatar" id="avatar" />
-              <span class="upload-image">Загрузить изображение
-                <img class="sign-up-upload-img form__input__correct" src="../static/images/upload.png" id="sign-up-upload-img">
+              <span class="upload-image"
+                >Загрузить изображение
+                <img
+                  class="sign-up-upload-img form__input__correct"
+                  src="../static/images/upload.png"
+                  id="sign-up-upload-img"
+                />
               </span>
             </label>
           </div>

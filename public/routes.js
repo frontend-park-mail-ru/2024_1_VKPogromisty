@@ -1,44 +1,48 @@
 export class Routing {
+  #config;
 
-    #config
+  constructor(config) {
+    this.#config = config;
 
-    constructor(config) {
-        this.#config = config;
+    const body = document.body;
 
-        const body = document.body;
+    body.addEventListener(
+      "click",
+      (event) => {
+        let target = event.target;
 
-        body.addEventListener('click', (event) => {
-            let target = event.target;
+        while (target.nodeName.toLowerCase() !== "body") {
+          if (target.nodeName.toLowerCase() === "a") {
+            event.preventDefault();
 
-            while (target.nodeName.toLowerCase() !== 'body') {
-                if (target.nodeName.toLowerCase() === 'a') {
-                event.preventDefault();
+            const url = target.getAttribute("href");
 
-                const url = target.getAttribute('href');
-
-                if (url !== window.location.pathname) {
-                    this.redirect(url);
-                }
-                break;
-                }
-                
-                target = target.parentNode;
+            if (url !== window.location.pathname) {
+              this.redirect(url);
             }
-        }, {capture: true});
-    }
+            break;
+          }
 
-    redirect(url) {
-        const foundedUrl = this.#config.paths.find((elem) => elem.path.exec(url) !== null);
-        const slug = foundedUrl.path.exec(url)[1];
+          target = target.parentNode;
+        }
+      },
+      { capture: true },
+    );
+  }
 
-        const state = {
-            title: window.location.pathname,
-        };
+  redirect(url) {
+    const foundedUrl = this.#config.paths.find(
+      (elem) => elem.path.exec(url) !== null,
+    );
+    const slug = foundedUrl.path.exec(url)[1];
 
-        history.pushState(state, "", url);
-        document.title = `Socio - ${foundedUrl.title}`;
+    const state = {
+      title: window.location.pathname,
+    };
 
-        foundedUrl.func(slug);
-    }
+    history.pushState(state, "", url);
+    document.title = `Socio - ${foundedUrl.title}`;
 
+    foundedUrl.func(slug);
+  }
 }

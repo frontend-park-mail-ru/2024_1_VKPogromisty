@@ -7,17 +7,17 @@ const rightSidebar = [
   {
     href: "/friends",
     text: "ДРУЗЬЯ",
-    class: 'bigger',
+    class: "bigger",
   },
   {
     href: "/subscribers",
     text: "ПОДПИСЧИКИ",
-    class: 'common',
+    class: "common",
   },
   {
     href: "/subscriptions",
     text: "ПОДПИСКИ",
-    class: 'common',
+    class: "common",
   },
 ];
 
@@ -43,7 +43,7 @@ export class FriendsMain {
 
     this.#parent.innerHTML += template({ staticUrl, friends, rightSidebar });
 
-    const sidebar = new Sidebar(document.getElementById('sidebar'));
+    const sidebar = new Sidebar(document.getElementById("sidebar"));
 
     sidebar.renderSidebar();
   }

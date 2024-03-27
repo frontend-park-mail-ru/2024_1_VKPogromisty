@@ -26,7 +26,7 @@ export class ProfileMain {
   updateUser() {
     this.#fullUserName = `${localStorage.getItem("firstName")} ${localStorage.getItem("lastName")}`;
     this.#userAvatar = `${staticUrl}/${localStorage.getItem("avatar")}`;
-    this.#userId = localStorage.getItem('userId');
+    this.#userId = localStorage.getItem("userId");
   }
 
   /**
@@ -38,13 +38,19 @@ export class ProfileMain {
     const userAvatar = this.#userAvatar;
     const fullName = this.#fullUserName;
     const userId = this.#userId;
-    const date = '1 января 2024';
-    const place = 'Москва';
+    const date = "1 января 2024";
+    const place = "Москва";
 
     const template = Handlebars.templates["profileMain.hbs"];
-    this.#parent.innerHTML += template({ userAvatar, fullName, date, place, userId });
+    this.#parent.innerHTML += template({
+      userAvatar,
+      fullName,
+      date,
+      place,
+      userId,
+    });
 
-    const sidebar = new Sidebar(document.getElementById('sidebar'));
+    const sidebar = new Sidebar(document.getElementById("sidebar"));
 
     sidebar.renderSidebar();
   }

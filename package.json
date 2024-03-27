@@ -6,8 +6,8 @@
     "doc": "docs"
   },
   "lint-staged": {
-    "./public/*.{js,jsx,ts,tsx}": "npx eslint",
-    "./public/*.{js,jsx,ts,tsx,html,css}": "npx prettier --check ./public"
+    "./public/*.{js,jsx,ts,tsx,html,css}": "npx prettier --check ./public/{components,modules}",
+    "./public/*.{js,jsx,ts,tsx}": "npx eslint"
   },
   "prettier": {
     "overrides": [

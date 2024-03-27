@@ -58,29 +58,28 @@ export class LoginForm {
     const loginShowPassword = document.getElementById("login-show-password");
 
     email.addEventListener("focusout", () => {
-      incorrectEmail.classList.remove('form__input__correct');
+      incorrectEmail.classList.remove("form__input__correct");
 
       if (validateEmail(email.value)) {
-        incorrectEmail.classList.add('form__input__correct')
+        incorrectEmail.classList.add("form__input__correct");
       }
     });
 
     password.addEventListener("focusout", () => {
-      incorrectPassword.classList.remove('form__input__correct');
+      incorrectPassword.classList.remove("form__input__correct");
 
       if (validatePassword(password.value)) {
-        incorrectPassword.classList.add('form__input__correct');
+        incorrectPassword.classList.add("form__input__correct");
       }
     });
 
-    loginShowPassword.addEventListener('click', () => {
-      if (password.getAttribute('type') == 'password') {
-        password.setAttribute('type', 'text');
+    loginShowPassword.addEventListener("click", () => {
+      if (password.getAttribute("type") == "password") {
+        password.setAttribute("type", "text");
       } else {
-        password.setAttribute('type', 'password');
+        password.setAttribute("type", "password");
       }
     });
-
   }
 
   /**
@@ -94,19 +93,19 @@ export class LoginForm {
     const password = document.getElementById("password");
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
-    const incorrectFormLogin = document.getElementById('incorrect-form-login');
+    const incorrectFormLogin = document.getElementById("incorrect-form-login");
 
-    incorrectEmail.classList.add('form__input__correct');
-    incorrectPassword.classList.add('form__input__correct');
+    incorrectEmail.classList.add("form__input__correct");
+    incorrectPassword.classList.add("form__input__correct");
 
     let flag = true;
 
     if (!validateEmail(email.value)) {
-      incorrectEmail.classList.remove('form__input__correct');
+      incorrectEmail.classList.remove("form__input__correct");
       flag = false;
     }
     if (!validatePassword(password.value)) {
-      incorrectPassword.classList.remove('form__input__correct');
+      incorrectPassword.classList.remove("form__input__correct");
       flag = false;
     }
 
@@ -114,12 +113,13 @@ export class LoginForm {
       return false;
     }
 
-    incorrectFormLogin.classList.add('form__input__correct');
+    incorrectFormLogin.classList.add("form__input__correct");
 
     const result = await authService.login(email.value, password.value);
 
     if (result.ok) {
-      const { avatar, firstName, lastName, userId, dateOfBirth } = result.body.user;
+      const { avatar, firstName, lastName, userId, dateOfBirth } =
+        result.body.user;
       localStorage.setItem("avatar", avatar);
       localStorage.setItem("firstName", firstName);
       localStorage.setItem("lastName", lastName);
@@ -127,7 +127,7 @@ export class LoginForm {
       localStorage.setItem("dateOfBirth", dateOfBirth);
       return true;
     } else {
-      incorrectFormLogin.classList.remove('form__input__correct');
+      incorrectFormLogin.classList.remove("form__input__correct");
       return false;
     }
   }

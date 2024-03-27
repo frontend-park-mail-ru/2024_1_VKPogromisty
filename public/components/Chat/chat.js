@@ -24,7 +24,7 @@ export class ChatMain {
     const template = Handlebars.templates["chatMain.hbs"];
     this.#parent.innerHTML += template({ messages });
 
-    const sidebar = new Sidebar(document.getElementById('sidebar'));
+    const sidebar = new Sidebar(document.getElementById("sidebar"));
 
     sidebar.renderSidebar();
   }

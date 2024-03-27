@@ -223,7 +223,7 @@ export class MessengeService {
     });
 
     const data = await response.json();
-    
+
     return genResponse(response.ok, data.body, data.message);
   }
 }

@@ -39,7 +39,8 @@ export function validateDateOfBirth(inDay, inMonth, inYear) {
     providedDate.getDate() !== intDay ||
     providedDate.getMonth() + 1 !== intMonth ||
     providedDate.getFullYear() !== intYear ||
-    intYear >= currentDate.getFullYear() || intYear < 1900
+    intYear >= currentDate.getFullYear() ||
+    intYear < 1900
   ) {
     return false;
   }

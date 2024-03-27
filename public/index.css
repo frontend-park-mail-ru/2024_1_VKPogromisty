@@ -205,7 +205,7 @@ input::-webkit-inner-spin-button {
 }
 
 .upload-image {
-  transition-duration: .5s;
+  transition-duration: 0.5s;
 }
 
 .upload-image:hover {
@@ -949,7 +949,7 @@ input::-webkit-inner-spin-button {
   padding-left: 10px;
   width: 500px;
   min-width: 100px;
-  background-color: #FCEEEB;
+  background-color: #fceeeb;
 }
 
 .search-friend__magnifier-img {
@@ -1008,7 +1008,7 @@ input::-webkit-inner-spin-button {
 }
 
 .friend-ables__button {
-  background-color: #E0908D;
+  background-color: #e0908d;
   color: white;
   border-radius: 7px;
   height: 30px;

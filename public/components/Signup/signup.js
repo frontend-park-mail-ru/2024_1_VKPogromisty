@@ -8,7 +8,7 @@ import { errors } from "/public/modules/errors.js";
 import { AuthService } from "../../modules/services.js";
 
 const authService = new AuthService();
-const correct = 'form__input__correct';
+const correct = "form__input__correct";
 
 const main_inputs = [
   {
@@ -115,7 +115,9 @@ export class SignUpForm {
     const month = document.getElementById("month");
     const year = document.getElementById("year");
     const signupShowPassword = document.getElementById("signup-show-password");
-    const signupShowRepeatPassword = document.getElementById("signup-show-repeat-password");
+    const signupShowRepeatPassword = document.getElementById(
+      "signup-show-repeat-password",
+    );
 
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
@@ -196,19 +198,19 @@ export class SignUpForm {
       }
     });
 
-    signupShowPassword.addEventListener('click', () => {
-      if (password.getAttribute('type') == 'password') {
-        password.setAttribute('type', 'text');
+    signupShowPassword.addEventListener("click", () => {
+      if (password.getAttribute("type") == "password") {
+        password.setAttribute("type", "text");
       } else {
-        password.setAttribute('type', 'password');
+        password.setAttribute("type", "password");
       }
     });
 
-    signupShowRepeatPassword.addEventListener('click', () => {
-      if (repeatPassword.getAttribute('type') == 'password') {
-        repeatPassword.setAttribute('type', 'text');
+    signupShowRepeatPassword.addEventListener("click", () => {
+      if (repeatPassword.getAttribute("type") == "password") {
+        repeatPassword.setAttribute("type", "text");
       } else {
-        repeatPassword.setAttribute('type', 'password');
+        repeatPassword.setAttribute("type", "password");
       }
     });
   }
@@ -224,7 +226,6 @@ export class SignUpForm {
    * @returns {Promise<boolean>}
    */
   async isValidForm() {
-
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     const repeatPassword = document.getElementById("repeat-password");
@@ -301,7 +302,7 @@ export class SignUpForm {
       avatar.files[0],
     );
 
-    repeatEmail.classList.add('correct');
+    repeatEmail.classList.add("correct");
 
     if (result.ok) {
       const { avatar, firstName, lastName } = result.body.user;
@@ -310,7 +311,7 @@ export class SignUpForm {
       localStorage.setItem("lastName", lastName);
       return true;
     } else {
-      repeatEmail.classList.remove('correct');
+      repeatEmail.classList.remove("correct");
       return false;
     }
   }
