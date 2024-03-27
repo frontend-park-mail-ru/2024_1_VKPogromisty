@@ -6,7 +6,7 @@
     "doc": "docs"
   },
   "lint-staged": {
-    "./public/{components,modules}*.{js,jsx,ts,tsx,html,css}": "npx prettier --check ./public/{components,modules}",
+    "./public/{components,modules}*.{js,jsx,ts,tsx,html,css}": "npx prettier --check ./public",
     "./public/*.{js,jsx,ts,tsx}": "npx eslint --quiet"
   },
   "prettier": {
