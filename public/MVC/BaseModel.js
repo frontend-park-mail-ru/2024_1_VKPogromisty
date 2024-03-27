@@ -12,19 +12,6 @@ class BaseModel {
   constructor(eventBus) {
     this.eventBus = eventBus;
   }
-
-  /**
-   * Добавляет обработчик конкретному событию.
-   * Переопределение в наследниках.
-   *
-   * @return {void}
-   */
-  getData() {
-    //пример функции, которая будет в наследниках
-    //const data = { exampleOfGetData: "Go to Backend and return" };
-    //
-    //this.eventBus.emit("dataGet", data);
-  }
 }
 
 export default BaseModel;

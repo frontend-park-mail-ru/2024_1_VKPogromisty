@@ -17,12 +17,10 @@ class BaseView {
    * Рендер внутри переданного HTML элемента.
    * Переопределение в наследниках.
    *
-   * @param {HTMLElement} element- HTML элемен, который будет рендериться.
+   * @param {HTMLElement} element- HTML элемен, в который будет рендериться.
    * @return {void}
    */
-  render(element) {
-    // должен содержать функцию emit.
-  }
+  render(element) {}
 }
 
 export default BaseView;

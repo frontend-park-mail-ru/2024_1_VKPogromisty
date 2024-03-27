@@ -5,7 +5,7 @@ class EventBus {
   /**
    * Конструктор класса EventBus.
    *
-   * @param {strings[]} incomingEvents - Массив приходящих допустимых событий.
+   * @param {string[]} incomingEvents - Массив приходящих допустимых событий.
    */
   constructor(incomingEvents) {
     this.incomingEvents = incomingEvents;
