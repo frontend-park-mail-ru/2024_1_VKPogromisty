@@ -1,30 +1,22 @@
-<div id="main">
-  <div class="feed-main">
-    <div class="sidebar" id="sidebar"></div>
-
-    <div id="activity" class="activity">
-      <div class="conversation">
-        <div class="companion">
-          <a href="/profile/id"><img class="companion__avatar-img" /></a>
-          <div class="companion-info">
-            <span class="companion__name-span"></span>
-            <span class="companion__status-span"></span>
-          </div>
-        </div>
-        <div class="messages">
-          {{#each messages}}
-          <div class="message">
-            <div class="message-content">
-              <span class="message-content"></span>
-            </div>
-            <div class="message-time">
-              <span class="message-time__span"></span>
-            </div>
-          </div>
-          {{/each}}
-        </div>
-        <div class="print-message"></div>
-      </div>
+<div class="conversation">
+  <div class="companion">
+    <a href="/profile/id"><img class="companion__avatar-img" /></a>
+    <div class="companion-info">
+      <span class="companion__name-span"></span>
+      <span class="companion__status-span"></span>
     </div>
   </div>
+  <div class="messages">
+    {{#each messages}}
+    <div class="message">
+      <div class="message-content">
+        <span class="message-content"></span>
+      </div>
+      <div class="message-time">
+        <span class="message-time__span"></span>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  <div class="print-message"></div>
 </div>
