@@ -9,14 +9,14 @@ import { API_URL } from "./consts.js";
 
 /**
  * Turns the response into a standard object
- * @param {boolean} ok
+ * @param {boolean} status
  * @param {object} body
  * @param {string} error
  * @returns {APIResponse} {@link APIResponse}
  */
-const genResponse = (ok, body, error) => {
+const genResponse = (status, body, error) => {
   return {
-    ok,
+    status,
     body,
     error,
   };
@@ -52,7 +52,7 @@ export class AuthService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, data.body, data.message);
+    return genResponse(response.status, data.body, data.message);
   }
 
   /**
@@ -67,7 +67,7 @@ export class AuthService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, data.body.isAuthorized, data.message);
+    return genResponse(response.status, data.body.isAuthorized, data.message);
   }
 
   /**
@@ -107,7 +107,7 @@ export class AuthService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, data.body, data.message);
+    return genResponse(response.status, data.body, data.message);
   }
 
   /**
@@ -126,7 +126,7 @@ export class AuthService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, null, data.message);
+    return genResponse(response.status, null, data.message);
   }
 }
 
@@ -151,7 +151,7 @@ export class PostService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, data.body.posts, data.message);
+    return genResponse(response.status, data.body.posts, data.message);
   }
 }
 
@@ -165,7 +165,7 @@ export class ChatService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, data.body, data.message);
+    return genResponse(response.status, data.body, data.message);
   }
 }
 
@@ -180,7 +180,7 @@ export class FriendsService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, data.body, data.message);
+    return genResponse(response.status, data.body, data.message);
   }
 }
 
@@ -195,7 +195,7 @@ export class SubscribersService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, data.body, data.message);
+    return genResponse(response.status, data.body, data.message);
   }
 }
 
@@ -210,7 +210,7 @@ export class SubscriptionsService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, data.body, data.message);
+    return genResponse(response.status, data.body, data.message);
   }
 }
 
@@ -224,6 +224,6 @@ export class MessengeService {
 
     const data = await response.json();
 
-    return genResponse(response.ok, data.body, data.message);
+    return genResponse(response.status, data.body, data.message);
   }
 }
