@@ -4,7 +4,7 @@ import { AuthService } from "../../modules/services.js";
  * SignupModel - класс для обработки данных, общения с бэком.
  */
 class SignupModel {
-  #eventBus
+  #eventBus;
 
   /**
    * Конструктор класса SignupModel.
@@ -13,10 +13,10 @@ class SignupModel {
    */
   constructor(eventBus) {
     this.#eventBus = eventBus;
-    this.#eventBus.addEventListener('signup', this.isValidForm.bind(this));
+    this.#eventBus.addEventListener("signup", this.isValidForm.bind(this));
   }
 
-    /**
+  /**
    * Checks if the form is valid:
    * - Checks if the email is valid
    * - Checks if the password is valid
@@ -26,7 +26,15 @@ class SignupModel {
    * - Checks if the date of birth is valid
    * @returns {Promise<boolean>}
    */
-  async isValidForm({firstName, lastName, email, password, repeatPassword, dateOfBirth, avatar}) {
+  async isValidForm({
+    firstName,
+    lastName,
+    email,
+    password,
+    repeatPassword,
+    dateOfBirth,
+    avatar,
+  }) {
     const authService = new AuthService();
 
     const result = await authService.sign_up(
@@ -46,9 +54,8 @@ class SignupModel {
       localStorage.setItem("lastName", lastName);
     }
 
-    this.#eventBus.emit('signupAnswer', result.ok);
+    this.#eventBus.emit("signupAnswer", result.ok);
   }
 }
 
 export default SignupModel;
-  

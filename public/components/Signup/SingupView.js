@@ -1,86 +1,87 @@
 import {
-    validateEmail,
-    validatePassword,
-    validateDateOfBirth,
-    validateName,
+  validateEmail,
+  validatePassword,
+  validateDateOfBirth,
+  validateName,
 } from "/public/modules/validators.js";
 import { errors } from "/public/modules/errors.js";
 
 const correct = "form__input__correct";
 
 const main_inputs = [
-    {
-        inscription: "Фамилия",
-        incorrect: "incorrect-last-name",
-        incorrectText: errors.incorrectName,
-        id: "last-name",
-        type: "text",
-        name: "last_name",
-        placeholder: "Фамилия",
-        isPassword: false,
-    },
-    {
-        inscription: "Имя",
-        incorrect: "incorrect-first-name",
-        incorrectText: errors.incorrectName,
-        id: "first-name",
-        type: "text",
-        name: "first_name",
-        placeholder: "Имя",
-        isPassword: false,
-    },
-    {
-        inscription: "Почта",
-        incorrect: "incorrect-email",
-        incorrectText: errors.incorrectEmail,
-        id: "email",
-        type: "email",
-        name: "email",
-        placeholder: "Почта",
-        isPassword: false,
-    },
-    {
-        inscription: "Пароль",
-        incorrect: "incorrect-password",
-        incorrectText: errors.incorrectPasswordLength,
-        id: "password",
-        type: "password",
-        name: "password",
-        placeholder: "Пароль",
-        isPassword: true,
-    },
-    {
-        inscription: "Повторите пароль",
-        incorrect: "incorrect-repeat-password",
-        incorrectText: errors.passwordMismatch,
-        id: "repeat-password",
-        type: "password",
-        name: "repeat_password",
-        placeholder: "Повторите пароль",
-        isPassword: true,
-    },
+  {
+    inscription: "Фамилия",
+    incorrect: "incorrect-last-name",
+    incorrectText: errors.incorrectName,
+    id: "last-name",
+    type: "text",
+    name: "last_name",
+    placeholder: "Фамилия",
+    isPassword: false,
+  },
+  {
+    inscription: "Имя",
+    incorrect: "incorrect-first-name",
+    incorrectText: errors.incorrectName,
+    id: "first-name",
+    type: "text",
+    name: "first_name",
+    placeholder: "Имя",
+    isPassword: false,
+  },
+  {
+    inscription: "Почта",
+    incorrect: "incorrect-email",
+    incorrectText: errors.incorrectEmail,
+    id: "email",
+    type: "email",
+    name: "email",
+    placeholder: "Почта",
+    isPassword: false,
+  },
+  {
+    inscription: "Пароль",
+    incorrect: "incorrect-password",
+    incorrectText: errors.incorrectPasswordLength,
+    id: "password",
+    type: "password",
+    name: "password",
+    placeholder: "Пароль",
+    isPassword: true,
+  },
+  {
+    inscription: "Повторите пароль",
+    incorrect: "incorrect-repeat-password",
+    incorrectText: errors.passwordMismatch,
+    id: "repeat-password",
+    type: "password",
+    name: "repeat_password",
+    placeholder: "Повторите пароль",
+    isPassword: true,
+  },
 ];
 
 const part_of_date = [
-    {
-        id: "day",
-        placeholder: "ДД",
-    },
-    {
-        id: "month",
-        placeholder: "ММ",
-    },
-    {
-        id: "year",
-        placeholder: "ГГГГ",
-    },
+  {
+    id: "day",
+    placeholder: "ДД",
+  },
+  {
+    id: "month",
+    placeholder: "ММ",
+  },
+  {
+    id: "year",
+    placeholder: "ГГГГ",
+  },
 ];
 
 /**
  * SignupView - класс для работы с визуалом на странице.
+ * @property {EventBus} eventBus - EventBus - класс управления event и обработчиков.
  */
 class SignupView {
-  #eventBus
+  #eventBus;
 
   /**
    * Конструктор класса SignupView .
@@ -89,7 +90,7 @@ class SignupView {
    */
   constructor(eventBus) {
     this.#eventBus = eventBus;
-    this.#eventBus.addEventListener('signupAnswer', this.redirect.bind(this));
+    this.#eventBus.addEventListener("signupAnswer", this.redirect.bind(this));
   }
 
   /**
@@ -224,11 +225,18 @@ class SignupView {
     });
   }
 
+
+  /**
+   * Перенаправление на новости при успешной регистрации
+   *
+   * @param {boolean} result - Результат регистрации
+   * @return {void}
+   */
   redirect(result) {
     const repeatEmail = document.getElementById("repeat-email");
 
     if (result) {
-      this.#eventBus.emit('redirectFeed', '/feed');
+      this.#eventBus.emit("redirectFeed", "/feed");
     } else {
       if (!result) {
         repeatEmail.classList.remove("correct");
@@ -237,6 +245,11 @@ class SignupView {
     }
   }
 
+  /**
+   * Проверка на корректность формы при её отправлении
+   *
+   * @return {void}
+   */
   async isValidForm() {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -307,20 +320,19 @@ class SignupView {
     repeatEmail.classList.add("correct");
 
     const data = {
-        firstName: firstName.value,
-        lastName: lastName.value,
-        email: email.value,
-        password: password.value,
-        repeatPassword: repeatPassword.value,
-        dateOfBirth: dateOfBirth,
-        avatar: avatar.files[0],
-    }
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      password: password.value,
+      repeatPassword: repeatPassword.value,
+      dateOfBirth: dateOfBirth,
+      avatar: avatar.files[0],
+    };
 
     console.log(this.#eventBus);
 
-    this.#eventBus.emit('signup', data);
+    this.#eventBus.emit("signup", data);
   }
-
 }
 
 export default SignupView;
