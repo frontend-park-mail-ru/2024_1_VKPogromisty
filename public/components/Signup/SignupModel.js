@@ -1,10 +1,10 @@
 import { AuthService } from "../../modules/services.js";
+import BaseModel from "/public/MVC/BaseModel.js";
 
 /**
  * SignupModel - класс для обработки данных, общения с бэком.
  */
-class SignupModel {
-  #eventBus;
+class SignupModel extends BaseModel {
 
   /**
    * Конструктор класса SignupModel.
@@ -12,8 +12,8 @@ class SignupModel {
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
   constructor(eventBus) {
-    this.#eventBus = eventBus;
-    this.#eventBus.addEventListener("signup", this.isValidForm.bind(this));
+    super(eventBus);
+    this.eventBus.addEventListener("attemptSignup", this.isValidForm.bind(this));
   }
 
   /**
@@ -47,14 +47,7 @@ class SignupModel {
       avatar,
     );
 
-    if (result.ok) {
-      const { avatar, firstName, lastName } = result.body.user;
-      localStorage.setItem("avatar", avatar);
-      localStorage.setItem("firstName", firstName);
-      localStorage.setItem("lastName", lastName);
-    }
-
-    this.#eventBus.emit("signupAnswer", result.ok);
+    this.eventBus.emit("receiveSignupResult", result.status);
   }
 }
 

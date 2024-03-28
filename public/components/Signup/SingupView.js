@@ -5,6 +5,7 @@ import {
   validateName,
 } from "/public/modules/validators.js";
 import { errors } from "/public/modules/errors.js";
+import BaseView from "../../MVC/BaseView.js";
 
 const correct = "form__input__correct";
 
@@ -80,8 +81,7 @@ const part_of_date = [
  * SignupView - класс для работы с визуалом на странице.
  * @property {EventBus} eventBus - EventBus - класс управления event и обработчиков.
  */
-class SignupView {
-  #eventBus;
+class SignupView extends BaseView {
 
   /**
    * Конструктор класса SignupView .
@@ -89,8 +89,8 @@ class SignupView {
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
   constructor(eventBus) {
-    this.#eventBus = eventBus;
-    this.#eventBus.addEventListener("signupAnswer", this.redirect.bind(this));
+    super(eventBus);
+    this.eventBus.addEventListener("receiveSignupResult", this.handleSignupResult.bind(this));
   }
 
   /**
@@ -225,23 +225,24 @@ class SignupView {
     });
   }
 
-
   /**
    * Перенаправление на новости при успешной регистрации
    *
    * @param {boolean} result - Результат регистрации
    * @return {void}
    */
-  redirect(result) {
+  handleSignupResult(result) {
     const repeatEmail = document.getElementById("repeat-email");
 
-    if (result) {
-      this.#eventBus.emit("redirectFeed", "/feed");
-    } else {
-      if (!result) {
-        repeatEmail.classList.remove("correct");
-        return false;
-      }
+    switch(result) {
+      case 201: 
+        this.eventBus.emit("signupSuccess", "/feed");
+        break;
+      case 400:
+        repeatEmail.classList.remove(correct);
+        break;
+      default:
+        throw new Error('Unexpected error');
     }
   }
 
@@ -250,7 +251,7 @@ class SignupView {
    *
    * @return {void}
    */
-  async isValidForm() {
+  isValidForm() {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     const repeatPassword = document.getElementById("repeat-password");
@@ -329,9 +330,7 @@ class SignupView {
       avatar: avatar.files[0],
     };
 
-    console.log(this.#eventBus);
-
-    this.#eventBus.emit("signup", data);
+    this.eventBus.emit("attemptSignup", data);
   }
 }
 
