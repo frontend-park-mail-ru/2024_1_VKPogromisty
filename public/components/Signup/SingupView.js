@@ -1,110 +1,107 @@
 import {
-  validateEmail,
-  validatePassword,
-  validateDateOfBirth,
-  validateName,
+    validateEmail,
+    validatePassword,
+    validateDateOfBirth,
+    validateName,
 } from "/public/modules/validators.js";
 import { errors } from "/public/modules/errors.js";
-import { AuthService } from "../../modules/services.js";
 
-const authService = new AuthService();
 const correct = "form__input__correct";
 
 const main_inputs = [
-  {
-    inscription: "Фамилия",
-    incorrect: "incorrect-last-name",
-    incorrectText: errors.incorrectName,
-    id: "last-name",
-    type: "text",
-    name: "last_name",
-    placeholder: "Фамилия",
-    isPassword: false,
-  },
-  {
-    inscription: "Имя",
-    incorrect: "incorrect-first-name",
-    incorrectText: errors.incorrectName,
-    id: "first-name",
-    type: "text",
-    name: "first_name",
-    placeholder: "Имя",
-    isPassword: false,
-  },
-  {
-    inscription: "Почта",
-    incorrect: "incorrect-email",
-    incorrectText: errors.incorrectEmail,
-    id: "email",
-    type: "email",
-    name: "email",
-    placeholder: "Почта",
-    isPassword: false,
-  },
-  {
-    inscription: "Пароль",
-    incorrect: "incorrect-password",
-    incorrectText: errors.incorrectPasswordLength,
-    id: "password",
-    type: "password",
-    name: "password",
-    placeholder: "Пароль",
-    isPassword: true,
-  },
-  {
-    inscription: "Повторите пароль",
-    incorrect: "incorrect-repeat-password",
-    incorrectText: errors.passwordMismatch,
-    id: "repeat-password",
-    type: "password",
-    name: "repeat_password",
-    placeholder: "Повторите пароль",
-    isPassword: true,
-  },
+    {
+        inscription: "Фамилия",
+        incorrect: "incorrect-last-name",
+        incorrectText: errors.incorrectName,
+        id: "last-name",
+        type: "text",
+        name: "last_name",
+        placeholder: "Фамилия",
+        isPassword: false,
+    },
+    {
+        inscription: "Имя",
+        incorrect: "incorrect-first-name",
+        incorrectText: errors.incorrectName,
+        id: "first-name",
+        type: "text",
+        name: "first_name",
+        placeholder: "Имя",
+        isPassword: false,
+    },
+    {
+        inscription: "Почта",
+        incorrect: "incorrect-email",
+        incorrectText: errors.incorrectEmail,
+        id: "email",
+        type: "email",
+        name: "email",
+        placeholder: "Почта",
+        isPassword: false,
+    },
+    {
+        inscription: "Пароль",
+        incorrect: "incorrect-password",
+        incorrectText: errors.incorrectPasswordLength,
+        id: "password",
+        type: "password",
+        name: "password",
+        placeholder: "Пароль",
+        isPassword: true,
+    },
+    {
+        inscription: "Повторите пароль",
+        incorrect: "incorrect-repeat-password",
+        incorrectText: errors.passwordMismatch,
+        id: "repeat-password",
+        type: "password",
+        name: "repeat_password",
+        placeholder: "Повторите пароль",
+        isPassword: true,
+    },
 ];
 
 const part_of_date = [
-  {
-    id: "day",
-    placeholder: "ДД",
-  },
-  {
-    id: "month",
-    placeholder: "ММ",
-  },
-  {
-    id: "year",
-    placeholder: "ГГГГ",
-  },
+    {
+        id: "day",
+        placeholder: "ДД",
+    },
+    {
+        id: "month",
+        placeholder: "ММ",
+    },
+    {
+        id: "year",
+        placeholder: "ГГГГ",
+    },
 ];
 
 /**
- * Class for rendering the sign up form
- * @class
- * @property {HTMLElement} #parent - The parent element
- * @method renderForm - Renders the sign up form
- * @method isValidForm - Checks if the form is valid
+ * SignupView - класс для работы с визуалом на странице.
  */
-export class SignUpForm {
-  #parent;
+class SignupView {
+  #eventBus
 
-  constructor(parent) {
-    this.#parent = parent;
+  /**
+   * Конструктор класса SignupView .
+   *
+   * @param {EventBus} eventBus - Объект класса EventBus.
+   */
+  constructor(eventBus) {
+    this.#eventBus = eventBus;
+    this.#eventBus.addEventListener('signupAnswer', this.redirect.bind(this));
   }
 
   /**
-   * Renders the sign up form from handlebars template, adds event listeners to the inputs:
-   * - Checks if the email is valid
-   * - Checks if the password is valid
-   * - Checks if the repeated password is the same as the password
-   * - Checks if the first name is valid
-   * - Checks if the last name is valid
-   * - Checks if the date of birth is valid
-   * @returns {void}
+   * Рендер внутри переданного HTML элемента.
+   * Переопределение в наследниках.
+   *
+   * @param {HTMLElement} element- HTML элемен, в который будет рендериться.
+   * @return {void}
    */
-  renderForm() {
+  render(element) {
     const template = Handlebars.templates["signup.hbs"];
-    this.#parent.innerHTML = template({ main_inputs, part_of_date });
+    element.innerHTML = template({ main_inputs, part_of_date });
 
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -213,18 +210,33 @@ export class SignUpForm {
         repeatPassword.setAttribute("type", "password");
       }
     });
+
+    const uploadImg = document.getElementById("sign-up-upload-img");
+
+    document
+      .getElementById("button-sign-up")
+      .addEventListener("click", async () => {
+        await this.isValidForm();
+      });
+
+    document.getElementById("avatar").addEventListener("change", () => {
+      uploadImg.classList.remove("form__input__correct");
+    });
   }
 
-  /**
-   * Checks if the form is valid:
-   * - Checks if the email is valid
-   * - Checks if the password is valid
-   * - Checks if the repeated password is the same as the password
-   * - Checks if the first name is valid
-   * - Checks if the last name is valid
-   * - Checks if the date of birth is valid
-   * @returns {Promise<boolean>}
-   */
+  redirect(result) {
+    const repeatEmail = document.getElementById("repeat-email");
+
+    if (result) {
+      this.#eventBus.emit('redirectFeed', '/feed');
+    } else {
+      if (!result) {
+        repeatEmail.classList.remove("correct");
+        return false;
+      }
+    }
+  }
+
   async isValidForm() {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -292,27 +304,23 @@ export class SignUpForm {
 
     const dateOfBirth = `${year.value}-${month.value.padStart(2, "0")}-${day.value.padStart(2, "0")}`;
 
-    const result = await authService.sign_up(
-      firstName.value,
-      lastName.value,
-      email.value,
-      password.value,
-      repeatPassword.value,
-      dateOfBirth,
-      avatar.files[0],
-    );
-
     repeatEmail.classList.add("correct");
 
-    if (result.ok) {
-      const { avatar, firstName, lastName } = result.body.user;
-      localStorage.setItem("avatar", avatar);
-      localStorage.setItem("firstName", firstName);
-      localStorage.setItem("lastName", lastName);
-      return true;
-    } else {
-      repeatEmail.classList.remove("correct");
-      return false;
+    const data = {
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        password: password.value,
+        repeatPassword: repeatPassword.value,
+        dateOfBirth: dateOfBirth,
+        avatar: avatar.files[0],
     }
+
+    console.log(this.#eventBus);
+
+    this.#eventBus.emit('signup', data);
   }
+
 }
+
+export default SignupView;

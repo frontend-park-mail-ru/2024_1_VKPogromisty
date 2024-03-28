@@ -7,7 +7,6 @@ import {
 import { Header } from "./components/Header/header.js";
 import { FeedMain } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
-import { SignUpForm } from "./components/Signup/signup.js";
 import { ProfileMain } from "./components/Profile/profile.js";
 import { MessengerMain } from "./components/Messenger/messenger.js";
 import { FriendsMain } from "./components/Friends/friends.js";
@@ -15,6 +14,7 @@ import { Routing } from "./routes.js";
 import { SubscribersMain } from "./components/Subscribers/subscribers.js";
 import { SubscriptionsMain } from "./components/Subscriptions/subscriptions.js";
 import { Main } from "./components/Main/main.js";
+import SignupController from "./components/Signup/SignupController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const config = {
@@ -127,23 +127,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function renderSignUp() {
-    const signupForm = new SignUpForm(body);
+    const signupController = new SignupController(router);
 
-    signupForm.renderForm();
-
-    const uploadImg = document.getElementById("sign-up-upload-img");
-
-    document
-      .getElementById("button-sign-up")
-      .addEventListener("click", async () => {
-        if (await signupForm.isValidForm()) {
-          router.redirect("/feed");
-        }
-      });
-
-    document.getElementById("avatar").addEventListener("change", () => {
-      uploadImg.classList.remove("form__input__correct");
-    });
+    signupController.render();
   }
 
   const authService = new AuthService();
