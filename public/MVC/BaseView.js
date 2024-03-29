@@ -1,5 +1,3 @@
-import EventBus from "./EventBus";
-
 /**
  * BaseView - класс для работы с визуалом на странице.
  */

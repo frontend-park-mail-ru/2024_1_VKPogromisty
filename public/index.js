@@ -7,7 +7,6 @@ import {
 import { Header } from "./components/Header/header.js";
 import { FeedMain } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
-import { SignUpForm } from "./components/Signup/signup.js";
 import { ProfileMain } from "./components/Profile/profile.js";
 import { MessengerMain } from "./components/Messenger/messenger.js";
 import { FriendsMain } from "./components/Friends/friends.js";
@@ -15,8 +14,12 @@ import { Routing } from "./routes.js";
 import { SubscribersMain } from "./components/Subscribers/subscribers.js";
 import { SubscriptionsMain } from "./components/Subscriptions/subscriptions.js";
 import { Main } from "./components/Main/main.js";
+import SignupController from "./components/Signup/SignupController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const router = new Routing();
+  const signupController = new SignupController(router);
+
   const config = {
     paths: [
       {
@@ -26,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\/signup/,
-        func: renderSignUp,
+        func: signupController.renderSignupView.bind(signupController),
         title: "Регистрация",
       },
       {
@@ -67,9 +70,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     ],
   };
 
-  const router = new Routing(config);
-
   const body = document.body;
+
+  router.setConfig(config);
 
   function renderLogin() {
     const loginForm = new LoginForm(body);
@@ -99,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       feedMain.renderForm();
     }
 
-    const feedMain = new FeedMain(document.getElementById('activity'));
+    const feedMain = new FeedMain(document.getElementById("activity"));
 
     feedMain.renderForm();
 
@@ -124,26 +127,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       .addEventListener("click", async () => {
         await router.redirect(`/profile/${ownUserId}`);
       });
-  }
-
-  function renderSignUp() {
-    const signupForm = new SignUpForm(body);
-
-    signupForm.renderForm();
-
-    const uploadImg = document.getElementById("sign-up-upload-img");
-
-    document
-      .getElementById("button-sign-up")
-      .addEventListener("click", async () => {
-        if (await signupForm.isValidForm()) {
-          router.redirect("/feed");
-        }
-      });
-
-    document.getElementById("avatar").addEventListener("change", () => {
-      uploadImg.classList.remove("form__input__correct");
-    });
   }
 
   const authService = new AuthService();
@@ -185,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       profileMain.renderForm(userId);
     }
 
-    const profileMain = new ProfileMain(document.getElementById('activity'));
+    const profileMain = new ProfileMain(document.getElementById("activity"));
 
     profileMain.renderForm();
 
@@ -217,7 +200,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       messengerMain.renderForm();
     }
 
-    const messengerMain = new MessengerMain(document.getElementById('activity'));
+    const messengerMain = new MessengerMain(
+      document.getElementById("activity"),
+    );
 
     messengerMain.renderForm();
 
@@ -248,7 +233,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       friendsMain.renderForm();
     }
 
-    const friendsMain = new FriendsMain(document.getElementById('activity'));
+    const friendsMain = new FriendsMain(document.getElementById("activity"));
 
     const friendsService = new FriendsService();
     const friends = await friendsService.getFriends();
@@ -281,7 +266,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       friendsMain.renderForm();
     }
 
-    const subscribersMain = new SubscribersMain(document.getElementById('activity'));
+    const subscribersMain = new SubscribersMain(
+      document.getElementById("activity"),
+    );
     const subscribersService = new SubscribersService();
     const subscribers = await subscribersService.getSubscribers();
 
@@ -313,7 +300,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       friendsMain.renderForm();
     }
 
-    const subscriptionsMain = new SubscriptionsMain(document.getElementById('activity'));
+    const subscriptionsMain = new SubscriptionsMain(
+      document.getElementById("activity"),
+    );
 
     const subscriptionsService = new SubscriptionsService();
     const subscriptions = await subscriptionsService.getSubscriptions();

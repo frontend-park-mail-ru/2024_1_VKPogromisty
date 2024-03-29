@@ -23,11 +23,8 @@ export class Routing {
 
   /**
    * Creates router
-   * @param {Config} config - The config with paths and their callbackes
    */
-  constructor(config) {
-    this.#config = config;
-
+  constructor() {
     const body = document.body;
 
     body.addEventListener(
@@ -52,6 +49,15 @@ export class Routing {
       },
       { capture: true },
     );
+  }
+
+  /**
+   * Sets new config
+   * @param {Config} config
+   * @returns {void}
+   */
+  setConfig(config) {
+    this.#config = config;
   }
 
   /**

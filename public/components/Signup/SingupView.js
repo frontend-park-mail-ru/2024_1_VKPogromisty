@@ -5,9 +5,8 @@ import {
   validateName,
 } from "/public/modules/validators.js";
 import { errors } from "/public/modules/errors.js";
-import { AuthService } from "../../modules/services.js";
+import BaseView from "../../MVC/BaseView.js";
 
-const authService = new AuthService();
 const correct = "form__input__correct";
 
 const main_inputs = [
@@ -79,32 +78,38 @@ const part_of_date = [
 ];
 
 /**
- * Class for rendering the sign up form
- * @class
- * @property {HTMLElement} #parent - The parent element
- * @method renderForm - Renders the sign up form
- * @method isValidForm - Checks if the form is valid
+ * SignupView - класс для работы с визуалом на странице.
+ * @property {EventBus} eventBus - EventBus - класс управления event и обработчиков.
  */
-export class SignUpForm {
-  #parent;
+class SignupView extends BaseView {
+  /**
+   * Конструктор класса SignupView .
+   *
+   * @param {EventBus} eventBus - Объект класса EventBus.
+   */
+  constructor(eventBus) {
+    super(eventBus);
+    this.eventBus.addEventListener(
+      "receiveSignupResult",
+      this.handleSignupResult.bind(this),
+    );
 
-  constructor(parent) {
-    this.#parent = parent;
+    this.eventBus.addEventListener(
+      "serverError",
+      this.handleServerError.bind(this),
+    )
   }
 
   /**
-   * Renders the sign up form from handlebars template, adds event listeners to the inputs:
-   * - Checks if the email is valid
-   * - Checks if the password is valid
-   * - Checks if the repeated password is the same as the password
-   * - Checks if the first name is valid
-   * - Checks if the last name is valid
-   * - Checks if the date of birth is valid
-   * @returns {void}
+   * Рендер внутри переданного HTML элемента.
+   * Переопределение в наследниках.
+   *
+   * @param {HTMLElement} element- HTML элемен, в который будет рендериться.
+   * @return {void}
    */
-  renderForm() {
+  render(element) {
     const template = Handlebars.templates["signup.hbs"];
-    this.#parent.innerHTML = template({ main_inputs, part_of_date });
+    element.innerHTML = template({ main_inputs, part_of_date });
 
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -213,19 +218,51 @@ export class SignUpForm {
         repeatPassword.setAttribute("type", "password");
       }
     });
+
+    const uploadImg = document.getElementById("sign-up-upload-img");
+
+    document
+      .getElementById("button-sign-up")
+      .addEventListener("click", async () => {
+        await this.isValidForm();
+      });
+
+    document.getElementById("avatar").addEventListener("change", () => {
+      uploadImg.classList.remove("form__input__correct");
+    });
   }
 
   /**
-   * Checks if the form is valid:
-   * - Checks if the email is valid
-   * - Checks if the password is valid
-   * - Checks if the repeated password is the same as the password
-   * - Checks if the first name is valid
-   * - Checks if the last name is valid
-   * - Checks if the date of birth is valid
-   * @returns {Promise<boolean>}
+   * Перенаправление на новости при успешной регистрации
+   *
+   * @param {boolean} result - Результат регистрации
+   * @return {void}
    */
-  async isValidForm() {
+  handleSignupResult(result) {
+    const repeatEmail = document.getElementById("repeat-email");
+
+    if (result) {
+      this.eventBus.emit("signupSuccess", "/feed");
+    } else {
+      repeatEmail.classList.remove(correct);
+    }
+  }
+
+  /**
+   * При ошибке сервера показ соответствующего сообщения
+   *
+   * @return {void}
+   */
+  handleServerError() {
+    document.getElementById("server-error").classList.remove(correct);
+  }
+
+  /**
+   * Проверка на корректность формы при её отправлении
+   *
+   * @return {void}
+   */
+  isValidForm() {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     const repeatPassword = document.getElementById("repeat-password");
@@ -292,27 +329,20 @@ export class SignUpForm {
 
     const dateOfBirth = `${year.value}-${month.value.padStart(2, "0")}-${day.value.padStart(2, "0")}`;
 
-    const result = await authService.sign_up(
-      firstName.value,
-      lastName.value,
-      email.value,
-      password.value,
-      repeatPassword.value,
-      dateOfBirth,
-      avatar.files[0],
-    );
-
     repeatEmail.classList.add("correct");
 
-    if (result.ok) {
-      const { avatar, firstName, lastName } = result.body.user;
-      localStorage.setItem("avatar", avatar);
-      localStorage.setItem("firstName", firstName);
-      localStorage.setItem("lastName", lastName);
-      return true;
-    } else {
-      repeatEmail.classList.remove("correct");
-      return false;
-    }
+    const data = {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      password: password.value,
+      repeatPassword: repeatPassword.value,
+      dateOfBirth: dateOfBirth,
+      avatar: avatar.files[0],
+    };
+
+    this.eventBus.emit("attemptSignup", data);
   }
 }
+
+export default SignupView;
