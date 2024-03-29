@@ -93,6 +93,11 @@ class SignupView extends BaseView {
       "receiveSignupResult",
       this.handleSignupResult.bind(this),
     );
+
+    this.eventBus.addEventListener(
+      "serverError",
+      this.handleServerError.bind(this),
+    )
   }
 
   /**
@@ -241,6 +246,15 @@ class SignupView extends BaseView {
     } else {
       repeatEmail.classList.remove(correct);
     }
+  }
+
+  /**
+   * При ошибке сервера показ соответствующего сообщения
+   *
+   * @return {void}
+   */
+  handleServerError() {
+    document.getElementById("server-error").classList.remove(correct);
   }
 
   /**

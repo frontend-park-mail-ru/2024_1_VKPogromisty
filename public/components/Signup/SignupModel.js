@@ -57,7 +57,7 @@ class SignupModel extends BaseModel {
         this.eventBus.emit("receiveSignupResult", false);
         break;
       default:
-        throw new Error("Unexpected error");
+        this.eventBus.emit("serverError", {});
     }
   }
 }

@@ -6,6 +6,7 @@ const incomingEvents = [
   "attemptSignup",
   "signupSuccess",
   "receiveSignupResult",
+  "serverError",
 ];
 
 /**
