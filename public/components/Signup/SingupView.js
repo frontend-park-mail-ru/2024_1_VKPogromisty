@@ -82,7 +82,6 @@ const part_of_date = [
  * @property {EventBus} eventBus - EventBus - класс управления event и обработчиков.
  */
 class SignupView extends BaseView {
-
   /**
    * Конструктор класса SignupView .
    *
@@ -90,7 +89,10 @@ class SignupView extends BaseView {
    */
   constructor(eventBus) {
     super(eventBus);
-    this.eventBus.addEventListener("receiveSignupResult", this.handleSignupResult.bind(this));
+    this.eventBus.addEventListener(
+      "receiveSignupResult",
+      this.handleSignupResult.bind(this),
+    );
   }
 
   /**
@@ -234,15 +236,10 @@ class SignupView extends BaseView {
   handleSignupResult(result) {
     const repeatEmail = document.getElementById("repeat-email");
 
-    switch(result) {
-      case 201: 
-        this.eventBus.emit("signupSuccess", "/feed");
-        break;
-      case 400:
-        repeatEmail.classList.remove(correct);
-        break;
-      default:
-        throw new Error('Unexpected error');
+    if (result) {
+      this.eventBus.emit("signupSuccess", "/feed");
+    } else {
+      repeatEmail.classList.remove(correct);
     }
   }
 

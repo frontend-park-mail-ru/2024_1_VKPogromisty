@@ -2,7 +2,11 @@ import SignupModel from "./SignupModel.js";
 import SignupView from "./SingupView.js";
 import EventBus from "./public/MVC/EventBus.js";
 
-const incomingEvents = ["attemptSignup", "signupSuccess", "receiveSignupResult"];
+const incomingEvents = [
+  "attemptSignup",
+  "signupSuccess",
+  "receiveSignupResult",
+];
 
 /**
  * SignupController - класс для связи SignupModel и SignupView.
@@ -22,7 +26,10 @@ export default class SignupController {
     this.#signupModel = new SignupModel(this.eventBus);
     this.#signupView = new SignupView(this.eventBus);
 
-    this.eventBus.addEventListener("signupSuccess", router.redirect.bind(router));
+    this.eventBus.addEventListener(
+      "signupSuccess",
+      router.redirect.bind(router),
+    );
   }
 
   /**

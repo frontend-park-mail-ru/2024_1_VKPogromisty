@@ -17,7 +17,6 @@ import { Main } from "./components/Main/main.js";
 import SignupController from "./components/Signup/SignupController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-
   const router = new Routing();
   const signupController = new SignupController(router);
 

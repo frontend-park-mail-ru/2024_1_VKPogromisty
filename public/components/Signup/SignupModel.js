@@ -5,7 +5,6 @@ import BaseModel from "/public/MVC/BaseModel.js";
  * SignupModel - класс для обработки данных, общения с бэком.
  */
 class SignupModel extends BaseModel {
-
   /**
    * Конструктор класса SignupModel.
    *
@@ -13,7 +12,10 @@ class SignupModel extends BaseModel {
    */
   constructor(eventBus) {
     super(eventBus);
-    this.eventBus.addEventListener("attemptSignup", this.isValidForm.bind(this));
+    this.eventBus.addEventListener(
+      "attemptSignup",
+      this.isValidForm.bind(this),
+    );
   }
 
   /**
@@ -24,7 +26,7 @@ class SignupModel extends BaseModel {
    * - Checks if the first name is valid
    * - Checks if the last name is valid
    * - Checks if the date of birth is valid
-   * @returns {Promise<boolean>}
+   * @returns {Promise<void>}
    */
   async isValidForm({
     firstName,
@@ -47,7 +49,16 @@ class SignupModel extends BaseModel {
       avatar,
     );
 
-    this.eventBus.emit("receiveSignupResult", result.status);
+    switch (result.status) {
+      case 201:
+        this.eventBus.emit("receiveSignupResult", true);
+        break;
+      case 400:
+        this.eventBus.emit("receiveSignupResult", false);
+        break;
+      default:
+        throw new Error("Unexpected error");
+    }
   }
 }
 
