@@ -6,7 +6,6 @@ import {
 } from "./modules/services.js";
 import { Header } from "./components/Header/header.js";
 import { FeedMain } from "./components/Feed/feed.js";
-import { LoginForm } from "./components/Login/loginForm.js";
 import { ProfileMain } from "./components/Profile/profile.js";
 import { MessengerMain } from "./components/Messenger/messenger.js";
 import { FriendsMain } from "./components/Friends/friends.js";
@@ -15,16 +14,18 @@ import { SubscribersMain } from "./components/Subscribers/subscribers.js";
 import { SubscriptionsMain } from "./components/Subscriptions/subscriptions.js";
 import { Main } from "./components/Main/main.js";
 import SignupController from "./components/Signup/SignupController.js";
+import LoginController from "./components/Login/LoginController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const router = new Routing();
   const signupController = new SignupController(router);
+  const loginController = new LoginController(router);
 
   const config = {
     paths: [
       {
         path: /\/login/,
-        func: renderLogin,
+        func: loginController.renderLoginView.bind(loginController),
         title: "Вход",
       },
       {
@@ -73,20 +74,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const body = document.body;
 
   router.setConfig(config);
-
-  function renderLogin() {
-    const loginForm = new LoginForm(body);
-
-    loginForm.renderForm();
-
-    document
-      .getElementById("button-sign-in")
-      .addEventListener("click", async () => {
-        if (await loginForm.isValidForm()) {
-          await router.redirect("/feed");
-        }
-      });
-  }
 
   async function renderFeed() {
     const main = document.getElementById("main");
