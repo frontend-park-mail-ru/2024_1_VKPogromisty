@@ -6,7 +6,7 @@ import {
 import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
 
-const correct = "form__input__correct";
+const INPUT_CORRECT = "form__input__correct";
 
 const inputs = [
   {
@@ -56,18 +56,18 @@ class LoginView extends BaseView {
     const loginShowPassword = document.getElementById("login-show-password");
 
     email.addEventListener("focusout", () => {
-      incorrectEmail.classList.add(correct);
+      incorrectEmail.classList.add(INPUT_CORRECT);
 
       if (!validateEmail(email.value)) {
-        incorrectEmail.classList.remove(correct);
+        incorrectEmail.classList.remove(INPUT_CORRECT);
       }
     });
 
     password.addEventListener("focusout", () => {
-      incorrectPassword.classList.add(correct);
+      incorrectPassword.classList.add(INPUT_CORRECT);
 
       if (!validatePassword(password.value)) {
-        incorrectPassword.classList.remove(correct);
+        incorrectPassword.classList.remove(INPUT_CORRECT);
       }
     });
 
@@ -82,7 +82,7 @@ class LoginView extends BaseView {
     document
       .getElementById("button-sign-in")
       .addEventListener("click", async () => {
-        await this.isValidForm();
+        await this.checkAndSubmitForm();
       });
   }
 
@@ -92,15 +92,15 @@ class LoginView extends BaseView {
     if (result) {
       this.eventBus.emit("loginSuccess", "/feed");
     } else {
-      repeatEmail.classList.remove(correct);
+      repeatEmail.classList.remove(INPUT_CORRECT);
     }
   }
 
   handleServerError() {
-    document.getElementById("server-error").classList.remove(correct);
+    document.getElementById("server-error").classList.remove(INPUT_CORRECT);
   }
 
-  isValidForm() {
+  checkAndSubmitForm() {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     const incorrectEmail = document.getElementById("incorrect-email");
@@ -109,17 +109,17 @@ class LoginView extends BaseView {
 
     const repeatEmail = document.getElementById("repeat-email");
 
-    incorrectEmail.classList.add(correct);
-    incorrectPassword.classList.add(correct);
+    incorrectEmail.classList.add(INPUT_CORRECT);
+    incorrectPassword.classList.add(INPUT_CORRECT);
 
     let flag = true;
 
     if (!validateEmail(email.value)) {
-      incorrectEmail.classList.remove(correct);
+      incorrectEmail.classList.remove(INPUT_CORRECT);
       flag = false;
     }
     if (!validatePassword(password.value)) {
-      incorrectPassword.classList.remove(correct);
+      incorrectPassword.classList.remove(INPUT_CORRECT);
       flag = false;
     }
 
@@ -127,7 +127,7 @@ class LoginView extends BaseView {
       return false;
     }
 
-    incorrectFormLogin.classList.add(correct);
+    incorrectFormLogin.classList.add(INPUT_CORRECT);
 
     const data = {
       email: email.value,

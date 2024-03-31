@@ -4,10 +4,13 @@ import { AuthService } from "../../modules/services.js";
 class LoginModel extends BaseModel {
   constructor(eventBus) {
     super(eventBus);
-    this.eventBus.addEventListener("attemptLogin", this.isValidForm.bind(this));
+    this.eventBus.addEventListener(
+      "attemptLogin",
+      this.checkAndSubmitForm.bind(this),
+    );
   }
 
-  async isValidForm({ email, password }) {
+  async checkAndSubmitForm({ email, password }) {
     const authService = new AuthService();
 
     const result = await authService.login(email, password);
