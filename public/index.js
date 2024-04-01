@@ -84,7 +84,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       .getElementById("button-sign-in")
       .addEventListener("click", async () => {
         if (await loginForm.isValidForm()) {
-          console.log("yes");
           router.redirect("/feed");
         }
       });

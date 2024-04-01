@@ -242,7 +242,7 @@ export class PostService {
   async getPosts(userId, lastPostId) {
     const response = await fetch(
       this.baseUrl +
-        `?userId=${Number(userId)}&lastPostId=${Number(lastPostId)}`,
+        `?userId=${userId}&lastPostId=${lastPostId}`,
       {
         method: "GET",
         credentials: "include",
@@ -356,6 +356,11 @@ export class SubscriptionsService {
     return genResponse(response.status, data.body, data.message);
   }
 
+  /**
+   * Subscribes to current user by him ID
+   * @param {number} userId - The ID of user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
   async postSubscription(userId) {
     const subscribedTo = Number(userId);
 
@@ -370,6 +375,11 @@ export class SubscriptionsService {
     return genResponse(response.status, data.body, data.message);
   }
 
+  /**
+   * Unsubscribes current user by him ID
+   * @param {number} userId - The ID of user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
   async deleteSubscription(userId) {
     const subscribedTo = Number(userId);
 
