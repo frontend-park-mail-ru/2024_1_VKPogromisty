@@ -1,7 +1,15 @@
 import BaseModel from "../../MVC/BaseModel.js";
 import { AuthService } from "../../modules/services.js";
 
+/**
+ * LoginModel - класс для обработки данных, общения с бэком.
+ */
 class LoginModel extends BaseModel {
+  /**
+   * Конструктор класса LoginModel.
+   *
+   * @param {EventBus} eventBus - Объект класса EventBus.
+   */
   constructor(eventBus) {
     super(eventBus);
     this.eventBus.addEventListener(
@@ -10,6 +18,12 @@ class LoginModel extends BaseModel {
     );
   }
 
+    /**
+   * Проверяет валидность формы:
+   * - Проверяет валидность почты
+   * - Проверяет валидность пароля
+   * @returns {Promise<void>}
+   */
   async checkAndSubmitForm({ email, password }) {
     const authService = new AuthService();
 

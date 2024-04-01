@@ -31,7 +31,16 @@ const inputs = [
   },
 ];
 
+/**
+ * LoginView - класс для работы с визуалом на странице.
+ * @property {EventBus} eventBus - EventBus - класс управления event и обработчиков.
+ */
 class LoginView extends BaseView {
+  /**
+   * Конструктор класса LoginView .
+   *
+   * @param {EventBus} eventBus - Объект класса EventBus.
+   */
   constructor(eventBus) {
     super(eventBus);
     this.eventBus.addEventListener(
@@ -45,6 +54,13 @@ class LoginView extends BaseView {
     );
   }
 
+  /**
+   * Рендер внутри переданного HTML элемента.
+   * Переопределение в наследниках.
+   *
+   * @param {HTMLElement} element- HTML элемен, в который будет рендериться.
+   * @return {void}
+   */
   render(element) {
     const template = Handlebars.templates["login.hbs"];
     element.innerHTML = template({ inputs });
@@ -86,6 +102,12 @@ class LoginView extends BaseView {
       });
   }
 
+  /**
+   * Перенаправление на новости при успешной авторизации
+   *
+   * @param {boolean} result - Результат логина
+   * @return {void}
+   */
   handleLoginResult(result) {
     const repeatEmail = document.getElementById("repeat-email");
 
@@ -96,10 +118,20 @@ class LoginView extends BaseView {
     }
   }
 
+  /**
+   * При ошибке сервера показ соответствующего сообщения
+   *
+   * @return {void}
+   */
   handleServerError() {
     document.getElementById("server-error").classList.remove(INPUT_CORRECT);
   }
 
+  /**
+   * Проверка на корректность формы при её отправлении
+   *
+   * @return {void}
+   */
   checkAndSubmitForm() {
     const email = document.getElementById("email");
     const password = document.getElementById("password");

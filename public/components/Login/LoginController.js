@@ -19,8 +19,8 @@ export default class LoginController {
   #loginModel;
 
   /**
-   * Creates controller
-   * @param {Routing} router - The router
+   * Создаёт контроллер
+   * @param {Routing} router - роутер
    */
   constructor(router) {
     this.eventBus = new EventBus(incomingEvents);
@@ -34,7 +34,7 @@ export default class LoginController {
   }
 
   /**
-   * Renders loginView
+   * Рендерит LoginView
    * @returns {void}
    */
   renderLoginView() {
