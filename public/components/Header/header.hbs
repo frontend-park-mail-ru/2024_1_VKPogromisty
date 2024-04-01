@@ -15,15 +15,17 @@
       class="user__notification-img"
       src="../static/images/notification.png"
     />
-    <span id="user__username-span" class="user__username-span">{{
-      fullUserName
-    }}</span>
+    <span id="user__username-span" class="user__username-span"
+      >{{ firstName }} {{ lastName }}</span
+    >
     <a href="/profile/{{ this.userId }}"
       ><img
         id="user__avatar-img"
         class="user__avatar-img"
-        src="{{ userAvatar }}"
+        src="{{ staticUrl }}/{{ avatar }}"
     /></a>
-    <button id="logout-button" class="user__logout-button">Выйти</button>
+    <button type="button" id="logout-button" class="user__logout-button">
+      Выйти
+    </button>
   </div>
 </div>

@@ -94,11 +94,9 @@ export class ProfilePost {
   renderPosts(posts) {
     const template = Handlebars.templates["profilePost.hbs"];
 
-    const userAvatar = this.#userAvatar;
-    const fullUserName = this.#fullUserName;
     this.#parent.innerHTML += template({
       posts,
-      userAvatar,
+      avatar,
       fullUserName,
       staticUrl,
     });
