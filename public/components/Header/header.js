@@ -12,10 +12,6 @@ const staticUrl = `${API_URL}/static`;
  * @method renderForm - Renders the feed header
  */
 export class Header {
-  #fullUserName;
-  #userAvatar;
-  #userId;
-
   #parent;
 
   /**
@@ -29,26 +25,18 @@ export class Header {
   }
 
   /**
-   * Updates the user, setting the full user name and the user avatar from local storage
-   * @returns {void}
-   */
-  updateUser() {
-    this.#fullUserName = `${localStorage.getItem("firstName")} ${localStorage.getItem("lastName")}`;
-    this.#userAvatar = `${staticUrl}/${localStorage.getItem("avatar")}`;
-    this.#userId = localStorage.getItem("userId");
-  }
-
-  /**
    * Renders the feed header handlebars template
    * @returns {void}
    */
-  renderForm() {
+  renderForm({ userId, firstName, lastName, avatar }) {
     const template = Handlebars.templates["header.hbs"];
-    this.updateUser();
 
-    const userAvatar = this.#userAvatar;
-    const fullUserName = this.#fullUserName;
-    const userId = this.#userId;
-    this.#parent.innerHTML += template({ userAvatar, fullUserName, userId });
+    this.#parent.innerHTML += template({
+      avatar,
+      firstName,
+      lastName,
+      userId,
+      staticUrl,
+    });
   }
 }

@@ -14,11 +14,13 @@ import { SubscribersMain } from "./components/Subscribers/subscribers.js";
 import { SubscriptionsMain } from "./components/Subscriptions/subscriptions.js";
 import { Main } from "./components/Main/main.js";
 import SignupController from "./components/Signup/SignupController.js";
+import ProfileController from "./components/Profile/ProfileController.js";
 import LoginController from "./components/Login/LoginController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const router = new Routing();
   const signupController = new SignupController(router);
+  const profileController = new ProfileController(router);
   const loginController = new LoginController(router);
 
   const config = {
@@ -40,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\/profile\/(?<userId>[0-9]+)/,
-        func: renderProfile,
+        func: profileController.renderProfileView.bind(profileController),
         title: "Профиль",
       },
       {
@@ -139,38 +141,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         return;
     }
-  }
-
-  async function renderProfile({ userId }) {
-    const main = document.getElementById("main");
-    const header = document.getElementById("header");
-
-    if (header === null) {
-      const subscribersHeader = new Header(body);
-      subscribersHeader.renderForm();
-    }
-
-    if (main === null) {
-      const profileMain = new Main(body);
-      profileMain.renderForm(userId);
-    }
-
-    const profileMain = new ProfileMain(document.getElementById("activity"));
-
-    profileMain.renderForm();
-
-    //const postService = new PostService();
-    //const profilePost = new ProfilePost(document.getElementById('activity'));
-
-    //const posts = await postService.getPosts();
-    //profilePost.renderPosts(posts.body);
-
-    document
-      .getElementById("logout-button")
-      .addEventListener("click", async () => {
-        await authService.logout();
-        router.redirect("/login");
-      });
   }
 
   async function renderMessenger() {
