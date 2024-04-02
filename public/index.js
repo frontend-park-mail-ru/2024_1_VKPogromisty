@@ -7,7 +7,6 @@ import {
 import { Header } from "./components/Header/header.js";
 import { FeedMain } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
-import { ProfileMain } from "./components/Profile/profile.js";
 import { MessengerMain } from "./components/Messenger/messenger.js";
 import { FriendsMain } from "./components/Friends/friends.js";
 import { Routing } from "./routes.js";
@@ -15,10 +14,12 @@ import { SubscribersMain } from "./components/Subscribers/subscribers.js";
 import { SubscriptionsMain } from "./components/Subscriptions/subscriptions.js";
 import { Main } from "./components/Main/main.js";
 import SignupController from "./components/Signup/SignupController.js";
+import ProfileController from "./components/Profile/ProfileController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const router = new Routing();
   const signupController = new SignupController(router);
+  const profileController = new ProfileController(router);
 
   const config = {
     paths: [
@@ -39,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\/profile\/(?<userId>[0-9]+)/,
-        func: renderProfile,
+        func: profileController.renderProfileView.bind(profileController),
         title: "Профиль",
       },
       {
@@ -83,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       .getElementById("button-sign-in")
       .addEventListener("click", async () => {
         if (await loginForm.isValidForm()) {
-          await router.redirect("/feed");
+          router.redirect("/feed");
         }
       });
   }
@@ -152,38 +153,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         return;
     }
-  }
-
-  async function renderProfile({ userId }) {
-    const main = document.getElementById("main");
-    const header = document.getElementById("header");
-
-    if (header === null) {
-      const subscribersHeader = new Header(body);
-      subscribersHeader.renderForm();
-    }
-
-    if (main === null) {
-      const profileMain = new Main(body);
-      profileMain.renderForm(userId);
-    }
-
-    const profileMain = new ProfileMain(document.getElementById("activity"));
-
-    profileMain.renderForm();
-
-    //const postService = new PostService();
-    //const profilePost = new ProfilePost(document.getElementById('activity'));
-
-    //const posts = await postService.getPosts();
-    //profilePost.renderPosts(posts.body);
-
-    document
-      .getElementById("logout-button")
-      .addEventListener("click", async () => {
-        await authService.logout();
-        router.redirect("/login");
-      });
   }
 
   async function renderMessenger() {

@@ -1,48 +1,93 @@
 <div id="profile-poster" class="profile-poster">
   <div class="profile-poster-view">
-    <img class="profile-poster__avatar-img" src="{{ this.userAvatar }}" />
+    <img
+      class="profile-poster__avatar-img"
+      src="{{ staticUrl }}/{{ this.avatar }}"
+    />
     <div class="profile-brief">
-      <span class="profile-brief__name-span">{{ this.fullName }}</span>
+      <span class="profile-brief__name-span"
+        >{{ this.firstName }} {{ this.lastName }}</span
+      >
       <div class="profile-brief-info">
-        <span class="profile-brief-info__date-span">{{ this.date }}</span>
-        <span class="profile-brief-info__place-span">{{
-          this.place
+        <span class="profile-brief-info__date-span">{{
+          this.dateOfBirth
         }}</span>
       </div>
     </div>
+    {{#unless isMe}}
+    <div class="subscribed-to-options">
+      {{#unless isSubscribedTo}}
+      <button
+        type="button"
+        class="subscribed-to-options__button-subscribe"
+        id="subscribe-{{ this.userId }}"
+      >
+        Подписаться
+      </button>
+      <button
+        type="button"
+        class="subscribed-to-options__button-subscribe-message"
+        id="send-message-{{ this.userId }}"
+      >
+        <img
+          src="../static/images/messenger.png"
+          class="subscribed-to-options__img"
+        />
+      </button>
+      {{else}}
+      <button
+        type="button"
+        class="subscribed-to-options__button-unsubscribe"
+        id="subscribe-{{ this.userId }}"
+      >
+        Отписаться
+      </button>
+      <button
+        type="button"
+        class="subscribed-to-options__button-unsubscribe-message"
+        id="send-message-{{ this.userId }}"
+      >
+        <img
+          src="../static/images/messenger.png"
+          class="subscribed-to-options__img"
+        />
+      </button>
+      {{/unless}}
+    </div>
+    {{/unless}}
   </div>
   <div class="profile-wrapper">
     <img
       class="profile-wrapper__settings-img"
       src="../static/images/setting.png"
     />
-    <img
-      class="profile-wrapper__back-img"
-      src="../static/images/forest.jpg"
-    />
+    <img class="profile-wrapper__back-img" src="../static/images/forest.jpg" />
   </div>
 </div>
+{{#if isMe}}
 <div id="create-post" class="create-post">
   <div id="news-avatar" class="news-avatar">
     <a href="/profile/{{ this.userId }}"
       ><img
         id="user-avatar-news"
         class="news-avatar__img"
-        src="{{ this.userAvatar }}"
+        src="{{ staticUrl }}/{{ this.avatar }}"
     /></a>
   </div>
   <div class="news">
     <input
-      id="user-news"
+      id="user-news-content"
       class="news__input"
       type="text"
       placeholder="Что нового?"
-      readonly
+      minlength="1"
+      autocomplete="off"
     />
-    <img
-      class="news__img"
-      src="../static/images/attach-paperclip-symbol.png"
-    />
+    <img class="news__img" src="../static/images/attach-paperclip-symbol.png" />
   </div>
-  <button class="publish-button">Опубликовать</button>
+  <button class="publish-button" type="button" id="publish-post-button">
+    Опубликовать
+  </button>
 </div>
+{{/if}}
+<div class="posts" id="posts"></div>

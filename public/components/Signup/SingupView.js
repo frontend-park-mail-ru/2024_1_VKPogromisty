@@ -97,7 +97,7 @@ class SignupView extends BaseView {
     this.eventBus.addEventListener(
       "serverError",
       this.handleServerError.bind(this),
-    )
+    );
   }
 
   /**
@@ -224,7 +224,7 @@ class SignupView extends BaseView {
     document
       .getElementById("button-sign-up")
       .addEventListener("click", async () => {
-        await this.isValidForm();
+        this.isValidForm();
       });
 
     document.getElementById("avatar").addEventListener("change", () => {

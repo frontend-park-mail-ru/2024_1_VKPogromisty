@@ -1,31 +1,31 @@
 import { API_URL } from "/public/modules/consts.js";
 
 const sidebar = [
-    {
-      href: "/feed",
-      text: "Новости",
-    },
-    {
-      href: "/messenger",
-      text: "Мессенджер",
-    },
-    {
-      href: "/friends",
-      text: "Друзья",
-    },
-    {
-      href: "#",
-      text: "Сообщества",
-    },
-    {
-      href: "#",
-      text: "Настройки",
-    },
-    {
-      href: "#",
-      text: "Стикеры",
-    },
-  ];
+  {
+    href: "/feed",
+    text: "Новости",
+  },
+  {
+    href: "/messenger",
+    text: "Мессенджер",
+  },
+  {
+    href: "/friends",
+    text: "Друзья",
+  },
+  {
+    href: "#",
+    text: "Сообщества",
+  },
+  {
+    href: "#",
+    text: "Настройки",
+  },
+  {
+    href: "#",
+    text: "Стикеры",
+  },
+];
 
 /**
  * Class for rendering the feed header
@@ -38,7 +38,6 @@ const sidebar = [
  */
 export class Main {
   #parent;
-  #userId;
 
   /**
    * Creates a new FeedHeader
@@ -48,16 +47,14 @@ export class Main {
    */
   constructor(parent) {
     this.#parent = parent;
-    this.#userId = localStorage.getItem("userId");
   }
 
   /**
    * Renders the feed header handlebars template
    * @returns {void}
    */
-  renderForm() {
+  renderForm(userId) {
     const template = Handlebars.templates["main.hbs"];
-    const userId = this.#userId;
 
     const fullSidebar = sidebar.concat({
       href: `/profile/${userId}`,
