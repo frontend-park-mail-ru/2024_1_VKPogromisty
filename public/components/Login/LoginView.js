@@ -142,11 +142,19 @@ class LoginView extends BaseView {
     incorrectEmail.classList.add(INPUT_CORRECT);
     incorrectPassword.classList.add(INPUT_CORRECT);
 
+    let flag=true;
+
     if (!validateEmail(email.value)) {
       incorrectEmail.classList.remove(INPUT_CORRECT);
+      flag=false;
     }
     if (!validatePassword(password.value)) {
       incorrectPassword.classList.remove(INPUT_CORRECT);
+      flag=false;
+    }
+
+    if(!flag){
+      return;
     }
 
     incorrectFormLogin.classList.add(INPUT_CORRECT);
