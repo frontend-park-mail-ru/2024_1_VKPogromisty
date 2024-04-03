@@ -18,6 +18,11 @@ const incomingEvents = [
   "serverError",
 ];
 
+/**
+ * FriendsController - класс для связи FriendsModel и ProfileView.
+ * @property {FriendsView} FriendsView - FriendsView - класс для работы с визуалом на странице.
+ * @property {FriendsModel} FriendsModel - FriendsModel - класс для обработки данных, общения с бэком.
+ */
 class FriendsController {
   /**
    * Creates controller

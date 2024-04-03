@@ -1,3 +1,9 @@
+import BaseView from "../../MVC/BaseView.js";
+import { Header } from "../Header/header.js";
+import { Main } from "../Main/main.js";
+import { API_URL } from "/public/modules/consts.js";
+import { remakeDateOfBirth } from "../../modules/dateRemaking.js";
+
 /**
  * A Friend structure
  *
@@ -22,12 +28,6 @@
  * @property {string} lastName - The last name of session's user
  * @property {string} path - The next path of page
  */
-
-import BaseView from "../../MVC/BaseView.js";
-import { Header } from "../Header/header.js";
-import { Main } from "../Main/main.js";
-import { API_URL } from "/public/modules/consts.js";
-import { remakeDateOfBirth } from "../../modules/dateRemaking.js";
 
 const staticUrl = `${API_URL}/static`;
 
@@ -145,7 +145,7 @@ class FriendsView extends BaseView {
    */
   renderFriends(friends) {
     const isFriends = true;
-    const noFriends = (friends == null);
+    const noFriends = friends == null;
 
     if (!noFriends) {
       friends.forEach((elem) => {
@@ -158,7 +158,7 @@ class FriendsView extends BaseView {
       friends,
       rightSidebar,
       isFriends,
-      noFriends
+      noFriends,
     });
 
     const friendsLabel = document.getElementById("friends-label");
@@ -184,7 +184,7 @@ class FriendsView extends BaseView {
    */
   renderSubscribers(friends) {
     const isSubscribers = true;
-    const noFriends = (friends == null);
+    const noFriends = friends == null;
 
     if (!noFriends) {
       friends.forEach((elem) => {
@@ -197,7 +197,7 @@ class FriendsView extends BaseView {
       friends,
       rightSidebar,
       isSubscribers,
-      noFriends
+      noFriends,
     });
 
     const subscribersLabel = document.getElementById("subscribers-label");
@@ -232,7 +232,7 @@ class FriendsView extends BaseView {
    */
   renderSubscriptions(friends) {
     const isSubscriptions = true;
-    const noFriends = (friends == null);
+    const noFriends = friends == null;
 
     if (!noFriends) {
       friends.forEach((elem) => {
@@ -245,7 +245,7 @@ class FriendsView extends BaseView {
       friends,
       rightSidebar,
       isSubscriptions,
-      noFriends
+      noFriends,
     });
 
     const subscriptionsLabel = document.getElementById("subscriptions-label");
