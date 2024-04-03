@@ -12,16 +12,13 @@
     />
   </div>
   <div class="search-buttons">
-    <img
-      class="search-buttons__menu-img"
-      src="../static/images/menu.png"
-    />
+    <img class="search-buttons__menu-img" src="../static/images/menu.png" />
   </div>
 </div>
 <div class="right-sidebar-friends">
   {{#each rightSidebar}}
   <span>
-    <a class="right-sidebar__a-{{ this.class }}" href="{{ this.href }}">{{
+    <a class="right-sidebar__a-common" id="{{this.id}}" href="{{ this.href }}">{{
       this.text
     }}</a>
   </span>
@@ -29,12 +26,12 @@
 </div>
 <div class="friends">
   {{#each friends}}
-  <div class="friends-field">
+  <div class="friends-field" id="friends-field-{{this.userId}}">
     <div class="friend" id="friend-{{ this.userId }}">
       <a href="/profile/{{ this.userId }}"
         ><img
           class="friend__avatar-img"
-          src="{{ staticUrl }}/{{ this.avatar }}"
+          src="{{ ../staticUrl }}/{{ this.avatar }}"
       /></a>
       <div class="friend-info">
         <span class="friend-info__name-span"
@@ -48,9 +45,17 @@
       </div>
     </div>
     <div class="friend-ables">
-      <button type="button" class="friend-ables__button">
-        В друзьях
+      {{#if ../isFriends}}
+      <button type="button" class="friend-ables__delete-friend-button" data-id="{{this.userId}}">Удалить из друзей</button>
+      {{/if}}
+      {{#if ../isSubscribers}}
+      <button type="button" class="friend-ables__add-friend-button" data-id="{{this.userId}}">
+        Добавить в друзья
       </button>
+      {{/if}}
+      {{#if ../isSubscriptions}}
+      <button type="button" class="friend-ables__unsubscribe-button" data-id="{{this.userId}}">Отписаться</button>
+      {{/if}}
     </div>
   </div>
   {{/each}}

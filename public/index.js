@@ -1,25 +1,21 @@
 import {
   AuthService,
-  FriendsService,
-  SubscribersService,
-  SubscriptionsService,
 } from "./modules/services.js";
 import { Header } from "./components/Header/header.js";
 import { FeedMain } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
 import { MessengerMain } from "./components/Messenger/messenger.js";
-import { FriendsMain } from "./components/Friends/friends.js";
 import { Routing } from "./routes.js";
-import { SubscribersMain } from "./components/Subscribers/subscribers.js";
-import { SubscriptionsMain } from "./components/Subscriptions/subscriptions.js";
 import { Main } from "./components/Main/main.js";
 import SignupController from "./components/Signup/SignupController.js";
 import ProfileController from "./components/Profile/ProfileController.js";
+import FriendsController from "./components/Friends/FriendsController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const router = new Routing();
   const signupController = new SignupController(router);
   const profileController = new ProfileController(router);
+  const friendsController = new FriendsController(router);
 
   const config = {
     paths: [
@@ -50,17 +46,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\/friends/,
-        func: renderFriends,
+        func: friendsController.renderFriendsView.bind(friendsController),
         title: "Друзья",
       },
       {
         path: /\/subscribers/,
-        func: renderSubscribers,
+        func: friendsController.renderSubscribersView.bind(friendsController),
         title: "Подписчики",
       },
       {
         path: /\/subscriptions/,
-        func: renderSubscriptions,
+        func: friendsController.renderSubscriptionsView.bind(friendsController),
         title: "Подписки",
       },
       {
@@ -186,108 +182,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         router.redirect(`/profile/${chatterId}`);
       });
     });
-  }
-
-  async function renderFriends() {
-    const main = document.getElementById("main");
-    const header = document.getElementById("header");
-
-    if (header === null) {
-      const subscribersHeader = new Header(body);
-      subscribersHeader.renderForm();
-    }
-
-    if (main === null) {
-      const friendsMain = new Main(body);
-      friendsMain.renderForm();
-    }
-
-    const friendsMain = new FriendsMain(document.getElementById("activity"));
-
-    const friendsService = new FriendsService();
-    const friends = await friendsService.getFriends();
-
-    if (friends.ok) {
-      friendsMain.renderForm(friends.body.friends);
-    } else {
-      friendsMain.renderForm([]);
-    }
-
-    document
-      .getElementById("logout-button")
-      .addEventListener("click", async () => {
-        await authService.logout();
-        router.redirect("/login");
-      });
-  }
-
-  async function renderSubscribers() {
-    const main = document.getElementById("main");
-    const header = document.getElementById("header");
-
-    if (header === null) {
-      const subscribersHeader = new Header(body);
-      subscribersHeader.renderForm();
-    }
-
-    if (main === null) {
-      const friendsMain = new Main(body);
-      friendsMain.renderForm();
-    }
-
-    const subscribersMain = new SubscribersMain(
-      document.getElementById("activity"),
-    );
-    const subscribersService = new SubscribersService();
-    const subscribers = await subscribersService.getSubscribers();
-
-    if (subscribers.ok) {
-      subscribersMain.renderForm(subscribers.body.subscribers);
-    } else {
-      subscribersMain.renderForm([]);
-    }
-
-    document
-      .getElementById("logout-button")
-      .addEventListener("click", async () => {
-        await authService.logout();
-        router.redirect("/login");
-      });
-  }
-
-  async function renderSubscriptions() {
-    const main = document.getElementById("main");
-    const header = document.getElementById("header");
-
-    if (header === null) {
-      const subscribersHeader = new Header(body);
-      subscribersHeader.renderForm();
-    }
-
-    if (main === null) {
-      const friendsMain = new Main(body);
-      friendsMain.renderForm();
-    }
-
-    const subscriptionsMain = new SubscriptionsMain(
-      document.getElementById("activity"),
-    );
-
-    const subscriptionsService = new SubscriptionsService();
-    const subscriptions = await subscriptionsService.getSubscriptions();
-
-    if (subscriptions.ok) {
-      subscriptionsMain.renderForm(subscriptions.body.subscriptions);
-    } else {
-      subscriptionsMain.renderForm([]);
-    }
-
-    document
-      .getElementById("logout-button")
-      .addEventListener("click", async () => {
-        await authService.logout();
-        router.redirect("/login");
-      });
   }
 
   document.addEventListener("navigate", route);

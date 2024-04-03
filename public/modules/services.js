@@ -241,8 +241,7 @@ export class PostService {
    */
   async getPosts(userId, lastPostId) {
     const response = await fetch(
-      this.baseUrl +
-        `?userId=${userId}&lastPostId=${lastPostId}`,
+      this.baseUrl + `?userId=${userId}&lastPostId=${lastPostId}`,
       {
         method: "GET",
         credentials: "include",
@@ -315,6 +314,10 @@ export class ChatService {
 export class FriendsService {
   baseUrl = `${API_URL}/subscriptions/friends`;
 
+  /**
+   * Gets friends of session's user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
   async getFriends() {
     const response = await fetch(this.baseUrl, {
       method: "GET",
@@ -330,6 +333,10 @@ export class FriendsService {
 export class SubscribersService {
   baseUrl = `${API_URL}/subscriptions/subscribers`;
 
+  /**
+   * Gets subscribers of session's user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
   async getSubscribers() {
     const response = await fetch(this.baseUrl, {
       method: "GET",
@@ -345,6 +352,10 @@ export class SubscribersService {
 export class SubscriptionsService {
   baseUrl = `${API_URL}/subscriptions/`;
 
+  /**
+   * Gets subscriptions of session's user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
   async getSubscriptions() {
     const response = await fetch(this.baseUrl + "subscriptions", {
       method: "GET",

@@ -1006,6 +1006,7 @@ input::-webkit-inner-spin-button {
 
 .friend__avatar-img {
   width: 50px;
+  height: 50px;
   border-radius: 50%;
   margin-right: 15px;
 }
@@ -1043,7 +1044,9 @@ input::-webkit-inner-spin-button {
   font-size: 13px;
 }
 
-.friend-ables__button {
+.friend-ables__add-friend-button,
+.friend-ables__unsubscribe-button,
+.friend-ables__delete-friend-button {
   background-color: #e0908d;
   color: white;
   border-radius: 7px;
@@ -1076,7 +1079,7 @@ input::-webkit-inner-spin-button {
 }
 
 .subscribed-to-options__button-subscribe {
-  background-color: #fe9591;
+  background-color: #e0908d;
   color: white;
   border-radius: 7px;
   height: 40px;
@@ -1097,7 +1100,7 @@ input::-webkit-inner-spin-button {
 
 .subscribed-to-options__button-subscribe-message {
   margin-left: 15px;
-  background-color: #fe9591;
+  background-color: #e0908d;
   height: 40px;
   border-radius: 7px;
 }
