@@ -21,7 +21,7 @@ export class MessengerMain {
    */
   renderForm(chats) {
     const template = Handlebars.templates["messengerMain.hbs"];
-    
+
     this.#parent.innerHTML = template({ chats });
   }
 }

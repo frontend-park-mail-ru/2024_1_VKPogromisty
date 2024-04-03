@@ -18,15 +18,18 @@
 <div class="right-sidebar-friends">
   {{#each rightSidebar}}
   <span>
-    <a class="right-sidebar__a-common" id="{{this.id}}" href="{{ this.href }}">{{
-      this.text
-    }}</a>
+    <a
+      class="right-sidebar__a-common"
+      id="{{ this.id }}"
+      href="{{ this.href }}"
+      >{{ this.text }}</a
+    >
   </span>
   {{/each}}
 </div>
 <div class="friends">
   {{#each friends}}
-  <div class="friends-field" id="friends-field-{{this.userId}}">
+  <div class="friends-field" id="friends-field-{{ this.userId }}">
     <div class="friend" id="friend-{{ this.userId }}">
       <a href="/profile/{{ this.userId }}"
         ><img
@@ -46,15 +49,31 @@
     </div>
     <div class="friend-ables">
       {{#if ../isFriends}}
-      <button type="button" class="friend-ables__delete-friend-button" data-id="{{this.userId}}">Удалить из друзей</button>
+      <button
+        type="button"
+        class="friend-ables__delete-friend-button"
+        data-id="{{ this.userId }}"
+      >
+        Удалить из друзей
+      </button>
       {{/if}}
       {{#if ../isSubscribers}}
-      <button type="button" class="friend-ables__add-friend-button" data-id="{{this.userId}}">
+      <button
+        type="button"
+        class="friend-ables__add-friend-button"
+        data-id="{{ this.userId }}"
+      >
         Добавить в друзья
       </button>
       {{/if}}
       {{#if ../isSubscriptions}}
-      <button type="button" class="friend-ables__unsubscribe-button" data-id="{{this.userId}}">Отписаться</button>
+      <button
+        type="button"
+        class="friend-ables__unsubscribe-button"
+        data-id="{{ this.userId }}"
+      >
+        Отписаться
+      </button>
       {{/if}}
     </div>
   </div>

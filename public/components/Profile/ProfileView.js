@@ -3,7 +3,7 @@ import { Main } from "../Main/main.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
 
-///<reference path="typedefs.js" />
+///<reference path="../../../typedefs.js" />
 
 const staticUrl = `${API_URL}/static`;
 
@@ -90,6 +90,10 @@ class ProfileView extends BaseView {
     document.getElementById("logout-button").addEventListener("click", () => {
       this.eventBus.emit("clickLogoutButton", {});
     });
+
+    document
+      .getElementById("server-error-500")
+      .classList.add("server-error-500");
 
     this.eventBus.emit("readyRenderProfile", this.userId);
   }

@@ -3,18 +3,18 @@ import FriendsView from "./FriendsView.js";
 import EventBus from "./public/MVC/EventBus.js";
 
 const incomingEvents = [
-    'readyRenderFriends',
-    'readyRenderSubscribers',
-    'readyRenderSubscriptions',
-    'receiveOwnProfileData',
-    'friendsGetSuccess',
-    'subscribersGetSuccess',
-    'subscriptionsGetSuccess',
-    'clickedLogoutButton',
-    'clickedSubscribeButton',
-    'addFriendSuccess',
-    'unsubscribeSuccess',
-    'clickedUnsubscribeButton',
+  "readyRenderFriends",
+  "readyRenderSubscribers",
+  "readyRenderSubscriptions",
+  "receiveOwnProfileData",
+  "friendsGetSuccess",
+  "subscribersGetSuccess",
+  "subscriptionsGetSuccess",
+  "clickedLogoutButton",
+  "clickedSubscribeButton",
+  "addFriendSuccess",
+  "unsubscribeSuccess",
+  "clickedUnsubscribeButton",
 ];
 
 class FriendsController {
@@ -25,10 +25,7 @@ class FriendsController {
   constructor(router) {
     this.eventBus = new EventBus(incomingEvents);
     this.friendsModel = new FriendsModel(this.eventBus, router);
-    this.friendsView = new FriendsView(
-      this.eventBus,
-      router,
-    );
+    this.friendsView = new FriendsView(this.eventBus, router);
   }
 
   /**
@@ -36,7 +33,7 @@ class FriendsController {
    * @returns {void}
    */
   renderFriendsView() {
-    this.friendsModel.getOwnProfileData('friends');
+    this.friendsModel.getOwnProfileData("friends");
   }
 
   /**
@@ -44,7 +41,7 @@ class FriendsController {
    * @returns {void}
    */
   renderSubscribersView() {
-    this.friendsModel.getOwnProfileData('subscribers');
+    this.friendsModel.getOwnProfileData("subscribers");
   }
 
   /**
@@ -52,7 +49,7 @@ class FriendsController {
    * @returns {void}
    */
   renderSubscriptionsView() {
-    this.friendsModel.getOwnProfileData('subscriptions');
+    this.friendsModel.getOwnProfileData("subscriptions");
   }
 }
 

@@ -26,10 +26,10 @@ const rightSidebar = [
 /**
  * FriendsView - класс для работы с визуалом на странице.
  */
-class FriendsView extends BaseView{
+class FriendsView extends BaseView {
   /**
    * Конструктор класса BaseView .
-   * 
+   *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Роутинг с установленным конфигом
    */
@@ -43,11 +43,26 @@ class FriendsView extends BaseView{
       "receiveOwnProfileData",
       this.renderMain.bind(this),
     );
-    this.eventBus.addEventListener('friendsGetSuccess', this.renderFriends.bind(this));
-    this.eventBus.addEventListener('subscribersGetSuccess', this.renderSubscribers.bind(this));
-    this.eventBus.addEventListener('subscriptionsGetSuccess', this.renderSubscriptions.bind(this));
-    this.eventBus.addEventListener('addFriendSuccess', this.deleteSubscribe.bind(this));
-    this.eventBus.addEventListener('unsubscribeSuccess', this.deleteSubscribe.bind(this));
+    this.eventBus.addEventListener(
+      "friendsGetSuccess",
+      this.renderFriends.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "subscribersGetSuccess",
+      this.renderSubscribers.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "subscriptionsGetSuccess",
+      this.renderSubscriptions.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "addFriendSuccess",
+      this.deleteSubscribe.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "unsubscribeSuccess",
+      this.deleteSubscribe.bind(this),
+    );
   }
 
   renderMain({ userId, avatar, firstName, lastName, path }) {
@@ -67,51 +82,60 @@ class FriendsView extends BaseView{
     }
 
     document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit('clickedLogoutButton', {});
+      this.eventBus.emit("clickedLogoutButton", {});
     });
 
-    document.getElementById("server-error-500").classList.add('server-error-500');
+    document
+      .getElementById("server-error-500")
+      .classList.add("server-error-500");
 
-    this.mainElem = document.getElementById('activity');
+    this.mainElem = document.getElementById("activity");
 
     switch (path) {
-      case 'subscriptions':
-        this.eventBus.emit('readyRenderSubscriptions', {});
+      case "subscriptions":
+        this.eventBus.emit("readyRenderSubscriptions", {});
         break;
-      case 'subscribers':
-        this.eventBus.emit('readyRenderSubscribers', {});
+      case "subscribers":
+        this.eventBus.emit("readyRenderSubscribers", {});
         break;
       default:
-        this.eventBus.emit('readyRenderFriends', {});
+        this.eventBus.emit("readyRenderFriends", {});
     }
   }
 
   /**
    * A friends structure
-   * 
+   *
    * @typedef {Object} Friends - A friends structure
-   * 
+   *
    */
 
   /**
-   * 
-   * @param {} friends 
+   *
+   * @param {} friends
    */
   renderFriends(friends) {
     const isFriends = true;
-    this.mainElem.innerHTML = this.template({ staticUrl, friends, rightSidebar, isFriends });
+    this.mainElem.innerHTML = this.template({
+      staticUrl,
+      friends,
+      rightSidebar,
+      isFriends,
+    });
 
-    const friendsLabel = document.getElementById('friends-label');
+    const friendsLabel = document.getElementById("friends-label");
 
-    friendsLabel.classList.remove('right-sidebar__a-common');
-    friendsLabel.classList.add('right-sidebar__a-bigger');
+    friendsLabel.classList.remove("right-sidebar__a-common");
+    friendsLabel.classList.add("right-sidebar__a-bigger");
 
-    const addFriends = document.querySelectorAll('.friend-ables__delete-friend-button');
+    const addFriends = document.querySelectorAll(
+      ".friend-ables__delete-friend-button",
+    );
 
     addFriends.forEach((elem) => {
-      elem.addEventListener('click', () => {
+      elem.addEventListener("click", () => {
         const friendId = elem.dataset.id;
-        this.eventBus.emit('clickedUnsubscribeButton', friendId)
+        this.eventBus.emit("clickedUnsubscribeButton", friendId);
       });
     });
   }
@@ -129,20 +153,22 @@ class FriendsView extends BaseView{
       staticUrl,
       friends,
       rightSidebar,
-      isSubscribers
+      isSubscribers,
     });
 
-    const subscribersLabel = document.getElementById('subscribers-label');
+    const subscribersLabel = document.getElementById("subscribers-label");
 
-    subscribersLabel.classList.remove('right-sidebar__a-common');
-    subscribersLabel.classList.add('right-sidebar__a-bigger');
+    subscribersLabel.classList.remove("right-sidebar__a-common");
+    subscribersLabel.classList.add("right-sidebar__a-bigger");
 
-    const addFriends = document.querySelectorAll('.friend-ables__add-friend-button');
+    const addFriends = document.querySelectorAll(
+      ".friend-ables__add-friend-button",
+    );
 
     addFriends.forEach((elem) => {
-      elem.addEventListener('click', () => {
+      elem.addEventListener("click", () => {
         const friendId = elem.dataset.id;
-        this.eventBus.emit('clickedSubscribeButton', friendId)
+        this.eventBus.emit("clickedSubscribeButton", friendId);
       });
     });
   }
@@ -164,20 +190,22 @@ class FriendsView extends BaseView{
       staticUrl,
       friends,
       rightSidebar,
-      isSubscriptions
+      isSubscriptions,
     });
 
-    const subscriptionsLabel = document.getElementById('subscriptions-label');
+    const subscriptionsLabel = document.getElementById("subscriptions-label");
 
-    subscriptionsLabel.classList.remove('right-sidebar__a-common');
-    subscriptionsLabel.classList.add('right-sidebar__a-bigger');
+    subscriptionsLabel.classList.remove("right-sidebar__a-common");
+    subscriptionsLabel.classList.add("right-sidebar__a-bigger");
 
-    const addFriends = document.querySelectorAll('.friend-ables__unsubscribe-button');
+    const addFriends = document.querySelectorAll(
+      ".friend-ables__unsubscribe-button",
+    );
 
     addFriends.forEach((elem) => {
-      elem.addEventListener('click', () => {
+      elem.addEventListener("click", () => {
         const friendId = elem.dataset.id;
-        this.eventBus.emit('clickedUnsubscribeButton', friendId)
+        this.eventBus.emit("clickedUnsubscribeButton", friendId);
       });
     });
   }

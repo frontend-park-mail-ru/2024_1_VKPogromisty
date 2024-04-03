@@ -1,5 +1,11 @@
 import BaseModel from "../../MVC/BaseModel.js";
-import { AuthService, FriendsService, ProfileService, SubscribersService, SubscriptionsService } from "../../modules/services.js";
+import {
+  AuthService,
+  FriendsService,
+  ProfileService,
+  SubscribersService,
+  SubscriptionsService,
+} from "../../modules/services.js";
 
 /**
  * FriendsModel - класс для обработки данных, общения с бэком.
@@ -21,11 +27,26 @@ class FriendsModel extends BaseModel {
     this.profileService = new ProfileService();
     this.router = router;
 
-    this.eventBus.addEventListener('readyRenderFriends', this.getFriends.bind(this));
-    this.eventBus.addEventListener('readyRenderSubscribers', this.getSubscribers.bind(this));
-    this.eventBus.addEventListener('readyRenderSubscriptions', this.getSubscriptions.bind(this));
-    this.eventBus.addEventListener('clickedSubscribeButton', this.addFriend.bind(this));
-    this.eventBus.addEventListener('clickedUnsubscribeButton', this.deleteSubscribe.bind(this));
+    this.eventBus.addEventListener(
+      "readyRenderFriends",
+      this.getFriends.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "readyRenderSubscribers",
+      this.getSubscribers.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "readyRenderSubscriptions",
+      this.getSubscriptions.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "clickedSubscribeButton",
+      this.addFriend.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "clickedUnsubscribeButton",
+      this.deleteSubscribe.bind(this),
+    );
   }
 
   /**
@@ -36,7 +57,7 @@ class FriendsModel extends BaseModel {
   async getOwnProfileData(path) {
     const resultOwnProfile = await this.profileService.getOwnProfileData();
 
-    resultOwnProfile.body.User['path'] = path;
+    resultOwnProfile.body.User["path"] = path;
 
     switch (resultOwnProfile.status) {
       case 200:
@@ -58,10 +79,10 @@ class FriendsModel extends BaseModel {
 
     switch (result.status) {
       case 200:
-        this.eventBus.emit('friendsGetSuccess', result.body.friends);
+        this.eventBus.emit("friendsGetSuccess", result.body.friends);
         break;
       default:
-        this.eventBus.emit('serverError', {});
+        this.eventBus.emit("serverError", {});
     }
   }
 
@@ -74,10 +95,10 @@ class FriendsModel extends BaseModel {
 
     switch (result.status) {
       case 200:
-        this.eventBus.emit('subscribersGetSuccess', result.body.subscribers);
+        this.eventBus.emit("subscribersGetSuccess", result.body.subscribers);
         break;
       default:
-        this.eventBus.emit('serverError', {});
+        this.eventBus.emit("serverError", {});
     }
   }
 
@@ -90,10 +111,13 @@ class FriendsModel extends BaseModel {
 
     switch (result.status) {
       case 200:
-        this.eventBus.emit('subscriptionsGetSuccess', result.body.subscriptions);
+        this.eventBus.emit(
+          "subscriptionsGetSuccess",
+          result.body.subscriptions,
+        );
         break;
       default:
-        this.eventBus.emit('serverError', {});
+        this.eventBus.emit("serverError", {});
     }
   }
 
@@ -105,12 +129,12 @@ class FriendsModel extends BaseModel {
   async addFriend(userId) {
     const result = await this.subscriptionsService.postSubscription(userId);
 
-    switch(result.status) {
+    switch (result.status) {
       case 200:
-        this.eventBus.emit('addFriendSuccess', userId);
+        this.eventBus.emit("addFriendSuccess", userId);
         break;
       default:
-        this.eventBus.emit('serverError', {});
+        this.eventBus.emit("serverError", {});
     }
   }
 
@@ -122,12 +146,12 @@ class FriendsModel extends BaseModel {
   async deleteSubscribe(userId) {
     const result = await this.subscriptionsService.deleteSubscription(userId);
 
-    switch(result.status) {
+    switch (result.status) {
       case 204:
-        this.eventBus.emit('unsubscribeSuccess', userId);
+        this.eventBus.emit("unsubscribeSuccess", userId);
         break;
       default:
-        this.eventBus.emit('serverError', {});
+        this.eventBus.emit("serverError", {});
     }
   }
 
@@ -140,10 +164,10 @@ class FriendsModel extends BaseModel {
 
     switch (result.status) {
       case 204:
-        this.router.redirect('/login');
+        this.router.redirect("/login");
         break;
       default:
-        this.eventBus.emit('serverError', {});
+        this.eventBus.emit("serverError", {});
     }
   }
 }

@@ -1,6 +1,4 @@
-import {
-  AuthService,
-} from "./modules/services.js";
+import { AuthService } from "./modules/services.js";
 import { Header } from "./components/Header/header.js";
 import { FeedMain } from "./components/Feed/feed.js";
 import { LoginForm } from "./components/Login/loginForm.js";
