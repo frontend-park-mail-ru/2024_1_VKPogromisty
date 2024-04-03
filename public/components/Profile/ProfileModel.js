@@ -1,3 +1,10 @@
+/**
+ * A PostInfo structure
+ * @typedef {Object} PostInfo
+ * @property {number} userId - The ID of user
+ * @property {number} lastPostId - The ID of last post of current user
+ */
+
 import BaseModel from "/public/MVC/BaseModel.js";
 import {
   AuthService,
@@ -128,13 +135,6 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("serverError", {});
     }
   }
-
-  /**
-   * A PostInfo structure
-   * @typedef {Object} PostInfo
-   * @property {number} userId - The ID of user
-   * @property {number} lastPostId - The ID of last post of current user
-   */
 
   /**
    * Unsubscribes from user current profile

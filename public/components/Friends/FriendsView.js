@@ -1,3 +1,28 @@
+/**
+ * A Friends structure
+ * 
+ * @typedef {Object} Friends
+ * @property {string} avatar - The avatar of current friend
+ * @property {string} createdAt - The date of creating friend's account
+ * @property {string} dateOfBirth - The date of birth current friend
+ * @property {string} email - The email of current friend
+ * @property {string} firstName - The first name of current friend
+ * @property {string} lastName - The last name of current friend
+ * @property {string} updatedAt - The last profile updating of current friend
+ * @property {number} userId - The ID of friend among users
+ */
+
+/**
+ * A MainFriends structure
+ * 
+ * @typedef {Object} MainFriends
+ * @property {string} avatar - The avatar of session's user
+ * @property {number} userId - The ID of session's user
+ * @property {string} firstName - The first name of session's user
+ * @property {string} lastName - The last name of session's user
+ * @property {string} path - The next path of page
+ */
+
 import BaseView from "../../MVC/BaseView.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
@@ -63,8 +88,14 @@ class FriendsView extends BaseView {
       "unsubscribeSuccess",
       this.deleteSubscribe.bind(this),
     );
+    this.eventBus.addEventListener('serverError', this.serverErrored.bind(this));
   }
 
+  /**
+   * Renders the main block of page
+   * 
+   * @param {MainFriends} mainFriends - The main info about page
+   */
   renderMain({ userId, avatar, firstName, lastName, path }) {
     this.ownUserId = userId;
     this.avatar = avatar;
@@ -104,15 +135,9 @@ class FriendsView extends BaseView {
   }
 
   /**
-   * A friends structure
-   *
-   * @typedef {Object} Friends - A friends structure
-   *
-   */
-
-  /**
-   *
-   * @param {} friends
+   * Renders page with friends of session's user
+   * 
+   * @param {Friends} friends
    */
   renderFriends(friends) {
     const isFriends = true;
@@ -141,11 +166,8 @@ class FriendsView extends BaseView {
   }
 
   /**
-   * Рендер внутри переданного HTML элемента.
-   * Переопределение в наследниках.
-   *
-   * @param {HTMLElement} element- HTML элемен, в который будет рендериться.
-   * @return {void}
+   * Renders page with subscribers of session's users
+   * @param {Friends} friends 
    */
   renderSubscribers(friends) {
     const isSubscribers = true;
@@ -173,16 +195,18 @@ class FriendsView extends BaseView {
     });
   }
 
+  /**
+   * Deletes a friend/subscriber/subscription of current user from the page
+   * 
+   * @param {number} userId 
+   */
   deleteSubscribe(userId) {
     document.getElementById(`friends-field-${userId}`).remove();
   }
 
   /**
-   * Рендер внутри переданного HTML элемента.
-   * Переопределение в наследниках.
-   *
-   * @param {HTMLElement} element- HTML элемен, в который будет рендериться.
-   * @return {void}
+   * Renders page with subscriptions of session's users
+   * @param {Friends} friends 
    */
   renderSubscriptions(friends) {
     const isSubscriptions = true;

@@ -1025,7 +1025,7 @@ input::-webkit-inner-spin-button {
 }
 
 .friends-field:not(:last-child) {
-  border-bottom: 1px solid var(--sign-buttons);
+  border-bottom: 1px solid black;
 }
 
 .friend-info {

@@ -15,6 +15,7 @@ const incomingEvents = [
   "addFriendSuccess",
   "unsubscribeSuccess",
   "clickedUnsubscribeButton",
+  'serverError',
 ];
 
 class FriendsController {

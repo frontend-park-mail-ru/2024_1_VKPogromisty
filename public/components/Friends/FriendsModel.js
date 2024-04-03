@@ -47,6 +47,7 @@ class FriendsModel extends BaseModel {
       "clickedUnsubscribeButton",
       this.deleteSubscribe.bind(this),
     );
+    this.eventBus.addEventListener('clickedLogoutButton', this.logout.bind(this));
   }
 
   /**
@@ -81,6 +82,9 @@ class FriendsModel extends BaseModel {
       case 200:
         this.eventBus.emit("friendsGetSuccess", result.body.friends);
         break;
+      case 401:
+        this.eventBus.emit("logoutSuccess", "/login");
+        break;
       default:
         this.eventBus.emit("serverError", {});
     }
@@ -96,6 +100,9 @@ class FriendsModel extends BaseModel {
     switch (result.status) {
       case 200:
         this.eventBus.emit("subscribersGetSuccess", result.body.subscribers);
+        break;
+      case 401:
+        this.eventBus.emit("logoutSuccess", "/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -116,6 +123,9 @@ class FriendsModel extends BaseModel {
           result.body.subscriptions,
         );
         break;
+      case 401:
+        this.eventBus.emit("logoutSuccess", "/login");
+        break;
       default:
         this.eventBus.emit("serverError", {});
     }
@@ -132,6 +142,9 @@ class FriendsModel extends BaseModel {
     switch (result.status) {
       case 200:
         this.eventBus.emit("addFriendSuccess", userId);
+        break;
+      case 401:
+        this.eventBus.emit("logoutSuccess", "/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -150,6 +163,9 @@ class FriendsModel extends BaseModel {
       case 204:
         this.eventBus.emit("unsubscribeSuccess", userId);
         break;
+      case 401:
+        this.eventBus.emit("logoutSuccess", "/login");
+        break;
       default:
         this.eventBus.emit("serverError", {});
     }
@@ -163,7 +179,8 @@ class FriendsModel extends BaseModel {
     const result = await this.authService.logout();
 
     switch (result.status) {
-      case 204:
+      case 200:
+      case 401:
         this.router.redirect("/login");
         break;
       default:
