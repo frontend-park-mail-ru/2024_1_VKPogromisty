@@ -18,17 +18,6 @@ import { remakeDateOfBirth } from "../../modules/dateRemaking.js";
  * @property {number} userId - The ID of friend among users
  */
 
-/**
- * A MainFriends structure
- *
- * @typedef {Object} MainFriends
- * @property {string} avatar - The avatar of session's user
- * @property {number} userId - The ID of session's user
- * @property {string} firstName - The first name of session's user
- * @property {string} lastName - The last name of session's user
- * @property {string} path - The next path of page
- */
-
 const staticUrl = `${API_URL}/static`;
 
 const rightSidebar = [
@@ -98,11 +87,10 @@ class FriendsView extends BaseView {
   /**
    * Renders the main block of page
    *
-   * @param {MainFriends} mainFriends - The main info about page
+   * @param {string} path - The certain path
    */
-  renderMain({ userId, avatar, firstName, lastName, path }) {
-    this.ownUserId = userId;
-    this.avatar = avatar;
+  renderMain(path) {
+    const {userId, avatar, firstName, lastName} = this.router.userState.User;
 
     if (document.getElementById("header") === null) {
       const header = new Header(document.body);
@@ -180,7 +168,7 @@ class FriendsView extends BaseView {
 
   /**
    * Renders page with subscribers of session's users
-   * @param {Friends} friends
+   * @param {Friend} friends
    */
   renderSubscribers(friends) {
     const isSubscribers = true;
@@ -228,7 +216,7 @@ class FriendsView extends BaseView {
 
   /**
    * Renders page with subscriptions of session's users
-   * @param {Friends} friends
+   * @param {Friend} friends
    */
   renderSubscriptions(friends) {
     const isSubscriptions = true;

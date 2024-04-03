@@ -24,7 +24,7 @@ export default class LoginController {
    */
   constructor(router) {
     this.eventBus = new EventBus(incomingEvents);
-    this.#loginModel = new LoginModel(this.eventBus);
+    this.#loginModel = new LoginModel(this.eventBus, router);
     this.#loginView = new LoginView(this.eventBus);
 
     this.eventBus.addEventListener(

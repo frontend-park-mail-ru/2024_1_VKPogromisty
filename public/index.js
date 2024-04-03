@@ -44,19 +44,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Мессенджер",
       },
       {
-        path: /\/friends/,
-        func: friendsController.renderFriendsView.bind(friendsController),
-        title: "Друзья",
-      },
-      {
-        path: /\/subscribers/,
-        func: friendsController.renderSubscribersView.bind(friendsController),
-        title: "Подписчики",
-      },
-      {
-        path: /\/subscriptions/,
-        func: friendsController.renderSubscriptionsView.bind(friendsController),
-        title: "Подписки",
+        path: /\/community\/(?<section>.+)/,
+        func: friendsController.renderView.bind(friendsController),
+        title: 'Друзья'
       },
       {
         path: /\//,
@@ -107,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document
       .getElementById("user__avatar-img")
       .addEventListener("click", async () => {
-        await router.redirect(`/profile/${ownUserId}`);
+        router.redirect(`/profile/${ownUserId}`);
       });
   }
 
@@ -121,7 +111,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       case "/signup":
       case "/":
         if (isAuthorized.body) {
-          await router.redirect("/feed");
+          await router.updateUserState();
+          router.redirect("/feed");
         } else {
           router.redirect(currentPageUrl);
         }
@@ -130,7 +121,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!isAuthorized.body) {
           router.redirect("/login");
         } else {
-          await router.redirect(currentPageUrl);
+          await router.updateUserState();
+          router.redirect(currentPageUrl);
         }
         return;
     }

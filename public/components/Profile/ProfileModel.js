@@ -22,9 +22,10 @@ class ProfileModel extends BaseModel {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus) {
+  constructor(eventBus, router) {
     super(eventBus);
 
+    this.router = router;
     this.profileService = new ProfileService();
     this.postService = new PostService();
     this.subscriptionsService = new SubscriptionsService();
@@ -54,25 +55,10 @@ class ProfileModel extends BaseModel {
       "clickedDeletePost",
       this.deletePost.bind(this),
     );
-  }
-
-  /**
-   * Gets the data of user current session
-   * @return {void}
-   */
-  async getOwnProfileData() {
-    const resultOwnProfile = await this.profileService.getOwnProfileData();
-
-    switch (resultOwnProfile.status) {
-      case 200:
-        this.eventBus.emit("receiveOwnProfileData", resultOwnProfile.body.User);
-        break;
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
+    this.eventBus.addEventListener(
+      "clickedUpdatePost",
+      this.updatePost.bind(this),
+    );
   }
 
   /**
@@ -187,6 +173,27 @@ class ProfileModel extends BaseModel {
     switch (result.status) {
       case 204:
         this.eventBus.emit("postDeleteSuccess", post_id);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Updates the post from user's profile
+   * @param {number} post_id - The ID of post current profile
+   * @param {string} content - The text content of current post
+   * @return {void}
+   */
+  async updatePost({ post_id, content }) {
+    const result = await this.postService.updatePost(post_id, content);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("postUpdateSuccess", result.body);
         break;
       case 401:
         this.router.redirect("/login");

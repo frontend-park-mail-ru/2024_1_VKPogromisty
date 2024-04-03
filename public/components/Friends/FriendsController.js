@@ -35,27 +35,12 @@ class FriendsController {
   }
 
   /**
-   * Renders view with friends
+   * Renders view with certain path
+   * @param {string} section - The certain path
    * @returns {void}
    */
-  renderFriendsView() {
-    this.friendsModel.getOwnProfileData("friends");
-  }
-
-  /**
-   * Renders view with subscribers
-   * @returns {void}
-   */
-  renderSubscribersView() {
-    this.friendsModel.getOwnProfileData("subscribers");
-  }
-
-  /**
-   * Renders view with subscriptions
-   * @returns {void}
-   */
-  renderSubscriptionsView() {
-    this.friendsModel.getOwnProfileData("subscriptions");
+  renderView({section}) {
+    this.friendsView.renderMain(section);
   }
 }
 

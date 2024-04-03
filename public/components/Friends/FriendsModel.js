@@ -54,27 +54,6 @@ class FriendsModel extends BaseModel {
   }
 
   /**
-   * Gets the data of user current session
-   * @param {string} path - Path to the next page
-   * @return {void}
-   */
-  async getOwnProfileData(path) {
-    const resultOwnProfile = await this.profileService.getOwnProfileData();
-
-    resultOwnProfile.body.User["path"] = path;
-
-    switch (resultOwnProfile.status) {
-      case 200:
-        this.eventBus.emit("receiveOwnProfileData", resultOwnProfile.body.User);
-        break;
-      case 401:
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
-  }
-
-  /**
    * Gets friends of session's user
    * @returns {void}
    */

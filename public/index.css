@@ -353,7 +353,7 @@ input::-webkit-inner-spin-button {
 .news__input {
   box-sizing: border-box;
   margin-left: 20px;
-  width: 400px;
+  width: 360px;
   min-width: 120px;
   font-size: larger;
   font-family: inherit;
@@ -370,9 +370,22 @@ input::-webkit-inner-spin-button {
   object-fit: cover;
 }
 
+.news__file-button {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  background-color: inherit;
+  margin-right: 10px;
+}
+
 .news__img {
   width: 16px;
   height: 16px;
+  cursor: pointer;
+}
+
+.news__file-input {
+  display: none;
 }
 
 .post-author__user-avatar-img {
@@ -443,7 +456,7 @@ input::-webkit-inner-spin-button {
   height: 30px;
   margin-top: 15px;
   padding-top: 5px;
-  margin-right: 50px;
+  margin-right: 20px;
   display: flex;
   flex-direction: row;
 }
@@ -849,12 +862,6 @@ input::-webkit-inner-spin-button {
   border: 1px solid black;
 }
 
-.search-place {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
 .search-dialog {
   display: flex;
   flex-direction: row;
@@ -968,11 +975,11 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   border-radius: 7px;
   border: 1px solid black;
   height: 60px;
   padding-left: 10px;
-  margin-bottom: 20px;
 }
 
 .search-friend {
@@ -1149,4 +1156,13 @@ input::-webkit-inner-spin-button {
   color: #928888;
   text-align: center;
   font-size: 22px;
+}
+
+.post-author__accept-img {
+  cursor: pointer;
+}
+
+.post-author__cancel-img {
+  cursor: pointer;
+  margin-left: 10px;
 }

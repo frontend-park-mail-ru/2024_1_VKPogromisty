@@ -261,7 +261,12 @@ export class PostService {
    */
   async publishPost(content, attachments) {
     const formData = new FormData();
+
     formData.append("content", content);
+
+    Array.from(attachments).forEach((elem) => {
+      formData.append('attachments', elem);
+    })
 
     const response = await fetch(this.baseUrl, {
       method: "POST",
@@ -291,6 +296,26 @@ export class PostService {
     if (response.status === 204) {
       return genResponse(response.status, null, null);
     }
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Updates the post from the server
+   * @param {number} post_id - The ID of post
+   * @param {string} content - The text content of current post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async updatePost(post_id, content) {
+    const postId = Number(post_id);
+
+    const response = await fetch(this.baseUrl, {
+      method: "PUT",
+      credentials: "include",
+      body: JSON.stringify({ postId, content }),
+    });
+
     const data = await response.json();
 
     return genResponse(response.status, data.body, data.message);

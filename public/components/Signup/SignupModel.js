@@ -9,9 +9,12 @@ class SignupModel extends BaseModel {
    * Конструктор класса SignupModel.
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
+   * @param {Routing} router - Объект класса Routing
    */
-  constructor(eventBus) {
+  constructor(eventBus, router) {
     super(eventBus);
+    this.router = router;
+
     this.eventBus.addEventListener(
       "attemptSignup",
       this.isValidForm.bind(this),
@@ -51,6 +54,7 @@ class SignupModel extends BaseModel {
 
     switch (result.status) {
       case 201:
+        this.router.updateUserState();
         this.eventBus.emit("receiveSignupResult", true);
         break;
       case 400:

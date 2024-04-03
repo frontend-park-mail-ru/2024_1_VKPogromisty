@@ -9,9 +9,12 @@ class LoginModel extends BaseModel {
    * Конструктор класса LoginModel.
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
+   * @param {Routing} router - Объект класса Routing
    */
-  constructor(eventBus) {
+  constructor(eventBus, router) {
     super(eventBus);
+    this.router = router;
+
     this.eventBus.addEventListener(
       "attemptLogin",
       this.checkAndSubmitForm.bind(this),
@@ -31,6 +34,7 @@ class LoginModel extends BaseModel {
 
     switch (result.status) {
       case 200:
+        this.router.updateUserState();
         this.eventBus.emit("receiveLoginResult", true);
         break;
       case 401:

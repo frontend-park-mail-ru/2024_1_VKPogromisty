@@ -7,7 +7,6 @@ const incomingEvents = [
   "receiveProfilePosts",
   "receiveOwnProfileData",
   "clickLogoutButton",
-  "logoutSuccess",
   "readyRenderProfile",
   "clickedSubscribe",
   "clickedUnsubscribe",
@@ -19,9 +18,16 @@ const incomingEvents = [
   "clickedDeletePost",
   "postDeleteSuccess",
   "publishedPostSuccess",
+  "clickedUpdatePost",
+  "postUpdateSuccess",
   "serverError",
 ];
 
+/**
+ * ProfileController - класс для связи ProfileModel и ProfileView.
+ * @property {ProfileView} ProfileView - ProfileView - класс для работы с визуалом на странице.
+ * @property {ProfileModel} ProfileModel - ProfileModel - класс для обработки данных, общения с бэком.
+ */
 class ProfileController {
   /**
    * Creates controller
@@ -29,15 +35,10 @@ class ProfileController {
    */
   constructor(router) {
     this.eventBus = new EventBus(incomingEvents);
-    this.profileModel = new ProfileModel(this.eventBus);
+    this.profileModel = new ProfileModel(this.eventBus, router);
     this.profileView = new ProfileView(
       this.eventBus,
-      document.getElementById("activity"),
-    );
-
-    this.eventBus.addEventListener(
-      "logoutSuccess",
-      router.redirect.bind(router),
+      router,
     );
   }
 
@@ -45,9 +46,8 @@ class ProfileController {
    * Renders ProfileView
    * @returns {void}
    */
-  renderProfileView({ userId }) {
-    this.profileModel.getOwnProfileData();
-    this.profileView.setUserId(userId);
+  renderProfileView({userId}) {
+    this.profileView.renderProfileMain(userId);
   }
 }
 

@@ -1,4 +1,17 @@
-const monthes = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+const monthes = [
+  "января",
+  "февраля",
+  "марта",
+  "апреля",
+  "мая",
+  "июня",
+  "июля",
+  "августа",
+  "сентября",
+  "октября",
+  "ноября",
+  "декабря",
+];
 
 /**
  * Remakes the date of birth in next format 'day month year'
@@ -18,8 +31,8 @@ export function remakeDateOfBirth(dateOfBirth) {
  */
 export function remakeCreatedAt(createdAt) {
   const date = new Date(createdAt);
-  const hours = date.getHours().toString().padStart(2, '0');
+  const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");
-  
+
   return `${date.getDate()} ${monthes[date.getMonth()]} ${date.getFullYear()} в ${hours}:${minutes}`;
 }
