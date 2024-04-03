@@ -1,7 +1,7 @@
 /**
- * A Friends structure
- * 
- * @typedef {Object} Friends
+ * A Friend structure
+ *
+ * @typedef {Object} Friend
  * @property {string} avatar - The avatar of current friend
  * @property {string} createdAt - The date of creating friend's account
  * @property {string} dateOfBirth - The date of birth current friend
@@ -14,7 +14,7 @@
 
 /**
  * A MainFriends structure
- * 
+ *
  * @typedef {Object} MainFriends
  * @property {string} avatar - The avatar of session's user
  * @property {number} userId - The ID of session's user
@@ -27,6 +27,7 @@ import BaseView from "../../MVC/BaseView.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
+import { remakeDateOfBirth } from "../../modules/dateRemaking.js";
 
 const staticUrl = `${API_URL}/static`;
 
@@ -88,12 +89,15 @@ class FriendsView extends BaseView {
       "unsubscribeSuccess",
       this.deleteSubscribe.bind(this),
     );
-    this.eventBus.addEventListener('serverError', this.serverErrored.bind(this));
+    this.eventBus.addEventListener(
+      "serverError",
+      this.serverErrored.bind(this),
+    );
   }
 
   /**
    * Renders the main block of page
-   * 
+   *
    * @param {MainFriends} mainFriends - The main info about page
    */
   renderMain({ userId, avatar, firstName, lastName, path }) {
@@ -136,11 +140,17 @@ class FriendsView extends BaseView {
 
   /**
    * Renders page with friends of session's user
-   * 
-   * @param {Friends} friends
+   *
+   * @param {Friend[]} friends
    */
   renderFriends(friends) {
     const isFriends = true;
+    if (friends) {
+      friends.forEach((elem) => {
+        elem.dateOfBirth = remakeDateOfBirth(elem.dateOfBirth);
+      });
+    }
+
     this.mainElem.innerHTML = this.template({
       staticUrl,
       friends,
@@ -167,10 +177,16 @@ class FriendsView extends BaseView {
 
   /**
    * Renders page with subscribers of session's users
-   * @param {Friends} friends 
+   * @param {Friends} friends
    */
   renderSubscribers(friends) {
     const isSubscribers = true;
+    if (friends) {
+      friends.forEach((elem) => {
+        elem.dateOfBirth = remakeDateOfBirth(elem.dateOfBirth);
+      });
+    }
+
     this.mainElem.innerHTML = this.template({
       staticUrl,
       friends,
@@ -197,8 +213,8 @@ class FriendsView extends BaseView {
 
   /**
    * Deletes a friend/subscriber/subscription of current user from the page
-   * 
-   * @param {number} userId 
+   *
+   * @param {number} userId
    */
   deleteSubscribe(userId) {
     document.getElementById(`friends-field-${userId}`).remove();
@@ -206,10 +222,16 @@ class FriendsView extends BaseView {
 
   /**
    * Renders page with subscriptions of session's users
-   * @param {Friends} friends 
+   * @param {Friends} friends
    */
   renderSubscriptions(friends) {
     const isSubscriptions = true;
+    if (friends) {
+      friends.forEach((elem) => {
+        elem.dateOfBirth = remakeDateOfBirth(elem.dateOfBirth);
+      });
+    }
+
     this.mainElem.innerHTML = this.template({
       staticUrl,
       friends,

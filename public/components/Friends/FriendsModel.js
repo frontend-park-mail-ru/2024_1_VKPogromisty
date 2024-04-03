@@ -47,7 +47,10 @@ class FriendsModel extends BaseModel {
       "clickedUnsubscribeButton",
       this.deleteSubscribe.bind(this),
     );
-    this.eventBus.addEventListener('clickedLogoutButton', this.logout.bind(this));
+    this.eventBus.addEventListener(
+      "clickedLogoutButton",
+      this.logout.bind(this),
+    );
   }
 
   /**

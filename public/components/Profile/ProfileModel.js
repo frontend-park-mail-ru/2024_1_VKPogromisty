@@ -68,7 +68,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("receiveOwnProfileData", resultOwnProfile.body.User);
         break;
       case 401:
-        this.router.redirect('/login');
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -89,7 +89,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("receiveProfileData", resultProfileMain.body);
         break;
       case 401:
-        this.router.redirect('/login');
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -109,7 +109,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("subscribedSuccess", {});
         break;
       case 401:
-        this.router.redirect('/login');
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -129,7 +129,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("unsubscribedSuccess", {});
         break;
       case 401:
-        this.router.redirect('/login');
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -149,7 +149,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("getPostsSuccess", result.body);
         break;
       case 401:
-        this.router.redirect('/login');
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -169,7 +169,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("publishedPostSuccess", result.body);
         break;
       case 401:
-        this.router.redirect('/login');
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -189,7 +189,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("postDeleteSuccess", post_id);
         break;
       case 401:
-        this.router.redirect('/login');
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -208,7 +208,7 @@ class ProfileModel extends BaseModel {
     switch (result.status) {
       case 200:
       case 401:
-        this.router.redirect('/login');
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
