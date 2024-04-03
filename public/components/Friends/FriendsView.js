@@ -145,7 +145,9 @@ class FriendsView extends BaseView {
    */
   renderFriends(friends) {
     const isFriends = true;
-    if (friends) {
+    const noFriends = (friends == null);
+
+    if (!noFriends) {
       friends.forEach((elem) => {
         elem.dateOfBirth = remakeDateOfBirth(elem.dateOfBirth);
       });
@@ -156,6 +158,7 @@ class FriendsView extends BaseView {
       friends,
       rightSidebar,
       isFriends,
+      noFriends
     });
 
     const friendsLabel = document.getElementById("friends-label");
@@ -181,7 +184,9 @@ class FriendsView extends BaseView {
    */
   renderSubscribers(friends) {
     const isSubscribers = true;
-    if (friends) {
+    const noFriends = (friends == null);
+
+    if (!noFriends) {
       friends.forEach((elem) => {
         elem.dateOfBirth = remakeDateOfBirth(elem.dateOfBirth);
       });
@@ -192,6 +197,7 @@ class FriendsView extends BaseView {
       friends,
       rightSidebar,
       isSubscribers,
+      noFriends
     });
 
     const subscribersLabel = document.getElementById("subscribers-label");
@@ -226,7 +232,9 @@ class FriendsView extends BaseView {
    */
   renderSubscriptions(friends) {
     const isSubscriptions = true;
-    if (friends) {
+    const noFriends = (friends == null);
+
+    if (!noFriends) {
       friends.forEach((elem) => {
         elem.dateOfBirth = remakeDateOfBirth(elem.dateOfBirth);
       });
@@ -237,6 +245,7 @@ class FriendsView extends BaseView {
       friends,
       rightSidebar,
       isSubscriptions,
+      noFriends
     });
 
     const subscriptionsLabel = document.getElementById("subscriptions-label");

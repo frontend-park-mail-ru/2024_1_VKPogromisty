@@ -1117,3 +1117,36 @@ input::-webkit-inner-spin-button {
   flex-direction: row;
   align-items: center;
 }
+
+.friend-ables {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.friend-ables__send-message-button {
+  margin-right: 10px;
+  background-color: #e0908d;
+  height: 30px;
+  border-radius: 7px;
+}
+
+.friend-ables__send-message-img {
+  height: 22px;
+  width: 22px;
+  filter: invert(100%);
+}
+
+.no-friends {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.no-subscribers__span,
+.no-subscriptions__span,
+.no-friends__span {
+  color: #928888;
+  text-align: center;
+  font-size: 22px;
+}

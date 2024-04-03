@@ -48,6 +48,16 @@
       </div>
     </div>
     <div class="friend-ables">
+      <button
+        type="button"
+        class="friend-ables__send-message-button"
+        id="send-message-{{ this.userId }}"
+      >
+        <img
+          src="../static/images/messenger.png"
+          class="friend-ables__send-message-img"
+        />
+      </button>
       {{#if ../isFriends}}
       <button
         type="button"
@@ -78,4 +88,17 @@
     </div>
   </div>
   {{/each}}
+</div>
+<div class="no-friends">
+{{#if noFriends}}
+  {{#if isFriends}}
+  <span class="no-friends__span">У вас нет друзей</span>
+  {{/if}}
+  {{#if isSubscribers}}
+  <span class="no-subscribers__span">У вас нет подписчиков</span>
+  {{/if}}
+  {{#if isSubscriptions}}
+  <span class="no-subscriptions__span">У вас нет подписок</span>
+  {{/if}}
+{{/if}}
 </div>

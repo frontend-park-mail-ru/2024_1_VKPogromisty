@@ -45,7 +45,10 @@
  * @property {boolean} isSubscribedTo - Is the session's user a subscriber of profile's user
  */
 
-import { remakeCreatedAt, remakeDateOfBirth } from "../../modules/dateRemaking.js";
+import {
+  remakeCreatedAt,
+  remakeDateOfBirth,
+} from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import BaseView from "/public/MVC/BaseView.js";

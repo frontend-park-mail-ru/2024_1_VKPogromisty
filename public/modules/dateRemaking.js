@@ -4,8 +4,8 @@
  * @returns {string}
  */
 export function remakeDateOfBirth(dateOfBirth) {
-    const date = new Date(dateOfBirth);
-    return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+  const date = new Date(dateOfBirth);
+  return `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}`;
 }
 
 /**
@@ -14,6 +14,6 @@ export function remakeDateOfBirth(dateOfBirth) {
  * @returns {string}
  */
 export function remakeCreatedAt(createdAt) {
-    const date = new Date(createdAt);
-    return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+  const date = new Date(createdAt);
+  return `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()} в ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
 }
