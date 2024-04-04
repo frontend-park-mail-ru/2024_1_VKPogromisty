@@ -65,7 +65,7 @@ class FriendsModel extends BaseModel {
         this.eventBus.emit("friendsGetSuccess", result.body.friends);
         break;
       case 401:
-        this.eventBus.emit("logoutSuccess", "/login");
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -84,7 +84,7 @@ class FriendsModel extends BaseModel {
         this.eventBus.emit("subscribersGetSuccess", result.body.subscribers);
         break;
       case 401:
-        this.eventBus.emit("logoutSuccess", "/login");
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -106,7 +106,7 @@ class FriendsModel extends BaseModel {
         );
         break;
       case 401:
-        this.eventBus.emit("logoutSuccess", "/login");
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -126,7 +126,7 @@ class FriendsModel extends BaseModel {
         this.eventBus.emit("addFriendSuccess", userId);
         break;
       case 401:
-        this.eventBus.emit("logoutSuccess", "/login");
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -146,7 +146,7 @@ class FriendsModel extends BaseModel {
         this.eventBus.emit("unsubscribeSuccess", userId);
         break;
       case 401:
-        this.eventBus.emit("logoutSuccess", "/login");
+        this.router.redirect("/login");
         break;
       default:
         this.eventBus.emit("serverError", {});

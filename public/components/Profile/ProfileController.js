@@ -32,21 +32,19 @@ class ProfileController {
   /**
    * Creates controller
    * @param {Routing} router - The router
+   * @param {UserState} userState - The current state of session's user
    */
-  constructor(router) {
+  constructor(router, userState) {
     this.eventBus = new EventBus(incomingEvents);
     this.profileModel = new ProfileModel(this.eventBus, router);
-    this.profileView = new ProfileView(
-      this.eventBus,
-      router,
-    );
+    this.profileView = new ProfileView(this.eventBus, router, userState);
   }
 
   /**
    * Renders ProfileView
    * @returns {void}
    */
-  renderProfileView({userId}) {
+  renderProfileView({ userId }) {
     this.profileView.renderProfileMain(userId);
   }
 }

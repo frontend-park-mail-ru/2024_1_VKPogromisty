@@ -46,12 +46,12 @@ class FriendsView extends BaseView {
    * Конструктор класса BaseView .
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
-   * @param {Routing} router - Роутинг с установленным конфигом
+   * @param {UserState} userState - Текущее состояние юзера
    */
-  constructor(eventBus, router) {
+  constructor(eventBus, userState) {
     super(eventBus);
 
-    this.router = router;
+    this.userState = userState;
     this.template = Handlebars.templates["friendsMain.hbs"];
 
     this.eventBus.addEventListener(
@@ -90,7 +90,7 @@ class FriendsView extends BaseView {
    * @param {string} path - The certain path
    */
   renderMain(path) {
-    const {userId, avatar, firstName, lastName} = this.router.userState.User;
+    const { userId, avatar, firstName, lastName } = this.userState;
 
     if (document.getElementById("header") === null) {
       const header = new Header(document.body);

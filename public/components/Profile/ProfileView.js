@@ -65,11 +65,13 @@ class ProfileView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Объект класса Routing
+   * @param {UserState} userState - Объект класса UserState
    */
-  constructor(eventBus, router) {
+  constructor(eventBus, router, userState) {
     super(eventBus);
 
     this.router = router;
+    this.userState = userState;
 
     this.eventBus.addEventListener(
       "receiveOwnProfileData",
@@ -119,7 +121,7 @@ class ProfileView extends BaseView {
    */
   renderProfileMain(user_id) {
     this.userId = user_id;
-    const {userId, avatar, firstName, lastName} = this.router.userState.User;
+    const { userId, avatar, firstName, lastName } = this.userState;
 
     if (document.getElementById("header") === null) {
       const header = new Header(document.body);
@@ -158,7 +160,8 @@ class ProfileView extends BaseView {
 
     const { userId, firstName, lastName, dateOfBirth, avatar } = User;
     this.mainElement = document.getElementById("activity");
-    const isMe = (this.isMe = Number(this.userId) === Number(this.router.userState.User.userId));
+    const isMe = (this.isMe =
+      Number(this.userId) === Number(this.userState.userId));
 
     const template = Handlebars.templates["profileMain.hbs"];
     this.mainElement.innerHTML = template({
@@ -225,7 +228,7 @@ class ProfileView extends BaseView {
    */
   renderPosts({ author, posts }) {
     const template = Handlebars.templates["profilePost.hbs"];
-    const avatar = this.router.userState.User.avatar;
+    const avatar = this.userState.avatar;
 
     const isMe = this.isMe;
 
@@ -263,11 +266,11 @@ class ProfileView extends BaseView {
     }
 
     const publishButton = document.getElementById("publish-post-button");
-    const fileInput = document.getElementById('news__file-input');
-    const fileButton = document.getElementById('news__file-button');
-    
+    const fileInput = document.getElementById("news__file-input");
+    const fileButton = document.getElementById("news__file-button");
+
     if (fileButton) {
-      fileButton.addEventListener('click', () => {
+      fileButton.addEventListener("click", () => {
         fileInput.click();
       });
     }
@@ -349,7 +352,7 @@ class ProfileView extends BaseView {
     document.getElementById("user-news-content").value = "";
 
     const template = Handlebars.templates["profilePost.hbs"];
-    const avatar = this.router.userState.User.avatar;
+    const avatar = this.userState.avatar;
 
     post.createdAt = remakeCreatedAt(post.createdAt);
 

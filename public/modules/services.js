@@ -265,8 +265,8 @@ export class PostService {
     formData.append("content", content);
 
     Array.from(attachments).forEach((elem) => {
-      formData.append('attachments', elem);
-    })
+      formData.append("attachments", elem);
+    });
 
     const response = await fetch(this.baseUrl, {
       method: "POST",

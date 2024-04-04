@@ -84,13 +84,4 @@ export class Routing {
 
     foundedUrl.func(slugs);
   }
-
-  /**
-   * Updates state of session's user
-   * 
-   * @return {void}
-   */
-  async updateUserState() {
-    this.userState = (await this.profileService.getOwnProfileData()).body;
-  }
 }

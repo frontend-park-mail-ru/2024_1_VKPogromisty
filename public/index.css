@@ -476,6 +476,7 @@ input::-webkit-inner-spin-button {
   padding: 5px;
   border-bottom: 1px solid #000000;
   line-height: 3px;
+  align-items: center;
 }
 
 .post-content__text-span {
@@ -484,12 +485,13 @@ input::-webkit-inner-spin-button {
   white-space: nowrap;
   background-color: inherit;
   resize: none;
+  width: 100%;
 }
 
 .post-content__img {
   box-sizing: border-box;
-  width: 100%;
-  margin: 10px 0px;
+  width: 80%;
+  margin: 10px 0px 15px 0px;
 }
 
 .post-content p {
@@ -1165,4 +1167,8 @@ input::-webkit-inner-spin-button {
 .post-author__cancel-img {
   cursor: pointer;
   margin-left: 10px;
+}
+
+.area-update-posts {
+  height: 1000px;
 }

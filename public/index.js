@@ -8,13 +8,16 @@ import SignupController from "./components/Signup/SignupController.js";
 import ProfileController from "./components/Profile/ProfileController.js";
 import LoginController from "./components/Login/LoginController.js";
 import FriendsController from "./components/Friends/FriendsController.js";
+import UserState from "./components/UserState.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const userState = new UserState();
+
   const router = new Routing();
-  const signupController = new SignupController(router);
-  const profileController = new ProfileController(router);
-  const loginController = new LoginController(router);
-  const friendsController = new FriendsController(router);
+  const signupController = new SignupController(router, userState);
+  const profileController = new ProfileController(router, userState);
+  const loginController = new LoginController(router, userState);
+  const friendsController = new FriendsController(router, userState);
 
   const config = {
     paths: [
@@ -46,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       {
         path: /\/community\/(?<section>.+)/,
         func: friendsController.renderView.bind(friendsController),
-        title: 'Друзья'
+        title: "Друзья",
       },
       {
         path: /\//,
@@ -111,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       case "/signup":
       case "/":
         if (isAuthorized.body) {
-          await router.updateUserState();
+          await userState.updateState();
           router.redirect("/feed");
         } else {
           router.redirect(currentPageUrl);
@@ -121,7 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!isAuthorized.body) {
           router.redirect("/login");
         } else {
-          await router.updateUserState();
+          await userState.updateState();
           router.redirect(currentPageUrl);
         }
         return;

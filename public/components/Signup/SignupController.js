@@ -21,10 +21,11 @@ export default class SignupController {
   /**
    * Creates controller
    * @param {Routing} router - The router
+   * @param {UserState} userState - The current state of session's user
    */
-  constructor(router) {
+  constructor(router, userState) {
     this.eventBus = new EventBus(incomingEvents);
-    this.#signupModel = new SignupModel(this.eventBus);
+    this.#signupModel = new SignupModel(this.eventBus, userState);
     this.#signupView = new SignupView(this.eventBus);
 
     this.eventBus.addEventListener(

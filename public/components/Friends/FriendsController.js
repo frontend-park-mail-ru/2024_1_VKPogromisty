@@ -27,11 +27,12 @@ class FriendsController {
   /**
    * Creates controller
    * @param {Routing} router - The router
+   * @param {UserState} userState - The current state of session's user
    */
-  constructor(router) {
+  constructor(router, userState) {
     this.eventBus = new EventBus(incomingEvents);
     this.friendsModel = new FriendsModel(this.eventBus, router);
-    this.friendsView = new FriendsView(this.eventBus, router);
+    this.friendsView = new FriendsView(this.eventBus, router, userState);
   }
 
   /**
@@ -39,7 +40,7 @@ class FriendsController {
    * @param {string} section - The certain path
    * @returns {void}
    */
-  renderView({section}) {
+  renderView({ section }) {
     this.friendsView.renderMain(section);
   }
 }
