@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       {
         path: /\/chat\/(?<companionId>[0-9]+)/,
         func: chatController.renderChatView.bind(chatController),
-        title: 'Диалог',
+        title: "Диалог",
       },
       {
         path: /\//,
@@ -114,28 +114,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const authService = new AuthService();
 
-  async function route() {
-    const currentPageUrl = window.location.pathname;
-    switch (currentPageUrl) {
-      case "/login":
-      case "/signup":
-      case "/":
-        if (await userState.updateState()) {
-          router.redirect("/feed");
-        } else {
-          router.redirect(currentPageUrl);
-        }
-        return;
-      default:
-        if (await userState.updateState()) {
-          router.redirect(currentPageUrl);
-        } else {
-          router.redirect("/login");
-        }
-        return;
-    }
+  const currentPageUrl = window.location.pathname;
+  switch (currentPageUrl) {
+    case "/login":
+    case "/signup":
+    case "/":
+      if (await userState.updateState()) {
+        router.redirect("/feed");
+      } else {
+        router.redirect(currentPageUrl);
+      }
+      break;
+    default:
+      if (await userState.updateState()) {
+        router.redirect(currentPageUrl);
+      } else {
+        router.redirect("/login");
+      }
   }
 
-  document.addEventListener("navigate", route);
-  route();
 });
