@@ -27,7 +27,6 @@ const genResponse = (status, body, error) => {
  * @class
  * @property {string} baseUrl - The base URL for the server auth service
  * @method {Promise} login - Logs in the user
- * @method {Promise} isAuthorized - Checks if the user is authorized
  * @method {Promise} sign_up - Registers the user
  * @method {Promise} logout - Logs out the user
  */
@@ -53,21 +52,6 @@ export class AuthService {
     const data = await response.json();
 
     return genResponse(response.status, data.body, data.message);
-  }
-
-  /**
-   * Checks if the user is authorized
-   * @returns {Promise<APIResponse>} {@link APIResponse}
-   */
-  async isAuthorized() {
-    const response = await fetch(this.baseUrl + "is-authorized", {
-      method: "GET",
-      credentials: "include",
-    });
-
-    const data = await response.json();
-
-    return genResponse(response.status, data.body.isAuthorized, data.message);
   }
 
   /**
@@ -241,8 +225,7 @@ export class PostService {
    */
   async getPosts(userId, lastPostId) {
     const response = await fetch(
-      this.baseUrl +
-        `?userId=${userId}&lastPostId=${lastPostId}`,
+      this.baseUrl + `?userId=${userId}&lastPostId=${lastPostId}`,
       {
         method: "GET",
         credentials: "include",
@@ -262,7 +245,12 @@ export class PostService {
    */
   async publishPost(content, attachments) {
     const formData = new FormData();
+
     formData.append("content", content);
+
+    Array.from(attachments).forEach((elem) => {
+      formData.append("attachments", elem);
+    });
 
     const response = await fetch(this.baseUrl, {
       method: "POST",
@@ -296,14 +284,46 @@ export class PostService {
 
     return genResponse(response.status, data.body, data.message);
   }
+
+  /**
+   * Updates the post from the server
+   * @param {number} post_id - The ID of post
+   * @param {string} content - The text content of current post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async updatePost(post_id, content) {
+    const postId = Number(post_id);
+
+    const response = await fetch(this.baseUrl, {
+      method: "PUT",
+      credentials: "include",
+      body: JSON.stringify({ postId, content }),
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
 }
 
 export class ChatService {
-  baseUrl = `${API_URL}/...`;
+  baseUrl = `${API_URL}/chat`;
 
-  async getChats(id) {
-    const response = await fetch(this.baseUrl, {
+  async getDialogs() {
+    const response = await fetch(this.baseUrl + '/dialogs', {
       method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  async getMessages(companionId, lastMessage) {
+    const response = await fetch(this.baseUrl + `/messages?peerId=${companionId}&lastMessageId=${lastMessage}`, {
+      method: "GET",
+      credentials: "include",
     });
 
     const data = await response.json();
@@ -315,6 +335,10 @@ export class ChatService {
 export class FriendsService {
   baseUrl = `${API_URL}/subscriptions/friends`;
 
+  /**
+   * Gets friends of session's user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
   async getFriends() {
     const response = await fetch(this.baseUrl, {
       method: "GET",
@@ -330,6 +354,10 @@ export class FriendsService {
 export class SubscribersService {
   baseUrl = `${API_URL}/subscriptions/subscribers`;
 
+  /**
+   * Gets subscribers of session's user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
   async getSubscribers() {
     const response = await fetch(this.baseUrl, {
       method: "GET",
@@ -345,6 +373,10 @@ export class SubscribersService {
 export class SubscriptionsService {
   baseUrl = `${API_URL}/subscriptions/`;
 
+  /**
+   * Gets subscriptions of session's user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
   async getSubscriptions() {
     const response = await fetch(this.baseUrl + "subscriptions", {
       method: "GET",
@@ -394,20 +426,6 @@ export class SubscriptionsService {
     }
 
     const data = response.json();
-
-    return genResponse(response.status, data.body, data.message);
-  }
-}
-
-export class MessengeService {
-  baseUrl = `${API_URL}/...`;
-
-  async getMessenges(idFirst, idSecond) {
-    const response = await fetch(this.baseUrl, {
-      method: "GET",
-    });
-
-    const data = await response.json();
 
     return genResponse(response.status, data.body, data.message);
   }

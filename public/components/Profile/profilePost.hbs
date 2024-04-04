@@ -15,7 +15,7 @@
         </span>
       </div>
     </div>
-    <div class="post-menu">
+    <div class="post-menu" id="post-menu-{{ this.postId }}">
       {{#if ../isMe}}
       <img
         class="post-author__edit-img"
@@ -28,7 +28,6 @@
         src="../static/images/trash-basket.png"
       />
       {{/if}}
-      <img class="post-menu__ellipsees-img" src="../static/images/more.png" />
     </div>
   </div>
   <div class="post-content">

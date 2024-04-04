@@ -9,9 +9,12 @@ class SignupModel extends BaseModel {
    * Конструктор класса SignupModel.
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
+   * @param {UserState} userState - Текущее состояние юзера
    */
-  constructor(eventBus) {
+  constructor(eventBus, userState) {
     super(eventBus);
+    this.userState = userState;
+
     this.eventBus.addEventListener(
       "attemptSignup",
       this.isValidForm.bind(this),
@@ -51,8 +54,10 @@ class SignupModel extends BaseModel {
 
     switch (result.status) {
       case 201:
-        this.eventBus.emit("receiveSignupResult", true);
-        break;
+        if (await this.userState.updateState()) {
+          this.eventBus.emit("receiveSignupResult", true);
+          break;
+        }
       case 400:
         this.eventBus.emit("receiveSignupResult", false);
         break;

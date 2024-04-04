@@ -1,9 +1,58 @@
+/**
+ * A Author structure
+ * @typedef {Object} Author
+ * @property {string} avatar - The avatar of user
+ * @property {string} createdAt - The date of creating accout
+ * @property {string} detaOfBirth - The date of birth current user
+ * @property {string} email - The email of current user
+ * @property {string} firstName - The first name of current user
+ * @property {string} lastName - The last name of current user
+ * @property {number} userId - The ID of current user
+ * @property {string} updatedAt - The last date of updating
+ */
+
+/**
+ * A Post structure
+ * @typedef {Object} Post
+ * @property {number} authorId - The ID of author
+ * @property {string} createdAt - The date of creating post
+ * @property {string} content - The text content of post
+ * @property {number} postId - The ID of post
+ * @property {string} updatedAt - The last date of updating
+ * @property {File[]} attachments - The images of post
+ */
+
+/**
+ * A PostInfo structure
+ * @typedef {Object} PostInfo
+ * @property {Author} author - The info about author of post
+ * @property {Post[]} posts - The posts of current user
+ */
+
+/**
+ * A UserInfo structure
+ * @typedef {Object} UserInfo
+ * @property {number} userId - The ID of user
+ * @property {string} firstName - The first name of session's user
+ * @property {string} lastName - The first name of session's user
+ * @property {string} avatar - The file path of avatar of session's user
+ */
+
+/**
+ * A ProfileInfo structure
+ * @typedef {Object} ProfileInfo
+ * @property {UserInfo} User - The info about profile's user
+ * @property {boolean} isSubscribedTo - Is the session's user a subscriber of profile's user
+ */
+
+import {
+  remakeCreatedAt,
+  remakeDateOfBirth,
+} from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
-
-///<reference path="typedefs.js" />
 
 const staticUrl = `${API_URL}/static`;
 
@@ -15,11 +64,14 @@ class ProfileView extends BaseView {
    * Конструктор класса ProfileView .
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
+   * @param {Routing} router - Объект класса Routing
+   * @param {UserState} userState - Объект класса UserState
    */
-  constructor(eventBus, userId) {
+  constructor(eventBus, router, userState) {
     super(eventBus);
 
-    this.userId = userId;
+    this.router = router;
+    this.userState = userState;
 
     this.eventBus.addEventListener(
       "receiveOwnProfileData",
@@ -54,26 +106,22 @@ class ProfileView extends BaseView {
       this.postPublishedSuccess.bind(this),
     );
     this.eventBus.addEventListener(
+      "postUpdateSuccess",
+      this.postUpdatedSuccess.bind(this),
+    );
+    this.eventBus.addEventListener(
       "serverError",
       this.serverErrored.bind(this),
     );
   }
 
   /**
-   * Sets the ID of user, whose profile we check
-   * @param {number} userId - The id of user
-   */
-  setUserId(userId) {
-    this.userId = userId;
-  }
-
-  /**
    * Renders header and sidebar of page
    * @param {UserInfo} userInfo - The info about session's user
    */
-  renderProfileMain({ userId, avatar, firstName, lastName }) {
-    this.ownUserId = userId;
-    this.avatar = avatar;
+  renderProfileMain(user_id) {
+    this.userId = user_id;
+    const { userId, avatar, firstName, lastName } = this.userState;
 
     if (document.getElementById("header") === null) {
       const header = new Header(document.body);
@@ -91,6 +139,10 @@ class ProfileView extends BaseView {
       this.eventBus.emit("clickLogoutButton", {});
     });
 
+    document
+      .getElementById("server-error-500")
+      .classList.add("server-error-500");
+
     this.eventBus.emit("readyRenderProfile", this.userId);
   }
 
@@ -104,9 +156,12 @@ class ProfileView extends BaseView {
    * @param {ProfileInfo} profileInfo - The info of profile's user
    */
   renderProfile({ User, isSubscribedTo }) {
+    User.dateOfBirth = remakeDateOfBirth(User.dateOfBirth);
+
     const { userId, firstName, lastName, dateOfBirth, avatar } = User;
     this.mainElement = document.getElementById("activity");
-    const isMe = (this.isMe = Number(this.userId) === Number(this.ownUserId));
+    const isMe = (this.isMe =
+      Number(this.userId) === Number(this.userState.userId));
 
     const template = Handlebars.templates["profileMain.hbs"];
     this.mainElement.innerHTML = template({
@@ -173,9 +228,15 @@ class ProfileView extends BaseView {
    */
   renderPosts({ author, posts }) {
     const template = Handlebars.templates["profilePost.hbs"];
-    const avatar = this.avatar;
+    const avatar = this.userState.avatar;
 
     const isMe = this.isMe;
+
+    if (posts) {
+      posts.forEach((elem) => {
+        elem.createdAt = remakeCreatedAt(elem.createdAt);
+      });
+    }
 
     this.postsElement.innerHTML += template({
       posts,
@@ -205,23 +266,79 @@ class ProfileView extends BaseView {
     }
 
     const publishButton = document.getElementById("publish-post-button");
+    const fileInput = document.getElementById("news__file-input");
+    const fileButton = document.getElementById("news__file-button");
+
+    if (fileButton) {
+      fileButton.addEventListener("click", () => {
+        fileInput.click();
+      });
+    }
 
     if (publishButton !== null) {
       publishButton.addEventListener("click", () => {
         const content = document.getElementById("user-news-content").value;
 
+        if (content === "") {
+          return;
+        }
         this.eventBus.emit("clickedPublishPost", {
           content: content,
-          attachments: null,
+          attachments: fileInput.files,
         });
       });
     }
 
     const trashes = document.querySelectorAll(".post-author__trash-basket-img");
+    const edits = document.querySelectorAll(".post-author__edit-img");
 
     trashes.forEach((elem) => {
       elem.addEventListener("click", () => {
         this.eventBus.emit("clickedDeletePost", elem.dataset.id);
+      });
+    });
+
+    edits.forEach((elem) => {
+      elem.addEventListener("click", () => {
+        const parent = elem.parentNode;
+        const nextElem = elem.nextElementSibling;
+        const id = elem.dataset.id;
+        const textarea = document.getElementById(`textarea-${id}`);
+
+        textarea.removeAttribute("readonly");
+
+        const ok = document.createElement("img");
+        ok.classList.add("post-author__accept-img");
+        ok.setAttribute("data-id", id);
+        ok.setAttribute("src", "../static/images/check.png");
+        ok.addEventListener("click", () => {
+          if (textarea.value === "") {
+            return;
+          }
+
+          this.eventBus.emit("clickedUpdatePost", {
+            content: textarea.value,
+            attachments: null,
+            post_id: id,
+          });
+        });
+
+        const cancel = document.createElement("img");
+        cancel.classList.add("post-author__cancel-img");
+        cancel.setAttribute("data-id", id);
+        cancel.setAttribute("src", "../static/images/cancel.png");
+        cancel.addEventListener("click", () => {
+          textarea.toggleAttribute("readonly");
+          elem.style["display"] = "block";
+          nextElem.style["display"] = "block";
+          cancel.remove();
+          ok.remove();
+        });
+
+        parent.appendChild(ok);
+        parent.appendChild(cancel);
+        elem.style["display"] = "none";
+        nextElem.style["display"] = "none";
       });
     });
   }
@@ -235,7 +352,9 @@ class ProfileView extends BaseView {
     document.getElementById("user-news-content").value = "";
 
     const template = Handlebars.templates["profilePost.hbs"];
-    const avatar = this.avatar;
+    const avatar = this.userState.avatar;
+
+    post.createdAt = remakeCreatedAt(post.createdAt);
 
     const isMe = this.isMe;
     const posts = [post];
@@ -256,6 +375,22 @@ class ProfileView extends BaseView {
         this.eventBus.emit("clickedDeletePost", elem.dataset.id);
       });
     });
+  }
+
+  /**
+   * Updates the current post on page
+   * @param {Post} postInfo - The info about updated post
+   * @return {void}
+   */
+  postUpdatedSuccess({ postId }) {
+    const postMenu = document.getElementById(`post-menu-${postId}`);
+    const textarea = document.getElementById(`textarea-${postId}`);
+
+    textarea.toggleAttribute("readonly");
+    postMenu.lastChild.remove();
+    postMenu.lastChild.remove();
+    postMenu.firstElementChild.style["display"] = "block";
+    postMenu.firstElementChild.nextElementSibling.style["display"] = "block";
   }
 
   /**

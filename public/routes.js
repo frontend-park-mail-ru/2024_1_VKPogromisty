@@ -6,6 +6,8 @@
  * @property {string} title - The title of the page
  */
 
+import { ProfileService } from "./modules/services.js";
+
 /**
  * The type of config
  * @typedef {Object} Config
@@ -16,6 +18,7 @@
  * Service for redirects
  * @class
  * @property {Config} config - The config with paths and their callbackes
+ * @property {Author} userState - The current state of session's user
  * @method redirect - Redirects to the current page
  */
 export class Routing {
@@ -26,6 +29,7 @@ export class Routing {
    */
   constructor() {
     const body = document.body;
+    this.profileService = new ProfileService();
 
     body.addEventListener(
       "click",

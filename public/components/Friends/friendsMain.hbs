@@ -12,29 +12,29 @@
     />
   </div>
   <div class="search-buttons">
-    <img
-      class="search-buttons__menu-img"
-      src="../static/images/menu.png"
-    />
+    <img class="search-buttons__menu-img" src="../static/images/menu.png" />
   </div>
 </div>
 <div class="right-sidebar-friends">
   {{#each rightSidebar}}
   <span>
-    <a class="right-sidebar__a-{{ this.class }}" href="{{ this.href }}">{{
-      this.text
-    }}</a>
+    <a
+      class="right-sidebar__a-common"
+      id="{{ this.id }}"
+      href="/community{{ this.href }}"
+      >{{ this.text }}</a
+    >
   </span>
   {{/each}}
 </div>
 <div class="friends">
   {{#each friends}}
-  <div class="friends-field">
+  <div class="friends-field" id="friends-field-{{ this.userId }}">
     <div class="friend" id="friend-{{ this.userId }}">
       <a href="/profile/{{ this.userId }}"
         ><img
           class="friend__avatar-img"
-          src="{{ staticUrl }}/{{ this.avatar }}"
+          src="{{ ../staticUrl }}/{{ this.avatar }}"
       /></a>
       <div class="friend-info">
         <span class="friend-info__name-span"
@@ -48,10 +48,57 @@
       </div>
     </div>
     <div class="friend-ables">
-      <button type="button" class="friend-ables__button">
-        В друзьях
+      <button
+        type="button"
+        class="friend-ables__send-message-button"
+        id="send-message-{{ this.userId }}"
+      >
+        <img
+          src="../static/images/messenger.png"
+          class="friend-ables__send-message-img"
+        />
       </button>
+      {{#if ../isFriends}}
+      <button
+        type="button"
+        class="friend-ables__delete-friend-button"
+        data-id="{{ this.userId }}"
+      >
+        Удалить из друзей
+      </button>
+      {{/if}}
+      {{#if ../isSubscribers}}
+      <button
+        type="button"
+        class="friend-ables__add-friend-button"
+        data-id="{{ this.userId }}"
+      >
+        Добавить в друзья
+      </button>
+      {{/if}}
+      {{#if ../isSubscriptions}}
+      <button
+        type="button"
+        class="friend-ables__unsubscribe-button"
+        data-id="{{ this.userId }}"
+      >
+        Отписаться
+      </button>
+      {{/if}}
     </div>
   </div>
   {{/each}}
+</div>
+<div class="no-friends">
+  {{#if noFriends}}
+  {{#if isFriends}}
+  <span class="no-friends__span">У вас нет друзей</span>
+  {{/if}}
+  {{#if isSubscribers}}
+  <span class="no-subscribers__span">У вас нет подписчиков</span>
+  {{/if}}
+  {{#if isSubscriptions}}
+  <span class="no-subscriptions__span">Вы ни на кого не подписаны</span>
+  {{/if}}
+  {{/if}}
 </div>

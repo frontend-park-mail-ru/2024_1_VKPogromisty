@@ -20,11 +20,12 @@ export default class LoginController {
 
   /**
    * Создаёт контроллер
-   * @param {Routing} router - роутер
+   * @param {Routing} router - Объект класса роутер
+   * @param {UserState} userState - Текущее состояние юзера
    */
-  constructor(router) {
+  constructor(router, userState) {
     this.eventBus = new EventBus(incomingEvents);
-    this.#loginModel = new LoginModel(this.eventBus);
+    this.#loginModel = new LoginModel(this.eventBus, userState);
     this.#loginView = new LoginView(this.eventBus);
 
     this.eventBus.addEventListener(

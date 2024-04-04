@@ -83,11 +83,27 @@
       minlength="1"
       autocomplete="off"
     />
-    <img class="news__img" src="../static/images/attach-paperclip-symbol.png" />
+    <button type="button" class="news__file-button" id="news__file-button">
+      <img
+        class="news__img"
+        src="../static/images/attach-paperclip-symbol.png"
+        id="news__img"
+      />
+    </button>
+    <input
+      type="file"
+      class="news__file-input"
+      id="news__file-input"
+      multiple
+    />
   </div>
   <button class="publish-button" type="button" id="publish-post-button">
     Опубликовать
   </button>
 </div>
 {{/if}}
-<div class="posts" id="posts"></div>
+<div class="posts" id="posts">
+
+</div>
+<div class="area-update-posts">
+</div>
