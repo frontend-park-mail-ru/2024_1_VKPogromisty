@@ -168,7 +168,7 @@ class FriendsView extends BaseView {
 
   /**
    * Renders page with subscribers of session's users
-   * @param {Friend} friends
+   * @param {Friend[]} friends
    */
   renderSubscribers(friends) {
     const isSubscribers = true;
@@ -216,7 +216,7 @@ class FriendsView extends BaseView {
 
   /**
    * Renders page with subscriptions of session's users
-   * @param {Friend} friends
+   * @param {Friend[]} friends
    */
   renderSubscriptions(friends) {
     const isSubscriptions = true;

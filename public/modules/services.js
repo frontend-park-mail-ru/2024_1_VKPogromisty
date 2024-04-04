@@ -27,7 +27,6 @@ const genResponse = (status, body, error) => {
  * @class
  * @property {string} baseUrl - The base URL for the server auth service
  * @method {Promise} login - Logs in the user
- * @method {Promise} isAuthorized - Checks if the user is authorized
  * @method {Promise} sign_up - Registers the user
  * @method {Promise} logout - Logs out the user
  */
@@ -53,21 +52,6 @@ export class AuthService {
     const data = await response.json();
 
     return genResponse(response.status, data.body, data.message);
-  }
-
-  /**
-   * Checks if the user is authorized
-   * @returns {Promise<APIResponse>} {@link APIResponse}
-   */
-  async isAuthorized() {
-    const response = await fetch(this.baseUrl + "is-authorized", {
-      method: "GET",
-      credentials: "include",
-    });
-
-    const data = await response.json();
-
-    return genResponse(response.status, data.body.isAuthorized, data.message);
   }
 
   /**
@@ -323,11 +307,23 @@ export class PostService {
 }
 
 export class ChatService {
-  baseUrl = `${API_URL}/...`;
+  baseUrl = `${API_URL}/chat`;
 
-  async getChats(id) {
-    const response = await fetch(this.baseUrl, {
+  async getDialogs() {
+    const response = await fetch(this.baseUrl + '/dialogs', {
       method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  async getMessages(companionId, lastMessage) {
+    const response = await fetch(this.baseUrl + `/messages?peerId=${companionId}&lastMessageId=${lastMessage}`, {
+      method: "GET",
+      credentials: "include",
     });
 
     const data = await response.json();
@@ -430,20 +426,6 @@ export class SubscriptionsService {
     }
 
     const data = response.json();
-
-    return genResponse(response.status, data.body, data.message);
-  }
-}
-
-export class MessengeService {
-  baseUrl = `${API_URL}/...`;
-
-  async getMessenges(idFirst, idSecond) {
-    const response = await fetch(this.baseUrl, {
-      method: "GET",
-    });
-
-    const data = await response.json();
 
     return genResponse(response.status, data.body, data.message);
   }

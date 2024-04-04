@@ -13,37 +13,34 @@ import { ProfileService } from "../modules/services.js";
  * @method updateState - updates state of user
  */
 class UserState {
+  /**
+   * Creates an object of class UserState
+   */
+  constructor() {
+    this.profileService = new ProfileService();
+  }
 
-    /**
-     * Creates an object of class UserState
-     */
-    constructor() {
-        this.profileService = new ProfileService();
+  /**
+   * Updates state of session's user
+   *
+   * @returns {Promise<Boolean>}
+   */
+  async updateState() {
+    const result = await this.profileService.getOwnProfileData();
+
+    switch (result.status) {
+      case 200:
+        this.userId = result.body.User.userId;
+        this.avatar = result.body.User.avatar;
+        this.firstName = result.body.User.firstName;
+        this.lastName = result.body.User.lastName;
+        this.createdAt = result.body.User.createdAt;
+        this.updatedAt = result.body.User.updatedAt;
+        return true;
+      default:
+        return false;
     }
-
-    /**
-     * Updates state of session's user
-     * 
-     * @returns {Promise<Boolean>}
-     */
-    async updateState() {
-        const result = ((await this.profileService.getOwnProfileData()));
-
-        switch (result.status) {
-            case 200:
-                this.userId = result.body.User.userId;
-                this.avatar = result.body.User.avatar;
-                this.firstName = result.body.User.firstName;
-                this.lastName = result.body.User.lastName;
-                this.createdAt = result.body.User.createdAt;
-                this.updatedAt = result.body.User.updatedAt;
-                return true;
-            default:
-                return false;
-        }
-        
-    }
-
+  }
 }
 
 export default UserState;

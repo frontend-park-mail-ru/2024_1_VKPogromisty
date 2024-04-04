@@ -307,12 +307,17 @@ input::-webkit-inner-spin-button {
 }
 
 .create-post {
+  border: 1px solid #000000;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-post-header {
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   height: 60px;
-  border: 1px solid #000000;
-  border-radius: 7px;
 }
 
 .news-avatar {
@@ -326,7 +331,6 @@ input::-webkit-inner-spin-button {
 .news {
   box-sizing: border-box;
   width: 480px;
-  margin-left: 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -341,7 +345,7 @@ input::-webkit-inner-spin-button {
   font-family: inherit;
   font-size: inherit;
   background-color: var(--button-feed);
-  border-radius: 0px 7px 7px 0px;
+  border-radius: 0px 7px 0px 0px;
   border-left: 1px solid black;
   transition-duration: 0.1s;
 }
@@ -355,7 +359,6 @@ input::-webkit-inner-spin-button {
   margin-left: 20px;
   width: 360px;
   min-width: 120px;
-  font-size: larger;
   font-family: inherit;
   font-size: inherit;
   color: inherit;
@@ -386,6 +389,40 @@ input::-webkit-inner-spin-button {
 
 .news__file-input {
   display: none;
+}
+
+.news-content {
+  border-top: 1px solid black;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.news-content__textarea {
+  min-height: 60px;
+  margin-top: 10px;
+  font-family: var(--ordinary-text);
+  width: 95%;
+  resize: none;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  background-color: inherit;
+}
+
+.news-img-content {
+  min-height: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+.news-img-content__img {
+  width: 95%;
+  margin: 10px 0px;
 }
 
 .post-author__user-avatar-img {
@@ -431,9 +468,23 @@ input::-webkit-inner-spin-button {
   height: 60%;
 }
 
-.post-author__time-span {
+.post-author-time {
+  display: flex;
+}
+
+.post-author-time__created-at-span {
   color: var(--button-feed);
   font-size: small;
+}
+
+.post-author-time__last-time-span {
+  color: var(--button-feed);
+  font-size: small;
+}
+
+.post-author-time__dot-img {
+  width: 16px;
+  height: 16px;
 }
 
 .post-author__edit-img {
@@ -857,6 +908,10 @@ input::-webkit-inner-spin-button {
   font-size: small;
 }
 
+.messenger {
+  width: 650px;
+}
+
 .dialogs {
   width: 650px;
   border-radius: 7px;
@@ -982,6 +1037,7 @@ input::-webkit-inner-spin-button {
   border: 1px solid black;
   height: 60px;
   padding-left: 10px;
+  margin-bottom: 20px;
 }
 
 .search-friend {
@@ -1147,11 +1203,13 @@ input::-webkit-inner-spin-button {
   filter: invert(100%);
 }
 
+.no-dialogs,
 .no-friends {
   text-align: center;
   margin-top: 40px;
 }
 
+.no-dialogs__span,
 .no-subscribers__span,
 .no-subscriptions__span,
 .no-friends__span {
