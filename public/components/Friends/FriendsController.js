@@ -32,7 +32,7 @@ class FriendsController {
   constructor(router, userState) {
     this.eventBus = new EventBus(incomingEvents);
     this.friendsModel = new FriendsModel(this.eventBus, router);
-    this.friendsView = new FriendsView(this.eventBus, router, userState);
+    this.friendsView = new FriendsView(this.eventBus, userState);
   }
 
   /**
