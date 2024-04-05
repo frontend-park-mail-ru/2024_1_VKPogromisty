@@ -1,4 +1,4 @@
-import { ChatService } from "../../modules/services.js";
+import { AuthService, ChatService } from "../../modules/services.js";
 import BaseModel from "./public/MVC/BaseModel.js";
 
 /**
@@ -15,22 +15,42 @@ class MessengerModel extends BaseModel {
 
     this.router = router;
     this.chatService = new ChatService();
+    this.authService = new AuthService();
 
     this.eventBus.addEventListener(
       "readyRenderDialogs",
       this.getDialogs.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "clickedLogoutButton",
+      this.logout.bind(this),
     );
   }
 
   async getDialogs() {
     const result = await this.chatService.getDialogs();
 
-    console.log(result);
-
     switch (result.status) {
       case 200:
         this.eventBus.emit("getDialogsSuccess", result.body);
         break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Logouts from account
+   * @return {void}
+   */
+  async logout() {
+    const result = await this.authService.logout();
+
+    switch (result.status) {
+      case 200:
       case 401:
         this.router.redirect("/login");
         break;

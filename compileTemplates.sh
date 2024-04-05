@@ -8,4 +8,5 @@ handlebars ./public/components/Header/header.hbs -f ./public/components/Header/h
 handlebars ./public/components/Messenger/messengerMain.hbs -f ./public/components/Messenger/messengerMain.precompiled.js &&
 handlebars ./public/components/Chat/chatMain.hbs -f ./public/components/Chat/chatMain.precompiled.js &&
 handlebars ./public/components/Friends/friendsMain.hbs -f ./public/components/Friends/friendsMain.precompiled.js &&
-handlebars ./public/components/Main/main.hbs -f ./public/components/Main/main.precompiled.js
+handlebars ./public/components/Main/main.hbs -f ./public/components/Main/main.precompiled.js &&
+handlebars ./public/components/Chat/message.hbs -f ./public/components/Chat/message.precompiled.js

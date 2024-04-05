@@ -2,6 +2,7 @@ import BaseView from "./public/MVC/BaseView.js";
 import {
   remakeCreatedAt,
   remakeDateOfBirth,
+  remakeLastMessage,
 } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
@@ -25,12 +26,25 @@ class ChatView extends BaseView {
     this.userState = userState;
 
     this.eventBus.addEventListener(
+      "receiveCompanionData",
+      this.renderCompanion.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "openedWebSocket",
+      this.openedWebSocket.bind(this),
+    );
+    this.eventBus.addEventListener(
       "getMessagesSuccess",
       this.renderMessages.bind(this),
     );
-    this.eventBus.addEventListener('receiveCompanionData', this.renderCompanion.bind(this));
-    this.eventBus.addEventListener('openedWebSocket', this.openedWebSocket.bind(this));
-    this.eventBus.addEventListener('getMessagesSuccess', this.renderMessages.bind(this));
+    this.eventBus.addEventListener(
+      "sendMessageSuccess",
+      this.renderAddMessage.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "deleteMessageSuccess",
+      this.renderDeleteMessage.bind(this),
+    );
   }
 
   renderMain(companionId) {
@@ -63,8 +77,8 @@ class ChatView extends BaseView {
     this.eventBus.emit("readyRenderCompanion", this.companionId);
   }
 
-  renderCompanion({User}) {
-    const {userId, avatar, firstName, lastName} = User;
+  renderCompanion({ User }) {
+    const { userId, avatar, firstName, lastName } = User;
 
     const template = Handlebars.templates["chatMain.hbs"];
 
@@ -73,25 +87,106 @@ class ChatView extends BaseView {
       avatar,
       firstName,
       lastName,
+      staticUrl,
     });
 
-    this.eventBus.emit('needOpenWebSocket', this.companionId);
+    const input = document.getElementById("print-message__text-input");
+
+    document
+      .getElementById("message-menu__send-button")
+      .addEventListener("click", () => {
+        if (input.value === "") {
+          return;
+        }
+
+        this.eventBus.emit("clickedSendMessage", {
+          companionId: this.companionId,
+          textContent: input.value,
+        });
+
+        input.value = "";
+      });
+
+    input.addEventListener("keypress", (event) => {
+      if (event.key === "Enter") {
+        if (input.value === "") {
+          return;
+        }
+
+        this.eventBus.emit("clickedSendMessage", {
+          companionId: this.companionId,
+          textContent: input.value,
+        });
+
+        input.value = "";
+      }
+    });
+
+    this.chatElement = document.getElementById("messages");
+
+    this.eventBus.emit("needOpenWebSocket", this.companionId);
   }
 
   openedWebSocket() {
-    this.eventBus.emit('readyRenderMessages', {'companionId': this.companionId, 'lastMessage': 0});
+    this.eventBus.emit("readyRenderMessages", {
+      companionId: this.companionId,
+      lastMessage: 0,
+    });
   }
 
   renderMessages(messages) {
-
-    if (!messages) {
-      messages = [];
-    }
-
-    const template = Handlebars.templates["chatMain.hbs"];
+    const template = Handlebars.templates["message.hbs"];
     const noMessages = messages.length === 0;
 
-    this.mainElement.innerHTML = template({ messages, noMessages });
+    messages.forEach((elem) => {
+      elem.isMe = elem.senderId === this.userState.userId;
+      elem.createdAt = remakeLastMessage(elem.createdAt);
+    });
+
+    this.chatElement.innerHTML = template({ messages, noMessages });
+
+    const trashes = document.querySelectorAll(".message__trash-basket-img");
+
+    trashes.forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.eventBus.emit("clickedDeleteMessage", elem.dataset.id);
+      });
+    });
+  }
+
+  renderAddMessage(message) {
+    const template = Handlebars.templates["message.hbs"];
+    const messages = [message];
+
+    message.isMe = message.senderId === this.userState.userId;
+    message.createdAt = remakeLastMessage(message.createdAt);
+
+    this.chatElement.innerHTML =
+      template({ messages }) + this.chatElement.innerHTML;
+
+    const noMessagesSpan = document.getElementById(
+      "messages__start-dialog-span",
+    );
+
+    if (noMessagesSpan) {
+      noMessagesSpan.remove();
+    }
+  }
+
+  renderUpdateMessage(message) {
+    const messageAtPage = document.getElementById(`message-${message.id}`);
+
+    if (messageAtPage) {
+      messageAtPage.remove();
+    }
+  }
+
+  renderDeleteMessage(message) {
+    const messageAtPage = document.getElementById(`message-${message.id}`);
+
+    if (messageAtPage) {
+      messageAtPage.remove();
+    }
   }
 }
 

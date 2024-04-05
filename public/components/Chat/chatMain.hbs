@@ -1,28 +1,25 @@
 <div class="conversation">
   <div class="companion">
     <div class="companion-header">
-      <a href="/profile/{{this.userId}}"><img class="companion__avatar-img" src="{{../staticUrl}}/{{this.avatar}}"/></a>
+      <a href="/profile/{{ this.userId }}"
+        ><img
+          class="companion__avatar-img"
+          src="{{ staticUrl }}/{{ this.avatar }}"
+      /></a>
       <div class="companion-info">
-        <span class="companion__name-span">{{this.firstName}} {{this.lastName}}</span>
+        <span class="companion__name-span"
+          >{{ this.firstName }} {{ this.lastName }}</span
+        >
         <span class="companion__status-span">Online</span>
       </div>
     </div>
     <div class="go-back">
-      <a href="/messenger"><button type="button" class="go-back__button">Назад</button></a>
+      <a href="/messenger"
+        ><button type="button" class="go-back__button">Назад</button></a
+      >
     </div>
   </div>
-  <div class="messages">
-    {{#each messages}}
-    <div class="message">
-      <div class="message-content">
-        <span class="message-content"></span>
-      </div>
-      <div class="message-time">
-        <span class="message-time__span"></span>
-      </div>
-    </div>
-    {{/each}}
-  </div>
+  <div class="messages" id="messages"></div>
   <div class="add-message">
     <button type="button" class="news__file-button" id="news__file-button">
       <img
@@ -32,9 +29,21 @@
       />
     </button>
     <div class="print-message">
-      <input type="text" class="print-message__text-input" id="print-message__text-input" placeholder="Напишите сообщение..."/>
+      <input
+        type="text"
+        class="print-message__text-input"
+        id="print-message__text-input"
+        placeholder="Напишите сообщение..."
+        autocomplete="off"
+      />
       <div class="message-menu">
-        <button type="button" class="message-menu__send-button"><img class="message-menu__send-img" src="../static/images/send.png" /></button>
+        <button
+          type="button"
+          class="message-menu__send-button"
+          id="message-menu__send-button"
+        >
+          <img class="message-menu__send-img" src="../static/images/send.png" />
+        </button>
       </div>
     </div>
   </div>

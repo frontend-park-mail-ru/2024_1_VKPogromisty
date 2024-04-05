@@ -2,6 +2,7 @@ import BaseView from "./public/MVC/BaseView.js";
 import {
   remakeCreatedAt,
   remakeDateOfBirth,
+  remakeLastMessage,
 } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
@@ -46,7 +47,7 @@ class MessengerView extends BaseView {
     }
 
     document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickLogoutButton", {});
+      this.eventBus.emit("clickedLogoutButton", {});
     });
 
     document
@@ -62,11 +63,25 @@ class MessengerView extends BaseView {
     const template = Handlebars.templates["messengerMain.hbs"];
     const noDialogs = dialogs.length === 0;
 
-    this.mainElement.innerHTML = template({ dialogs, noDialogs });
+    dialogs.forEach((elem) => {
+      if (elem.user1.userId === this.userState.userId) {
+        elem.companion = elem.user2;
+      } else {
+        elem.companion = elem.user1;
+      }
+
+      elem.lastMessage.createdAt = remakeLastMessage(
+        elem.lastMessage.createdAt,
+      );
+    });
+
+    this.mainElement.innerHTML = template({ staticUrl, dialogs, noDialogs });
 
     const chats = document.querySelectorAll(".dialog");
     chats.forEach((elem) => {
-      this.router.redirect(`/chat/${elem.dataset.id}`);
+      elem.addEventListener("click", () => {
+        this.router.redirect(`/chat/${elem.dataset.id}`);
+      });
     });
   }
 }

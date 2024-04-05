@@ -5,6 +5,7 @@ import EventBus from "./public/MVC/EventBus.js";
 const incomingEvents = [
   "readyRenderDialogs",
   "getDialogsSuccess",
+  "clickedLogoutButton",
   "serverError",
 ];
 

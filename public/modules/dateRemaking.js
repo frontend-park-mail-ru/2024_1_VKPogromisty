@@ -25,7 +25,7 @@ export function remakeDateOfBirth(dateOfBirth) {
 }
 
 /**
- * Remakes the date of creating post/account/message in next format 'day month year в minutes:hours'
+ * Remakes the date of creating post/account/message in next format 'day month year в hours:minutes'
  * @param {string} createdAt - The date of creating object
  * @returns {string}
  */
@@ -35,4 +35,17 @@ export function remakeCreatedAt(createdAt) {
   const minutes = date.getMinutes().toString().padStart(2, "0");
 
   return `${date.getDate()} ${monthes[date.getMonth()]} ${date.getFullYear()} в ${hours}:${minutes}`;
+}
+
+/**
+ * Remakes the date of creating post/account/message in next format 'hours:minutes'
+ * @param {string} createdAt - The date of creating object
+ * @returns {string}
+ */
+export function remakeLastMessage(lastMessage) {
+  const date = new Date(lastMessage);
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  return `${hours}:${minutes}`;
 }

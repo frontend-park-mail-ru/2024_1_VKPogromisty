@@ -4,11 +4,17 @@ import EventBus from "./public/MVC/EventBus.js";
 
 const incomingEvents = [
   "readyRenderCompanion",
-  'receiveCompanionData',
-  'readyRenderMessages',
+  "receiveCompanionData",
+  "readyRenderMessages",
   "getMessagesSuccess",
-  'needOpenWebSocket',
-  'openedWebSocket',
+  "needOpenWebSocket",
+  "openedWebSocket",
+  "clickedSendMessage",
+  "clickedDeleteMessage",
+  "clickLogoutButton",
+  "sendMessageSuccess",
+  "updateMessageSuccess",
+  "deleteMessageSuccess",
   "serverError",
 ];
 

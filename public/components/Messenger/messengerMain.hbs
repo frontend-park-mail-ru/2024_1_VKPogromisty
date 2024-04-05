@@ -13,20 +13,34 @@
   </div>
   <div class="dialogs">
     {{#each dialogs}}
-    <a href="/chat/{{ this.id }}">
-      <div class="dialog" data-id="{{ this.id }}" id="dialog-{{ this.id }}">
+    <div
+      class="dialog"
+      data-id="{{ this.companion.userId }}"
+      id="dialog-{{ this.companion.userId }}"
+    >
+      <a href="/chat/{{ this.companion.userId }}" class="dialogs__a">
         <div class="chatter">
-          <a href="/profile"><img class="chatter__avatar-img" /></a>
+          <img
+            class="chatter__avatar-img"
+            src="{{../staticUrl}}/{{ this.companion.avatar }}"
+          />
           <div class="chatter-info">
-            <span class="chatter-info__name-span"></span>
+            <span class="chatter-info__name-span"
+              >{{ this.companion.firstName }}
+              {{ this.companion.lastName }}</span
+            >
             <div class="chatter-content">
-              <span class="chatter-content__message-span"></span>
-              <span class="chatter-content__time-span"></span>
+              <span class="chatter-content__message-span">{{
+                this.lastMessage.content
+              }}</span>
+              <span class="chatter-content__time-span">{{
+                this.lastMessage.createdAt
+              }}</span>
             </div>
           </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </div>
     {{/each}}
   </div>
 </div>

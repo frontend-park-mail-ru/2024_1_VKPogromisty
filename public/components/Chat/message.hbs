@@ -1,0 +1,54 @@
+{{#each messages}}
+{{#if isMe}}
+<div class="message right-message" id="message-{{this.id}}">
+    <div class="message-content">
+        <span class="message-content">{{this.content}}</span>
+        {{#if isMe}}
+        <img
+            class="message__edit-img"
+            id="edit-img-{{ this.id }}"
+            data-id="{{ this.id }}"
+            src="../static/images/edit.png"
+        />
+        <img
+            class="message__trash-basket-img"
+            id="trash-basket-{{ this.id }}"
+            data-id="{{ this.id }}"
+            src="../static/images/trash-can.png"
+        />
+        {{/if}}
+    </div>
+    <div class="message-time-edited">
+        <span class="message-time-edited__span-time">{{this.createdAt}}</span>
+        <span class="message-time-edited__span-edited">Ред.</span>
+    </div>
+</div>
+{{else}}
+<div class="message left-message" id="message-{{this.id}}">
+    <div class="message-content">
+        <span class="message-content">{{this.content}}</span>
+        {{#if isMe}}
+        <img
+            class="message__edit-img"
+            id="edit-img-{{ this.id }}"
+            data-id="{{ this.id }}"
+            src="../static/images/edit.png"
+        />
+        <img
+            class="message__trash-basket-img"
+            id="trash-basket-{{ this.id }}"
+            data-id="{{ this.id }}"
+            src="../static/images/trash-can.png"
+        />
+        {{/if}}
+    </div>
+    <div class="message-time-edited">
+        <span class="message-time-edited__span-time">{{this.createdAt}}</span>
+        <span class="message-time-edited__span-edited">Ред.</span>
+    </div>
+</div>
+{{/if}}
+{{/each}}
+{{#if noMessages}}
+<span class="messages__start-dialog-span" id="messages__start-dialog-span">Начните диалог</span>
+{{/if}}
