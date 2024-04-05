@@ -21,10 +21,14 @@
         this.content
       }}</span>
     </div>
-    <div class="message-time-edited" id="message-time-edited-{{this.id}}">
+    <div class="message-time-edited" id="message-time-edited-{{ this.id }}">
       <span class="message-time-edited__span-time">{{ this.createdAt }}</span>
       {{#if isUpdated}}
-      <span class="message-time-edited__span-edited" id="message-edited-{{this.id}}">ред.</span>
+      <span
+        class="message-time-edited__span-edited"
+        id="message-edited-{{ this.id }}"
+        >ред.</span
+      >
       {{/if}}
     </div>
   </div>
@@ -35,10 +39,14 @@
     <div class="message-content">
       <span class="message-content">{{ this.content }}</span>
     </div>
-    <div class="message-time-edited" id="message-time-edited-{{this.id}}">
+    <div class="message-time-edited" id="message-time-edited-{{ this.id }}">
       <span class="message-time-edited__span-time">{{ this.createdAt }}</span>
       {{#if isUpdated}}
-      <span class="message-time-edited__span-edited" id="message-edited-{{this.id}}">ред.</span>
+      <span
+        class="message-time-edited__span-edited"
+        id="message-edited-{{ this.id }}"
+        >ред.</span
+      >
       {{/if}}
     </div>
   </div>

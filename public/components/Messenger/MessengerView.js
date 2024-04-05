@@ -96,11 +96,10 @@ class MessengerView extends BaseView {
 
   /**
    * Renders current dialogs of session's user
-   * 
-   * @param {Dialog[]} dialogs 
+   *
+   * @param {Dialog[]} dialogs
    */
   renderDialogs(dialogs) {
-    console.log(dialogs)
     const template = Handlebars.templates["messengerMain.hbs"];
     const noDialogs = dialogs.length === 0;
 

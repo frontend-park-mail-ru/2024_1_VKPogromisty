@@ -7,7 +7,7 @@ import BaseModel from "./public/MVC/BaseModel.js";
 
 /**
  * A LastMessages structure
- * 
+ *
  * @typedef {Object} LastMessages
  * @property {number} companionId - The ID of current companion
  * @property {number} lastMessageId - The ID of last message in conversation with current companion
@@ -15,7 +15,7 @@ import BaseModel from "./public/MVC/BaseModel.js";
 
 /**
  * A SendMessage structure
- * 
+ *
  * @typedef {Object} SendMessage
  * @property {number} companionId - The ID of current companion
  * @property {string} textContent - The text content of current message
@@ -23,7 +23,7 @@ import BaseModel from "./public/MVC/BaseModel.js";
 
 /**
  * A UpdateMessage structure
- * 
+ *
  * @typedef {Object} UpdateMessage
  * @property {number} messageId - The ID of current message
  * @property {string} textContent - The text content of current message
@@ -78,8 +78,8 @@ class ChatModel extends BaseModel {
 
   /**
    * Gets the data of current companion
-   * 
-   * @param {number} companionId 
+   *
+   * @param {number} companionId
    */
   async getCompanion(companionId) {
     const result = await this.profileService.getOtherProfileData(companionId);
@@ -100,50 +100,45 @@ class ChatModel extends BaseModel {
    * Add events to WebSocket
    */
   updateWebSocket() {
-    this
-      .webSocket
-      .addEventOnMessage((event) => {
-        const data = JSON.parse(event.data);
+    this.webSocket.addEventOnMessage((event) => {
+      const data = JSON.parse(event.data);
 
-        switch (data.type) {
-          case "SEND_MESSAGE":
-            this.eventBus.emit("sendMessageSuccess", data.payload);
-            break;
-          case "UPDATE_MESSAGE":
-            this.eventBus.emit("updateMessageSuccess", data.payload);
-            break;
-          case "DELETE_MESSAGE":
-            this.eventBus.emit("deleteMessageSuccess", data.payload);
-            break;
-          default:
-            this.eventBus.emit("serverError", {});
-        }
-      });
-    
-    this
-      .webSocket
-      .addEventOnError((event) => {
-        console.log(event, 'errored')
-        this.eventBus.emit("serverError", {});
-      });
+      switch (data.type) {
+        case "SEND_MESSAGE":
+          this.eventBus.emit("sendMessageSuccess", data.payload);
+          break;
+        case "UPDATE_MESSAGE":
+          this.eventBus.emit("updateMessageSuccess", data.payload);
+          break;
+        case "DELETE_MESSAGE":
+          this.eventBus.emit("deleteMessageSuccess", data.payload);
+          break;
+        default:
+          this.eventBus.emit("serverError", {});
+      }
+    });
 
-    this
-      .webSocket
-      .addEventOnClose((event) => {
-        console.log(event, 'closed');
-      });
+    this.webSocket.addEventOnError((event) => {
+      this.eventBus.emit("serverError", {});
+    });
+
+    this.webSocket.addEventOnClose((event) => {
+      this.eventBus.emit("serverError", {});
+    });
 
     this.eventBus.emit("updatedWebSocket", {});
-
   }
 
   /**
    * Gets last messages in conversation with current companion
-   * 
+   *
    * @param {LastMessages} lastMessages - The last messages in conversation with current companion
    */
   async getMessages({ companionId, lastMessageId }) {
-    const result = await this.chatService.getMessages(companionId, lastMessageId);
+    const result = await this.chatService.getMessages(
+      companionId,
+      lastMessageId,
+    );
 
     switch (result.status) {
       case 200:
@@ -159,7 +154,7 @@ class ChatModel extends BaseModel {
 
   /**
    * Sends message in conversation with current companion
-   * 
+   *
    * @param {SendMessage} sendMessage - The sended message
    */
   async sendMessage({ companionId, textContent }) {
@@ -168,7 +163,7 @@ class ChatModel extends BaseModel {
 
   /**
    * Updates message in conversation with current companion
-   * 
+   *
    * @param {UpdateMessage} UpdateMessage - The updated message
    */
   async updateMessage({ messageId, textContent }) {
@@ -177,7 +172,7 @@ class ChatModel extends BaseModel {
 
   /**
    * Delete the message in conversation with current companion
-   * 
+   *
    * @param {number} messageId - The ID of deleted message
    */
   async deleteMessage(messageId) {

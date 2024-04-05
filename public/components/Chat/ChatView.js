@@ -69,13 +69,16 @@ class ChatView extends BaseView {
       "deleteMessageSuccess",
       this.renderDeleteMessage.bind(this),
     );
-    this.eventBus.addEventListener('updateMessageSuccess', this.renderUpdateMessage.bind(this));
+    this.eventBus.addEventListener(
+      "updateMessageSuccess",
+      this.renderUpdateMessage.bind(this),
+    );
   }
 
   /**
    * Renders the main part of page of conversation with current companion
-   * 
-   * @param {number} companionId 
+   *
+   * @param {number} companionId
    */
   renderMain(companionId) {
     this.companionId = companionId;
@@ -109,8 +112,8 @@ class ChatView extends BaseView {
 
   /**
    * Renders the data of current companion
-   * 
-   * @param {User} user - The current companion data 
+   *
+   * @param {User} user - The current companion data
    */
   renderCompanion({ User }) {
     const { userId, avatar, firstName, lastName } = User;
@@ -186,7 +189,7 @@ class ChatView extends BaseView {
 
   /**
    * Renders the messages of conversation with current companion
-   * 
+   *
    * @param {Message[]} messages - The messages of conversation with current companion
    */
   renderMessages(messages) {
@@ -217,7 +220,7 @@ class ChatView extends BaseView {
 
   /**
    * Adds the messages of conversation with current companion
-   * 
+   *
    * @param {Message[]} messages - The messages of conversation with current companion
    */
   renderAddMessage(message) {
@@ -254,17 +257,13 @@ class ChatView extends BaseView {
 
   /**
    * Adds listener to accepting changing message element
-   * 
-   * @param {Element} elem 
+   *
+   * @param {Element} elem
    */
   acceptUpdateListener(elem) {
     elem.addEventListener("click", () => {
-      const inputMessage = document.getElementById(
-        "print-message__text-input",
-      );
-      const sendMessage = document.getElementById(
-        "message-menu__send-button",
-      );
+      const inputMessage = document.getElementById("print-message__text-input");
+      const sendMessage = document.getElementById("message-menu__send-button");
       const messageId = elem.dataset.id;
       const messageContent = document.getElementById(
         `message-content-${messageId}`,
@@ -297,32 +296,38 @@ class ChatView extends BaseView {
 
   /**
    * Updates the message of conversation with current companion
-   * 
+   *
    * @param {Message} message - The message of conversation with current companion
    */
   renderUpdateMessage(message) {
-    const contentPlace = document.getElementById(`message-content-${message.id}`);
-    
+    const contentPlace = document.getElementById(
+      `message-content-${message.id}`,
+    );
+
     contentPlace.innerHTML = message.content;
-    
+
     if (!document.getElementById(`message-edited-${message.id}`)) {
-      const messageEdited = document.createElement('span');
+      const messageEdited = document.createElement("span");
 
-      messageEdited.classList.add('message-time-edited__span-edited');
-      messageEdited.setAttribute('id', `message-edited-${message.id}`);
-      messageEdited.innerHTML = 'ред.';
+      messageEdited.classList.add("message-time-edited__span-edited");
+      messageEdited.setAttribute("id", `message-edited-${message.id}`);
+      messageEdited.innerHTML = "ред.";
 
-      document.getElementById(`message-time-edited-${message.id}`).appendChild(messageEdited);
+      document
+        .getElementById(`message-time-edited-${message.id}`)
+        .appendChild(messageEdited);
     }
   }
 
   /**
    * Deletes the message of conversation with current companion
-   * 
+   *
    * @param {Message} message - The message of conversation with current companion
    */
   renderDeleteMessage(message) {
-    const messageAtPage = document.getElementById(`message-${message.messageId}`);
+    const messageAtPage = document.getElementById(
+      `message-${message.messageId}`,
+    );
 
     if (messageAtPage) {
       messageAtPage.parentElement.remove();
