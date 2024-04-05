@@ -11,6 +11,7 @@ const incomingEvents = [
   "openedWebSocket",
   "clickedSendMessage",
   "clickedDeleteMessage",
+  'clickedUpdateMessage',
   "clickLogoutButton",
   "sendMessageSuccess",
   "updateMessageSuccess",

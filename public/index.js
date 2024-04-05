@@ -61,8 +61,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\//,
-        func: renderFeed,
-        title: "Новости",
+        func: messengerController.renderMessengerView.bind(messengerController),
+        title: "Мессенджер",
       },
     ],
   };
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     case "/signup":
     case "/":
       if (await userState.updateState()) {
-        router.redirect("/feed");
+        router.redirect("/messenger");
       } else {
         router.redirect(currentPageUrl);
       }

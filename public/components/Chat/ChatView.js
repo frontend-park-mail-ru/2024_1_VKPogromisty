@@ -124,6 +124,16 @@ class ChatView extends BaseView {
 
     this.chatElement = document.getElementById("messages");
 
+    const printMessage = document.getElementById('print-message');
+    const messageTextarea = document.getElementById('print-message__text-input');
+
+    messageTextarea.addEventListener("input", () => {
+      messageTextarea.style.height = "auto";
+      messageTextarea.style.height = messageTextarea.scrollHeight - 4 + "px";
+      printMessage.style.height = 'auto';
+      printMessage.style.height = printMessage.scrollHeight - 4 + 'px';
+    });
+
     this.eventBus.emit("needOpenWebSocket", this.companionId);
   }
 
@@ -140,16 +150,47 @@ class ChatView extends BaseView {
 
     messages.forEach((elem) => {
       elem.isMe = elem.senderId === this.userState.userId;
+      elem.isUpdated = elem.createdAt !== elem.updatedAt;
       elem.createdAt = remakeLastMessage(elem.createdAt);
     });
 
     this.chatElement.innerHTML = template({ messages, noMessages });
 
     const trashes = document.querySelectorAll(".message__trash-basket-img");
+    const edits = document.querySelectorAll('.message__edit-img');
 
     trashes.forEach((elem) => {
       elem.addEventListener("click", () => {
         this.eventBus.emit("clickedDeleteMessage", elem.dataset.id);
+      });
+    });
+
+    edits.forEach((elem) => {
+      elem.addEventListener('click', () => {
+        const inputMessage = document.getElementById('print-message__text-input');
+        const sendMessage = document.getElementById('message-menu__send-button');
+        const messageId = elem.dataset.id;
+        const messageContent = document.getElementById(`message-content-${messageId}`);
+        const okMessage = document.createElement('img');
+        const parentSend = sendMessage.parentElement;
+        
+        okMessage.setAttribute('src', '../static/images/check.png');
+        okMessage.setAttribute('data-id', messageId);
+        okMessage.classList.add('message-menu__accept-img');
+
+        okMessage.addEventListener('click', () => {
+          if (inputMessage.value !== messageContent.innerHTML) {
+            this.eventBus.emit('clickedUpdateMessage', {messageId: messageId, textContent: inputMessage.value});
+          }
+
+          sendMessage.style.display = 'block';
+          okMessage.remove();
+          inputMessage.value = '';
+        });
+        
+        inputMessage.value = messageContent.innerHTML;
+        sendMessage.style.display = 'none';
+        parentSend.insertBefore(okMessage, sendMessage);
       });
     });
   }

@@ -43,6 +43,7 @@ class MessengerModel extends BaseModel {
       "clickedDeleteMessage",
       this.deleteMessage.bind(this),
     );
+    this.eventBus.addEventListener('clickedUpdateMessage', this.updateMessage.bind(this));
     this.eventBus.addEventListener("clickLogoutButton", this.logout.bind(this));
   }
 
@@ -114,6 +115,10 @@ class MessengerModel extends BaseModel {
         payload: { content: textContent },
       }),
     );
+  }
+
+  async updateMessage({messageId, textContent}) {
+    this.ws.send(JSON.stringify({type: "UPDATE_MESSAGE", payload: {messageId: +messageId, content: textContent}}));
   }
 
   async deleteMessage(messageId) {
