@@ -979,14 +979,15 @@ input::-webkit-inner-spin-button {
 }
 
 .conversation {
-  width: 100%;
-  border-radius: 7px;
+  width: 90%;
   background-color: #f4e3e3;
+  border: 1px solid black;
+  border-radius: 7px;
 }
 
 .messages {
   width: 100%;
-  height: 500px;
+  height: 430px;
   border-top: 1px solid #de8181;
 }
 
@@ -1001,6 +1002,26 @@ input::-webkit-inner-spin-button {
 .companion {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  height: 70px;
+  padding: 0px 20px;
+}
+
+.go-back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.go-back__button {
+  background-color: inherit;
+  color: grey;
+  font-size: large;
+}
+
+.companion-header {
+  display: flex;
+  flex-direction: row;
   align-items: center;
 }
 
@@ -1008,6 +1029,18 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin-left: 20px;
+  height: 55%;
+}
+
+.companion__name-span {
+  font-size: large;
+  font-family: var(--ordinary-text);
+}
+
+.companion__status-span {
+  font-size: small;
+  color: #928888;
 }
 
 .companion__avatar-img {
@@ -1229,4 +1262,48 @@ input::-webkit-inner-spin-button {
 
 .area-update-posts {
   height: 1000px;
+}
+
+.add-message {
+  border-top: 1px solid #de8181;
+  height: 70px;
+  background-color: #F8DADA;
+  border-radius: 0px 0px 7px 7px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px 10px;
+  width: 100%;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.print-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 90%;
+  border: 1px solid #8E8787;
+  border-radius: 7px;
+  background-color: #FCEEEB;
+  height: 40px;
+  padding-left: 10px;
+  padding-right: 5px;
+}
+
+.print-message__text-input {
+  width: 100%;
+  margin-right: 10px;
+  background-color: inherit;
+  border-radius: 7px 0px 0px 7px;
+}
+
+.message-menu__send-img {
+  width: 20px;
+  height: 20px;
+  
+}
+
+.message-menu__send-button {
+  background-color: inherit;
 }

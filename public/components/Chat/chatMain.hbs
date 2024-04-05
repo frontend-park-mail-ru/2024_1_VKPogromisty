@@ -1,9 +1,14 @@
 <div class="conversation">
   <div class="companion">
-    <a href="/profile/id"><img class="companion__avatar-img" /></a>
-    <div class="companion-info">
-      <span class="companion__name-span"></span>
-      <span class="companion__status-span"></span>
+    <div class="companion-header">
+      <a href="/profile/{{this.userId}}"><img class="companion__avatar-img" src="{{../staticUrl}}/{{this.avatar}}"/></a>
+      <div class="companion-info">
+        <span class="companion__name-span">{{this.firstName}} {{this.lastName}}</span>
+        <span class="companion__status-span">Online</span>
+      </div>
+    </div>
+    <div class="go-back">
+      <a href="/messenger"><button type="button" class="go-back__button">Назад</button></a>
     </div>
   </div>
   <div class="messages">
@@ -18,5 +23,19 @@
     </div>
     {{/each}}
   </div>
-  <div class="print-message"></div>
+  <div class="add-message">
+    <button type="button" class="news__file-button" id="news__file-button">
+      <img
+        class="news__img"
+        src="../static/images/attach-paperclip-symbol.png"
+        id="news__img"
+      />
+    </button>
+    <div class="print-message">
+      <input type="text" class="print-message__text-input" id="print-message__text-input" placeholder="Напишите сообщение..."/>
+      <div class="message-menu">
+        <button type="button" class="message-menu__send-button"><img class="message-menu__send-img" src="../static/images/send.png" /></button>
+      </div>
+    </div>
+  </div>
 </div>

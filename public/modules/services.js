@@ -310,7 +310,7 @@ export class ChatService {
   baseUrl = `${API_URL}/chat`;
 
   async getDialogs() {
-    const response = await fetch(this.baseUrl + '/dialogs', {
+    const response = await fetch(this.baseUrl + "/dialogs", {
       method: "GET",
       credentials: "include",
     });
@@ -321,10 +321,14 @@ export class ChatService {
   }
 
   async getMessages(companionId, lastMessage) {
-    const response = await fetch(this.baseUrl + `/messages?peerId=${companionId}&lastMessageId=${lastMessage}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const response = await fetch(
+      this.baseUrl +
+        `/messages?peerId=${companionId}&lastMessageId=${lastMessage}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
 
     const data = await response.json();
 

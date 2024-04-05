@@ -132,5 +132,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         router.redirect("/login");
       }
   }
-
 });
