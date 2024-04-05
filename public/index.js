@@ -10,9 +10,12 @@ import FriendsController from "./components/Friends/FriendsController.js";
 import UserState from "./components/UserState.js";
 import MessengerController from "./components/Messenger/MessengerController.js";
 import ChatController from "./components/Chat/ChatController.js";
+import { WEBSOCKET_URL } from "./modules/consts.js";
+import WSocket from "./components/WebSocket.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userState = new UserState();
+  const webSocket = new WSocket(WEBSOCKET_URL);
 
   const router = new Routing();
   const signupController = new SignupController(router, userState);
@@ -20,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const loginController = new LoginController(router, userState);
   const friendsController = new FriendsController(router, userState);
   const messengerController = new MessengerController(router, userState);
-  const chatController = new ChatController(router, userState);
+  const chatController = new ChatController(router, userState, webSocket);
 
   const config = {
     paths: [

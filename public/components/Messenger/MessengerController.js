@@ -11,6 +11,7 @@ const incomingEvents = [
 
 /**
  * MessengerController - класс для связи MessengerModel и MessengerView.
+ * @property {EventBus} eventBus - EventBus - класс для обработки событий между View и Model
  * @property {MessengerView} MessengerView - MessengerView - класс для работы с визуалом на странице.
  * @property {MessengerModel} MessengerModel - MessengerModel - класс для обработки данных, общения с бэком.
  */
@@ -28,7 +29,6 @@ class MessengerController {
 
   /**
    * Renders MessengerView
-   * @returns {void}
    */
   renderMessengerView() {
     this.messengerView.renderMain();

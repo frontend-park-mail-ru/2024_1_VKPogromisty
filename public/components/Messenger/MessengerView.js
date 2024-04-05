@@ -8,6 +8,38 @@ import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 
+/**
+ * A User structure
+ * @typedef {Object} User
+ * @property {string} avatar - The avatar of user
+ * @property {string} createdAt - The date of creating accout
+ * @property {string} detaOfBirth - The date of birth current user
+ * @property {string} email - The email of current user
+ * @property {string} firstName - The first name of current user
+ * @property {string} lastName - The last name of current user
+ * @property {number} userId - The ID of current user
+ * @property {string} updatedAt - The last date of updating
+ */
+
+/**
+ * A Message structure
+ * @typedef {Object} Message
+ * @property {number} id - The ID of message
+ * @property {string} createdAt - The date of creating accout
+ * @property {string} content - The text content of current message
+ * @property {number} receiverId - The ID of receiver current message
+ * @property {number} senderId - The ID of sender current message
+ * @property {string} updatedAt - The last date of updating
+ */
+
+/**
+ * A Dialog structure
+ * @typedef {Object} Dialog
+ * @property {Message} lastMessage - The last message of dialog
+ * @property {User} user1 - The first user
+ * @property {User} user2 - The second user
+ */
+
 const staticUrl = `${API_URL}/static`;
 
 /**
@@ -31,6 +63,9 @@ class MessengerView extends BaseView {
     );
   }
 
+  /**
+   * Renders main part of page of messenger
+   */
   renderMain() {
     const { userId, avatar, firstName, lastName } = this.userState;
 
@@ -59,7 +94,13 @@ class MessengerView extends BaseView {
     this.eventBus.emit("readyRenderDialogs", {});
   }
 
+  /**
+   * Renders current dialogs of session's user
+   * 
+   * @param {Dialog[]} dialogs 
+   */
   renderDialogs(dialogs) {
+    console.log(dialogs)
     const template = Handlebars.templates["messengerMain.hbs"];
     const noDialogs = dialogs.length === 0;
 

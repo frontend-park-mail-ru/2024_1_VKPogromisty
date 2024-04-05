@@ -4,21 +4,47 @@ import {
   ProfileService,
 } from "../../modules/services.js";
 import BaseModel from "./public/MVC/BaseModel.js";
-import { API_URL, WEBSOCKET_URL } from "/public/modules/consts.js";
 
 /**
- * MessengerModel - класс для обработки данных, общения с бэком.
+ * A LastMessages structure
+ * 
+ * @typedef {Object} LastMessages
+ * @property {number} companionId - The ID of current companion
+ * @property {number} lastMessageId - The ID of last message in conversation with current companion
  */
-class MessengerModel extends BaseModel {
+
+/**
+ * A SendMessage structure
+ * 
+ * @typedef {Object} SendMessage
+ * @property {number} companionId - The ID of current companion
+ * @property {string} textContent - The text content of current message
+ */
+
+/**
+ * A UpdateMessage structure
+ * 
+ * @typedef {Object} UpdateMessage
+ * @property {number} messageId - The ID of current message
+ * @property {string} textContent - The text content of current message
+ */
+
+/**
+ * ChatModel - класс для обработки данных, общения с бэком.
+ */
+class ChatModel extends BaseModel {
   /**
-   * Конструктор класса MessengerModel.
+   * Конструктор класса ChatModel.
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
+   * @param {Routing} router - Объект класса Routing
+   * @param {WSocket} webSocket - Действующий WebSocket
    */
-  constructor(eventBus, router) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
     this.router = router;
+    this.webSocket = webSocket;
     this.chatService = new ChatService();
     this.profileService = new ProfileService();
     this.authService = new AuthService();
@@ -28,8 +54,8 @@ class MessengerModel extends BaseModel {
       this.getCompanion.bind(this),
     );
     this.eventBus.addEventListener(
-      "needOpenWebSocket",
-      this.openWebSocket.bind(this),
+      "needUpdateWebSocket",
+      this.updateWebSocket.bind(this),
     );
     this.eventBus.addEventListener(
       "readyRenderMessages",
@@ -43,10 +69,18 @@ class MessengerModel extends BaseModel {
       "clickedDeleteMessage",
       this.deleteMessage.bind(this),
     );
-    this.eventBus.addEventListener('clickedUpdateMessage', this.updateMessage.bind(this));
+    this.eventBus.addEventListener(
+      "clickedUpdateMessage",
+      this.updateMessage.bind(this),
+    );
     this.eventBus.addEventListener("clickLogoutButton", this.logout.bind(this));
   }
 
+  /**
+   * Gets the data of current companion
+   * 
+   * @param {number} companionId 
+   */
   async getCompanion(companionId) {
     const result = await this.profileService.getOtherProfileData(companionId);
 
@@ -62,38 +96,54 @@ class MessengerModel extends BaseModel {
     }
   }
 
-  openWebSocket() {
-    this.ws = new WebSocket(WEBSOCKET_URL);
+  /**
+   * Add events to WebSocket
+   */
+  updateWebSocket() {
+    this
+      .webSocket
+      .addEventOnMessage((event) => {
+        const data = JSON.parse(event.data);
 
-    this.ws.onopen = () => {
-      this.eventBus.emit("openedWebSocket", {});
-    };
+        switch (data.type) {
+          case "SEND_MESSAGE":
+            this.eventBus.emit("sendMessageSuccess", data.payload);
+            break;
+          case "UPDATE_MESSAGE":
+            this.eventBus.emit("updateMessageSuccess", data.payload);
+            break;
+          case "DELETE_MESSAGE":
+            this.eventBus.emit("deleteMessageSuccess", data.payload);
+            break;
+          default:
+            this.eventBus.emit("serverError", {});
+        }
+      });
+    
+    this
+      .webSocket
+      .addEventOnError((event) => {
+        console.log(event, 'errored')
+        this.eventBus.emit("serverError", {});
+      });
 
-    this.ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+    this
+      .webSocket
+      .addEventOnClose((event) => {
+        console.log(event, 'closed');
+      });
 
-      switch (data.type) {
-        case "SEND_MESSAGE":
-          this.eventBus.emit("sendMessageSuccess", data.payload);
-          break;
-        case "UPDATE_MESSAGE":
-          this.eventBus.emit("updateMessageSuccess", data.payload);
-          break;
-        case "DELETE_MESSAGE":
-          this.eventBus.emit("deleteMessageSuccess", data.payload);
-          break;
-        default:
-          this.eventBus.emit("serverError", {});
-      }
-    };
+    this.eventBus.emit("updatedWebSocket", {});
 
-    this.ws.onerror = () => {
-      this.eventBus.emit("serverError", {});
-    };
   }
 
-  async getMessages({ companionId, lastMessage }) {
-    const result = await this.chatService.getMessages(companionId, lastMessage);
+  /**
+   * Gets last messages in conversation with current companion
+   * 
+   * @param {LastMessages} lastMessages - The last messages in conversation with current companion
+   */
+  async getMessages({ companionId, lastMessageId }) {
+    const result = await this.chatService.getMessages(companionId, lastMessageId);
 
     switch (result.status) {
       case 200:
@@ -107,27 +157,31 @@ class MessengerModel extends BaseModel {
     }
   }
 
+  /**
+   * Sends message in conversation with current companion
+   * 
+   * @param {SendMessage} sendMessage - The sended message
+   */
   async sendMessage({ companionId, textContent }) {
-    this.ws.send(
-      JSON.stringify({
-        type: "SEND_MESSAGE",
-        receiver: +companionId,
-        payload: { content: textContent },
-      }),
-    );
+    this.webSocket.sendMessage(companionId, textContent);
   }
 
-  async updateMessage({messageId, textContent}) {
-    this.ws.send(JSON.stringify({type: "UPDATE_MESSAGE", payload: {messageId: +messageId, content: textContent}}));
+  /**
+   * Updates message in conversation with current companion
+   * 
+   * @param {UpdateMessage} UpdateMessage - The updated message
+   */
+  async updateMessage({ messageId, textContent }) {
+    this.webSocket.updateMessage(messageId, textContent);
   }
 
+  /**
+   * Delete the message in conversation with current companion
+   * 
+   * @param {number} messageId - The ID of deleted message
+   */
   async deleteMessage(messageId) {
-    this.ws.send(
-      JSON.stringify({
-        type: "DELETE_MESSAGE",
-        payload: { messageId: +messageId },
-      }),
-    );
+    this.webSocket.deleteMessage(messageId);
   }
 
   /**
@@ -148,4 +202,4 @@ class MessengerModel extends BaseModel {
   }
 }
 
-export default MessengerModel;
+export default ChatModel;

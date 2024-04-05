@@ -7,11 +7,11 @@ const incomingEvents = [
   "receiveCompanionData",
   "readyRenderMessages",
   "getMessagesSuccess",
-  "needOpenWebSocket",
-  "openedWebSocket",
+  "needUpdateWebSocket",
+  "updatedWebSocket",
   "clickedSendMessage",
   "clickedDeleteMessage",
-  'clickedUpdateMessage',
+  "clickedUpdateMessage",
   "clickLogoutButton",
   "sendMessageSuccess",
   "updateMessageSuccess",
@@ -21,6 +21,7 @@ const incomingEvents = [
 
 /**
  * ChatController - класс для связи ChatModel и ChatView.
+ * @property {EventBus} EventBus - EventBus - класс для обработки событий между View и Model
  * @property {MessengerView} ChatView - ChatView - класс для работы с визуалом на странице.
  * @property {MessengerModel} ChatModel - ChatModel - класс для обработки данных, общения с бэком.
  */
@@ -29,10 +30,11 @@ class ChatController {
    * Creates controller
    * @param {Routing} router - The router
    * @param {UserState} userState - The current state of session's user
+   * @param {WSocket} webSocket - The working WebSocket that receive and send messages
    */
-  constructor(router, userState) {
+  constructor(router, userState, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.chatModel = new ChatModel(this.eventBus, router);
+    this.chatModel = new ChatModel(this.eventBus, router, webSocket);
     this.chatView = new ChatView(this.eventBus, router, userState);
   }
 

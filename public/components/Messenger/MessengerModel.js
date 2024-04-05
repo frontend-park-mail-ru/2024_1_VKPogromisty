@@ -27,6 +27,9 @@ class MessengerModel extends BaseModel {
     );
   }
 
+  /**
+   * Gets dialogs of session's user
+   */
   async getDialogs() {
     const result = await this.chatService.getDialogs();
 
