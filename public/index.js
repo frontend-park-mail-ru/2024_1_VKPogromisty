@@ -18,11 +18,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const webSocket = new WSocket(WEBSOCKET_URL);
 
   const router = new Routing();
-  const signupController = new SignupController(router, userState);
-  const profileController = new ProfileController(router, userState);
-  const loginController = new LoginController(router, userState);
-  const friendsController = new FriendsController(router, userState);
-  const messengerController = new MessengerController(router, userState);
+  const signupController = new SignupController(router, userState, webSocket);
+  const profileController = new ProfileController(router, userState, webSocket);
+  const loginController = new LoginController(router, userState, webSocket);
+  const friendsController = new FriendsController(router, userState, webSocket);
+  const messengerController = new MessengerController(router, userState, webSocket);
   const chatController = new ChatController(router, userState, webSocket);
 
   const config = {
@@ -130,6 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       break;
     default:
       if (await userState.updateState()) {
+        webSocket.openWebSocket();
         router.redirect(currentPageUrl);
       } else {
         router.redirect("/login");

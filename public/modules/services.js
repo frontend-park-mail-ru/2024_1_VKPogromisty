@@ -318,7 +318,7 @@ export class ChatService {
 
   /**
    * Gets the dialogs from the server
-   * 
+   *
    * @returns {Promise<APIResponse>} {@link ApiResponse}
    */
   async getDialogs() {
@@ -334,7 +334,7 @@ export class ChatService {
 
   /**
    * Gets the dialogs from the server
-   * 
+   *
    * @param {number} companionId - The ID of current companion
    * @param {number} lastMessageId - The ID of last message in conversation
    * @returns {Promise<APIResponse>} {@link ApiResponse}

@@ -1,8 +1,8 @@
 import BaseView from "./public/MVC/BaseView.js";
 import {
-  remakeCreatedAt,
-  remakeDateOfBirth,
-  remakeLastMessage,
+  formatDayMonthYear,
+  formatFullDate,
+  formatMinutesHours,
 } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
@@ -69,25 +69,12 @@ class MessengerView extends BaseView {
   renderMain() {
     const { userId, avatar, firstName, lastName } = this.userState;
 
-    if (document.getElementById("header") === null) {
-      const header = new Header(document.body);
-
-      header.renderForm({ userId, avatar, firstName, lastName });
-    }
-
-    if (document.getElementById("main") === null) {
-      const main = new Main(document.body);
-
-      main.renderForm(userId);
-    }
+    (new Header(document.body)).renderForm({ userId, avatar, firstName, lastName });
+    (new Main(document.body)).renderForm(userId);
 
     document.getElementById("logout-button").addEventListener("click", () => {
       this.eventBus.emit("clickedLogoutButton", {});
     });
-
-    document
-      .getElementById("server-error-500")
-      .classList.add("server-error-500");
 
     this.mainElement = document.getElementById("activity");
 
@@ -110,7 +97,7 @@ class MessengerView extends BaseView {
         elem.companion = elem.user1;
       }
 
-      elem.lastMessage.createdAt = remakeLastMessage(
+      elem.lastMessage.createdAt = formatMinutesHours(
         elem.lastMessage.createdAt,
       );
     });

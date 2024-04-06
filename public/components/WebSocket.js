@@ -16,11 +16,28 @@ class WSocket {
    * @param {string} url - The URL to connect with
    */
   constructor(url) {
-    this.ws = new WebSocket(url);
-
+    this.url = url;
     this.messageEvents = {};
     this.errorsEvents = {};
     this.closingEvents = {};
+  }
+
+  /**
+   * Opens WebSocket
+   */
+  openWebSocket() {
+    if (!this.ws || (this.ws.readyState !== WebSocket.OPEN && this.ws.readyState !== WebSocket.CONNECTING)) {
+      this.ws = new WebSocket(this.url);
+    }
+  }
+
+  /**
+   * Closes WebSocket
+   */
+  closeWebSocket() {
+    if (this.ws && this.ws.readyState !== WebSocket.CLOSED && this.ws.readyState !== WebSocket.CLOSING) {
+      this.ws.close(1000);
+    }
   }
 
   /**
@@ -49,7 +66,11 @@ class WSocket {
     this.ws.send(
       JSON.stringify({
         type: "UPDATE_MESSAGE",
-        payload: { messageId: +messageId, content: textContent, receiverId: +receiverId},
+        payload: {
+          messageId: +messageId,
+          content: textContent,
+          receiver: +receiverId,
+        },
       }),
     );
   }
@@ -63,7 +84,7 @@ class WSocket {
     this.ws.send(
       JSON.stringify({
         type: "DELETE_MESSAGE",
-        payload: { messageId: +messageId, receiverId: +receiverId },
+        payload: { messageId: +messageId, receiver: +receiverId },
       }),
     );
   }
@@ -71,7 +92,7 @@ class WSocket {
   /**
    * Adds event on receiving message
    *
-   * @param {string} eventName - The name of event 
+   * @param {string} eventName - The name of event
    * @param {Function} func - The event to emit on receiving message
    */
   addEventOnMessage(eventName, func) {
@@ -86,7 +107,7 @@ class WSocket {
   /**
    * Adds event on receiving error
    *
-   * @param {string} eventName - The name of event 
+   * @param {string} eventName - The name of event
    * @param {Function} func - The event to emit on receiving error
    */
   addEventOnClose(eventName, func) {
@@ -101,7 +122,7 @@ class WSocket {
   /**
    * Adds event on closing
    *
-   * @param {string} eventName - The name of event 
+   * @param {string} eventName - The name of event
    * @param {Function} func - The event to emit on closing
    */
   addEventOnError(eventName, func) {

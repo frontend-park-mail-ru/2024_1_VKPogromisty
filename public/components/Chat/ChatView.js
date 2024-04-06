@@ -1,8 +1,8 @@
 import BaseView from "./public/MVC/BaseView.js";
 import {
-  remakeCreatedAt,
-  remakeDateOfBirth,
-  remakeLastMessage,
+  formatMinutesHours,
+  formatFullDate,
+  formatDayMonthYear,
 } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
@@ -85,25 +85,8 @@ class ChatView extends BaseView {
 
     const { userId, avatar, firstName, lastName } = this.userState;
 
-    if (document.getElementById("header") === null) {
-      const header = new Header(document.body);
-
-      header.renderForm({ userId, avatar, firstName, lastName });
-    }
-
-    if (document.getElementById("main") === null) {
-      const main = new Main(document.body);
-
-      main.renderForm(userId);
-    }
-
-    document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickLogoutButton", {});
-    });
-
-    document
-      .getElementById("server-error-500")
-      .classList.add("server-error-500");
+    (new Header(document.body)).renderForm({ userId, avatar, firstName, lastName });
+    (new Main(document.body)).renderForm(userId);
 
     this.mainElement = document.getElementById("activity");
 
@@ -147,6 +130,7 @@ class ChatView extends BaseView {
 
     input.addEventListener("keypress", (event) => {
       if (event.key === "Enter") {
+        event.preventDefault();
         if (input.value === "") {
           return;
         }
@@ -158,7 +142,7 @@ class ChatView extends BaseView {
 
         input.value = "";
       }
-    });
+    }, {capture: true});
 
     this.chatElement = document.getElementById("messages");
 
@@ -199,7 +183,7 @@ class ChatView extends BaseView {
     messages.forEach((elem) => {
       elem.isMe = elem.senderId === this.userState.userId;
       elem.isUpdated = elem.createdAt !== elem.updatedAt;
-      elem.createdAt = remakeLastMessage(elem.createdAt);
+      elem.createdAt = formatMinutesHours(elem.createdAt);
     });
 
     this.chatElement.innerHTML = template({ messages, noMessages });
@@ -209,7 +193,10 @@ class ChatView extends BaseView {
 
     trashes.forEach((elem) => {
       elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeleteMessage", {messageId: elem.dataset.id, receiverId: this.companionId});
+        this.eventBus.emit("clickedDeleteMessage", {
+          messageId: elem.dataset.id,
+          receiver: this.companionId,
+        });
       });
     });
 
@@ -228,7 +215,7 @@ class ChatView extends BaseView {
     const messages = [message];
 
     message.isMe = message.senderId === this.userState.userId;
-    message.createdAt = remakeLastMessage(message.createdAt);
+    message.createdAt = formatMinutesHours(message.createdAt);
 
     this.chatElement.innerHTML =
       template({ messages }) + this.chatElement.innerHTML;
@@ -246,7 +233,10 @@ class ChatView extends BaseView {
 
     trashes.forEach((elem) => {
       elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeleteMessage", {messageId: elem.dataset.id, receiverId: this.companionId});
+        this.eventBus.emit("clickedDeleteMessage", {
+          messageId: elem.dataset.id,
+          receiver: this.companionId,
+        });
       });
     });
 
@@ -280,7 +270,7 @@ class ChatView extends BaseView {
           this.eventBus.emit("clickedUpdateMessage", {
             messageId: messageId,
             textContent: inputMessage.value,
-            receiverId: this.companionId,
+            receiver: this.companionId,
           });
         }
 

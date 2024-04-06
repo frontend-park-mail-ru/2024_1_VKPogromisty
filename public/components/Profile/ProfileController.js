@@ -33,10 +33,11 @@ class ProfileController {
    * Creates controller
    * @param {Routing} router - The router
    * @param {UserState} userState - The current state of session's user
+   * @param {WSocket} webSocket - The current WebSocket
    */
-  constructor(router, userState) {
+  constructor(router, userState, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.profileModel = new ProfileModel(this.eventBus, router);
+    this.profileModel = new ProfileModel(this.eventBus, router, webSocket);
     this.profileView = new ProfileView(this.eventBus, router, userState);
   }
 

@@ -22,10 +22,11 @@ export default class SignupController {
    * Creates controller
    * @param {Routing} router - The router
    * @param {UserState} userState - The current state of session's user
+   * @param {WSocket} webSocket - The current WebSocket
    */
-  constructor(router, userState) {
+  constructor(router, userState, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.#signupModel = new SignupModel(this.eventBus, userState);
+    this.#signupModel = new SignupModel(this.eventBus, userState, webSocket);
     this.#signupView = new SignupView(this.eventBus);
 
     this.eventBus.addEventListener(

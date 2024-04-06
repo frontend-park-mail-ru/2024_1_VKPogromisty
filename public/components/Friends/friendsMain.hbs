@@ -48,16 +48,18 @@
       </div>
     </div>
     <div class="friend-ables">
-      <button
-        type="button"
-        class="friend-ables__send-message-button"
-        id="send-message-{{ this.userId }}"
-      >
-        <img
-          src="../static/images/messenger.png"
-          class="friend-ables__send-message-img"
-        />
-      </button>
+      <a href="/chat/{{ this.userId }}">
+        <button
+          type="button"
+          class="friend-ables__send-message-button"
+          id="send-message-{{ this.userId }}"
+        >
+          <img
+            src="../static/images/messenger.png"
+            class="friend-ables__send-message-img"
+          />
+        </button>
+      </a>
       {{#if ../isFriends}}
       <button
         type="button"

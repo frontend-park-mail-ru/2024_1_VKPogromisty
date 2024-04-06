@@ -10,22 +10,38 @@
         <span class="post-author__name-span"
           >{{ ../author.firstName }} {{ ../author.lastName }}</span
         >
-        <span class="post-author__time-span">
-          {{ this.createdAt }}
-        </span>
+        <div class="post-author-time" id="post-author-time-{{ this.postId }}">
+          <span class="post-author-time__created-at-span">
+            {{ this.createdAt }}
+          </span>
+          {{#if this.hasUpdated}}
+          <img
+            class="post-author-time__dot-img"
+            src="../static/images/dot.png"
+          />
+          <span
+            class="post-author-time__last-time-span"
+            id="edited-{{ this.postId }}"
+          >
+            {{ this.updatedAt }}
+          </span>
+          {{/if}}
+        </div>
       </div>
     </div>
     <div class="post-menu" id="post-menu-{{ this.postId }}">
       {{#if ../isMe}}
       <img
         class="post-author__edit-img"
+        id="edit-img-{{ this.postId }}"
         data-id="{{ this.postId }}"
         src="../static/images/edit.png"
       />
       <img
         class="post-author__trash-basket-img"
+        id="trash-basket-{{ this.postId }}"
         data-id="{{ this.postId }}"
-        src="../static/images/trash-basket.png"
+        src="../static/images/trash-can.png"
       />
       {{/if}}
     </div>

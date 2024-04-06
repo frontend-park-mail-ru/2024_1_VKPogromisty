@@ -2,7 +2,7 @@ import BaseView from "../../MVC/BaseView.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
-import { remakeDateOfBirth } from "../../modules/dateRemaking.js";
+import { formatDayMonthYear } from "../../modules/dateRemaking.js";
 
 /**
  * A Friend structure
@@ -92,25 +92,12 @@ class FriendsView extends BaseView {
   renderMain(path) {
     const { userId, avatar, firstName, lastName } = this.userState;
 
-    if (document.getElementById("header") === null) {
-      const header = new Header(document.body);
-
-      header.renderForm({ userId, avatar, firstName, lastName });
-    }
-
-    if (document.getElementById("main") === null) {
-      const main = new Main(document.body);
-
-      main.renderForm(userId);
-    }
+    (new Header(document.body)).renderForm({ userId, avatar, firstName, lastName });
+    (new Main(document.body)).renderForm(userId);
 
     document.getElementById("logout-button").addEventListener("click", () => {
       this.eventBus.emit("clickedLogoutButton", {});
     });
-
-    document
-      .getElementById("server-error-500")
-      .classList.add("server-error-500");
 
     this.mainElem = document.getElementById("activity");
 
@@ -137,7 +124,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       friends.forEach((elem) => {
-        elem.dateOfBirth = remakeDateOfBirth(elem.dateOfBirth);
+        elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
       });
     }
 
@@ -176,7 +163,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       friends.forEach((elem) => {
-        elem.dateOfBirth = remakeDateOfBirth(elem.dateOfBirth);
+        elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
       });
     }
 
@@ -224,7 +211,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       friends.forEach((elem) => {
-        elem.dateOfBirth = remakeDateOfBirth(elem.dateOfBirth);
+        elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
       });
     }
 

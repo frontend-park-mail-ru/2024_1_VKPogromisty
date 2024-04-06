@@ -10,7 +10,7 @@ const sidebar = [
     text: "Мессенджер",
   },
   {
-    href: "/friends",
+    href: "/community/friends",
     text: "Друзья",
   },
   {
@@ -54,13 +54,19 @@ export class Main {
    * @returns {void}
    */
   renderForm(userId) {
-    const template = Handlebars.templates["main.hbs"];
+    if (document.getElementById('main') === null) {
+      const template = Handlebars.templates["main.hbs"];
 
-    const fullSidebar = sidebar.concat({
-      href: `/profile/${userId}`,
-      text: "Профиль",
-    });
+      const fullSidebar = sidebar.concat({
+        href: `/profile/${userId}`,
+        text: "Профиль",
+      });
+  
+      this.#parent.innerHTML += template({ fullSidebar });
+    }
 
-    this.#parent.innerHTML += template({ fullSidebar });
+    document
+      .getElementById("server-error-500")
+      .classList.add("server-error-500");
   }
 }

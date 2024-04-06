@@ -16,10 +16,12 @@ class FriendsModel extends BaseModel {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Роутер с установленным конфигом
+   * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
+    this.webSocket = webSocket
     this.friendsService = new FriendsService();
     this.subscribersService = new SubscribersService();
     this.subscriptionsService = new SubscriptionsService();
@@ -65,6 +67,7 @@ class FriendsModel extends BaseModel {
         this.eventBus.emit("friendsGetSuccess", result.body.friends);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -84,6 +87,7 @@ class FriendsModel extends BaseModel {
         this.eventBus.emit("subscribersGetSuccess", result.body.subscribers);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -106,6 +110,7 @@ class FriendsModel extends BaseModel {
         );
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -126,6 +131,7 @@ class FriendsModel extends BaseModel {
         this.eventBus.emit("addFriendSuccess", userId);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -146,6 +152,7 @@ class FriendsModel extends BaseModel {
         this.eventBus.emit("unsubscribeSuccess", userId);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -163,6 +170,7 @@ class FriendsModel extends BaseModel {
     switch (result.status) {
       case 200:
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:

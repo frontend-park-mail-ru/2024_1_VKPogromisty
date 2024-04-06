@@ -18,7 +18,7 @@ const monthes = [
  * @param {string} dateOfBirth - The date of birth
  * @returns {string}
  */
-export function remakeDateOfBirth(dateOfBirth) {
+export function formatDayMonthYear(dateOfBirth) {
   const date = new Date(dateOfBirth);
 
   return `${date.getDate()} ${monthes[date.getMonth()]} ${date.getFullYear()}`;
@@ -29,7 +29,7 @@ export function remakeDateOfBirth(dateOfBirth) {
  * @param {string} createdAt - The date of creating object
  * @returns {string}
  */
-export function remakeCreatedAt(createdAt) {
+export function formatFullDate(createdAt) {
   const date = new Date(createdAt);
   const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -42,7 +42,7 @@ export function remakeCreatedAt(createdAt) {
  * @param {string} createdAt - The date of creating object
  * @returns {string}
  */
-export function remakeLastMessage(lastMessage) {
+export function formatMinutesHours(lastMessage) {
   const date = new Date(lastMessage);
   const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");

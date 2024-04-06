@@ -90,6 +90,7 @@ class ChatModel extends BaseModel {
         this.eventBus.emit("receiveCompanionData", result.body);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -101,7 +102,7 @@ class ChatModel extends BaseModel {
    * Add events to WebSocket
    */
   updateWebSocket() {
-    this.webSocket.addEventOnMessage('dialogMessage', (event) => {
+    this.webSocket.addEventOnMessage("dialogMessage", (event) => {
       const data = JSON.parse(event.data);
 
       switch (data.type) {
@@ -146,6 +147,7 @@ class ChatModel extends BaseModel {
         this.eventBus.emit("getMessagesSuccess", result.body);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -167,8 +169,8 @@ class ChatModel extends BaseModel {
    *
    * @param {UpdateMessage} UpdateMessage - The updated message
    */
-  async updateMessage({ messageId, textContent, receiverId }) {
-    this.webSocket.updateMessage(messageId, textContent, receiverId);
+  async updateMessage({ messageId, textContent, receiver }) {
+    this.webSocket.updateMessage(messageId, textContent, receiver);
   }
 
   /**
@@ -176,9 +178,8 @@ class ChatModel extends BaseModel {
    *
    * @param {number} messageId - The ID of deleted message
    */
-  async deleteMessage({messageId, receiverId}) {
-    console.log(messageId, receiverId)
-    this.webSocket.deleteMessage(messageId, receiverId);
+  async deleteMessage({ messageId, receiver }) {
+    this.webSocket.deleteMessage(messageId, receiver);
   }
 
   /**
@@ -191,6 +192,7 @@ class ChatModel extends BaseModel {
     switch (result.status) {
       case 200:
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:

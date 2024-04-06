@@ -21,11 +21,14 @@ class ProfileModel extends BaseModel {
    * Конструктор класса ProfileModel.
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
+   * @param {Routing} router - Объект класса Routing
+   * @param {WSocket} webSocket - Текущий сокет 
    */
-  constructor(eventBus, router) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
     this.router = router;
+    this.webSocket = webSocket;
     this.profileService = new ProfileService();
     this.postService = new PostService();
     this.subscriptionsService = new SubscriptionsService();
@@ -75,6 +78,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("receiveProfileData", resultProfileMain.body);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -95,6 +99,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("subscribedSuccess", {});
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -115,6 +120,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("unsubscribedSuccess", {});
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -135,6 +141,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("getPostsSuccess", result.body);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -155,6 +162,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("publishedPostSuccess", result.body);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -175,6 +183,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("postDeleteSuccess", post_id);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -196,6 +205,7 @@ class ProfileModel extends BaseModel {
         this.eventBus.emit("postUpdateSuccess", result.body);
         break;
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -215,6 +225,7 @@ class ProfileModel extends BaseModel {
     switch (result.status) {
       case 200:
       case 401:
+        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
