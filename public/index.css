@@ -16,17 +16,8 @@
   --ordinary-text: "Inter", sans-serif;
   --borders-color: 1px solid #e35f7f;
 }
-
 * {
   border: none;
-<<<<<<<<< Temporary merge branch 1
-=========
-}
-
-.main {
-  display: flex;
-  justify-content: space-between;
->>>>>>>>> Temporary merge branch 2
 }
 
 body {
@@ -34,9 +25,9 @@ body {
   font-family: var(--page-font-family);
 }
 
-#main {
-    display: flex;
-    justify-content: space-between;
+.main {
+  display: flex;
+  justify-content: space-between;
 }
 
 .form-wrapper {
@@ -184,12 +175,6 @@ input::-webkit-inner-spin-button {
   background-color: rgba(254, 201, 201, 0.7);
 }
 
-#button-sign-up {
-    border: none;
-    background-color: none;
-    text-decoration: underline;
-}
-
 #sign-in-button {
   color: var(--sign-buttons);
 
@@ -251,10 +236,6 @@ input::-webkit-inner-spin-button {
 
 .sidebar,
 .right-sidebar {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -266,19 +247,11 @@ input::-webkit-inner-spin-button {
 }
 
 .right-sidebar {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   height: 180px;
 }
 
 .sidebar ul,
 .right-sidebar ul {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   padding-left: 0px;
   line-height: 40px;
   list-style: none;
@@ -286,48 +259,23 @@ input::-webkit-inner-spin-button {
 
 .sidebar li,
 .right-sidebar li {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   list-style-type: none;
   margin-left: 0px;
   font-family: var(--ordinary-text);
   font-size: 18px;
-<<<<<<<<< Temporary merge branch 1
-  ::before {
-    box-sizing: border-box;
-  }
-  ::after {
-    box-sizing: border-box;
-  }
-=========
->>>>>>>>> Temporary merge branch 2
 }
 
 .sidebar a,
 .right-sidebar a {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   color: black;
   text-decoration: none;
 }
 
 #activity {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 700px;
 }
 
 #create-post {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   flex-direction: row;
   height: 60px;
@@ -336,10 +284,6 @@ input::-webkit-inner-spin-button {
 }
 
 #news-avatar {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   align-self: center;
   border-radius: 50%;
@@ -347,10 +291,6 @@ input::-webkit-inner-spin-button {
 }
 
 .news {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 480px;
   margin-left: 20px;
   border-left: var(--borders-color);
@@ -362,79 +302,38 @@ input::-webkit-inner-spin-button {
 
 .publish {
   display: flex;
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   align-content: center;
   margin: 0px 10px 0px 10px;
 }
 
 .publish-button {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-  font-family: var(--ordinary-text);
-  color: #858080;
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background-color: transparent;
-}
-
-#user-news {
-  box-sizing: border-box;
-=========
   font-family: var(--ordinary-text);
   color: #858080;
 }
 
 #user-news {
->>>>>>>>> Temporary merge branch 2
   margin-left: 20px;
   width: 400px;
   min-width: 120px;
   font-size: larger;
-<<<<<<<<< Temporary merge branch 1
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background-color: transparent;
 }
 
 .include {
-  box-sizing: border-box;
-=========
-}
-
-.include {
->>>>>>>>> Temporary merge branch 2
   transform: rotate(45deg);
 }
 
 #user-avatar-news {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
 
 .user-avatar-post {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   border-radius: 50%;
   width: 40px;
 }
 
 .post {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   border-radius: 20px;
   background-color: #f4e3e3;
   border: var(--borders-color);
@@ -442,10 +341,6 @@ input::-webkit-inner-spin-button {
 }
 
 .post-header {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   justify-content: space-between;
   border-bottom: var(--borders-color);
@@ -453,10 +348,6 @@ input::-webkit-inner-spin-button {
 }
 
 .post-author {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   height: 60px;
   display: flex;
   padding-right: 10px;
@@ -465,27 +356,15 @@ input::-webkit-inner-spin-button {
 }
 
 .post-header img[class="user-avatar-post"] {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   margin: 10px;
 }
 
 .post-header .author-name {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   align-items: center;
 }
 
 .post-menu {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 30px;
   height: 30px;
   margin-top: 15px;
@@ -497,10 +376,6 @@ input::-webkit-inner-spin-button {
 }
 
 .post-content {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -510,36 +385,20 @@ input::-webkit-inner-spin-button {
 }
 
 .content-text {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   margin-bottom: 20px;
   font-family: var(--ordinary-text);
 }
 
 .content-img {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   max-width: 400px;
   margin: 10px 0px;
 }
 
 .post-content p {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   white-space: normal;
 }
 
 .post-reaction {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -549,38 +408,22 @@ input::-webkit-inner-spin-button {
 }
 
 .reactions {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   flex-direction: row;
   align-self: center;
 }
 
 .like {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   padding: 0px;
   width: 30px;
 }
 
 .show-comments-label {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   font-family: var(--ordinary-text);
   color: #858080;
 }
 
 .comment-menu {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 30px;
   height: 30px;
   margin-top: 5px;
@@ -592,37 +435,21 @@ input::-webkit-inner-spin-button {
 }
 
 .post-comment {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   height: 50px;
   font-family: var(--ordinary-text);
 }
 
 .post-comment img[class="post-comment-img"] {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   margin: 10px;
 }
 
 .comment {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   flex-direction: row;
   align-content: center;
 }
 
 .comment div {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -630,19 +457,11 @@ input::-webkit-inner-spin-button {
 }
 
 .comment-author {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   font-size: 10px;
   cursor: pointer;
 }
 
 .post-give-comment {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   height: 60px;
   display: flex;
   justify-content: space-between;
@@ -651,43 +470,23 @@ input::-webkit-inner-spin-button {
 }
 
 .post-comment-img {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 24px;
   height: 24px;
 }
 
 .post-footer {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
 }
 
 .post-footer img[class="user-avatar-post"] {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   margin: 10px;
 }
 
 .post-footer .author-name {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   margin-top: 15px;
 }
 
 .comment-buttons {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   justify-content: space-between;
   align-content: center;
@@ -695,19 +494,11 @@ input::-webkit-inner-spin-button {
 }
 
 .user-comment {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   min-width: 220px;
   width: 500px;
 }
 
 .img-post-comment {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 24px;
   height: 24px;
 }
@@ -715,27 +506,15 @@ input::-webkit-inner-spin-button {
 .ellipsees,
 .heart,
 .messenger {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 16px;
   height: 16px;
 }
 
 .paper-clip {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 20px;
   height: 20px;
 }
 .search input {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   width: 250px;
   border-radius: 10px;
   border: 1px solid black;
@@ -747,20 +526,9 @@ input::-webkit-inner-spin-button {
   border-color: rgb(143, 135, 135);
   font-weight: 400;
   font-style: normal;
-<<<<<<<<< Temporary merge branch 1
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background-color: transparent;
 }
 
 .user {
-  box-sizing: border-box;
-=========
-}
-
-.user {
->>>>>>>>> Temporary merge branch 2
   margin-right: 10px;
   margin-left: auto;
   align-items: center;
@@ -769,10 +537,6 @@ input::-webkit-inner-spin-button {
 }
 
 .user-avatar {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   margin-left: 23px;
   border-radius: 50%;
   width: 40px;
@@ -781,23 +545,6 @@ input::-webkit-inner-spin-button {
 }
 
 #logout-button {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-  margin-left: 15px;
-  border: 1px solid #858080;
-  border-radius: 15px;
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  background-color: transparent;
-}
-.search {
-  box-sizing: border-box;
-  margin-top: 0px;
-}
-#logo_img {
-  box-sizing: border-box;
-=========
   margin-left: 15px;
   border: 1px solid #858080;
   border-radius: 15px;
@@ -806,27 +553,18 @@ input::-webkit-inner-spin-button {
   margin-top: 0px;
 }
 #logo_img {
->>>>>>>>> Temporary merge branch 2
   width: 30px;
   margin-right: 50px;
   max-width: 100%;
   height: auto;
 }
 .main-feed {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   margin: 20px 70px 0px 45px;
   justify-content: space-between;
   max-width: 1500px;
 }
 .logo-feed {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   margin-right: 20px;
   margin-left: 22px;
   position: absolute;
@@ -835,18 +573,10 @@ input::-webkit-inner-spin-button {
   font-size: 28px;
 }
 .left-side {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   display: flex;
   align-items: start;
 }
 .header {
-<<<<<<<<< Temporary merge branch 1
-  box-sizing: border-box;
-=========
->>>>>>>>> Temporary merge branch 2
   padding: 15px 25px 15px 35px;
   width: 100%;
   display: flex;
