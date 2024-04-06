@@ -33,12 +33,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     paths: [
       {
         path: /\/login/,
-        func: [loginController.renderLoginView.bind(loginController), webSocket.closeWebSocket.bind(webSocket)],
+        func: [
+          loginController.renderLoginView.bind(loginController),
+          webSocket.closeWebSocket.bind(webSocket),
+        ],
         title: "Вход",
       },
       {
         path: /\/signup/,
-        func: [signupController.renderSignupView.bind(signupController), webSocket.closeWebSocket.bind(webSocket)],
+        func: [
+          signupController.renderSignupView.bind(signupController),
+          webSocket.closeWebSocket.bind(webSocket),
+        ],
         title: "Регистрация",
       },
       {
@@ -53,7 +59,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\/messenger/,
-        func: [messengerController.renderMessengerView.bind(messengerController)],
+        func: [
+          messengerController.renderMessengerView.bind(messengerController),
+        ],
         title: "Мессенджер",
       },
       {
@@ -68,11 +76,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\//,
-        func: [messengerController.renderMessengerView.bind(messengerController)],
+        func: [
+          messengerController.renderMessengerView.bind(messengerController),
+        ],
         title: "Мессенджер",
       },
     ],
-  };
+  }
 
   const body = document.body;
 
