@@ -6,7 +6,11 @@
     "doc": "docs"
   },
   "lint-staged": {
-    "./public/*.{js,jsx,ts,tsx}": "npx eslint"
+    "./public/*.{js,jsx,ts,tsx,html,css}": [
+      "npx prettier --write",
+      "npx prettier --check",
+      "npx eslint"
+    ]
   },
   "prettier": {
     "overrides": [
