@@ -82,6 +82,6 @@ export class Routing {
     history.pushState(state, "", url);
     document.title = `Socio - ${foundedUrl.title}`;
 
-    foundedUrl.func.forEach((elem) => elem(slugs));
+    foundedUrl.func(slugs);
   }
 }
