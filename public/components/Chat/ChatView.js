@@ -209,7 +209,7 @@ class ChatView extends BaseView {
 
     trashes.forEach((elem) => {
       elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeleteMessage", elem.dataset.id);
+        this.eventBus.emit("clickedDeleteMessage", {messageId: elem.dataset.id, receiverId: this.companionId});
       });
     });
 
@@ -246,7 +246,7 @@ class ChatView extends BaseView {
 
     trashes.forEach((elem) => {
       elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeleteMessage", elem.dataset.id);
+        this.eventBus.emit("clickedDeleteMessage", {messageId: elem.dataset.id, receiverId: this.companionId});
       });
     });
 
@@ -280,6 +280,7 @@ class ChatView extends BaseView {
           this.eventBus.emit("clickedUpdateMessage", {
             messageId: messageId,
             textContent: inputMessage.value,
+            receiverId: this.companionId,
           });
         }
 

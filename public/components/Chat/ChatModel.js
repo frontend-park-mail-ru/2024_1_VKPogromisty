@@ -27,6 +27,7 @@ import BaseModel from "./public/MVC/BaseModel.js";
  * @typedef {Object} UpdateMessage
  * @property {number} messageId - The ID of current message
  * @property {string} textContent - The text content of current message
+ * @property {number} receiverId - The ID of receiver updated message
  */
 
 /**
@@ -100,7 +101,7 @@ class ChatModel extends BaseModel {
    * Add events to WebSocket
    */
   updateWebSocket() {
-    this.webSocket.addEventOnMessage((event) => {
+    this.webSocket.addEventOnMessage('dialogMessage', (event) => {
       const data = JSON.parse(event.data);
 
       switch (data.type) {
@@ -166,8 +167,8 @@ class ChatModel extends BaseModel {
    *
    * @param {UpdateMessage} UpdateMessage - The updated message
    */
-  async updateMessage({ messageId, textContent }) {
-    this.webSocket.updateMessage(messageId, textContent);
+  async updateMessage({ messageId, textContent, receiverId }) {
+    this.webSocket.updateMessage(messageId, textContent, receiverId);
   }
 
   /**
@@ -175,8 +176,9 @@ class ChatModel extends BaseModel {
    *
    * @param {number} messageId - The ID of deleted message
    */
-  async deleteMessage(messageId) {
-    this.webSocket.deleteMessage(messageId);
+  async deleteMessage({messageId, receiverId}) {
+    console.log(messageId, receiverId)
+    this.webSocket.deleteMessage(messageId, receiverId);
   }
 
   /**
