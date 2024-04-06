@@ -123,8 +123,13 @@ class ProfileView extends BaseView {
     this.userId = user_id;
     const { userId, avatar, firstName, lastName } = this.userState;
 
-    (new Header(document.body)).renderForm({ userId, avatar, firstName, lastName });
-    (new Main(document.body)).renderForm(userId);
+    new Header(document.body).renderForm({
+      userId,
+      avatar,
+      firstName,
+      lastName,
+    });
+    new Main(document.body).renderForm(userId);
 
     document.getElementById("logout-button").addEventListener("click", () => {
       this.eventBus.emit("clickLogoutButton", {});

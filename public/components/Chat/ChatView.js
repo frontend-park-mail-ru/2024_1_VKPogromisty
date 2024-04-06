@@ -85,8 +85,13 @@ class ChatView extends BaseView {
 
     const { userId, avatar, firstName, lastName } = this.userState;
 
-    (new Header(document.body)).renderForm({ userId, avatar, firstName, lastName });
-    (new Main(document.body)).renderForm(userId);
+    new Header(document.body).renderForm({
+      userId,
+      avatar,
+      firstName,
+      lastName,
+    });
+    new Main(document.body).renderForm(userId);
 
     this.mainElement = document.getElementById("activity");
 
@@ -128,21 +133,25 @@ class ChatView extends BaseView {
         input.value = "";
       });
 
-    input.addEventListener("keypress", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        if (input.value === "") {
-          return;
+    input.addEventListener(
+      "keypress",
+      (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          if (input.value === "") {
+            return;
+          }
+
+          this.eventBus.emit("clickedSendMessage", {
+            companionId: this.companionId,
+            textContent: input.value,
+          });
+
+          input.value = "";
         }
-
-        this.eventBus.emit("clickedSendMessage", {
-          companionId: this.companionId,
-          textContent: input.value,
-        });
-
-        input.value = "";
-      }
-    }, {capture: true});
+      },
+      { capture: true },
+    );
 
     this.chatElement = document.getElementById("messages");
 

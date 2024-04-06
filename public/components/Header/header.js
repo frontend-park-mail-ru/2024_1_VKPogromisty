@@ -19,7 +19,7 @@ const staticUrl = `${API_URL}/static`;
  * @property {string} firstName - The first name of session's user
  * @property {string} lastName - The last name of session's user
  * @property {string} avatar - The avatar of session's user
-*/
+ */
 export class Header {
   #parent;
 
@@ -35,7 +35,7 @@ export class Header {
 
   /**
    * Renders the feed header handlebars template
-   * 
+   *
    * @param {HeaderInfo} headerInfo - Info in header
    * @returns {void}
    */

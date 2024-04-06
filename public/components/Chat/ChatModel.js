@@ -90,7 +90,6 @@ class ChatModel extends BaseModel {
         this.eventBus.emit("receiveCompanionData", result.body);
         break;
       case 401:
-        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -147,7 +146,6 @@ class ChatModel extends BaseModel {
         this.eventBus.emit("getMessagesSuccess", result.body);
         break;
       case 401:
-        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -192,7 +190,6 @@ class ChatModel extends BaseModel {
     switch (result.status) {
       case 200:
       case 401:
-        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:

@@ -54,14 +54,14 @@ export class Main {
    * @returns {void}
    */
   renderForm(userId) {
-    if (document.getElementById('main') === null) {
+    if (document.getElementById("main") === null) {
       const template = Handlebars.templates["main.hbs"];
 
       const fullSidebar = sidebar.concat({
         href: `/profile/${userId}`,
         text: "Профиль",
       });
-  
+
       this.#parent.innerHTML += template({ fullSidebar });
     }
 

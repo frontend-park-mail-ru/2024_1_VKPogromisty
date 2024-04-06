@@ -26,7 +26,11 @@ class WSocket {
    * Opens WebSocket
    */
   openWebSocket() {
-    if (!this.ws || (this.ws.readyState !== WebSocket.OPEN && this.ws.readyState !== WebSocket.CONNECTING)) {
+    if (
+      !this.ws ||
+      (this.ws.readyState !== WebSocket.OPEN &&
+        this.ws.readyState !== WebSocket.CONNECTING)
+    ) {
       this.ws = new WebSocket(this.url);
     }
   }
@@ -35,7 +39,11 @@ class WSocket {
    * Closes WebSocket
    */
   closeWebSocket() {
-    if (this.ws && this.ws.readyState !== WebSocket.CLOSED && this.ws.readyState !== WebSocket.CLOSING) {
+    if (
+      this.ws &&
+      this.ws.readyState !== WebSocket.CLOSED &&
+      this.ws.readyState !== WebSocket.CLOSING
+    ) {
       this.ws.close(1000);
     }
   }
@@ -66,10 +74,10 @@ class WSocket {
     this.ws.send(
       JSON.stringify({
         type: "UPDATE_MESSAGE",
+        receiver: +receiverId,
         payload: {
           messageId: +messageId,
           content: textContent,
-          receiver: +receiverId,
         },
       }),
     );
@@ -84,7 +92,8 @@ class WSocket {
     this.ws.send(
       JSON.stringify({
         type: "DELETE_MESSAGE",
-        payload: { messageId: +messageId, receiver: +receiverId },
+        receiver: +receiverId,
+        payload: { messageId: +messageId },
       }),
     );
   }

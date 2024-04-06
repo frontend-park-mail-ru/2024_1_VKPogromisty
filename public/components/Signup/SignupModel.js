@@ -10,7 +10,7 @@ class SignupModel extends BaseModel {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {UserState} userState - Текущее состояние юзера
-   * @param {WSocket} webSocket - Текущий сокет 
+   * @param {WSocket} webSocket - Текущий сокет
    */
   constructor(eventBus, userState, webSocket) {
     super(eventBus);

@@ -10,7 +10,7 @@ class MessengerModel extends BaseModel {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Объект класса Routing
-   * @param {WSocket} webSocket - Текущий сокет  
+   * @param {WSocket} webSocket - Текущий сокет
    */
   constructor(eventBus, router, webSocket) {
     super(eventBus);
@@ -41,7 +41,6 @@ class MessengerModel extends BaseModel {
         this.eventBus.emit("getDialogsSuccess", result.body);
         break;
       case 401:
-        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:
@@ -59,7 +58,6 @@ class MessengerModel extends BaseModel {
     switch (result.status) {
       case 200:
       case 401:
-        this.webSocket.closeWebSocket();
         this.router.redirect("/login");
         break;
       default:

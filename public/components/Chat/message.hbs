@@ -16,7 +16,7 @@
     />
   </div>
   <div class="message right-message" id="message-{{ this.id }}">
-    <div class="message-content">
+    <div class="message-content-div">
       <span class="message-content" id="message-content-{{ this.id }}">{{
         this.content
       }}</span>
@@ -36,8 +36,8 @@
 {{else}}
 <div class="message-ables">
   <div class="message left-message" id="message-{{ this.id }}">
-    <div class="message-content">
-      <span class="message-content">{{ this.content }}</span>
+    <div class="message-content-div">
+      <span class="message-content" id="message-content-{{ this.id }}">{{ this.content }}</span>
     </div>
     <div class="message-time-edited" id="message-time-edited-{{ this.id }}">
       <span class="message-time-edited__span-time">{{ this.createdAt }}</span>

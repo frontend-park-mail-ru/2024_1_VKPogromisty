@@ -22,19 +22,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   const profileController = new ProfileController(router, userState, webSocket);
   const loginController = new LoginController(router, userState, webSocket);
   const friendsController = new FriendsController(router, userState, webSocket);
-  const messengerController = new MessengerController(router, userState, webSocket);
+  const messengerController = new MessengerController(
+    router,
+    userState,
+    webSocket,
+  );
   const chatController = new ChatController(router, userState, webSocket);
 
   const config = {
     paths: [
       {
         path: /\/login/,
-        func: loginController.renderLoginView.bind(loginController),
+        func: [loginController.renderLoginView.bind(loginController), webSocket.closeWebSocket.bind(webSocket)],
         title: "Вход",
       },
       {
         path: /\/signup/,
-        func: signupController.renderSignupView.bind(signupController),
+        func: [signupController.renderSignupView.bind(signupController), webSocket.closeWebSocket.bind(webSocket)],
         title: "Регистрация",
       },
       {
@@ -44,27 +48,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\/profile\/(?<userId>[0-9]+)/,
-        func: profileController.renderProfileView.bind(profileController),
+        func: [profileController.renderProfileView.bind(profileController)],
         title: "Профиль",
       },
       {
         path: /\/messenger/,
-        func: messengerController.renderMessengerView.bind(messengerController),
+        func: [messengerController.renderMessengerView.bind(messengerController)],
         title: "Мессенджер",
       },
       {
         path: /\/community\/(?<section>.+)/,
-        func: friendsController.renderView.bind(friendsController),
+        func: [friendsController.renderView.bind(friendsController)],
         title: "Друзья",
       },
       {
         path: /\/chat\/(?<companionId>[0-9]+)/,
-        func: chatController.renderChatView.bind(chatController),
+        func: [chatController.renderChatView.bind(chatController)],
         title: "Диалог",
       },
       {
         path: /\//,
-        func: messengerController.renderMessengerView.bind(messengerController),
+        func: [messengerController.renderMessengerView.bind(messengerController)],
         title: "Мессенджер",
       },
     ],
