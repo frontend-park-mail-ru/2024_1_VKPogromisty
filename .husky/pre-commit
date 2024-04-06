@@ -1,2 +1,1 @@
-npx prettier --write ./public
-npm run precommit
+
