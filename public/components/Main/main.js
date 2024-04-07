@@ -1,5 +1,3 @@
-import { API_URL } from "/public/modules/consts.js";
-
 const sidebar = [
   {
     href: "/feed",

@@ -18,6 +18,7 @@ class BaseView {
    * @param {HTMLElement} element- HTML элемен, в который будет рендериться.
    * @return {void}
    */
+  // eslint-disable-next-line no-unused-vars
   render(element) {}
 }
 

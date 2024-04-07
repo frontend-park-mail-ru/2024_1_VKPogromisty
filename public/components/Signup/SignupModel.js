@@ -59,8 +59,10 @@ class SignupModel extends BaseModel {
         if (await this.userState.updateState()) {
           this.webSocket.openWebSocket();
           this.eventBus.emit("receiveSignupResult", true);
-          break;
+        } else {
+          this.eventBus.emit("receiveSignupResult", false);
         }
+        break;
       case 400:
         this.eventBus.emit("receiveSignupResult", false);
         break;

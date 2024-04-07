@@ -1,9 +1,5 @@
 import BaseView from "./public/MVC/BaseView.js";
-import {
-  formatMinutesHours,
-  formatFullDate,
-  formatDayMonthYear,
-} from "../../modules/dateRemaking.js";
+import { formatMinutesHours } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";

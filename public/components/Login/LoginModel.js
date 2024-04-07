@@ -39,8 +39,10 @@ class LoginModel extends BaseModel {
         if (await this.userState.updateState()) {
           this.webSocket.openWebSocket();
           this.eventBus.emit("receiveLoginResult", true);
-          break;
+        } else {
+          this.eventBus.emit("receiveLoginResult", false);
         }
+        break;
       case 401:
         this.eventBus.emit("receiveLoginResult", false);
         break;

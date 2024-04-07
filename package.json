@@ -6,17 +6,8 @@
     "doc": "docs"
   },
   "lint-staged": {
-    "./public/*.{js,jsx,ts,tsx,html,css}": [
-      "npx prettier --write",
-      "npx prettier --check",
-      "npx eslint"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "lint-staged"
-    }
+    "*.{js,jsx,ts,tsx,html,css,hbs}": "prettier --write",
+    "*.{js,jsx,ts,tsx}": "eslint"
   },
   "prettier": {
     "overrides": [
@@ -33,9 +24,9 @@
     "compile:templates": "bash ./compileTemplates.sh",
     "start:dev": "nodemon ./server/index.js",
     "start": "node ./server/index.js",
-    "test": "echo \"There are no tests\"",
-    "eslint": "npx eslint \"./public\" \"./server\" || npx prettier --check \"./public\"",
-    "precommit": "lint-staged"
+    "lint": "npx prettier --write ./public && npx eslint ./public",
+    "precommit": "lint-staged",
+    "prepare": "husky"
   },
   "author": "",
   "license": "ISC",
@@ -48,7 +39,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
-    "husky": "^4.3.8",
+    "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "nodemon": "^3.1.0"
   },
