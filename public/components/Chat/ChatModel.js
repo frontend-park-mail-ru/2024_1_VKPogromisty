@@ -119,11 +119,11 @@ class ChatModel extends BaseModel {
       }
     });
 
-    this.webSocket.addEventOnError((event) => {
+    this.webSocket.addEventOnError(() => {
       this.eventBus.emit("serverError", {});
     });
 
-    this.webSocket.addEventOnClose((event) => {
+    this.webSocket.addEventOnClose(() => {
       this.eventBus.emit("serverError", {});
     });
 

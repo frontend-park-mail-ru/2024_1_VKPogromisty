@@ -4,6 +4,7 @@
     "node": true,
     "es2021": true
   },
+  "ignorePatterns": ["*.precompiled.js"],
   "extends": "eslint:recommended",
   "parserOptions": {
     "ecmaVersion": "latest",

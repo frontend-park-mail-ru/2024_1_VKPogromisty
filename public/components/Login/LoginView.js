@@ -1,8 +1,4 @@
-import {
-  validateEmail,
-  validatePassword,
-  validateName,
-} from "/public/modules/validators.js";
+import { validateEmail, validatePassword } from "/public/modules/validators.js";
 import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
 
@@ -136,8 +132,6 @@ class LoginView extends BaseView {
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
     const incorrectFormLogin = document.getElementById("incorrect-form-login");
-
-    const repeatEmail = document.getElementById("repeat-email");
 
     incorrectEmail.classList.add(INPUT_CORRECT);
     incorrectPassword.classList.add(INPUT_CORRECT);
