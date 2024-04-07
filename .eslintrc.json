@@ -9,5 +9,8 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "globals": {
+    "Handlebars": "readonly"
+  },
   "rules": {}
 }
