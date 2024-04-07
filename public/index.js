@@ -1,8 +1,4 @@
-import { AuthService } from "./modules/services.js";
-import { Header } from "./components/Header/header.js";
-import { FeedMain } from "./components/Feed/feed.js";
 import { Routing } from "./routes.js";
-import { Main } from "./components/Main/main.js";
 import SignupController from "./components/Signup/SignupController.js";
 import ProfileController from "./components/Profile/ProfileController.js";
 import LoginController from "./components/Login/LoginController.js";
@@ -12,6 +8,7 @@ import MessengerController from "./components/Messenger/MessengerController.js";
 import ChatController from "./components/Chat/ChatController.js";
 import { WEBSOCKET_URL } from "./modules/consts.js";
 import WSocket from "./components/WebSocket.js";
+import FeedController from "./components/Feed/FeedController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userState = new UserState();
@@ -28,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     webSocket,
   );
   const chatController = new ChatController(router, userState, webSocket);
+  const feedController = new FeedController(router, userState, webSocket);
 
   const config = {
     paths: [
@@ -49,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\/feed/,
-        func: renderFeed,
+        func: feedController.renderFeed.bind(feedController),
         title: "Новости",
       },
       {
@@ -74,58 +72,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\//,
-        func: messengerController.renderMessengerView.bind(messengerController),
-        title: "Мессенджер",
+        func: feedController.renderFeed.bind(feedController),
+        title: "Новости",
       },
     ],
   };
 
-  const body = document.body;
-
   router.setConfig(config);
-
-  async function renderFeed() {
-    const main = document.getElementById("main");
-    const header = document.getElementById("header");
-
-    if (header === null) {
-      const feedHeader = new Header(body);
-      feedHeader.renderForm();
-    }
-
-    if (main === null) {
-      const feedMain = new Main(body);
-      feedMain.renderForm();
-    }
-
-    const feedMain = new FeedMain(document.getElementById("activity"));
-
-    feedMain.renderForm();
-
-    const ownUserId = localStorage.getItem("userId");
-
-    //const postService = new PostService();
-
-    //const post = new FeedPost(document.getElementById("activity"));
-    //const posts = await postService.getPosts();
-
-    //post.renderPosts(posts.body);
-
-    document
-      .getElementById("logout-button")
-      .addEventListener("click", async () => {
-        await authService.logout();
-        router.redirect("/login");
-      });
-
-    document
-      .getElementById("user__avatar-img")
-      .addEventListener("click", async () => {
-        router.redirect(`/profile/${ownUserId}`);
-      });
-  }
-
-  const authService = new AuthService();
 
   const currentPageUrl = window.location.pathname;
   switch (currentPageUrl) {
@@ -133,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     case "/signup":
     case "/":
       if (await userState.updateState()) {
-        router.redirect("/messenger");
+        router.redirect("/feed");
       } else {
         router.redirect(currentPageUrl);
       }

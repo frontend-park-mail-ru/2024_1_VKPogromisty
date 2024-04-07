@@ -168,6 +168,8 @@ class ProfileView extends BaseView {
     });
 
     this.postsElement = document.getElementById("posts");
+    this.lastPostId = 0;
+    this.isAllPosts = false;
 
     const newsTextarea = document.getElementById("news-content__textarea");
 
@@ -178,9 +180,24 @@ class ProfileView extends BaseView {
       });
     }
 
+    document.onscroll = () => {
+      if (!this.isAllPosts && !this.isWaitPosts) {
+        if (
+          document.body.scrollHeight - window.scrollY <=
+          1.5 * window.innerHeight
+        ) {
+          this.eventBus.emit("readyRenderPosts", {
+            userId: this.userId,
+            lastPostId: this.lastPostId,
+          });
+          this.isWaitPosts = true;
+        }
+      }
+    };
+
     this.eventBus.emit("readyRenderPosts", {
       userId: this.userId,
-      lastPostId: 0,
+      lastPostId: this.lastPostId,
     });
   }
 
@@ -228,6 +245,7 @@ class ProfileView extends BaseView {
    * @return {void}
    */
   renderPosts({ author, posts }) {
+    this.isWaitPosts = false;
     const template = Handlebars.templates["profilePost.hbs"];
     const avatar = this.userState.avatar;
 
@@ -238,6 +256,9 @@ class ProfileView extends BaseView {
         if (elem.createdAt !== elem.updatedAt) {
           elem.hasUpdated = true;
         }
+        if (elem.postId < this.lastPostId || this.lastPostId === 0) {
+          this.lastPostId = elem.postId;
+        }
       });
       posts.forEach((elem) => {
         elem.createdAt = formatFullDate(elem.createdAt);
@@ -245,6 +266,11 @@ class ProfileView extends BaseView {
       posts.forEach((elem) => {
         elem.updatedAt = `обновлено ${formatFullDate(elem.updatedAt)}`;
       });
+    } else {
+      this.isAllPosts = true;
+      document
+        .getElementById("no-more-posts")
+        .classList.replace("no-more-posts__hidden", "no-more-posts__visible");
     }
 
     this.postsElement.innerHTML += template({
@@ -261,7 +287,7 @@ class ProfileView extends BaseView {
     );
 
     if (this.subscribeUser !== null) {
-      this.subscribeUser.addEventListener("click", () => {
+      this.subscribeUser.onclick = () => {
         if (
           this.subscribeUser.classList.contains(
             "subscribed-to-options__button-subscribe",
@@ -271,7 +297,7 @@ class ProfileView extends BaseView {
         } else {
           this.eventBus.emit("clickedUnsubscribe", this.userId);
         }
-      });
+      };
     }
 
     const publishButton = document.getElementById("publish-post-button");
@@ -279,13 +305,13 @@ class ProfileView extends BaseView {
     const fileButton = document.getElementById("news__file-button");
 
     if (fileButton) {
-      fileButton.addEventListener("click", () => {
+      fileButton.onclick = () => {
         fileInput.click();
-      });
+      };
     }
 
     if (fileInput) {
-      fileInput.addEventListener("change", () => {
+      fileInput.onchange = () => {
         const files = fileInput.files;
         const imgContent = document.getElementById("news-img-content");
 
@@ -300,11 +326,11 @@ class ProfileView extends BaseView {
 
           imgContent.appendChild(img);
         });
-      });
+      };
     }
 
     if (publishButton !== null) {
-      publishButton.addEventListener("click", () => {
+      publishButton.onclick = () => {
         const content = document.getElementById("news-content__textarea").value;
 
         if (content === "") {
@@ -314,32 +340,33 @@ class ProfileView extends BaseView {
           content: content,
           attachments: fileInput.files,
         });
-      });
+      };
     }
 
     const trashes = document.querySelectorAll(".post-author__trash-basket-img");
     const edits = document.querySelectorAll(".post-author__edit-img");
 
     trashes.forEach((elem) => {
-      elem.addEventListener("click", () => {
+      elem.onclick = () => {
         this.eventBus.emit("clickedDeletePost", elem.dataset.id);
-      });
+      };
     });
 
     edits.forEach((elem) => {
-      elem.addEventListener("click", () => {
+      elem.onclick = () => {
         const parent = elem.parentNode;
         const nextElem = elem.nextElementSibling;
         const id = elem.dataset.id;
         const textarea = document.getElementById(`textarea-${id}`);
 
         textarea.removeAttribute("readonly");
+        textarea.focus();
 
         const ok = document.createElement("img");
         ok.classList.add("post-author__accept-img");
         ok.setAttribute("data-id", id);
         ok.setAttribute("src", "../static/images/check.png");
-        ok.addEventListener("click", () => {
+        ok.onclick = () => {
           if (textarea.value === "") {
             return;
           }
@@ -349,25 +376,25 @@ class ProfileView extends BaseView {
             attachments: null,
             post_id: id,
           });
-        });
+        };
 
         const cancel = document.createElement("img");
         cancel.classList.add("post-author__cancel-img");
         cancel.setAttribute("data-id", id);
         cancel.setAttribute("src", "../static/images/cancel.png");
-        cancel.addEventListener("click", () => {
+        cancel.onclick = () => {
           textarea.toggleAttribute("readonly");
           elem.style["display"] = "block";
           nextElem.style["display"] = "block";
           cancel.remove();
           ok.remove();
-        });
+        };
 
         parent.appendChild(ok);
         parent.appendChild(cancel);
         elem.style["display"] = "none";
         nextElem.style["display"] = "none";
-      });
+      };
     });
   }
 
@@ -397,53 +424,58 @@ class ProfileView extends BaseView {
         isMe,
       }) + this.postsElement.innerHTML;
 
-    const trash = document.getElementById(`trash-basket-${posts[0].postId}`);
-    const edit = document.getElementById(`edit-img-${posts[0].postId}`);
+    const trashes = document.querySelectorAll(".post-author__trash-basket-img");
+    const edits = document.querySelectorAll(".post-author__edit-img");
 
-    edit.addEventListener("click", () => {
-      const parent = edit.parentNode;
-      const nextElem = edit.nextElementSibling;
-      const id = edit.dataset.id;
-      const textarea = document.getElementById(`textarea-${id}`);
-
-      textarea.removeAttribute("readonly");
-
-      const ok = document.createElement("img");
-      ok.classList.add("post-author__accept-img");
-      ok.setAttribute("data-id", id);
-      ok.setAttribute("src", "../static/images/check.png");
-      ok.addEventListener("click", () => {
-        if (textarea.value === "") {
-          return;
-        }
-
-        this.eventBus.emit("clickedUpdatePost", {
-          content: textarea.value,
-          attachments: null,
-          post_id: id,
-        });
-      });
-
-      const cancel = document.createElement("img");
-      cancel.classList.add("post-author__cancel-img");
-      cancel.setAttribute("data-id", id);
-      cancel.setAttribute("src", "../static/images/cancel.png");
-      cancel.addEventListener("click", () => {
-        textarea.toggleAttribute("readonly");
-        edit.style["display"] = "block";
-        nextElem.style["display"] = "block";
-        cancel.remove();
-        ok.remove();
-      });
-
-      parent.appendChild(ok);
-      parent.appendChild(cancel);
-      edit.style["display"] = "none";
-      nextElem.style["display"] = "none";
+    trashes.forEach((elem) => {
+      elem.onclick = () => {
+        this.eventBus.emit("clickedDeletePost", elem.dataset.id);
+      };
     });
 
-    trash.addEventListener("click", async () => {
-      this.eventBus.emit("clickedDeletePost", trash.dataset.id);
+    edits.forEach((elem) => {
+      elem.onclick = () => {
+        const parent = elem.parentNode;
+        const nextElem = elem.nextElementSibling;
+        const id = elem.dataset.id;
+        const textarea = document.getElementById(`textarea-${id}`);
+
+        textarea.removeAttribute("readonly");
+        textarea.focus();
+
+        const ok = document.createElement("img");
+        ok.classList.add("post-author__accept-img");
+        ok.setAttribute("data-id", id);
+        ok.setAttribute("src", "../static/images/check.png");
+        ok.onclick = () => {
+          if (textarea.value === "") {
+            return;
+          }
+
+          this.eventBus.emit("clickedUpdatePost", {
+            content: textarea.value,
+            attachments: null,
+            post_id: id,
+          });
+        };
+
+        const cancel = document.createElement("img");
+        cancel.classList.add("post-author__cancel-img");
+        cancel.setAttribute("data-id", id);
+        cancel.setAttribute("src", "../static/images/cancel.png");
+        cancel.onclick = () => {
+          textarea.toggleAttribute("readonly");
+          elem.style["display"] = "block";
+          nextElem.style["display"] = "block";
+          cancel.remove();
+          ok.remove();
+        };
+
+        parent.appendChild(ok);
+        parent.appendChild(cancel);
+        elem.style["display"] = "none";
+        nextElem.style["display"] = "none";
+      };
     });
   }
 

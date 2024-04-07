@@ -148,6 +148,7 @@ class ProfileModel extends BaseModel {
   /**
    * Publishes the post to user's profile
    * @param {string} content - The text content of post
+   * @param {File[]} attachments - The attachments
    * @return {void}
    */
   async publishPost({ content, attachments }) {

@@ -221,11 +221,34 @@ export class PostService {
 
   /**
    * Gets the posts from the server
+   *
+   * @param {number} lastPostId - The ID of last post
+   * @param {number} userId - The ID of current user
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async getPosts(userId, lastPostId) {
     const response = await fetch(
       this.baseUrl + `?userId=${userId}&lastPostId=${lastPostId}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Gets the friends' posts from the server
+   *
+   * @param {number} lastPostId - The ID of last post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getFriendsPosts(lastPostId) {
+    const response = await fetch(
+      this.baseUrl + `friends?lastPostId=${lastPostId}`,
       {
         method: "GET",
         credentials: "include",

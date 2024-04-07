@@ -242,6 +242,7 @@ class SignupView extends BaseView {
     const repeatEmail = document.getElementById("repeat-email");
 
     if (result) {
+      document.body.innerHTML = "";
       this.eventBus.emit("signupSuccess", "/feed");
     } else {
       repeatEmail.classList.remove(correct);
