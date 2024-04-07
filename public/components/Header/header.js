@@ -11,6 +11,15 @@ const staticUrl = `${API_URL}/static`;
  * @method updateUser - Updates the user
  * @method renderForm - Renders the feed header
  */
+
+/**
+ * An info in Header
+ * @typedef {Object} HeaderInfo
+ * @property {number} userId - The ID of session's user
+ * @property {string} firstName - The first name of session's user
+ * @property {string} lastName - The last name of session's user
+ * @property {string} avatar - The avatar of session's user
+ */
 export class Header {
   #parent;
 
@@ -26,17 +35,21 @@ export class Header {
 
   /**
    * Renders the feed header handlebars template
+   *
+   * @param {HeaderInfo} headerInfo - Info in header
    * @returns {void}
    */
   renderForm({ userId, firstName, lastName, avatar }) {
-    const template = Handlebars.templates["header.hbs"];
+    if (document.getElementById("header") === null) {
+      const template = Handlebars.templates["header.hbs"];
 
-    this.#parent.innerHTML += template({
-      avatar,
-      firstName,
-      lastName,
-      userId,
-      staticUrl,
-    });
+      this.#parent.innerHTML += template({
+        avatar,
+        firstName,
+        lastName,
+        userId,
+        staticUrl,
+      });
+    }
   }
 }

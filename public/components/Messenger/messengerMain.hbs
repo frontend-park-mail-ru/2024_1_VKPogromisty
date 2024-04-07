@@ -1,4 +1,4 @@
-<div class="dialogs">
+<div class="messenger">
   <div class="search-place">
     <div class="search-dialog">
       <img
@@ -11,18 +11,41 @@
       <img class="search-buttons__menu-img" src="../static/images/menu.png" />
     </div>
   </div>
-  {{#each chats}}
-  <div class="dialog" id="dialog-id">
-    <div class="chatter">
-      <a href="/profile"><img class="chatter__avatar-img" /></a>
-      <div class="chatter-info">
-        <span class="chatter-info__name-span"></span>
-        <div class="chatter-content">
-          <span class="chatter-content__message-span"></span>
-          <span class="chatter-content__time-span"></span>
+  <div class="dialogs">
+    {{#each dialogs}}
+    <div
+      class="dialog"
+      data-id="{{ this.companion.userId }}"
+      id="dialog-{{ this.companion.userId }}"
+    >
+      <a href="/chat/{{ this.companion.userId }}" class="dialogs__a">
+        <div class="chatter">
+          <img
+            class="chatter__avatar-img"
+            src="{{../staticUrl}}/{{ this.companion.avatar }}"
+          />
+          <div class="chatter-info">
+            <span class="chatter-info__name-span"
+              >{{ this.companion.firstName }}
+              {{ this.companion.lastName }}</span
+            >
+            <div class="chatter-content">
+              <span class="chatter-content__message-span">{{
+                this.lastMessage.content
+              }}</span>
+              <span class="chatter-content__time-span">{{
+                this.lastMessage.createdAt
+              }}</span>
+            </div>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
+    {{/each}}
   </div>
-  {{/each}}
+</div>
+<div class="no-dialogs">
+  {{#if noDialogs}}
+  <span class="no-dialogs__span">У вас нет текущих диалогов</span>
+  {{/if}}
 </div>

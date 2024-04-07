@@ -16,10 +16,12 @@ class FriendsModel extends BaseModel {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Роутер с установленным конфигом
+   * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
+    this.webSocket = webSocket;
     this.friendsService = new FriendsService();
     this.subscribersService = new SubscribersService();
     this.subscriptionsService = new SubscriptionsService();

@@ -1,3 +1,14 @@
+import {
+  formatDayMonthYear,
+  formatFullDate,
+} from "../../modules/dateRemaking.js";
+import { Header } from "../Header/header.js";
+import { Main } from "../Main/main.js";
+import BaseView from "/public/MVC/BaseView.js";
+import { API_URL } from "/public/modules/consts.js";
+
+const staticUrl = `${API_URL}/static`;
+
 /**
  * A Author structure
  * @typedef {Object} Author
@@ -44,17 +55,6 @@
  * @property {UserInfo} User - The info about profile's user
  * @property {boolean} isSubscribedTo - Is the session's user a subscriber of profile's user
  */
-
-import {
-  remakeCreatedAt,
-  remakeDateOfBirth,
-} from "../../modules/dateRemaking.js";
-import { Header } from "../Header/header.js";
-import { Main } from "../Main/main.js";
-import BaseView from "/public/MVC/BaseView.js";
-import { API_URL } from "/public/modules/consts.js";
-
-const staticUrl = `${API_URL}/static`;
 
 /**
  * ProfileView - класс для работы с визуалом на странице профиля.
@@ -123,25 +123,17 @@ class ProfileView extends BaseView {
     this.userId = user_id;
     const { userId, avatar, firstName, lastName } = this.userState;
 
-    if (document.getElementById("header") === null) {
-      const header = new Header(document.body);
-
-      header.renderForm({ userId, avatar, firstName, lastName });
-    }
-
-    if (document.getElementById("main") === null) {
-      const main = new Main(document.body);
-
-      main.renderForm(userId);
-    }
+    new Header(document.body).renderForm({
+      userId,
+      avatar,
+      firstName,
+      lastName,
+    });
+    new Main(document.body).renderForm(userId);
 
     document.getElementById("logout-button").addEventListener("click", () => {
       this.eventBus.emit("clickLogoutButton", {});
     });
-
-    document
-      .getElementById("server-error-500")
-      .classList.add("server-error-500");
 
     this.eventBus.emit("readyRenderProfile", this.userId);
   }
@@ -156,7 +148,7 @@ class ProfileView extends BaseView {
    * @param {ProfileInfo} profileInfo - The info of profile's user
    */
   renderProfile({ User, isSubscribedTo }) {
-    User.dateOfBirth = remakeDateOfBirth(User.dateOfBirth);
+    User.dateOfBirth = formatDayMonthYear(User.dateOfBirth);
 
     const { userId, firstName, lastName, dateOfBirth, avatar } = User;
     this.mainElement = document.getElementById("activity");
@@ -176,6 +168,15 @@ class ProfileView extends BaseView {
     });
 
     this.postsElement = document.getElementById("posts");
+
+    const newsTextarea = document.getElementById("news-content__textarea");
+
+    if (newsTextarea) {
+      newsTextarea.addEventListener("input", () => {
+        newsTextarea.style.height = "auto";
+        newsTextarea.style.height = newsTextarea.scrollHeight - 4 + "px";
+      });
+    }
 
     this.eventBus.emit("readyRenderPosts", {
       userId: this.userId,
@@ -234,7 +235,15 @@ class ProfileView extends BaseView {
 
     if (posts) {
       posts.forEach((elem) => {
-        elem.createdAt = remakeCreatedAt(elem.createdAt);
+        if (elem.createdAt !== elem.updatedAt) {
+          elem.hasUpdated = true;
+        }
+      });
+      posts.forEach((elem) => {
+        elem.createdAt = formatFullDate(elem.createdAt);
+      });
+      posts.forEach((elem) => {
+        elem.updatedAt = `обновлено ${formatFullDate(elem.updatedAt)}`;
       });
     }
 
@@ -275,9 +284,28 @@ class ProfileView extends BaseView {
       });
     }
 
+    if (fileInput) {
+      fileInput.addEventListener("change", () => {
+        const files = fileInput.files;
+        const imgContent = document.getElementById("news-img-content");
+
+        imgContent.innerHTML = "";
+
+        Array.from(files).forEach((elem) => {
+          const src = URL.createObjectURL(elem);
+
+          const img = document.createElement("img");
+          img.setAttribute("src", src);
+          img.classList.add("news-img-content__img");
+
+          imgContent.appendChild(img);
+        });
+      });
+    }
+
     if (publishButton !== null) {
       publishButton.addEventListener("click", () => {
-        const content = document.getElementById("user-news-content").value;
+        const content = document.getElementById("news-content__textarea").value;
 
         if (content === "") {
           return;
@@ -349,12 +377,13 @@ class ProfileView extends BaseView {
    * @return {void}
    */
   postPublishedSuccess({ post, author }) {
-    document.getElementById("user-news-content").value = "";
+    document.getElementById("news-img-content").innerHTML = "";
+    document.getElementById("news-content__textarea").value = "";
 
     const template = Handlebars.templates["profilePost.hbs"];
     const avatar = this.userState.avatar;
 
-    post.createdAt = remakeCreatedAt(post.createdAt);
+    post.createdAt = formatFullDate(post.createdAt);
 
     const isMe = this.isMe;
     const posts = [post];
@@ -368,12 +397,53 @@ class ProfileView extends BaseView {
         isMe,
       }) + this.postsElement.innerHTML;
 
-    const trashes = document.querySelectorAll(".post-author__trash-basket-img");
+    const trash = document.getElementById(`trash-basket-${posts[0].postId}`);
+    const edit = document.getElementById(`edit-img-${posts[0].postId}`);
 
-    trashes.forEach((elem) => {
-      elem.addEventListener("click", async () => {
-        this.eventBus.emit("clickedDeletePost", elem.dataset.id);
+    edit.addEventListener("click", () => {
+      const parent = edit.parentNode;
+      const nextElem = edit.nextElementSibling;
+      const id = edit.dataset.id;
+      const textarea = document.getElementById(`textarea-${id}`);
+
+      textarea.removeAttribute("readonly");
+
+      const ok = document.createElement("img");
+      ok.classList.add("post-author__accept-img");
+      ok.setAttribute("data-id", id);
+      ok.setAttribute("src", "../static/images/check.png");
+      ok.addEventListener("click", () => {
+        if (textarea.value === "") {
+          return;
+        }
+
+        this.eventBus.emit("clickedUpdatePost", {
+          content: textarea.value,
+          attachments: null,
+          post_id: id,
+        });
       });
+
+      const cancel = document.createElement("img");
+      cancel.classList.add("post-author__cancel-img");
+      cancel.setAttribute("data-id", id);
+      cancel.setAttribute("src", "../static/images/cancel.png");
+      cancel.addEventListener("click", () => {
+        textarea.toggleAttribute("readonly");
+        edit.style["display"] = "block";
+        nextElem.style["display"] = "block";
+        cancel.remove();
+        ok.remove();
+      });
+
+      parent.appendChild(ok);
+      parent.appendChild(cancel);
+      edit.style["display"] = "none";
+      nextElem.style["display"] = "none";
+    });
+
+    trash.addEventListener("click", async () => {
+      this.eventBus.emit("clickedDeletePost", trash.dataset.id);
     });
   }
 
@@ -382,9 +452,30 @@ class ProfileView extends BaseView {
    * @param {Post} postInfo - The info about updated post
    * @return {void}
    */
-  postUpdatedSuccess({ postId }) {
+  postUpdatedSuccess({ postId, updatedAt }) {
     const postMenu = document.getElementById(`post-menu-${postId}`);
     const textarea = document.getElementById(`textarea-${postId}`);
+    const edited = document.getElementById(`edited-${postId}`);
+
+    if (edited) {
+      edited.innerHTML = `обновлено ${formatFullDate(updatedAt)}`;
+    } else {
+      const postAuthorTime = document.getElementById(
+        `post-author-time-${postId}`,
+      );
+
+      const img = document.createElement("img");
+      img.setAttribute("src", "../static/images/dot.png");
+      img.classList.add("post-author-time__dot-img");
+
+      const span = document.createElement("span");
+      span.setAttribute("id", `edited-${postId}`);
+      span.classList.add("post-author-time__last-time-span");
+      span.innerHTML = `обновлено ${formatFullDate(updatedAt)}`;
+
+      postAuthorTime.appendChild(img);
+      postAuthorTime.appendChild(span);
+    }
 
     textarea.toggleAttribute("readonly");
     postMenu.lastChild.remove();

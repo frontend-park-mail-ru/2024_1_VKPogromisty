@@ -10,28 +10,41 @@ import FriendsController from "./components/Friends/FriendsController.js";
 import UserState from "./components/UserState.js";
 import MessengerController from "./components/Messenger/MessengerController.js";
 import ChatController from "./components/Chat/ChatController.js";
+import { WEBSOCKET_URL } from "./modules/consts.js";
+import WSocket from "./components/WebSocket.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userState = new UserState();
+  const webSocket = new WSocket(WEBSOCKET_URL);
 
   const router = new Routing();
-  const signupController = new SignupController(router, userState);
-  const profileController = new ProfileController(router, userState);
-  const loginController = new LoginController(router, userState);
-  const friendsController = new FriendsController(router, userState);
-  const messengerController = new MessengerController(router, userState);
-  const chatController = new ChatController(router, userState);
+  const signupController = new SignupController(router, userState, webSocket);
+  const profileController = new ProfileController(router, userState, webSocket);
+  const loginController = new LoginController(router, userState, webSocket);
+  const friendsController = new FriendsController(router, userState, webSocket);
+  const messengerController = new MessengerController(
+    router,
+    userState,
+    webSocket,
+  );
+  const chatController = new ChatController(router, userState, webSocket);
 
   const config = {
     paths: [
       {
         path: /\/login/,
-        func: loginController.renderLoginView.bind(loginController),
+        func: (slugs) => {
+          loginController.renderLoginView(slugs);
+          webSocket.closeWebSocket();
+        },
         title: "Вход",
       },
       {
         path: /\/signup/,
-        func: signupController.renderSignupView.bind(signupController),
+        func: (slugs) => {
+          signupController.renderSignupView(slugs);
+          webSocket.closeWebSocket();
+        },
         title: "Регистрация",
       },
       {
@@ -61,8 +74,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
         path: /\//,
-        func: renderFeed,
-        title: "Новости",
+        func: messengerController.renderMessengerView.bind(messengerController),
+        title: "Мессенджер",
       },
     ],
   };
@@ -120,17 +133,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     case "/signup":
     case "/":
       if (await userState.updateState()) {
-        router.redirect("/feed");
+        router.redirect("/messenger");
       } else {
         router.redirect(currentPageUrl);
       }
       break;
     default:
       if (await userState.updateState()) {
+        webSocket.openWebSocket();
         router.redirect(currentPageUrl);
       } else {
         router.redirect("/login");
       }
   }
-
 });

@@ -10,10 +10,12 @@ class LoginModel extends BaseModel {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {UserState} userState - Текущее состояние юзера
+   * @param {WScoket} webSocket - Текущий сокет
    */
-  constructor(eventBus, userState) {
+  constructor(eventBus, userState, webSocket) {
     super(eventBus);
     this.userState = userState;
+    this.webSocket = webSocket;
 
     this.eventBus.addEventListener(
       "attemptLogin",
@@ -35,6 +37,7 @@ class LoginModel extends BaseModel {
     switch (result.status) {
       case 200:
         if (await this.userState.updateState()) {
+          this.webSocket.openWebSocket();
           this.eventBus.emit("receiveLoginResult", true);
           break;
         }

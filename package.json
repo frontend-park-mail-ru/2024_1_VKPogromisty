@@ -6,8 +6,17 @@
     "doc": "docs"
   },
   "lint-staged": {
-    "./public/{components,modules,MVC}*.{js,jsx,ts,tsx,html,css}": "npx prettier --check ./public",
-    "./public/*.{js,jsx,ts,tsx}": "npx eslint --quiet"
+    "./public/*.{js,jsx,ts,tsx,html,css}": [
+      "npx prettier --write",
+      "npx prettier --check",
+      "npx eslint"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "lint-staged"
+    }
   },
   "prettier": {
     "overrides": [

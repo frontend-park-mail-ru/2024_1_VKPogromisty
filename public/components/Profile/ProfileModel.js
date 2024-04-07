@@ -21,11 +21,14 @@ class ProfileModel extends BaseModel {
    * Конструктор класса ProfileModel.
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
+   * @param {Routing} router - Объект класса Routing
+   * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
     this.router = router;
+    this.webSocket = webSocket;
     this.profileService = new ProfileService();
     this.postService = new PostService();
     this.subscriptionsService = new SubscriptionsService();

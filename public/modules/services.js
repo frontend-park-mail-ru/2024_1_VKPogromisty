@@ -306,11 +306,23 @@ export class PostService {
   }
 }
 
+/**
+ * Service for working with the dialogs API
+ * @class
+ * @property {string} baseUrl - The base URL for the server chats service
+ * @method getDialogs - Gets the dialogs from the server
+ * @method getMessages - Gets the messages of current conversation from the server
+ */
 export class ChatService {
   baseUrl = `${API_URL}/chat`;
 
+  /**
+   * Gets the dialogs from the server
+   *
+   * @returns {Promise<APIResponse>} {@link ApiResponse}
+   */
   async getDialogs() {
-    const response = await fetch(this.baseUrl + '/dialogs', {
+    const response = await fetch(this.baseUrl + "/dialogs", {
       method: "GET",
       credentials: "include",
     });
@@ -320,11 +332,22 @@ export class ChatService {
     return genResponse(response.status, data.body, data.message);
   }
 
-  async getMessages(companionId, lastMessage) {
-    const response = await fetch(this.baseUrl + `/messages?peerId=${companionId}&lastMessageId=${lastMessage}`, {
-      method: "GET",
-      credentials: "include",
-    });
+  /**
+   * Gets the dialogs from the server
+   *
+   * @param {number} companionId - The ID of current companion
+   * @param {number} lastMessageId - The ID of last message in conversation
+   * @returns {Promise<APIResponse>} {@link ApiResponse}
+   */
+  async getMessages(companionId, lastMessageId) {
+    const response = await fetch(
+      this.baseUrl +
+        `/messages?peerId=${companionId}&lastMessageId=${lastMessageId}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
 
     const data = await response.json();
 
@@ -332,6 +355,12 @@ export class ChatService {
   }
 }
 
+/**
+ * Service for working with the friends API
+ * @class
+ * @property {string} baseUrl - The base URL for the server friends service
+ * @method getFriends - Gets the friends from the server
+ */
 export class FriendsService {
   baseUrl = `${API_URL}/subscriptions/friends`;
 
@@ -351,6 +380,12 @@ export class FriendsService {
   }
 }
 
+/**
+ * Service for working with the subscribers API
+ * @class
+ * @property {string} baseUrl - The base URL for the server subscribers service
+ * @method getSubscribers - Gets the subscribers from the server
+ */
 export class SubscribersService {
   baseUrl = `${API_URL}/subscriptions/subscribers`;
 
@@ -370,6 +405,14 @@ export class SubscribersService {
   }
 }
 
+/**
+ * Service for working with the subscriptions API
+ * @class
+ * @property {string} baseUrl - The base URL for the server subscriptions service
+ * @method getDialogs - Gets the subscriptions from the server
+ * @method postSubscription - Post the subscription on the server
+ * @method deleteSubscription - Delete the current subscription from the server
+ */
 export class SubscriptionsService {
   baseUrl = `${API_URL}/subscriptions/`;
 
