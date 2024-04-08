@@ -132,10 +132,28 @@ class ProfileView extends BaseView {
     new Main(document.body).renderForm(userId);
 
     document.getElementById("logout-button").addEventListener("click", () => {
+      document.removeEventListener("scroll", this.checksNewPosts.bind(this));
       this.eventBus.emit("clickLogoutButton", {});
     });
 
     this.eventBus.emit("readyRenderProfile", this.userId);
+  }
+
+  /**
+   * Checks if user scrolled enough
+   */
+  checksNewPosts() {
+    if (
+      document.body.scrollHeight - window.scrollY <= 1500 &&
+      !this.isAllPosts &&
+      !this.isWaitPosts
+    ) {
+      this.eventBus.emit("readyRenderPosts", {
+        userId: this.userId,
+        lastPostId: this.lastPostId,
+      });
+      this.isWaitPosts = true;
+    }
   }
 
   /**
@@ -180,20 +198,69 @@ class ProfileView extends BaseView {
       });
     }
 
-    document.onscroll = () => {
-      if (!this.isAllPosts && !this.isWaitPosts) {
-        if (
-          document.body.scrollHeight - window.scrollY <=
-          1.5 * window.innerHeight
-        ) {
-          this.eventBus.emit("readyRenderPosts", {
-            userId: this.userId,
-            lastPostId: this.lastPostId,
-          });
-          this.isWaitPosts = true;
+    document.addEventListener("scroll", this.checksNewPosts.bind(this));
+
+    const publishButton = document.getElementById("publish-post-button");
+    const fileInput = document.getElementById("news__file-input");
+    const fileButton = document.getElementById("news__file-button");
+
+    if (fileButton) {
+      fileButton.addEventListener("click", () => {
+        fileInput.click();
+      });
+    }
+
+    if (fileInput) {
+      fileInput.addEventListener("change", () => {
+        const files = fileInput.files;
+        const imgContent = document.getElementById("news-img-content");
+
+        imgContent.innerHTML = "";
+
+        Array.from(files).forEach((elem) => {
+          const src = URL.createObjectURL(elem);
+
+          const img = document.createElement("img");
+          img.setAttribute("src", src);
+          img.classList.add("news-img-content__img");
+
+          imgContent.appendChild(img);
+        });
+      });
+    }
+
+    if (publishButton !== null) {
+      publishButton.addEventListener("click", () => {
+        const content = document.getElementById("news-content__textarea").value;
+
+        if (content === "") {
+          return;
         }
-      }
-    };
+        this.eventBus.emit("clickedPublishPost", {
+          content: content,
+          attachments: fileInput.files,
+        });
+      });
+    }
+
+    this.subscribeUser = document.getElementById(`subscribe-${this.userId}`);
+    this.sendMessageUser = document.getElementById(
+      `send-message-${this.userId}`,
+    );
+
+    if (this.subscribeUser !== null) {
+      this.subscribeUser.addEventListener("click", () => {
+        if (
+          this.subscribeUser.classList.contains(
+            "subscribed-to-options__button-subscribe",
+          )
+        ) {
+          this.eventBus.emit("clickedSubscribe", this.userId);
+        } else {
+          this.eventBus.emit("clickedUnsubscribe", this.userId);
+        }
+      });
+    }
 
     this.eventBus.emit("readyRenderPosts", {
       userId: this.userId,
@@ -281,79 +348,17 @@ class ProfileView extends BaseView {
       isMe,
     });
 
-    this.subscribeUser = document.getElementById(`subscribe-${this.userId}`);
-    this.sendMessageUser = document.getElementById(
-      `send-message-${this.userId}`,
-    );
-
-    if (this.subscribeUser !== null) {
-      this.subscribeUser.onclick = () => {
-        if (
-          this.subscribeUser.classList.contains(
-            "subscribed-to-options__button-subscribe",
-          )
-        ) {
-          this.eventBus.emit("clickedSubscribe", this.userId);
-        } else {
-          this.eventBus.emit("clickedUnsubscribe", this.userId);
-        }
-      };
-    }
-
-    const publishButton = document.getElementById("publish-post-button");
-    const fileInput = document.getElementById("news__file-input");
-    const fileButton = document.getElementById("news__file-button");
-
-    if (fileButton) {
-      fileButton.onclick = () => {
-        fileInput.click();
-      };
-    }
-
-    if (fileInput) {
-      fileInput.onchange = () => {
-        const files = fileInput.files;
-        const imgContent = document.getElementById("news-img-content");
-
-        imgContent.innerHTML = "";
-
-        Array.from(files).forEach((elem) => {
-          const src = URL.createObjectURL(elem);
-
-          const img = document.createElement("img");
-          img.setAttribute("src", src);
-          img.classList.add("news-img-content__img");
-
-          imgContent.appendChild(img);
-        });
-      };
-    }
-
-    if (publishButton !== null) {
-      publishButton.onclick = () => {
-        const content = document.getElementById("news-content__textarea").value;
-
-        if (content === "") {
-          return;
-        }
-        this.eventBus.emit("clickedPublishPost", {
-          content: content,
-          attachments: fileInput.files,
-        });
-      };
-    }
-
     const trashes = document.querySelectorAll(".post-author__trash-basket-img");
     const edits = document.querySelectorAll(".post-author__edit-img");
 
     trashes.forEach((elem) => {
-      elem.onclick = () => {
+      elem.addEventListener("click", () => {
         this.eventBus.emit("clickedDeletePost", elem.dataset.id);
-      };
+      });
     });
 
     edits.forEach((elem) => {
-      elem.onclick = () => {
+      elem.addEventListener("click", () => {
         const parent = elem.parentNode;
         const nextElem = elem.nextElementSibling;
         const id = elem.dataset.id;
@@ -366,7 +371,7 @@ class ProfileView extends BaseView {
         ok.classList.add("post-author__accept-img");
         ok.setAttribute("data-id", id);
         ok.setAttribute("src", "../static/images/check.png");
-        ok.onclick = () => {
+        ok.addEventListener("click", () => {
           if (textarea.value === "") {
             return;
           }
@@ -376,25 +381,25 @@ class ProfileView extends BaseView {
             attachments: null,
             post_id: id,
           });
-        };
+        });
 
         const cancel = document.createElement("img");
         cancel.classList.add("post-author__cancel-img");
         cancel.setAttribute("data-id", id);
         cancel.setAttribute("src", "../static/images/cancel.png");
-        cancel.onclick = () => {
+        cancel.addEventListener("click", () => {
           textarea.toggleAttribute("readonly");
           elem.style["display"] = "block";
           nextElem.style["display"] = "block";
           cancel.remove();
           ok.remove();
-        };
+        });
 
         parent.appendChild(ok);
         parent.appendChild(cancel);
         elem.style["display"] = "none";
         nextElem.style["display"] = "none";
-      };
+      });
     });
   }
 
@@ -428,13 +433,13 @@ class ProfileView extends BaseView {
     const edits = document.querySelectorAll(".post-author__edit-img");
 
     trashes.forEach((elem) => {
-      elem.onclick = () => {
+      elem.addEventListener("click", () => {
         this.eventBus.emit("clickedDeletePost", elem.dataset.id);
-      };
+      });
     });
 
     edits.forEach((elem) => {
-      elem.onclick = () => {
+      elem.addEventListener("click", () => {
         const parent = elem.parentNode;
         const nextElem = elem.nextElementSibling;
         const id = elem.dataset.id;
@@ -447,7 +452,7 @@ class ProfileView extends BaseView {
         ok.classList.add("post-author__accept-img");
         ok.setAttribute("data-id", id);
         ok.setAttribute("src", "../static/images/check.png");
-        ok.onclick = () => {
+        ok.addEventListener("click", () => {
           if (textarea.value === "") {
             return;
           }
@@ -457,25 +462,25 @@ class ProfileView extends BaseView {
             attachments: null,
             post_id: id,
           });
-        };
+        });
 
         const cancel = document.createElement("img");
         cancel.classList.add("post-author__cancel-img");
         cancel.setAttribute("data-id", id);
         cancel.setAttribute("src", "../static/images/cancel.png");
-        cancel.onclick = () => {
+        cancel.addEventListener("click", () => {
           textarea.toggleAttribute("readonly");
           elem.style["display"] = "block";
           nextElem.style["display"] = "block";
           cancel.remove();
           ok.remove();
-        };
+        });
 
         parent.appendChild(ok);
         parent.appendChild(cancel);
         elem.style["display"] = "none";
         nextElem.style["display"] = "none";
-      };
+      });
     });
   }
 

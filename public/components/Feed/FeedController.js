@@ -29,7 +29,7 @@ class FeedController {
    */
   constructor(router, userState, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.feedModel = new FeedModel(this.eventBus, router, webSocket);
+    this.feedModel = new FeedModel(this.eventBus, router, webSocket, userState);
     this.feedView = new FeedView(this.eventBus, router, userState);
   }
 

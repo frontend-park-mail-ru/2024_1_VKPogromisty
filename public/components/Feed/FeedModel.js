@@ -12,11 +12,12 @@ class FeedModel extends BaseModel {
    * @param {Routing} router - Объект класса Routing
    * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket) {
+  constructor(eventBus, router, webSocket, userState) {
     super(eventBus);
 
     this.router = router;
     this.webSocket = webSocket;
+    this.userState = userState;
     this.postService = new PostService();
 
     this.eventBus.addEventListener(
@@ -44,7 +45,10 @@ class FeedModel extends BaseModel {
    * @param {number} lastPostId - The ID of last post at feed
    */
   async getFriendPosts(lastPostId) {
-    const result = await this.postService.getFriendsPosts(lastPostId);
+    const result = await this.postService.getFriendsPosts(
+      lastPostId,
+      this.userState,
+    );
 
     switch (result.status) {
       case 200:
@@ -65,7 +69,11 @@ class FeedModel extends BaseModel {
    * @return {void}
    */
   async publishPost({ content, attachments }) {
-    const result = await this.postService.publishPost(content, attachments);
+    const result = await this.postService.publishPost(
+      content,
+      attachments,
+      this.userState,
+    );
 
     switch (result.status) {
       case 201:
@@ -85,7 +93,7 @@ class FeedModel extends BaseModel {
    * @return {void}
    */
   async deletePost(post_id) {
-    const result = await this.postService.deletePost(post_id);
+    const result = await this.postService.deletePost(post_id, this.userState);
 
     switch (result.status) {
       case 204:
@@ -106,7 +114,11 @@ class FeedModel extends BaseModel {
    * @return {void}
    */
   async updatePost({ post_id, content }) {
-    const result = await this.postService.updatePost(post_id, content);
+    const result = await this.postService.updatePost(
+      post_id,
+      content,
+      this.userState,
+    );
 
     switch (result.status) {
       case 200:

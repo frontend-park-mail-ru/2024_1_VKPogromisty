@@ -32,7 +32,12 @@ class FriendsController {
    */
   constructor(router, userState, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.friendsModel = new FriendsModel(this.eventBus, router, webSocket);
+    this.friendsModel = new FriendsModel(
+      this.eventBus,
+      router,
+      webSocket,
+      userState,
+    );
     this.friendsView = new FriendsView(this.eventBus, userState);
   }
 

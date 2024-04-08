@@ -9,12 +9,14 @@ import ChatController from "./components/Chat/ChatController.js";
 import { WEBSOCKET_URL } from "./modules/consts.js";
 import WSocket from "./components/WebSocket.js";
 import FeedController from "./components/Feed/FeedController.js";
+import { AuthService } from "./modules/services.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userState = new UserState();
-  const webSocket = new WSocket(WEBSOCKET_URL);
+  const webSocket = new WSocket(WEBSOCKET_URL, userState);
 
   const router = new Routing();
+  const authService = new AuthService();
   const signupController = new SignupController(router, userState, webSocket);
   const profileController = new ProfileController(router, userState, webSocket);
   const loginController = new LoginController(router, userState, webSocket);
@@ -80,19 +82,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   router.setConfig(config);
 
+  const result = await authService.getCSRFToken();
+
   const currentPageUrl = window.location.pathname;
   switch (currentPageUrl) {
     case "/login":
     case "/signup":
     case "/":
-      if (await userState.updateState()) {
+      if (result.status === 200) {
+        userState.csrfToken = result.body.csrfToken;
+        await userState.updateState();
         router.redirect("/feed");
       } else {
         router.redirect(currentPageUrl);
       }
       break;
     default:
-      if (await userState.updateState()) {
+      if (result.status === 200) {
+        userState.csrfToken = result.body.csrfToken;
+        await userState.updateState();
         webSocket.openWebSocket();
         router.redirect(currentPageUrl);
       } else {

@@ -12,11 +12,12 @@ class MessengerModel extends BaseModel {
    * @param {Routing} router - Объект класса Routing
    * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket) {
+  constructor(eventBus, router, webSocket, userState) {
     super(eventBus);
 
     this.router = router;
     this.webSocket = webSocket;
+    this.userState = userState;
     this.chatService = new ChatService();
     this.authService = new AuthService();
 
@@ -34,7 +35,7 @@ class MessengerModel extends BaseModel {
    * Gets dialogs of session's user
    */
   async getDialogs() {
-    const result = await this.chatService.getDialogs();
+    const result = await this.chatService.getDialogs(this.userState);
 
     switch (result.status) {
       case 200:

@@ -26,7 +26,7 @@ class UserState {
    * @returns {Promise<Boolean>}
    */
   async updateState() {
-    const result = await this.profileService.getOwnProfileData();
+    const result = await this.profileService.getOwnProfileData(this);
 
     switch (result.status) {
       case 200:

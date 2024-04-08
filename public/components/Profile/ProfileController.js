@@ -37,7 +37,12 @@ class ProfileController {
    */
   constructor(router, userState, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.profileModel = new ProfileModel(this.eventBus, router, webSocket);
+    this.profileModel = new ProfileModel(
+      this.eventBus,
+      router,
+      webSocket,
+      userState,
+    );
     this.profileView = new ProfileView(this.eventBus, router, userState);
   }
 
