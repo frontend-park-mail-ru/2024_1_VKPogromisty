@@ -36,6 +36,9 @@ class LoginModel extends BaseModel {
 
     switch (result.status) {
       case 200:
+        this.userState.csrfToken = (
+          await authService.getCSRFToken()
+        ).body.csrfToken;
         if (await this.userState.updateState()) {
           this.webSocket.openWebSocket();
           this.eventBus.emit("receiveLoginResult", true);

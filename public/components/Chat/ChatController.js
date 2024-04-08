@@ -34,7 +34,7 @@ class ChatController {
    */
   constructor(router, userState, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.chatModel = new ChatModel(this.eventBus, router, webSocket);
+    this.chatModel = new ChatModel(this.eventBus, router, webSocket, userState);
     this.chatView = new ChatView(this.eventBus, router, userState);
   }
 

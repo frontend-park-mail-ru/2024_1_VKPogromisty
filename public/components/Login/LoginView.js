@@ -103,12 +103,13 @@ class LoginView extends BaseView {
    * @return {void}
    */
   handleLoginResult(result) {
-    const repeatEmail = document.getElementById("repeat-email");
+    const incorrectPassword = document.getElementById("incorrect-form-login");
 
     if (result) {
+      document.body.innerHTML = "";
       this.eventBus.emit("loginSuccess", "/feed");
     } else {
-      repeatEmail.classList.remove(INPUT_CORRECT);
+      incorrectPassword.classList.remove(INPUT_CORRECT);
     }
   }
 

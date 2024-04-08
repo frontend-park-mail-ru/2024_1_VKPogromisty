@@ -1,34 +1,26 @@
-import ProfileModel from "./ProfileModel.js";
-import ProfileView from "./ProfileView.js";
+import FeedModel from "./FeedModel.js";
+import FeedView from "./FeedView.js";
 import EventBus from "./public/MVC/EventBus.js";
 
 const incomingEvents = [
-  "receiveProfileData",
-  "receiveProfilePosts",
-  "receiveOwnProfileData",
-  "clickLogoutButton",
-  "readyRenderProfile",
-  "clickedSubscribe",
-  "clickedUnsubscribe",
-  "subscribedSuccess",
-  "unsubscribedSuccess",
   "readyRenderPosts",
+  "clickLogoutButton",
   "getPostsSuccess",
   "clickedPublishPost",
+  "clickedUpdatePost",
   "clickedDeletePost",
+  "postUpdateSuccess",
   "postDeleteSuccess",
   "publishedPostSuccess",
-  "clickedUpdatePost",
-  "postUpdateSuccess",
   "serverError",
 ];
 
 /**
- * ProfileController - класс для связи ProfileModel и ProfileView.
- * @property {ProfileView} ProfileView - ProfileView - класс для работы с визуалом на странице.
- * @property {ProfileModel} ProfileModel - ProfileModel - класс для обработки данных, общения с бэком.
+ * FeedController - класс для связи FeedModel и FeedView.
+ * @property {FeedView} FeedView - FeedView - класс для работы с визуалом на странице.
+ * @property {FeedModel} FeedModel - FeedModel - класс для обработки данных, общения с бэком.
  */
-class ProfileController {
+class FeedController {
   /**
    * Creates controller
    * @param {Routing} router - The router
@@ -37,17 +29,17 @@ class ProfileController {
    */
   constructor(router, userState, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.profileModel = new ProfileModel(this.eventBus, router, webSocket);
-    this.profileView = new ProfileView(this.eventBus, router, userState);
+    this.feedModel = new FeedModel(this.eventBus, router, webSocket, userState);
+    this.feedView = new FeedView(this.eventBus, router, userState);
   }
 
   /**
-   * Renders ProfileView
+   * Renders Feed
    * @returns {void}
    */
-  renderProfileView({ userId }) {
-    this.profileView.renderProfileMain(userId);
+  renderFeed() {
+    this.feedView.renderFeedMain();
   }
 }
 
-export default ProfileController;
+export default FeedController;

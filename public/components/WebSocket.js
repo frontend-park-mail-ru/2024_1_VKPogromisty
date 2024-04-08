@@ -15,11 +15,12 @@ class WSocket {
    *
    * @param {string} url - The URL to connect with
    */
-  constructor(url) {
+  constructor(url, userState) {
     this.url = url;
     this.messageEvents = {};
     this.errorsEvents = {};
     this.closingEvents = {};
+    this.userState = userState;
   }
 
   /**
@@ -59,6 +60,7 @@ class WSocket {
       JSON.stringify({
         type: "SEND_MESSAGE",
         receiver: +companionId,
+        csrfToken: this.userState.csrfToken,
         payload: { content: textContent },
       }),
     );
@@ -75,6 +77,7 @@ class WSocket {
       JSON.stringify({
         type: "UPDATE_MESSAGE",
         receiver: +receiverId,
+        csrfToken: this.userState.csrfToken,
         payload: {
           messageId: +messageId,
           content: textContent,
@@ -93,6 +96,7 @@ class WSocket {
       JSON.stringify({
         type: "DELETE_MESSAGE",
         receiver: +receiverId,
+        csrfToken: this.userState.csrfToken,
         payload: { messageId: +messageId },
       }),
     );

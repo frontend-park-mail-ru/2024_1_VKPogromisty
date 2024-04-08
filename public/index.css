@@ -246,10 +246,9 @@ input::-webkit-inner-spin-button {
   justify-content: space-between;
   width: 100%;
   min-width: 200px;
-  font-size: 24;
   font-style: var(--page-font-family);
   box-sizing: border-box;
-  height: 180px;
+  padding: 0px 20px;
   margin: 15px 0px;
 }
 
@@ -1036,7 +1035,11 @@ input::-webkit-inner-spin-button {
   border-radius: 7px;
 }
 
-::-webkit-scrollbar {
+.messages::-webkit-scrollbar {
+  display: none;
+}
+
+.print-message__text-input::-webkit-scrollbar {
   display: none;
 }
 
@@ -1342,6 +1345,7 @@ input::-webkit-inner-spin-button {
 }
 
 .messages__start-dialog-span,
+.no-posts__span,
 .no-dialogs__span,
 .no-subscribers__span,
 .no-subscriptions__span,
@@ -1425,4 +1429,16 @@ input::-webkit-inner-spin-button {
 
 .message-menu__send-button {
   background-color: inherit;
+}
+
+.no-more-posts__hidden {
+  visibility: hidden;
+  text-align: center;
+  margin: 40px;
+}
+
+.no-more-posts__visible {
+  visibility: visible;
+  text-align: center;
+  margin: 40px;
 }

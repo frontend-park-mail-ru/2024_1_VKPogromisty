@@ -40,6 +40,7 @@ export class Header {
    * @returns {void}
    */
   renderForm({ userId, firstName, lastName, avatar }) {
+    document.onscroll = null;
     if (document.getElementById("header") === null) {
       const template = Handlebars.templates["header.hbs"];
 

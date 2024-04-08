@@ -90,8 +90,35 @@ class ChatView extends BaseView {
     new Main(document.body).renderForm(userId);
 
     this.mainElement = document.getElementById("activity");
+    this.lastMessageId = 0;
+    this.isAllMessages = false;
+
+    document.getElementById("logout-button").addEventListener("click", () => {
+      this.chatElement.removeEventListener(
+        "scroll",
+        this.checksNewMessages.bind(this),
+      );
+      this.eventBus.emit("clickLogoutButton", {});
+    });
 
     this.eventBus.emit("readyRenderCompanion", this.companionId);
+  }
+
+  /**
+   * Checks if user scrolled enough
+   */
+  checksNewMessages() {
+    if (
+      !this.isAllMessages &&
+      !this.isWaitMessages &&
+      this.chatElement.scrollHeight + this.chatElement.scrollTop <= 550
+    ) {
+      this.eventBus.emit("readyRenderMessages", {
+        companionId: this.companionId,
+        lastMessageId: this.lastMessageId,
+      });
+      this.isWaitMessages = true;
+    }
   }
 
   /**
@@ -163,6 +190,11 @@ class ChatView extends BaseView {
       printMessage.style.height = printMessage.scrollHeight - 4 + "px";
     });
 
+    this.chatElement.addEventListener(
+      "scroll",
+      this.checksNewMessages.bind(this),
+    );
+
     this.eventBus.emit("needUpdateWebSocket", this.companionId);
   }
 
@@ -182,16 +214,25 @@ class ChatView extends BaseView {
    * @param {Message[]} messages - The messages of conversation with current companion
    */
   renderMessages(messages) {
+    console.log(messages);
+    this.isWaitMessages = false;
     const template = Handlebars.templates["message.hbs"];
     const noMessages = messages.length === 0;
+
+    if (noMessages) {
+      this.isAllMessages = true;
+    }
 
     messages.forEach((elem) => {
       elem.isMe = elem.senderId === this.userState.userId;
       elem.isUpdated = elem.createdAt !== elem.updatedAt;
       elem.createdAt = formatMinutesHours(elem.createdAt);
+      if (elem.id < this.lastMessageId || this.lastMessageId === 0) {
+        this.lastMessageId = elem.id;
+      }
     });
 
-    this.chatElement.innerHTML = template({ messages, noMessages });
+    this.chatElement.innerHTML += template({ messages, noMessages });
 
     const trashes = document.querySelectorAll(".message__trash-basket-img");
     const edits = document.querySelectorAll(".message__edit-img");
