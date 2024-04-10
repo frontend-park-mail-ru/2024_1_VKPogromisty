@@ -902,7 +902,7 @@ input::-webkit-inner-spin-button {
 
 .profile-brief__name-span {
   font-weight: bolder;
-  font-size: 25px;
+  font-size: 21px;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 200px;
