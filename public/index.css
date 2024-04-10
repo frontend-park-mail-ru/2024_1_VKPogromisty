@@ -1023,6 +1023,10 @@ input::-webkit-inner-spin-button {
 .chatter-info__name-span {
   font-size: large;
   font-weight: 600;
+  width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chatter-content__message-span {
@@ -1144,6 +1148,10 @@ input::-webkit-inner-spin-button {
 .companion__name-span {
   font-size: large;
   font-family: var(--ordinary-text);
+  width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .companion__status-span {
@@ -1365,6 +1373,13 @@ input::-webkit-inner-spin-button {
   width: 16px;
   height: 16px;
   cursor: pointer;
+}
+
+.post-author__name-span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 400px;
 }
 
 .post-author__accept-img {
