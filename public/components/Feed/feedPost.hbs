@@ -2,10 +2,12 @@
 <div id="post{{ this.post.postId }}" class="post">
   <div class="post-header">
     <div class="post-author">
-      <img
-        class="post-author__user-avatar-img"
-        src="{{ ../staticUrl }}/{{ this.author.avatar }}"
-      />
+      <a href="/profile/{{ this.author.userId }}">
+        <img
+          class="post-author__user-avatar-img"
+          src="{{ ../staticUrl }}/{{ this.author.avatar }}"
+        />
+      </a>
       <div class="post-author-info">
         <span class="post-author__name-span"
           >{{ this.author.firstName }} {{ this.author.lastName }}</span
