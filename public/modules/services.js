@@ -200,8 +200,10 @@ export class ProfileService {
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
     formData.append("email", email);
-    formData.append("password", password);
-    formData.append("repeatPassword", repeatPassword);
+    if (password !== "") {
+      formData.append("password", password);
+      formData.append("repeatPassword", repeatPassword);
+    }
     formData.append("avatar", avatar);
 
     const response = await fetch(this.baseUrl, {

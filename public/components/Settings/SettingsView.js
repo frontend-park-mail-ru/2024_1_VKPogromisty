@@ -98,11 +98,11 @@ class SettingsView extends BaseView {
     password.addEventListener("focusout", () => {
       incorrectPassword.classList.add(correct);
 
-      if (!validatePassword(password.value)) {
+      if (!validatePassword(password.value) && password.value !== "") {
         incorrectPassword.classList.remove(correct);
       }
 
-      if (!(password.value === repeatPassword.value)) {
+      if (!(password.value === repeatPassword.value) && password.value !== "") {
         incorrectRepeatPassword.classList.remove(correct);
       }
     });
@@ -214,7 +214,7 @@ class SettingsView extends BaseView {
       flag = false;
     }
 
-    if (!validatePassword(password.value)) {
+    if (!validatePassword(password.value) && password.value !== "") {
       incorrectPassword.classList.remove(correct);
       flag = false;
     }
