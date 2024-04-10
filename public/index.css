@@ -824,7 +824,6 @@ input::-webkit-inner-spin-button {
 .feed-main {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   margin-right: 450px;
   margin-left: 100px;
 }
