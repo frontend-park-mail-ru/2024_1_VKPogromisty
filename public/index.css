@@ -1033,6 +1033,10 @@ input::-webkit-inner-spin-button {
 
 .chatter-content__message-span {
   font-size: medium;
+  width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chatter-content__time-span {
