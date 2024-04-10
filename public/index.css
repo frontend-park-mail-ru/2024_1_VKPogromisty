@@ -748,6 +748,10 @@ input::-webkit-inner-spin-button {
   color: #fff;
   font-size: large;
   margin-right: 23px;
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user__avatar-img {
@@ -900,6 +904,9 @@ input::-webkit-inner-spin-button {
 .profile-brief__name-span {
   font-weight: bolder;
   font-size: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
 }
 
 .profile-brief-info {
