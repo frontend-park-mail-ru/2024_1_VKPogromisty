@@ -366,6 +366,15 @@ class ProfileView extends BaseView {
       isMe,
     });
 
+    document.querySelectorAll(".post-content__text-span").forEach((elem) => {
+      const scrHeight = elem.scrollHeight;
+      if (scrHeight > 2000) {
+        elem.style.height = "1000px";
+      } else {
+        elem.style.height = scrHeight - 4 + "px";
+      }
+    });
+
     const trashes = document.querySelectorAll(".post-author__trash-basket-img");
     const edits = document.querySelectorAll(".post-author__edit-img");
 
@@ -439,6 +448,7 @@ class ProfileView extends BaseView {
 
     const isMe = this.isMe;
     const posts = [post];
+    const postId = post.postId;
 
     this.postsElement.innerHTML =
       template({
@@ -448,6 +458,14 @@ class ProfileView extends BaseView {
         author,
         isMe,
       }) + this.postsElement.innerHTML;
+
+    const curTextarea = document.getElementById(`textarea-${postId}`);
+    const scrHeight = curTextarea.scrollHeight;
+    if (scrHeight > 2000) {
+      curTextarea.style.height = "1000px";
+    } else {
+      curTextarea.style.height = scrHeight - 4 + "px";
+    }
 
     const trashes = document.querySelectorAll(".post-author__trash-basket-img");
     const edits = document.querySelectorAll(".post-author__edit-img");

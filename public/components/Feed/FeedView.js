@@ -230,6 +230,16 @@ class FeedView extends BaseView {
       avatar,
       staticUrl,
     });
+
+    document.querySelectorAll(".post-content__text-span").forEach((elem) => {
+      console.log("asdf");
+      const scrHeight = elem.scrollHeight;
+      if (scrHeight > 2000) {
+        elem.style.height = "1000px";
+      } else {
+        elem.style.height = scrHeight - 4 + "px";
+      }
+    });
   }
 
   /**
@@ -249,6 +259,7 @@ class FeedView extends BaseView {
 
     const posts = [post];
     const isMe = true;
+    const postId = post.postId;
 
     this.postsElement.innerHTML =
       template({
@@ -257,6 +268,14 @@ class FeedView extends BaseView {
         staticUrl,
         isMe,
       }) + this.postsElement.innerHTML;
+
+    const curTextarea = document.getElementById(`textarea-${postId}`);
+    const scrHeight = curTextarea.scrollHeight;
+    if (scrHeight > 2000) {
+      curTextarea.style.height = "1000px";
+    } else {
+      curTextarea.style.height = scrHeight - 4 + "px";
+    }
 
     const trashes = document.querySelectorAll(".post-author__trash-basket-img");
     const edits = document.querySelectorAll(".post-author__edit-img");

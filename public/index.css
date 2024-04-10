@@ -532,11 +532,13 @@ input::-webkit-inner-spin-button {
 .post-content__text-span {
   box-sizing: border-box;
   font-family: var(--ordinary-text);
-  white-space-collapse: break-spaces;
-  text-wrap: stable;
   background-color: inherit;
   resize: none;
   width: 100%;
+}
+
+.post-content__text-span::-webkit-scrollbar {
+  display: none;
 }
 
 .post-content__img {
