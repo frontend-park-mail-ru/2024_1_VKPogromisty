@@ -239,7 +239,9 @@ class FeedView extends BaseView {
    */
   renderPublishedSuccess(post) {
     document.getElementById("news-img-content").innerHTML = "";
-    document.getElementById("news-content__textarea").value = "";
+    const textarea = document.getElementById("news-content__textarea");
+    textarea.value = "";
+    textarea.style.height = "60px";
 
     const template = Handlebars.templates["feedPost.hbs"];
     const avatar = this.userState.avatar;

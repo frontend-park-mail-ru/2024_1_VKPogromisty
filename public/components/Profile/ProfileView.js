@@ -239,6 +239,7 @@ class ProfileView extends BaseView {
         if (content === "" && fileInput.files.length === 0) {
           return;
         }
+
         this.eventBus.emit("clickedPublishPost", {
           content: content,
           attachments: fileInput.files,
@@ -427,7 +428,9 @@ class ProfileView extends BaseView {
    */
   postPublishedSuccess({ post, author }) {
     document.getElementById("news-img-content").innerHTML = "";
-    document.getElementById("news-content__textarea").value = "";
+    const textarea = document.getElementById("news-content__textarea");
+    textarea.value = "";
+    textarea.style.height = "60px";
 
     const template = Handlebars.templates["profilePost.hbs"];
     const avatar = this.userState.avatar;
