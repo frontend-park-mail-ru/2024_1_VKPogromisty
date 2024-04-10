@@ -69,6 +69,10 @@ class ChatView extends BaseView {
       "updateMessageSuccess",
       this.renderUpdateMessage.bind(this),
     );
+    this.eventBus.addEventListener(
+      "serverError",
+      this.serverErrored.bind(this),
+    );
   }
 
   /**
@@ -156,26 +160,6 @@ class ChatView extends BaseView {
         input.value = "";
       });
 
-    input.addEventListener(
-      "keypress",
-      (event) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          if (input.value === "") {
-            return;
-          }
-
-          this.eventBus.emit("clickedSendMessage", {
-            companionId: this.companionId,
-            textContent: input.value,
-          });
-
-          input.value = "";
-        }
-      },
-      { capture: true },
-    );
-
     this.chatElement = document.getElementById("messages");
 
     const printMessage = document.getElementById("print-message");
@@ -214,7 +198,6 @@ class ChatView extends BaseView {
    * @param {Message[]} messages - The messages of conversation with current companion
    */
   renderMessages(messages) {
-    console.log(messages);
     this.isWaitMessages = false;
     const template = Handlebars.templates["message.hbs"];
     const noMessages = messages.length === 0;
@@ -307,6 +290,12 @@ class ChatView extends BaseView {
       const okMessage = document.createElement("img");
       const parentSend = sendMessage.parentElement;
 
+      Array.from(
+        document.getElementsByClassName("message-menu__accept-img"),
+      ).forEach((elem) => {
+        elem.remove();
+      });
+
       okMessage.setAttribute("src", "../static/images/check.png");
       okMessage.setAttribute("data-id", messageId);
       okMessage.classList.add("message-menu__accept-img");
@@ -369,6 +358,16 @@ class ChatView extends BaseView {
     if (messageAtPage) {
       messageAtPage.parentElement.remove();
     }
+  }
+
+  /**
+   * Shows that mistake called
+   * @return {void}
+   */
+  serverErrored() {
+    const serverError = document.getElementById("server-error-500");
+
+    serverError.classList.remove("server-error-500");
   }
 }
 

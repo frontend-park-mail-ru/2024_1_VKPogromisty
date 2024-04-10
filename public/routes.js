@@ -66,20 +66,29 @@ export class Routing {
 
   /**
    * Redirects to the current page
-   * @param {string} url
+   * @param {string} url - The url of current page
+   * @param {boolean} addToHistory - Checks if need to add to history
    * @returns {void}
    */
-  redirect(url) {
+  redirect(url, addToHistory = true) {
     const foundedUrl = this.#config.paths.find(
       (elem) => elem.path.exec(url) !== null,
     );
+
     const slugs = foundedUrl.path.exec(url).groups;
 
+    if (foundedUrl.akaPath === "feed") {
+      url = "feed";
+    }
+
     const state = {
-      title: window.location.pathname,
+      url: url,
     };
 
-    history.pushState(state, "", url);
+    if (addToHistory) {
+      history.pushState(state, "", url);
+    }
+
     document.title = `Socio - ${foundedUrl.title}`;
 
     foundedUrl.func(slugs);

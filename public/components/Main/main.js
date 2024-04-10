@@ -12,15 +12,15 @@ const sidebar = [
     text: "Друзья",
   },
   {
-    href: "#",
+    href: "/groups",
     text: "Сообщества",
   },
   {
-    href: "#",
+    href: "/settings",
     text: "Настройки",
   },
   {
-    href: "#",
+    href: "/stickers",
     text: "Стикеры",
   },
 ];

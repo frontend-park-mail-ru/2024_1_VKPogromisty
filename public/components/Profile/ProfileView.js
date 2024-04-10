@@ -54,6 +54,7 @@ const staticUrl = `${API_URL}/static`;
  * @typedef {Object} ProfileInfo
  * @property {UserInfo} User - The info about profile's user
  * @property {boolean} isSubscribedTo - Is the session's user a subscriber of profile's user
+ * @property {boolean} isSubscriber - Is the profile's user a subscriber of session's user
  */
 
 /**
@@ -165,11 +166,12 @@ class ProfileView extends BaseView {
    * Renders user's profile
    * @param {ProfileInfo} profileInfo - The info of profile's user
    */
-  renderProfile({ User, isSubscribedTo }) {
+  renderProfile({ User, isSubscribedTo, isSubscriber }) {
     User.dateOfBirth = formatDayMonthYear(User.dateOfBirth);
 
     const { userId, firstName, lastName, dateOfBirth, avatar } = User;
     this.mainElement = document.getElementById("activity");
+    this.isSubscriber = isSubscriber;
     const isMe = (this.isMe =
       Number(this.userId) === Number(this.userState.userId));
 
@@ -183,6 +185,7 @@ class ProfileView extends BaseView {
       staticUrl,
       isMe,
       isSubscribedTo,
+      isSubscriber,
     });
 
     this.postsElement = document.getElementById("posts");
@@ -233,7 +236,7 @@ class ProfileView extends BaseView {
       publishButton.addEventListener("click", () => {
         const content = document.getElementById("news-content__textarea").value;
 
-        if (content === "") {
+        if (content === "" && fileInput.files.length === 0) {
           return;
         }
         this.eventBus.emit("clickedPublishPost", {
@@ -262,6 +265,12 @@ class ProfileView extends BaseView {
       });
     }
 
+    if (this.sendMessageUser !== null) {
+      this.sendMessageUser.addEventListener("click", () => {
+        this.router.redirect(`/chat/${this.userId}`);
+      });
+    }
+
     this.eventBus.emit("readyRenderPosts", {
       userId: this.userId,
       lastPostId: this.lastPostId,
@@ -279,7 +288,11 @@ class ProfileView extends BaseView {
     this.subscribeUser.classList.add(
       "subscribed-to-options__button-unsubscribe",
     );
-    this.subscribeUser.innerHTML = "Отписаться";
+    if (this.isSubscriber) {
+      this.subscribeUser.innerHTML = "Удалить из друзей";
+    } else {
+      this.subscribeUser.innerHTML = "Отписаться";
+    }
     this.sendMessageUser.classList.remove(
       "subscribed-to-options__button-subscribe-message",
     );
@@ -297,7 +310,11 @@ class ProfileView extends BaseView {
       "subscribed-to-options__button-unsubscribe",
     );
     this.subscribeUser.classList.add("subscribed-to-options__button-subscribe");
-    this.subscribeUser.innerHTML = "Подписаться";
+    if (this.isSubscriber) {
+      this.subscribeUser.innerHTML = "Принять заявку в друзья";
+    } else {
+      this.subscribeUser.innerHTML = "Подписаться";
+    }
     this.sendMessageUser.classList.remove(
       "subscribed-to-options__button-unsubscribe-message",
     );

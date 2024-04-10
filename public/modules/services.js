@@ -193,7 +193,6 @@ export class ProfileService {
     email,
     password,
     repeatPassword,
-    dateOfBirth,
     avatar,
     userState,
   ) {
@@ -203,7 +202,6 @@ export class ProfileService {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("repeatPassword", repeatPassword);
-    formData.append("dateOfBirth", dateOfBirth);
     formData.append("avatar", avatar);
 
     const response = await fetch(this.baseUrl, {
@@ -233,9 +231,13 @@ export class ProfileService {
       },
     });
 
-    await response.json();
+    if (response.ok) {
+      return genResponse(response.status, null, null);
+    }
 
-    return genResponse(response.status, null, null);
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
   }
 }
 

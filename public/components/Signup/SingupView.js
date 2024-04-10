@@ -138,7 +138,7 @@ class SignupView extends BaseView {
     email.addEventListener("focusout", () => {
       incorrectEmail.classList.add(correct);
 
-      if (!validateEmail(email.value)) {
+      if (!validateEmail(email.value.trim())) {
         incorrectEmail.classList.remove(correct);
       }
     });
@@ -166,7 +166,7 @@ class SignupView extends BaseView {
     firstName.addEventListener("focusout", () => {
       incorrectFirstName.classList.add(correct);
 
-      if (!validateName(firstName.value)) {
+      if (!validateName(firstName.value.trim())) {
         incorrectFirstName.classList.remove(correct);
       }
     });
@@ -174,7 +174,7 @@ class SignupView extends BaseView {
     lastName.addEventListener("focusout", () => {
       incorrectLastName.classList.add(correct);
 
-      if (!validateName(lastName.value)) {
+      if (!validateName(lastName.value.trim())) {
         incorrectLastName.classList.remove(correct);
       }
     });
@@ -294,7 +294,7 @@ class SignupView extends BaseView {
 
     let flag = true;
 
-    if (!validateEmail(email.value)) {
+    if (!validateEmail(email.value.trim())) {
       incorrectEmail.classList.remove(correct);
       flag = false;
     }
@@ -309,12 +309,12 @@ class SignupView extends BaseView {
       flag = false;
     }
 
-    if (!validateName(firstName.value)) {
+    if (!validateName(firstName.value.trim())) {
       incorrectFirstName.classList.remove(correct);
       flag = false;
     }
 
-    if (!validateName(lastName.value)) {
+    if (!validateName(lastName.value.trim())) {
       incorrectLastName.classList.remove(correct);
       flag = false;
     }

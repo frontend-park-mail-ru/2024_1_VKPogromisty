@@ -39,19 +39,19 @@ const staticUrl = `${API_URL}/static`;
 
 const rightSidebar = [
   {
-    href: "#",
+    href: "/nothing",
     text: "НОВОСТИ",
   },
   {
-    href: "#",
+    href: "/nothing",
     text: "СООБЩЕСТВА",
   },
   {
-    href: "#",
+    href: "/nothing",
     text: "ДРУЗЬЯ",
   },
   {
-    href: "#",
+    href: "/nothing",
     text: "ФОТОГРАФИИ",
   },
 ];
@@ -88,6 +88,10 @@ class FeedView extends BaseView {
     this.eventBus.addEventListener(
       "postUpdateSuccess",
       this.postUpdatedSuccess.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "serverError",
+      this.serverErrored.bind(this),
     );
   }
 
@@ -175,7 +179,7 @@ class FeedView extends BaseView {
       publishButton.addEventListener("click", () => {
         const content = document.getElementById("news-content__textarea").value;
 
-        if (content === "") {
+        if (content === "" && fileInput.files.length === 0) {
           return;
         }
         this.eventBus.emit("clickedPublishPost", {
@@ -355,6 +359,16 @@ class FeedView extends BaseView {
     if (post !== null) {
       post.remove();
     }
+  }
+
+  /**
+   * Shows that mistake called
+   * @return {void}
+   */
+  serverErrored() {
+    const serverError = document.getElementById("server-error-500");
+
+    serverError.classList.remove("server-error-500");
   }
 }
 

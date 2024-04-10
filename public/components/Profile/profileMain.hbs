@@ -23,7 +23,11 @@
         class="subscribed-to-options__button-subscribe"
         id="subscribe-{{ this.userId }}"
       >
+        {{#if isSubscriber}}
+        Принять заявку в друзья
+        {{else}}
         Подписаться
+        {{/if}}
       </button>
       <button
         type="button"
@@ -42,7 +46,11 @@
         class="subscribed-to-options__button-unsubscribe"
         id="subscribe-{{ this.userId }}"
       >
+        {{#if isSubscriber}}
+        Удалить из друзей
+        {{else}}
         Отписаться
+        {{/if}}
       </button>
       <a href="/chat/{{ this.userId }}">
         <button
@@ -62,11 +70,15 @@
     {{/unless}}
   </div>
   <div class="profile-wrapper">
-    <img
-      class="profile-wrapper__settings-img"
-      src="../static/images/setting.png"
-      alt="Settings"
-    />
+    {{#if isMe}}
+    <a href="/settings">
+      <img
+        class="profile-wrapper__settings-img"
+        src="../static/images/setting.png"
+        alt="Settings"
+      />
+    </a>
+    {{/if}}
     <img class="profile-wrapper__back-img" src="../static/images/forest.jpg" />
   </div>
 </div>

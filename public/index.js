@@ -10,6 +10,7 @@ import { WEBSOCKET_URL } from "./modules/consts.js";
 import WSocket from "./components/WebSocket.js";
 import FeedController from "./components/Feed/FeedController.js";
 import { AuthService } from "./modules/services.js";
+import SettingsController from "./components/Settings/SettingsController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const userState = new UserState();
@@ -28,6 +29,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
   const chatController = new ChatController(router, userState, webSocket);
   const feedController = new FeedController(router, userState, webSocket);
+  const settingsController = new SettingsController(
+    router,
+    userState,
+    webSocket,
+  );
 
   const config = {
     paths: [
@@ -58,6 +64,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Профиль",
       },
       {
+        path: /\/settings/,
+        func: settingsController.renderSettingsView.bind(settingsController),
+        title: "Настройки",
+      },
+      {
         path: /\/messenger/,
         func: messengerController.renderMessengerView.bind(messengerController),
         title: "Мессенджер",
@@ -75,6 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       {
         path: /\//,
         func: feedController.renderFeed.bind(feedController),
+        akaPath: "feed",
         title: "Новости",
       },
     ],
@@ -94,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await userState.updateState();
         router.redirect("/feed");
       } else {
-        router.redirect(currentPageUrl);
+        router.redirect(currentPageUrl, false);
       }
       break;
     default:
@@ -104,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         webSocket.openWebSocket();
         router.redirect(currentPageUrl);
       } else {
-        router.redirect("/login");
+        router.redirect("/login", false);
       }
   }
 });

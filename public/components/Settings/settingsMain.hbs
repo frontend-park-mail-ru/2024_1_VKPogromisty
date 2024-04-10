@@ -1,0 +1,120 @@
+<div class="settings">
+  <div class="setting">
+    <div class="setting-info">
+      <span class="setting__span">Фамилия</span>
+      <input
+        type="text"
+        class="setting__input"
+        value="{{ this.lastName }}"
+        id="last-name"
+      />
+    </div>
+    <div
+      class="form__input__error form__input__correct"
+      id="incorrect-last-name"
+    >
+      Некорректное имя
+    </div>
+  </div>
+  <div class="setting">
+    <div class="setting-info">
+      <span class="setting__span">Имя</span>
+      <input
+        type="text"
+        class="setting__input"
+        value="{{ this.firstName }}"
+        id="first-name"
+      />
+    </div>
+    <div
+      class="form__input__error form__input__correct"
+      id="incorrect-first-name"
+    >
+      Некорректное имя
+    </div>
+  </div>
+  <div class="email-setting">
+    <div class="setting-info">
+      <span class="setting__span">Почта</span>
+      <input
+        type="text"
+        class="setting__input"
+        value="{{ this.email }}"
+        id="email"
+      />
+    </div>
+    <div class="form__input__error form__input__correct" id="incorrect-email">
+      Некорректная почта
+    </div>
+    <div class="form__input__error form__input__correct" id="repeat-email">
+      Почта уже существует
+    </div>
+  </div>
+  <div class="setting">
+    <div class="setting-info">
+      <span class="setting__span">Изменить пароль</span>
+      <input
+        type="password"
+        class="setting__input"
+        placeholder="Пароль (не менее 6 символов)"
+        id="password"
+        value=""
+      />
+    </div>
+    <div
+      class="form__input__error form__input__correct"
+      id="incorrect-password"
+    >
+      Пароль должен иметь длину не менее 6 символов
+    </div>
+  </div>
+  <div class="setting">
+    <div class="setting-info">
+      <span class="setting__span">Повторите пароль</span>
+      <input
+        type="password"
+        class="setting__input"
+        placeholder="Повторите пароль"
+        id="repeat-password"
+        value=""
+      />
+    </div>
+    <div
+      class="form__input__error form__input__correct"
+      id="incorrect-repeat-password"
+    >
+      Пароли должны совпадать
+    </div>
+  </div>
+  <div class="avatar-setting">
+    <span class="setting__span">Обновить фотографию</span>
+    <div class="file-input">
+      <label class="input-avatar-setting">
+        <input
+          class="input-avatar-setting__input"
+          type="file"
+          name="avatar"
+          id="avatar"
+          accept="image/png, image/gif, image/jpeg, image/jpg"
+        />
+        <span class="input-avatar__span">Загрузить изображение </span>
+      </label>
+    </div>
+    <img
+      class="setting-avatar-prewatch"
+      id="prewatch"
+      src="{{ this.staticUrl }}/{{ this.avatar }}"
+    />
+  </div>
+  <div class="accept-setting">
+    <button class="accept-setting__button" id="accept-setting">
+      Сохранить
+    </button>
+    <button class="cancel-setting__button" id="cancel-setting">
+      Отменить изменения
+    </button>
+  </div>
+</div>
+<button class="delete-setting__button" id="delete-setting">
+  Удалить аккаунт
+</button>

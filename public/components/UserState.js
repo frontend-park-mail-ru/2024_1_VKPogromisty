@@ -36,6 +36,8 @@ class UserState {
         this.lastName = result.body.User.lastName;
         this.createdAt = result.body.User.createdAt;
         this.updatedAt = result.body.User.updatedAt;
+        this.email = result.body.User.email;
+        this.dateOfBirth = result.body.User.dateOfBirth;
         return true;
       default:
         return false;

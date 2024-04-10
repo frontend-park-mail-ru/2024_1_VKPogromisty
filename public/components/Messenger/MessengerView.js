@@ -57,6 +57,10 @@ class MessengerView extends BaseView {
       "getDialogsSuccess",
       this.renderDialogs.bind(this),
     );
+    this.eventBus.addEventListener(
+      "serverError",
+      this.serverErrored.bind(this),
+    );
   }
 
   /**
@@ -111,6 +115,16 @@ class MessengerView extends BaseView {
         this.router.redirect(`/chat/${elem.dataset.id}`);
       });
     });
+  }
+
+  /**
+   * Shows that mistake called
+   * @return {void}
+   */
+  serverErrored() {
+    const serverError = document.getElementById("server-error-500");
+
+    serverError.classList.remove("server-error-500");
   }
 }
 
