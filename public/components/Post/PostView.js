@@ -113,8 +113,6 @@ class PostView extends BaseView {
       showMore.innerHTML = "Показать ещё";
 
       content.appendChild(showMore);
-    } else {
-      content.style.height = contentScrHeight - 4 + "px";
     }
 
     document.querySelectorAll(".post-author__edit-img").forEach((elem) => {
