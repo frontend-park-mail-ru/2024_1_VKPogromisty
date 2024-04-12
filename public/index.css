@@ -523,8 +523,6 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   text-align: center;
   padding: 5px;
-  border-bottom: 1px solid #000000;
-  line-height: 3px;
   overflow: hidden;
 }
 
@@ -546,8 +544,10 @@ input::-webkit-inner-spin-button {
 
 .post-content__img {
   box-sizing: border-box;
-  width: 80%;
-  margin: 10px 0px 15px 0px;
+  width: 97%;
+  margin: 5px 0px 15px 0px;
+  border-radius: 7px;
+  box-shadow: 0 0 5px 1px rgb(145, 143, 143);
 }
 
 .post-content p {
@@ -563,7 +563,7 @@ input::-webkit-inner-spin-button {
   flex-wrap: wrap;
   align-content: center;
   border-bottom: 1px solid #000000;
-  height: 40px;
+  height: 50px;
   padding-right: 15px;
 }
 
@@ -583,6 +583,9 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   align-self: center;
+  width: 100px;
+  justify-content: space-between;
+  padding-left: 15px;
 }
 
 .reactions-like {
@@ -615,13 +618,11 @@ input::-webkit-inner-spin-button {
 }
 
 .show-comments-label__span {
-  display: flex;
-  font-family: var(--ordinary-text);
   color: var(--text-input-color);
-  align-content: center;
-  justify-content: center;
   font-size: 18px;
   cursor: pointer;
+  margin-top: 4px;
+  margin-left: 5px;
 }
 
 .comment-menu {
@@ -641,11 +642,6 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   height: 50px;
   font-family: var(--ordinary-text);
-}
-
-.post-comment img[class="post-comment-img"] {
-  box-sizing: border-box;
-  margin: 10px;
 }
 
 .comment {
@@ -682,9 +678,10 @@ input::-webkit-inner-spin-button {
 
 .post-comment-img {
   box-sizing: border-box;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
+  filter: invert(30%);
 }
 
 .post-footer {
@@ -720,13 +717,16 @@ input::-webkit-inner-spin-button {
   height: 24px;
 }
 
-.post-menu__ellipsees-img,
 .reactions__heart-img,
 .show-comments__messenger-img {
   box-sizing: border-box;
-  width: 16px;
-  height: 16px;
+  width: 25px;
+  height: 25px;
   cursor: pointer;
+}
+
+.show-comments__messenger-img {
+  filter: invert(20%);
 }
 
 .comment-buttons__paper-clip-img {
@@ -734,6 +734,7 @@ input::-webkit-inner-spin-button {
   width: 20px;
   height: 20px;
   cursor: pointer;
+  filter: invert(30%);
 }
 .search__input {
   box-sizing: border-box;
@@ -1051,6 +1052,7 @@ input::-webkit-inner-spin-button {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding: 1px;
 }
 
 .chatter-content__time-span {
