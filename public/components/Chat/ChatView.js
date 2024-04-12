@@ -81,7 +81,7 @@ class ChatView extends BaseView {
    * @param {number} companionId
    */
   renderMain(companionId) {
-    this.companionId = companionId;
+    this.companionId = +companionId;
 
     const { userId, avatar, firstName, lastName } = this.userState;
 
@@ -104,6 +104,12 @@ class ChatView extends BaseView {
       );
       this.eventBus.emit("clickLogoutButton", {});
     });
+
+    document.onkeydown = (event) => {
+      if (event.key === "Escape") {
+        this.router.redirect("/messenger");
+      }
+    };
 
     this.eventBus.emit("readyRenderCompanion", this.companionId);
   }
@@ -240,6 +246,16 @@ class ChatView extends BaseView {
    * @param {Message[]} messages - The messages of conversation with current companion
    */
   renderAddMessage(message) {
+    if (window.location.pathname !== `/chat/${this.companionId}`) {
+      return;
+    }
+    if (
+      message.senderId !== +this.companionId &&
+      message.receiverId !== +this.companionId
+    ) {
+      return;
+    }
+
     const template = Handlebars.templates["message.hbs"];
     const messages = [message];
 
@@ -326,6 +342,9 @@ class ChatView extends BaseView {
    * @param {Message} message - The message of conversation with current companion
    */
   renderUpdateMessage(message) {
+    if (window.location.pathname !== `/chat/${this.companionId}`) {
+      return;
+    }
     const contentPlace = document.getElementById(
       `message-content-${message.id}`,
     );
@@ -351,6 +370,9 @@ class ChatView extends BaseView {
    * @param {Message} message - The message of conversation with current companion
    */
   renderDeleteMessage(message) {
+    if (window.location.pathname !== `/chat/${this.companionId}`) {
+      return;
+    }
     const messageAtPage = document.getElementById(
       `message-${message.messageId}`,
     );
