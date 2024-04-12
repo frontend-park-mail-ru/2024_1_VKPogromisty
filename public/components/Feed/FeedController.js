@@ -7,10 +7,6 @@ const incomingEvents = [
   "clickLogoutButton",
   "getPostsSuccess",
   "clickedPublishPost",
-  "clickedUpdatePost",
-  "clickedDeletePost",
-  "postUpdateSuccess",
-  "postDeleteSuccess",
   "publishedPostSuccess",
   "serverError",
 ];
@@ -40,6 +36,8 @@ class FeedController {
   renderFeed() {
     this.feedView.renderFeedMain();
   }
+
+  deleteScrollListener() {}
 }
 
 export default FeedController;

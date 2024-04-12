@@ -52,7 +52,24 @@ class MessengerView extends BaseView {
 
     this.router = router;
     this.userState = userState;
+    this.promissedMessages = new Map();
 
+    this.eventBus.addEventListener(
+      "updatedWebSocket",
+      this.updatedWebSocket.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "sendMessageSuccess",
+      this.sendedMessage.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "updateLastMessage",
+      this.updatedMessage.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "receiveProfileData",
+      this.addDialog.bind(this),
+    );
     this.eventBus.addEventListener(
       "getDialogsSuccess",
       this.renderDialogs.bind(this),
@@ -82,8 +99,89 @@ class MessengerView extends BaseView {
     });
 
     this.mainElement = document.getElementById("activity");
+    this.mainElement.innerHTML = Handlebars.templates["messengerMain.hbs"]({
+      noDialogs: true,
+    });
+    this.dialogsElement = document.getElementById("dialogs");
 
+    this.eventBus.emit("needUpgradeWebSocket", {});
+  }
+
+  updatedWebSocket() {
     this.eventBus.emit("readyRenderDialogs", {});
+  }
+
+  sendedMessage(message) {
+    if (window.location.pathname !== "/messenger") {
+      return;
+    }
+    if (message.senderId === this.userState.userId) {
+      if (document.getElementById(`dialog-${message.receiverId}`)) {
+        document.getElementById(
+          `chatter-info__message-span-${message.receiverId}`,
+        ).innerHTML = message.content;
+        document.getElementById(
+          `chatter-content__time-span-${message.receiverId}`,
+        ).innerHTML = formatMinutesHours(message.createdAt);
+      } else {
+        this.promissedMessages.set(message.receiverId, {
+          content: message.content,
+          createdAt: formatMinutesHours(message.createdAt),
+          id: message.id,
+        });
+        this.eventBus.emit("needGetProfile", message.receiverId);
+      }
+    } else {
+      if (document.getElementById(`dialog-${message.senderId}`)) {
+        document.getElementById(
+          `chatter-info__message-span-${message.senderId}-${message.id}`,
+        ).innerHTML = message.content;
+        document.getElementById(
+          `chatter-content__time-span-${message.senderId}-${message.id}`,
+        ).innerHTML = formatMinutesHours(message.createdAt);
+      } else {
+        this.promissedMessages.set(message.senderId, {
+          content: message.content,
+          createdAt: formatMinutesHours(message.createdAt),
+          id: message.id,
+        });
+        this.eventBus.emit("needGetProfile", message.senderId);
+      }
+    }
+  }
+
+  updatedMessage(message) {
+    if (window.location.pathname !== "/messenger") {
+      return;
+    }
+    if (message.senderId === this.userState.userId) {
+      if (document.getElementById(`dialog-${message.receiverId}`)) {
+        document.getElementById(
+          `chatter-info__message-span-${message.receiverId}`,
+        ).innerHTML = message.content;
+      }
+    } else {
+      if (document.getElementById(`dialog-${message.senderId}`)) {
+        document.getElementById(
+          `chatter-info__message-span-${message.senderId}-${message.id}`,
+        ).innerHTML = message.content;
+      }
+    }
+  }
+
+  addDialog(profile) {
+    const lastMessage = this.promissedMessages.get(profile.User.userId);
+    this.promissedMessages.delete(profile.User.userId);
+    this.dialogsElement.innerHTML += Handlebars.templates["messenge.hbs"]({
+      staticUrl,
+      elem: { companion: profile.User, lastMessage },
+    });
+    const chats = document.querySelectorAll(".dialog");
+    chats.forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.router.redirect(`/chat/${elem.dataset.id}`);
+      });
+    });
   }
 
   /**
@@ -92,8 +190,8 @@ class MessengerView extends BaseView {
    * @param {Dialog[]} dialogs
    */
   renderDialogs(dialogs) {
-    const template = Handlebars.templates["messengerMain.hbs"];
-    const noDialogs = dialogs.length === 0;
+    const template = Handlebars.templates["messenge.hbs"];
+    const noDialogs = document.getElementById("no-dialogs__span");
 
     dialogs.forEach((elem) => {
       if (elem.user1.userId === this.userState.userId) {
@@ -105,9 +203,13 @@ class MessengerView extends BaseView {
       elem.lastMessage.createdAt = formatMinutesHours(
         elem.lastMessage.createdAt,
       );
-    });
 
-    this.mainElement.innerHTML = template({ staticUrl, dialogs, noDialogs });
+      this.dialogsElement.innerHTML += template({ staticUrl, elem });
+
+      if (noDialogs) {
+        noDialogs.remove();
+      }
+    });
 
     const chats = document.querySelectorAll(".dialog");
     chats.forEach((elem) => {

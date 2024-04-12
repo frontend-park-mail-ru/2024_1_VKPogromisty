@@ -276,6 +276,20 @@ export class PostService {
     return genResponse(response.status, data.body, data.message);
   }
 
+  async getCurrentPost(postId, userState) {
+    const response = await fetch(this.baseUrl + postId, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "X-CSRF-Token": userState.csrfToken,
+      },
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
   /**
    * Gets the friends' posts from the server
    *

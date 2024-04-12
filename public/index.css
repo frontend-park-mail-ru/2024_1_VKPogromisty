@@ -522,7 +522,6 @@ input::-webkit-inner-spin-button {
   position: relative;
   box-sizing: border-box;
   text-align: center;
-
   padding: 5px;
   border-bottom: 1px solid #000000;
   line-height: 3px;

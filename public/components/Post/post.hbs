@@ -1,60 +1,64 @@
-{{#each posts}}
-<div id="post{{ this.postId }}" class="post">
+<div id="post-{{ this.post.postId }}" class="post">
   <div class="post-header">
     <div class="post-author">
-      <img
-        class="post-author__user-avatar-img"
-        src="{{ ../staticUrl }}/{{ ../author.avatar }}"
-      />
+      <a href="/profile/{{ this.author.userId }}">
+        <img
+          class="post-author__user-avatar-img"
+          src="{{ this.staticUrl }}/{{ this.author.avatar }}"
+        />
+      </a>
       <div class="post-author-info">
         <span class="post-author__name-span"
-          >{{ ../author.firstName }} {{ ../author.lastName }}</span
+          >{{ this.author.firstName }} {{ this.author.lastName }}</span
         >
-        <div class="post-author-time" id="post-author-time-{{ this.postId }}">
+        <div
+          class="post-author-time"
+          id="post-author-time-{{ this.post.postId }}"
+        >
           <span class="post-author-time__created-at-span">
-            {{ this.createdAt }}
+            {{ this.post.createdAt }}
           </span>
-          {{#if this.hasUpdated}}
+          {{#if this.post.hasUpdated}}
           <img
             class="post-author-time__dot-img"
             src="../static/images/dot.png"
           />
           <span
             class="post-author-time__last-time-span"
-            id="edited-{{ this.postId }}"
+            id="edited-{{ this.post.postId }}"
           >
-            {{ this.updatedAt }}
+            {{ this.post.updatedAt }}
           </span>
           {{/if}}
         </div>
       </div>
     </div>
-    <div class="post-menu" id="post-menu-{{ this.postId }}">
-      {{#if ../isMe}}
+    <div class="post-menu" id="post-menu-{{ this.post.postId }}">
+      {{#if isMe}}
       <img
         class="post-author__edit-img"
-        id="edit-img-{{ this.postId }}"
-        data-id="{{ this.postId }}"
+        id="edit-img-{{ this.post.postId }}"
+        data-id="{{ this.post.postId }}"
         src="../static/images/edit.png"
       />
       <img
         class="post-author__trash-basket-img"
-        id="trash-basket-{{ this.postId }}"
-        data-id="{{ this.postId }}"
+        id="trash-basket-{{ this.post.postId }}"
+        data-id="{{ this.post.postId }}"
         src="../static/images/trash-can.png"
       />
       {{/if}}
     </div>
   </div>
-  <div class="post-content">
+  <div class="post-content" id="post-content-{{ this.post.postId }}">
     <textarea
       class="post-content__text-span"
-      id="textarea-{{ this.postId }}"
+      id="textarea-{{ this.post.postId }}"
       readonly
-      >{{ this.content }}</textarea
+      >{{ this.post.content }}</textarea
     >
-    {{#each this.attachments}}
-    <img class="post-content__img" src="{{ ../../staticUrl }}/{{ this }}" />
+    {{#each this.post.attachments}}
+    <img class="post-content__img" src="{{ ../staticUrl }}/{{ this }}" />
     {{/each}}
   </div>
   <div class="post-reaction">
@@ -78,10 +82,10 @@
     <div class="post-footer">
       <img
         class="post-author__user-avatar-img"
-        src="{{../staticUrl}}/{{ ../avatar }}"
+        src="{{ staticUrl }}/{{ avatar }}"
       />
       <input
-        id="user-comment{{ this.postId }}"
+        id="user-comment{{ this.post.postId }}"
         class="post-footer__input"
         type="text"
         name="user-comment"
@@ -98,4 +102,3 @@
     </div>
   </div>
 </div>
-{{/each}}

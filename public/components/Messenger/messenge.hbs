@@ -1,0 +1,31 @@
+<div
+  class="dialog"
+  data-id="{{ elem.companion.userId }}"
+  id="dialog-{{ elem.companion.userId }}"
+>
+  <div class="chatter">
+    <img
+      class="chatter__avatar-img"
+      src="{{ staticUrl }}/{{ elem.companion.avatar }}"
+    />
+    <div class="chatter-info">
+      <span class="chatter-info__name-span"
+        >{{ elem.companion.firstName }} {{ elem.companion.lastName }}</span
+      >
+      <div class="chatter-content">
+        <span
+          class="chatter-content__message-span"
+          id="chatter-info__message-span-{{ elem.companion.userId }}-{{
+            elem.lastMessage.id
+          }}"
+          >{{ elem.lastMessage.content }}</span
+        >
+        <span
+          class="chatter-content__time-span"
+          id="chatter-content__time-span-{{ elem.companion.userId }}"
+          >{{ elem.lastMessage.createdAt }}</span
+        >
+      </div>
+    </div>
+  </div>
+</div>

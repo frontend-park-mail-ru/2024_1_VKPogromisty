@@ -13,5 +13,7 @@
   "globals": {
     "Handlebars": "readonly"
   },
-  "rules": {}
+  "rules": {
+    "no-console": "error"
+  }
 }

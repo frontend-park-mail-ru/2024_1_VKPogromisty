@@ -90,6 +90,8 @@ export class Routing {
     }
 
     document.title = `Socio - ${foundedUrl.title}`;
+    document.onscroll = null;
+    document.onkeydown = null;
 
     foundedUrl.func(slugs);
   }

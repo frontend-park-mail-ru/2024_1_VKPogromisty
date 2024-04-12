@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await userState.updateState();
         router.redirect("/feed");
       } else {
-        router.redirect(currentPageUrl, false);
+        router.redirect(currentPageUrl);
       }
       break;
     default:
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         webSocket.openWebSocket();
         router.redirect(currentPageUrl);
       } else {
-        router.redirect("/login", false);
+        router.redirect("/login");
       }
   }
 });

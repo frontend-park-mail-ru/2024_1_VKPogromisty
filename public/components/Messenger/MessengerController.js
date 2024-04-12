@@ -3,6 +3,12 @@ import MessengerView from "./MessengerView.js";
 import EventBus from "./public/MVC/EventBus.js";
 
 const incomingEvents = [
+  "needUpgradeWebSocket",
+  "sendMessageSuccess",
+  "needGetProfile",
+  "receiveProfileData",
+  "updateLastMessage",
+  "updatedWebSocket",
   "readyRenderDialogs",
   "getDialogsSuccess",
   "clickedLogoutButton",

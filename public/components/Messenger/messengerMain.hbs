@@ -7,42 +7,13 @@
       />
       <input class="search-dialog__input" type="text" placeholder="Поиск" />
     </div>
-    <div class="search-buttons">
-      <img class="search-buttons__menu-img" src="../static/images/menu.png" />
-    </div>
   </div>
-  <div class="dialogs">
-    {{#each dialogs}}
-    <div
-      class="dialog"
-      data-id="{{ this.companion.userId }}"
-      id="dialog-{{ this.companion.userId }}"
-    >
-      <div class="chatter">
-        <img
-          class="chatter__avatar-img"
-          src="{{../staticUrl}}/{{ this.companion.avatar }}"
-        />
-        <div class="chatter-info">
-          <span class="chatter-info__name-span"
-            >{{ this.companion.firstName }} {{ this.companion.lastName }}</span
-          >
-          <div class="chatter-content">
-            <span class="chatter-content__message-span">{{
-              this.lastMessage.content
-            }}</span>
-            <span class="chatter-content__time-span">{{
-              this.lastMessage.createdAt
-            }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    {{/each}}
-  </div>
+  <div class="dialogs" id="dialogs"></div>
 </div>
 <div class="no-dialogs">
   {{#if noDialogs}}
-  <span class="no-dialogs__span">У вас нет текущих диалогов</span>
+  <span class="no-dialogs__span" id="no-dialogs__span"
+    >У вас нет текущих диалогов</span
+  >
   {{/if}}
 </div>

@@ -2,7 +2,7 @@ import BaseView from "../../MVC/BaseView.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
-import { formatFullDate } from "../../modules/dateRemaking.js";
+import PostController from "../Post/PostController.js";
 
 /**
  * A Author structure
@@ -72,6 +72,7 @@ class FeedView extends BaseView {
 
     this.router = router;
     this.userState = userState;
+    this.postController = new PostController(router, userState);
 
     this.eventBus.addEventListener(
       "getPostsSuccess",
@@ -80,14 +81,6 @@ class FeedView extends BaseView {
     this.eventBus.addEventListener(
       "publishedPostSuccess",
       this.renderPublishedSuccess.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "postDeleteSuccess",
-      this.postDeletedSuccess.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "postUpdateSuccess",
-      this.postUpdatedSuccess.bind(this),
     );
     this.eventBus.addEventListener(
       "serverError",
@@ -131,20 +124,17 @@ class FeedView extends BaseView {
     this.isAllPosts = false;
 
     document.getElementById("logout-button").addEventListener("click", () => {
-      document.removeEventListener("scroll", this.checksNewPosts.bind(this));
       this.eventBus.emit("clickLogoutButton", {});
     });
 
     const newsTextarea = document.getElementById("news-content__textarea");
 
-    if (newsTextarea) {
-      newsTextarea.addEventListener("input", () => {
-        newsTextarea.style.height = "auto";
-        newsTextarea.style.height = newsTextarea.scrollHeight - 4 + "px";
-      });
-    }
+    newsTextarea.addEventListener("input", () => {
+      newsTextarea.style.height = "auto";
+      newsTextarea.style.height = newsTextarea.scrollHeight - 4 + "px";
+    });
 
-    document.addEventListener("scroll", this.checksNewPosts.bind(this));
+    document.onscroll = this.checksNewPosts.bind(this);
 
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
@@ -182,10 +172,17 @@ class FeedView extends BaseView {
         if (content === "" && fileInput.files.length === 0) {
           return;
         }
+
         this.eventBus.emit("clickedPublishPost", {
           content: content,
           attachments: fileInput.files,
         });
+
+        document.getElementById("news-img-content").innerHTML = "";
+        const textarea = document.getElementById("news-content__textarea");
+        textarea.value = "";
+        textarea.style.height = "60px";
+        fileInput.files = null;
       });
     }
 
@@ -200,23 +197,15 @@ class FeedView extends BaseView {
    */
   renderPosts(posts) {
     this.isWaitPosts = false;
-    const template = Handlebars.templates["feedPost.hbs"];
-    const avatar = this.userState.avatar;
 
     if (posts) {
       posts.forEach((elem) => {
-        if (elem.post.createdAt !== elem.post.updatedAt) {
-          elem.post.hasUpdated = true;
-        }
         if (elem.post.postId < this.lastPostId || this.lastPostId === 0) {
           this.lastPostId = elem.post.postId;
         }
       });
       posts.forEach((elem) => {
-        elem.post.createdAt = formatFullDate(elem.post.createdAt);
-      });
-      posts.forEach((elem) => {
-        elem.post.updatedAt = `обновлено ${formatFullDate(elem.post.updatedAt)}`;
+        this.postController.renderPostView(elem);
       });
     } else {
       this.isAllPosts = true;
@@ -224,162 +213,24 @@ class FeedView extends BaseView {
         .getElementById("no-more-posts")
         .classList.replace("no-more-posts__hidden", "no-more-posts__visible");
     }
-
-    this.postsElement.innerHTML += template({
-      posts,
-      avatar,
-      staticUrl,
-    });
-
-    document.querySelectorAll(".post-content__text-span").forEach((elem) => {
-      console.log("asdf");
-      const scrHeight = elem.scrollHeight;
-      if (scrHeight > 2000) {
-        elem.style.height = "1000px";
-      } else {
-        elem.style.height = scrHeight - 4 + "px";
-      }
-    });
   }
 
   /**
    * The post to be published
    *
-   * @param {PostInfo} post
+   * @param {PostInfo} postInfo
    */
-  renderPublishedSuccess(post) {
-    document.getElementById("news-img-content").innerHTML = "";
-    const textarea = document.getElementById("news-content__textarea");
-    textarea.value = "";
-    textarea.style.height = "60px";
-
-    const template = Handlebars.templates["feedPost.hbs"];
-    const avatar = this.userState.avatar;
-    post.post.createdAt = formatFullDate(post.post.createdAt);
-
-    const posts = [post];
-    const isMe = true;
-    const postId = post.postId;
-
-    this.postsElement.innerHTML =
-      template({
-        posts,
-        avatar,
-        staticUrl,
-        isMe,
-      }) + this.postsElement.innerHTML;
-
-    const curTextarea = document.getElementById(`textarea-${postId}`);
-    const scrHeight = curTextarea.scrollHeight;
-    if (scrHeight > 2000) {
-      curTextarea.style.height = "1000px";
-    } else {
-      curTextarea.style.height = scrHeight - 4 + "px";
-    }
-
-    const trashes = document.querySelectorAll(".post-author__trash-basket-img");
-    const edits = document.querySelectorAll(".post-author__edit-img");
-
-    trashes.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeletePost", elem.dataset.id);
-      });
-    });
-
-    edits.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        const parent = elem.parentNode;
-        const nextElem = elem.nextElementSibling;
-        const id = elem.dataset.id;
-        const textarea = document.getElementById(`textarea-${id}`);
-
-        textarea.removeAttribute("readonly");
-        textarea.focus();
-
-        const ok = document.createElement("img");
-        ok.classList.add("post-author__accept-img");
-        ok.setAttribute("data-id", id);
-        ok.setAttribute("src", "../static/images/check.png");
-        ok.addEventListener("click", () => {
-          if (textarea.value === "") {
-            return;
-          }
-
-          this.eventBus.emit("clickedUpdatePost", {
-            content: textarea.value,
-            attachments: null,
-            post_id: id,
-          });
-        });
-
-        const cancel = document.createElement("img");
-        cancel.classList.add("post-author__cancel-img");
-        cancel.setAttribute("data-id", id);
-        cancel.setAttribute("src", "../static/images/cancel.png");
-        cancel.addEventListener("click", () => {
-          textarea.toggleAttribute("readonly");
-          elem.style["display"] = "block";
-          nextElem.style["display"] = "block";
-          cancel.remove();
-          ok.remove();
-        });
-
-        parent.appendChild(ok);
-        parent.appendChild(cancel);
-        elem.style["display"] = "none";
-        nextElem.style["display"] = "none";
-      });
+  renderPublishedSuccess(postInfo) {
+    const { post, author } = postInfo;
+    this.postController.renderPostView({
+      post: post,
+      author: author,
+      publish: true,
     });
   }
 
-  /**
-   * Updates the current post on page
-   * @param {Post} postInfo - The info about updated post
-   * @return {void}
-   */
-  postUpdatedSuccess({ postId, updatedAt }) {
-    const postMenu = document.getElementById(`post-menu-${postId}`);
-    const textarea = document.getElementById(`textarea-${postId}`);
-    const edited = document.getElementById(`edited-${postId}`);
-
-    if (edited) {
-      edited.innerHTML = `обновлено ${formatFullDate(updatedAt)}`;
-    } else {
-      const postAuthorTime = document.getElementById(
-        `post-author-time-${postId}`,
-      );
-
-      const img = document.createElement("img");
-      img.setAttribute("src", "../static/images/dot.png");
-      img.classList.add("post-author-time__dot-img");
-
-      const span = document.createElement("span");
-      span.setAttribute("id", `edited-${postId}`);
-      span.classList.add("post-author-time__last-time-span");
-      span.innerHTML = `обновлено ${formatFullDate(updatedAt)}`;
-
-      postAuthorTime.appendChild(img);
-      postAuthorTime.appendChild(span);
-    }
-
-    textarea.toggleAttribute("readonly");
-    postMenu.lastChild.remove();
-    postMenu.lastChild.remove();
-    postMenu.firstElementChild.style["display"] = "block";
-    postMenu.firstElementChild.nextElementSibling.style["display"] = "block";
-  }
-
-  /**
-   * Deletes post from the page
-   * @param {number} postId - The ID of post deleted
-   * @return {void}
-   */
-  postDeletedSuccess(postId) {
-    const post = document.getElementById(`post${postId}`);
-
-    if (post !== null) {
-      post.remove();
-    }
+  deleteScrollListener() {
+    document.removeEventListener("scroll", this.checksNewPosts.bind(this));
   }
 
   /**

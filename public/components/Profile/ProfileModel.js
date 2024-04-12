@@ -55,14 +55,6 @@ class ProfileModel extends BaseModel {
       "clickedPublishPost",
       this.publishPost.bind(this),
     );
-    this.eventBus.addEventListener(
-      "clickedDeletePost",
-      this.deletePost.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "clickedUpdatePost",
-      this.updatePost.bind(this),
-    );
   }
 
   /**
@@ -174,51 +166,6 @@ class ProfileModel extends BaseModel {
     switch (result.status) {
       case 201:
         this.eventBus.emit("publishedPostSuccess", result.body);
-        break;
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
-  }
-
-  /**
-   * Deletes the post from user's profile
-   * @param {number} post_id - The ID of post current profile
-   * @return {void}
-   */
-  async deletePost(post_id) {
-    const result = await this.postService.deletePost(post_id, this.userState);
-
-    switch (result.status) {
-      case 204:
-        this.eventBus.emit("postDeleteSuccess", post_id);
-        break;
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
-  }
-
-  /**
-   * Updates the post from user's profile
-   * @param {number} post_id - The ID of post current profile
-   * @param {string} content - The text content of current post
-   * @return {void}
-   */
-  async updatePost({ post_id, content }) {
-    const result = await this.postService.updatePost(
-      post_id,
-      content,
-      this.userState,
-    );
-
-    switch (result.status) {
-      case 200:
-        this.eventBus.emit("postUpdateSuccess", result.body);
         break;
       case 401:
         this.router.redirect("/login");
