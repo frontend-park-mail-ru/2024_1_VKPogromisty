@@ -149,6 +149,8 @@ class ChatView extends BaseView {
       staticUrl,
     });
 
+    this.chatElement = document.getElementById("messages");
+
     const input = document.getElementById("print-message__text-input");
 
     document
@@ -158,6 +160,8 @@ class ChatView extends BaseView {
           return;
         }
 
+        this.chatElement.scrollTop = 0;
+
         this.eventBus.emit("clickedSendMessage", {
           companionId: this.companionId,
           textContent: input.value,
@@ -165,8 +169,6 @@ class ChatView extends BaseView {
 
         input.value = "";
       });
-
-    this.chatElement = document.getElementById("messages");
 
     const printMessage = document.getElementById("print-message");
     const messageTextarea = document.getElementById(
