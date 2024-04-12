@@ -519,14 +519,18 @@ input::-webkit-inner-spin-button {
 }
 
 .post-content {
+  position: relative;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  text-align: center;
+
   padding: 5px;
   border-bottom: 1px solid #000000;
   line-height: 3px;
-  align-items: center;
+  overflow: scroll;
+}
+
+.post-content::-webkit-scrollbar {
+  display: none;
 }
 
 .post-content__text-span {
@@ -562,6 +566,17 @@ input::-webkit-inner-spin-button {
   border-bottom: 1px solid #000000;
   height: 40px;
   padding-right: 15px;
+}
+
+.post-content__show-more-button {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+  background-color: rgb(126, 123, 123);
+  border-radius: 15px;
+  padding: 2px;
+  color: white;
+  text-decoration: underline;
 }
 
 .reactions {
@@ -1198,8 +1213,6 @@ input::-webkit-inner-spin-button {
 .search-friend {
   display: flex;
   flex-direction: row;
-  border-radius: 7px;
-  border: 1px solid black;
   height: 30px;
   align-items: center;
   padding-left: 10px;
@@ -1577,7 +1590,7 @@ input::-webkit-inner-spin-button {
 }
 
 .input-avatar__span {
-  padding: 10px 20px;
+  padding: 5px 10px;
   display: block;
   background-color: var(--background-input-color);
   color: #000;
