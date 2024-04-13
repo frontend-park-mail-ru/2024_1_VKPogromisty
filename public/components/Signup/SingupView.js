@@ -8,7 +8,7 @@ import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
 
 const correct = "form__input__correct";
-
+const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const main_inputs = [
   {
     inscription: "Фамилия",
@@ -119,6 +119,8 @@ class SignupView extends BaseView {
     const day = document.getElementById("day");
     const month = document.getElementById("month");
     const year = document.getElementById("year");
+    const avatar = document.getElementById("avatar");
+    const incorrectAvatar = document.getElementById("incorrect-avatar");
     const signupShowPassword = document.getElementById("signup-show-password");
     const signupShowRepeatPassword = document.getElementById(
       "signup-show-repeat-password",
@@ -219,17 +221,30 @@ class SignupView extends BaseView {
       }
     });
 
-    const uploadImg = document.getElementById("sign-up-upload-img");
+    avatar.addEventListener("change", () => {
+      incorrectAvatar.classList.add(correct);
+
+      const file = avatar.files[0];
+      const img = URL.createObjectURL(file);
+
+      const typeFile = (() => {
+        const parts = file.name.split(".");
+        return parts[parts.length - 1];
+      })();
+
+      if (validExtensions.indexOf(typeFile) === -1) {
+        incorrectAvatar.classList.remove(correct);
+        avatar.files = null;
+      } else {
+        document.getElementById("prewatch").setAttribute("src", img);
+      }
+    });
 
     document
       .getElementById("button-sign-up")
       .addEventListener("click", async () => {
         this.isValidForm();
       });
-
-    document.getElementById("avatar").addEventListener("change", () => {
-      uploadImg.classList.remove("form__input__correct");
-    });
   }
 
   /**
@@ -273,6 +288,7 @@ class SignupView extends BaseView {
     const month = document.getElementById("month");
     const year = document.getElementById("year");
     const avatar = document.getElementById("avatar");
+    const incorrectAvatar = document.getElementById("incorrect-avatar");
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
     const incorrectRepeatPassword = document.getElementById(
@@ -291,6 +307,7 @@ class SignupView extends BaseView {
     incorrectFirstName.classList.add(correct);
     incorrectLastName.classList.add(correct);
     incorrectDateOfBirthday.classList.add(correct);
+    incorrectAvatar.classList.add(correct);
 
     let flag = true;
 

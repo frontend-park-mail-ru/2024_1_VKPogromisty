@@ -52,19 +52,17 @@
         Отписаться
         {{/if}}
       </button>
-      <a href="/chat/{{ this.userId }}">
-        <button
-          type="button"
-          class="subscribed-to-options__button-unsubscribe-message"
-          id="send-message-{{ this.userId }}"
-        >
-          <img
-            src="../static/images/messenger.png"
-            class="subscribed-to-options__img"
-            alt="Message"
-          />
-        </button>
-      </a>
+      <button
+        type="button"
+        class="subscribed-to-options__button-unsubscribe-message"
+        id="send-message-{{ this.userId }}"
+      >
+        <img
+          src="../static/images/messenger.png"
+          class="subscribed-to-options__img"
+          alt="Message"
+        />
+      </button>
       {{/unless}}
     </div>
     {{/unless}}

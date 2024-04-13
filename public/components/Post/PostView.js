@@ -118,9 +118,13 @@ class PostView extends BaseView {
     document.querySelectorAll(".reactions__heart-img").forEach((elem) => {
       elem.addEventListener("mouseover", () => {
         elem.setAttribute("src", "../static/images/filled-heart.png");
+        elem.style.width = "28px";
+        elem.style.height = "28px";
       });
       elem.addEventListener("mouseout", () => {
         elem.setAttribute("src", "../static/images/heart.png");
+        elem.style.width = "25px";
+        elem.style.height = "25px";
       });
     });
 

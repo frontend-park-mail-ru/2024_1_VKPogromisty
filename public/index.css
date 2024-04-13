@@ -1095,7 +1095,7 @@ input::-webkit-inner-spin-button {
   max-width: 300px;
   border-radius: 7px;
   border: 1px solid grey;
-  background-color: var(--background-input-color);
+  background: linear-gradient(-45deg, #f8e4e0, #ffd2c8);
   padding: 5px 5px;
 }
 
@@ -1248,6 +1248,7 @@ input::-webkit-inner-spin-button {
   height: 50px;
   border-radius: 50%;
   margin-right: 15px;
+  object-fit: cover;
 }
 
 .friend {
@@ -1632,4 +1633,14 @@ input::-webkit-inner-spin-button {
   border-radius: 50%;
   margin-left: 30px;
   object-fit: cover;
+  margin-right: 10px;
+}
+
+.signup-avatar-prewatch {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-left: auto;
+  object-fit: cover;
+  margin-right: auto;
 }

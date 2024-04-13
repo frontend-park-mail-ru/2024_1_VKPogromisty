@@ -92,7 +92,7 @@ class ProfileModel extends BaseModel {
     );
 
     switch (result.status) {
-      case 200:
+      case 201:
         this.eventBus.emit("subscribedSuccess", {});
         break;
       case 401:

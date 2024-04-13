@@ -53,6 +53,10 @@ export class Routing {
       },
       { capture: true },
     );
+
+    window.onpopstate = (event) => {
+      this.redirect(event.state.url, false);
+    };
   }
 
   /**

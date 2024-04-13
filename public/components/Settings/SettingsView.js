@@ -9,7 +9,7 @@ import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
 
 const correct = "form__input__correct";
-
+const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const staticUrl = `${API_URL}/static`;
 
 /**
@@ -78,6 +78,7 @@ class SettingsView extends BaseView {
     const firstNameForm = document.getElementById("first-name");
     const lastNameForm = document.getElementById("last-name");
     const avatarForm = document.getElementById("avatar");
+    const incorrectAvatarForm = document.getElementById("incorrect-avatar");
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
     const incorrectRepeatPassword = document.getElementById(
@@ -142,13 +143,26 @@ class SettingsView extends BaseView {
       incorrectPassword.classList.add(correct);
       incorrectFirstName.classList.add(correct);
       incorrectLastName.classList.add(correct);
+      incorrectAvatarForm.classList.add(correct);
     });
 
     avatarForm.addEventListener("change", () => {
+      incorrectAvatarForm.classList.add(correct);
+
       const file = avatarForm.files[0];
       const img = URL.createObjectURL(file);
 
-      document.getElementById("prewatch").setAttribute("src", img);
+      const typeFile = (() => {
+        const parts = file.name.split(".");
+        return parts[parts.length - 1];
+      })();
+
+      if (validExtensions.indexOf(typeFile) === -1) {
+        incorrectAvatarForm.classList.remove(correct);
+        avatar.files = null;
+      } else {
+        document.getElementById("prewatch").setAttribute("src", img);
+      }
     });
 
     document.getElementById("accept-setting").addEventListener("click", () => {
