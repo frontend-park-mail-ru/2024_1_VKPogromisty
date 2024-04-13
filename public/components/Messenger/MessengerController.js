@@ -25,18 +25,12 @@ class MessengerController {
   /**
    * Creates controller
    * @param {Routing} router - The router
-   * @param {UserState} userState - The current state of session's user
    * @param {WSocket} webSocket - The current WebSocket
    */
-  constructor(router, userState, webSocket) {
+  constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.messengerModel = new MessengerModel(
-      this.eventBus,
-      router,
-      webSocket,
-      userState,
-    );
-    this.messengerView = new MessengerView(this.eventBus, router, userState);
+    this.messengerModel = new MessengerModel(this.eventBus, router, webSocket);
+    this.messengerView = new MessengerView(this.eventBus, router);
   }
 
   /**

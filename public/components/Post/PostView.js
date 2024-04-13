@@ -1,10 +1,17 @@
 import BaseView from "./public/MVC/BaseView.js";
 import { formatFullDate } from "../../modules/dateRemaking.js";
 import { API_URL } from "/public/modules/consts.js";
+import UserState from "../UserState.js";
 
 /**
- * A User structure
- * @typedef {Object} User
+ * @typedef {Object} UpdateInfo
+ * @property {number} postId - The ID of current post
+ * @property {string} updatedAt - The data of last update
+ */
+
+/**
+ * A Author structure
+ * @typedef {Object} Author
  * @property {string} avatar - The avatar of user
  * @property {string} createdAt - The date of creating accout
  * @property {string} detaOfBirth - The date of birth current user
@@ -16,22 +23,21 @@ import { API_URL } from "/public/modules/consts.js";
  */
 
 /**
- * A Message structure
- * @typedef {Object} Message
- * @property {number} id - The ID of message
- * @property {string} createdAt - The date of creating accout
- * @property {string} content - The text content of current message
- * @property {number} receiverId - The ID of receiver current message
- * @property {number} senderId - The ID of sender current message
+ * A Post structure
+ * @typedef {Object} Post
+ * @property {number} authorId - The ID of author
+ * @property {string} createdAt - The date of creating post
+ * @property {string} content - The text content of post
+ * @property {number} postId - The ID of post
  * @property {string} updatedAt - The last date of updating
+ * @property {File[]} attachments - The images of post
  */
 
 /**
- * A Dialog structure
- * @typedef {Object} Dialog
- * @property {Message} lastMessage - The last message of dialog
- * @property {User} user1 - The first user
- * @property {User} user2 - The second user
+ * @typedef {Object} PostInfo
+ * @property {Post} post - The current post
+ * @property {Author} author - The author of current post
+ * @property {boolean} publish - Is published now?
  */
 
 const staticUrl = `${API_URL}/static`;
@@ -45,10 +51,9 @@ class PostView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus, userState) {
+  constructor(eventBus) {
     super(eventBus);
 
-    this.userState = userState;
     this.eventBus.addEventListener(
       "postDeleteSuccess",
       this.deletePost.bind(this),
@@ -68,13 +73,20 @@ class PostView extends BaseView {
   }
 
   /**
-   * Renders main part of page of messenger
+   * Renders current post on page
+   *
+   * @param {PostInfo} postInfo - The info about current post
    */
   renderPost({ post, author, publish }) {
-    const { userId, avatar } = this.userState;
+    const { userId, avatar } = UserState;
 
     const template = Handlebars.templates["post.hbs"];
     const postId = post.postId;
+
+    if (post.content.trim() === "" && !post.attachments) {
+      this.eventBus.emit("clickedDeleteButton", postId);
+      return;
+    }
 
     const isMe = Number(author.userId) === Number(userId);
     const hasUpdated = post.createdAt !== post.updatedAt;
@@ -147,7 +159,7 @@ class PostView extends BaseView {
         ok.setAttribute("data-id", id);
         ok.setAttribute("src", "../static/images/check.png");
         ok.addEventListener("click", () => {
-          if (textarea.value === "") {
+          if (textarea.value.trim() === "") {
             return;
           }
 
@@ -194,6 +206,11 @@ class PostView extends BaseView {
       });
   }
 
+  /**
+   * Updates current post on page
+   *
+   * @param {UpdateInfo} udpateInfo - The info about updated post
+   */
   updatePost({ postId, updatedAt }) {
     const postMenu = document.getElementById(`post-menu-${postId}`);
     const textarea = document.getElementById(`textarea-${postId}`);
@@ -226,6 +243,11 @@ class PostView extends BaseView {
     postMenu.firstElementChild.nextElementSibling.style.display = "block";
   }
 
+  /**
+   * Rollbacks changes in post
+   *
+   * @param {Post} post - The current post
+   */
   canceledUpdatePost(post) {
     const postMenu = document.getElementById(`post-menu-${post.postId}`);
     const textarea = document.getElementById(`textarea-${post.postId}`);
@@ -238,12 +260,15 @@ class PostView extends BaseView {
     postMenu.firstElementChild.nextElementSibling.style.display = "block";
   }
 
+  /**
+   * Deletes current post from page
+   *
+   * @param {number} postId - The ID of current post
+   */
   deletePost(postId) {
     const post = document.getElementById(`post-${postId}`);
 
-    if (post) {
-      post.remove();
-    }
+    post?.remove();
   }
 
   /**

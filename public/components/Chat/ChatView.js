@@ -3,6 +3,7 @@ import { formatMinutesHours } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
+import UserState from "../UserState.js";
 
 /**
  * A User structure
@@ -39,11 +40,10 @@ class ChatView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.userState = userState;
 
     this.eventBus.addEventListener(
       "receiveCompanionData",
@@ -83,7 +83,7 @@ class ChatView extends BaseView {
   renderMain(companionId) {
     this.companionId = +companionId;
 
-    const { userId, avatar, firstName, lastName } = this.userState;
+    const { userId, avatar, firstName, lastName } = UserState;
 
     new Header(document.body).renderForm({
       userId,
@@ -168,6 +168,7 @@ class ChatView extends BaseView {
         });
 
         input.value = "";
+        input.focus();
       });
 
     const printMessage = document.getElementById("print-message");
@@ -215,11 +216,18 @@ class ChatView extends BaseView {
     }
 
     messages.forEach((elem) => {
-      elem.isMe = elem.senderId === this.userState.userId;
-      elem.isUpdated = elem.createdAt !== elem.updatedAt;
-      elem.createdAt = formatMinutesHours(elem.createdAt);
-      if (elem.id < this.lastMessageId || this.lastMessageId === 0) {
-        this.lastMessageId = elem.id;
+      if (elem.content.trim() === "" && !elem.attachments) {
+        this.eventBus.emit("clickedDeleteMessage", {
+          messageId: elem.id,
+          receiver: this.companionId,
+        });
+      } else {
+        elem.isMe = elem.senderId === UserState.userId;
+        elem.isUpdated = elem.createdAt !== elem.updatedAt;
+        elem.createdAt = formatMinutesHours(elem.createdAt);
+        if (elem.id < this.lastMessageId || this.lastMessageId === 0) {
+          this.lastMessageId = elem.id;
+        }
       }
     });
 
@@ -261,7 +269,7 @@ class ChatView extends BaseView {
     const template = Handlebars.templates["message.hbs"];
     const messages = [message];
 
-    message.isMe = message.senderId === this.userState.userId;
+    message.isMe = message.senderId === UserState.userId;
     message.createdAt = formatMinutesHours(message.createdAt);
 
     this.chatElement.innerHTML =
@@ -319,12 +327,16 @@ class ChatView extends BaseView {
       okMessage.classList.add("message-menu__accept-img");
 
       okMessage.addEventListener("click", () => {
-        if (inputMessage.value !== messageContent.innerHTML) {
+        if (
+          inputMessage.value !== messageContent.innerHTML &&
+          inputMessage.value.trim() !== ""
+        ) {
           this.eventBus.emit("clickedUpdateMessage", {
             messageId: messageId,
             textContent: inputMessage.value,
             receiver: this.companionId,
           });
+          inputMessage.focus();
         }
 
         sendMessage.style.display = "block";

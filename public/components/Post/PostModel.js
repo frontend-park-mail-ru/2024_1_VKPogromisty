@@ -2,7 +2,13 @@ import BaseModel from "../../MVC/BaseModel.js";
 import { PostService, ProfileService } from "../../modules/services.js";
 
 /**
- * FriendsModel - класс для обработки данных, общения с бэком.
+ * @typedef {Object} UpdateInfo
+ * @property {number} postId - The ID of current post
+ * @property {string} content - The text of current post
+ */
+
+/**
+ * PostModel - класс для обработки данных, общения с бэком.
  */
 class PostModel extends BaseModel {
   /**
@@ -11,13 +17,12 @@ class PostModel extends BaseModel {
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {UserState} userState - Текущее состояние юзера
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.profileService = new ProfileService();
     this.postService = new PostService();
 
-    this.userState = userState;
     this.router = router;
 
     this.eventBus.addEventListener(
@@ -34,11 +39,13 @@ class PostModel extends BaseModel {
     );
   }
 
+  /**
+   * Gets current post
+   *
+   * @param {number} postId - The ID of current post
+   */
   async getCurrentPost(postId) {
-    const result = await this.postService.getCurrentPost(
-      postId,
-      this.userState,
-    );
+    const result = await this.postService.getCurrentPost(postId);
 
     switch (result.status) {
       case 200:
@@ -52,12 +59,13 @@ class PostModel extends BaseModel {
     }
   }
 
+  /**
+   * Updates current post
+   *
+   * @param {UpdateInfo} updateInfo - The info about updated post
+   */
   async updatePost({ postId, content }) {
-    const result = await this.postService.updatePost(
-      postId,
-      content,
-      this.userState,
-    );
+    const result = await this.postService.updatePost(postId, content);
 
     switch (result.status) {
       case 200:
@@ -71,8 +79,13 @@ class PostModel extends BaseModel {
     }
   }
 
+  /**
+   * Deletes current post
+   *
+   * @param {number} postId - The ID of current post
+   */
   async deletePost(postId) {
-    const result = await this.postService.deletePost(postId, this.userState);
+    const result = await this.postService.deletePost(postId);
 
     switch (result.status) {
       case 204:

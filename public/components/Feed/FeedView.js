@@ -3,6 +3,7 @@ import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
 import PostController from "../Post/PostController.js";
+import UserState from "../UserState.js";
 
 /**
  * A Author structure
@@ -65,14 +66,12 @@ class FeedView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Объект класса Routing
-   * @param {UserState} userState - Текущее состояние юзера
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.userState = userState;
-    this.postController = new PostController(router, userState);
+    this.postController = new PostController(router);
 
     this.eventBus.addEventListener(
       "getPostsSuccess",
@@ -106,7 +105,7 @@ class FeedView extends BaseView {
    * Renders main part of feed
    */
   renderFeedMain() {
-    const { userId, avatar, firstName, lastName } = this.userState;
+    const { userId, avatar, firstName, lastName } = UserState;
     const template = Handlebars.templates["feedMain.hbs"];
     const userAvatar = `${staticUrl}/${avatar}`;
 
@@ -122,6 +121,7 @@ class FeedView extends BaseView {
     this.mainElement.innerHTML = template({ userId, userAvatar, rightSidebar });
     this.lastPostId = 0;
     this.isAllPosts = false;
+    this.isWaitPosts = true;
 
     document.getElementById("logout-button").addEventListener("click", () => {
       this.eventBus.emit("clickLogoutButton", {});

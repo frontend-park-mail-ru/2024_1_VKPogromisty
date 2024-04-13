@@ -27,18 +27,12 @@ class FriendsController {
   /**
    * Creates controller
    * @param {Routing} router - The router
-   * @param {UserState} userState - The current state of session's user
    * @param {WSocket} webSocket - The current WebSocket
    */
-  constructor(router, userState, webSocket) {
+  constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.friendsModel = new FriendsModel(
-      this.eventBus,
-      router,
-      webSocket,
-      userState,
-    );
-    this.friendsView = new FriendsView(this.eventBus, userState);
+    this.friendsModel = new FriendsModel(this.eventBus, router, webSocket);
+    this.friendsView = new FriendsView(this.eventBus);
   }
 
   /**

@@ -41,12 +41,11 @@ class ChatModel extends BaseModel {
    * @param {Routing} router - Объект класса Routing
    * @param {WSocket} webSocket - Действующий WebSocket
    */
-  constructor(eventBus, router, webSocket, userState) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
     this.router = router;
     this.webSocket = webSocket;
-    this.userState = userState;
     this.chatService = new ChatService();
     this.profileService = new ProfileService();
     this.authService = new AuthService();
@@ -84,10 +83,7 @@ class ChatModel extends BaseModel {
    * @param {number} companionId
    */
   async getCompanion(companionId) {
-    const result = await this.profileService.getOtherProfileData(
-      companionId,
-      this.userState,
-    );
+    const result = await this.profileService.getOtherProfileData(companionId);
 
     switch (result.status) {
       case 200:
@@ -143,7 +139,6 @@ class ChatModel extends BaseModel {
     const result = await this.chatService.getMessages(
       companionId,
       lastMessageId,
-      this.userState,
     );
 
     switch (result.status) {

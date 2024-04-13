@@ -4,6 +4,7 @@ import {
   ProfileService,
 } from "../../modules/services.js";
 import BaseModel from "./public/MVC/BaseModel.js";
+import { customAlert } from "../../modules/windows.js";
 
 /**
  * MessengerModel - класс для обработки данных, общения с бэком.
@@ -16,12 +17,11 @@ class MessengerModel extends BaseModel {
    * @param {Routing} router - Объект класса Routing
    * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket, userState) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
     this.router = router;
     this.webSocket = webSocket;
-    this.userState = userState;
     this.chatService = new ChatService();
     this.authService = new AuthService();
     this.profileService = new ProfileService();
@@ -58,13 +58,16 @@ class MessengerModel extends BaseModel {
         case "UPDATE_MESSAGE":
           this.eventBus.emit("updateLastMessage", data.payload);
           break;
+        case "DELETE_MESSAGE":
+          customAlert("error");
+          break;
         default:
           this.eventBus.emit("serverError", {});
       }
     });
 
     this.webSocket.addEventOnError("messageError", () => {
-      this.eventBus.emit("serverError", {});
+      customAlert();
     });
 
     this.webSocket.addEventOnClose("messageClose", () => {
@@ -80,10 +83,8 @@ class MessengerModel extends BaseModel {
    * @return {void}
    */
   async getProfileData(userId) {
-    const resultProfileMain = await this.profileService.getOtherProfileData(
-      userId,
-      this.userState,
-    );
+    const resultProfileMain =
+      await this.profileService.getOtherProfileData(userId);
 
     switch (resultProfileMain.status) {
       case 200:
@@ -93,7 +94,7 @@ class MessengerModel extends BaseModel {
         this.router.redirect("/login");
         break;
       default:
-        this.eventBus.emit("serverError", {});
+        customAlert();
     }
   }
 
@@ -101,7 +102,7 @@ class MessengerModel extends BaseModel {
    * Gets dialogs of session's user
    */
   async getDialogs() {
-    const result = await this.chatService.getDialogs(this.userState);
+    const result = await this.chatService.getDialogs();
 
     switch (result.status) {
       case 200:

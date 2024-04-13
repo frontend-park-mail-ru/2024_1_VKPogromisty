@@ -20,22 +20,16 @@ class SettingsController {
   /**
    * Creates controller
    * @param {Routing} router - The router
-   * @param {UserState} userState - The current state of session's user
    * @param {WSocket} webSocket - The current WebSocket
    */
-  constructor(router, userState, webSocket) {
+  constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.settingsModel = new SettingsModel(
-      this.eventBus,
-      router,
-      webSocket,
-      userState,
-    );
-    this.settingsView = new SettingsView(this.eventBus, router, userState);
+    this.settingsModel = new SettingsModel(this.eventBus, router, webSocket);
+    this.settingsView = new SettingsView(this.eventBus, router);
   }
 
   /**
-   * Renders ProfileView
+   * Renders SettingsView
    * @returns {void}
    */
   renderSettingsView() {

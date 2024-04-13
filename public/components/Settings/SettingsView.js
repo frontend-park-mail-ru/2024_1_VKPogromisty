@@ -7,6 +7,7 @@ import BaseView from "../../MVC/BaseView.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
+import UserState from "../UserState.js";
 
 const correct = "form__input__correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
@@ -22,13 +23,11 @@ class SettingsView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Current router
-   * @param {UserState} userState - The current info about user
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.userState = userState;
 
     this.eventBus.addEventListener(
       "changesSaved",
@@ -45,13 +44,10 @@ class SettingsView extends BaseView {
   }
 
   /**
-   * Рендер внутри переданного HTML элемента.
-   * Переопределение в наследниках.
-   *
-   * @return {void}
+   * Renders main part of page
    */
   renderSettingsMain() {
-    const { userId, avatar, firstName, lastName, email } = this.userState;
+    const { userId, avatar, firstName, lastName, email } = UserState;
 
     new Header(document.body).renderForm({
       userId,
@@ -259,13 +255,19 @@ class SettingsView extends BaseView {
     });
   }
 
+  /**
+   * Changes avatar of header in success case
+   */
   changeSuccess() {
     const img = document.getElementById("user__avatar-img");
-    img.setAttribute("src", `${staticUrl}/${this.userState.avatar}`);
+    img.setAttribute("src", `${staticUrl}/${UserState.avatar}`);
 
-    this.router.redirect(`/profile/${this.userState.userId}`);
+    this.router.redirect(`/profile/${UserState.userId}`);
   }
 
+  /**
+   * Shows alert in doubled email case
+   */
   doubledEmail() {
     document.getElementById("repeat-email").classList.remove(correct);
   }

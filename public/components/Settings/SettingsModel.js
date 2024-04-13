@@ -1,5 +1,6 @@
 import { AuthService, ProfileService } from "../../modules/services.js";
 import BaseModel from "/public/MVC/BaseModel.js";
+import UserState from "../UserState.js";
 
 /**
  * SettingsModel - класс для обработки данных, общения с бэком.
@@ -12,10 +13,9 @@ class SettingsModel extends BaseModel {
    * @param {UserState} userState - Текущее состояние юзера
    * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket, userState) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
-    this.userState = userState;
     this.webSocket = webSocket;
     this.router = router;
     this.profileService = new ProfileService();
@@ -59,16 +59,15 @@ class SettingsModel extends BaseModel {
       password,
       repeatPassword,
       avatar,
-      this.userState,
     );
 
     switch (result.status) {
       case 200:
-        this.userState.avatar = result.body.avatar;
-        this.userState.firstName = result.body.firstName;
-        this.userState.lastName = result.body.lastName;
-        this.userState.updatedAt = result.body.updatedAt;
-        this.userState.email = result.body.email;
+        UserState.avatar = result.body.avatar;
+        UserState.firstName = result.body.firstName;
+        UserState.lastName = result.body.lastName;
+        UserState.updatedAt = result.body.updatedAt;
+        UserState.email = result.body.email;
         this.eventBus.emit("changesSaved", {});
         break;
       case 400:
@@ -82,8 +81,11 @@ class SettingsModel extends BaseModel {
     }
   }
 
+  /**
+   * Deletes profile
+   */
   async deleteProfile() {
-    const result = await this.profileService.deleteProfile(this.userState);
+    const result = await this.profileService.deleteProfile(UserState);
 
     switch (result.status) {
       case 204:

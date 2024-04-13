@@ -20,13 +20,12 @@ class FeedController {
   /**
    * Creates controller
    * @param {Routing} router - The router
-   * @param {UserState} userState - The current state of session's user
    * @param {WSocket} webSocket - The current WebSocket
    */
-  constructor(router, userState, webSocket) {
+  constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.feedModel = new FeedModel(this.eventBus, router, webSocket, userState);
-    this.feedView = new FeedView(this.eventBus, router, userState);
+    this.feedModel = new FeedModel(this.eventBus, router, webSocket);
+    this.feedView = new FeedView(this.eventBus, router);
   }
 
   /**

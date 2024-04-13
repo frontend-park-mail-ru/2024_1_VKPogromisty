@@ -6,6 +6,8 @@
  * @property {string} title - The title of the page
  */
 
+const restrictedPaths = ["/login", "/signup"];
+
 import { ProfileService } from "./modules/services.js";
 
 /**
@@ -89,7 +91,7 @@ export class Routing {
       url: url,
     };
 
-    if (addToHistory) {
+    if (addToHistory && restrictedPaths.indexOf(url) === -1) {
       history.pushState(state, "", url);
     }
 

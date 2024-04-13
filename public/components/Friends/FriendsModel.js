@@ -18,11 +18,10 @@ class FriendsModel extends BaseModel {
    * @param {Routing} router - Роутер с установленным конфигом
    * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket, userState) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
     this.webSocket = webSocket;
-    this.userState = userState;
     this.friendsService = new FriendsService();
     this.subscribersService = new SubscribersService();
     this.subscriptionsService = new SubscriptionsService();
@@ -61,7 +60,7 @@ class FriendsModel extends BaseModel {
    * @returns {void}
    */
   async getFriends() {
-    const result = await this.friendsService.getFriends(this.userState);
+    const result = await this.friendsService.getFriends();
 
     switch (result.status) {
       case 200:
@@ -80,7 +79,7 @@ class FriendsModel extends BaseModel {
    * @returns {void}
    */
   async getSubscribers() {
-    const result = await this.subscribersService.getSubscribers(this.userState);
+    const result = await this.subscribersService.getSubscribers();
 
     switch (result.status) {
       case 200:
@@ -99,9 +98,7 @@ class FriendsModel extends BaseModel {
    * @returns {void}
    */
   async getSubscriptions() {
-    const result = await this.subscriptionsService.getSubscriptions(
-      this.userState,
-    );
+    const result = await this.subscriptionsService.getSubscriptions();
 
     switch (result.status) {
       case 200:
@@ -124,10 +121,7 @@ class FriendsModel extends BaseModel {
    * @returns {void}
    */
   async addFriend(userId) {
-    const result = await this.subscriptionsService.postSubscription(
-      userId,
-      this.userState,
-    );
+    const result = await this.subscriptionsService.postSubscription(userId);
 
     switch (result.status) {
       case 200:
@@ -147,10 +141,7 @@ class FriendsModel extends BaseModel {
    * @returns {void}
    */
   async deleteSubscribe(userId) {
-    const result = await this.subscriptionsService.deleteSubscription(
-      userId,
-      this.userState,
-    );
+    const result = await this.subscriptionsService.deleteSubscription(userId);
 
     switch (result.status) {
       case 204:

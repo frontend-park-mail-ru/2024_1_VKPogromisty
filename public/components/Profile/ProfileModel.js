@@ -24,12 +24,11 @@ class ProfileModel extends BaseModel {
    * @param {Routing} router - Объект класса Routing
    * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket, userState) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
     this.router = router;
     this.webSocket = webSocket;
-    this.userState = userState;
     this.profileService = new ProfileService();
     this.postService = new PostService();
     this.subscriptionsService = new SubscriptionsService();
@@ -63,10 +62,8 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async getProfileData(userId) {
-    const resultProfileMain = await this.profileService.getOtherProfileData(
-      userId,
-      this.userState,
-    );
+    const resultProfileMain =
+      await this.profileService.getOtherProfileData(userId);
 
     switch (resultProfileMain.status) {
       case 200:
@@ -86,10 +83,7 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async subscribeToUser(userId) {
-    const result = await this.subscriptionsService.postSubscription(
-      userId,
-      this.userState,
-    );
+    const result = await this.subscriptionsService.postSubscription(userId);
 
     switch (result.status) {
       case 201:
@@ -109,10 +103,7 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async unsubscribeFromUser(userId) {
-    const result = await this.subscriptionsService.deleteSubscription(
-      userId,
-      this.userState,
-    );
+    const result = await this.subscriptionsService.deleteSubscription(userId);
 
     switch (result.status) {
       case 204:
@@ -132,11 +123,7 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async getPosts({ userId, lastPostId }) {
-    const result = await this.postService.getPosts(
-      userId,
-      lastPostId,
-      this.userState,
-    );
+    const result = await this.postService.getPosts(userId, lastPostId);
 
     switch (result.status) {
       case 200:
@@ -157,11 +144,7 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async publishPost({ content, attachments }) {
-    const result = await this.postService.publishPost(
-      content,
-      attachments,
-      this.userState,
-    );
+    const result = await this.postService.publishPost(content, attachments);
 
     switch (result.status) {
       case 201:

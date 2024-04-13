@@ -1,5 +1,7 @@
 import BaseModel from "../../MVC/BaseModel.js";
 import { AuthService } from "../../modules/services.js";
+import UserState from "../UserState.js";
+import CSRFProtection from "../CSRFProtection.js";
 
 /**
  * LoginModel - класс для обработки данных, общения с бэком.
@@ -9,12 +11,10 @@ class LoginModel extends BaseModel {
    * Конструктор класса LoginModel.
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
-   * @param {UserState} userState - Текущее состояние юзера
    * @param {WScoket} webSocket - Текущий сокет
    */
-  constructor(eventBus, userState, webSocket) {
+  constructor(eventBus, webSocket) {
     super(eventBus);
-    this.userState = userState;
     this.webSocket = webSocket;
 
     this.eventBus.addEventListener(
@@ -31,15 +31,12 @@ class LoginModel extends BaseModel {
    */
   async checkAndSubmitForm({ email, password }) {
     const authService = new AuthService();
-
     const result = await authService.login(email, password);
 
     switch (result.status) {
       case 200:
-        this.userState.csrfToken = (
-          await authService.getCSRFToken()
-        ).body.csrfToken;
-        if (await this.userState.updateState()) {
+        await CSRFProtection.updateCSRFToken();
+        if (await UserState.updateState()) {
           this.webSocket.openWebSocket();
           this.eventBus.emit("receiveLoginResult", true);
         } else {

@@ -29,17 +29,18 @@ class ChatController {
   /**
    * Creates controller
    * @param {Routing} router - The router
-   * @param {UserState} userState - The current state of session's user
    * @param {WSocket} webSocket - The working WebSocket that receive and send messages
    */
-  constructor(router, userState, webSocket) {
+  constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.chatModel = new ChatModel(this.eventBus, router, webSocket, userState);
-    this.chatView = new ChatView(this.eventBus, router, userState);
+    this.chatModel = new ChatModel(this.eventBus, router, webSocket);
+    this.chatView = new ChatView(this.eventBus, router);
   }
 
   /**
    * Renders MessengerView
+   * @param {Object} param0 - The object with companion ID
+   * @param {number} param0.companionId - The ID of current companion
    * @returns {void}
    */
   renderChatView({ companionId }) {

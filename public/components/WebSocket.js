@@ -1,3 +1,5 @@
+import CSRFProtection from "./CSRFProtection.js";
+
 /**
  * A working WebSocket for all events
  * @class WSocket
@@ -15,12 +17,11 @@ class WSocket {
    *
    * @param {string} url - The URL to connect with
    */
-  constructor(url, userState) {
+  constructor(url) {
     this.url = url;
     this.messageEvents = {};
     this.errorsEvents = {};
     this.closingEvents = {};
-    this.userState = userState;
   }
 
   /**
@@ -56,14 +57,11 @@ class WSocket {
    * @param {string} textContent - The text content of message
    */
   sendMessage(companionId, textContent) {
-    this.ws.send(
-      JSON.stringify({
-        type: "SEND_MESSAGE",
-        receiver: +companionId,
-        csrfToken: this.userState.csrfToken,
-        payload: { content: textContent },
-      }),
-    );
+    CSRFProtection.addCSRFTokenWebSocket(this.ws, {
+      type: "SEND_MESSAGE",
+      receiver: +companionId,
+      payload: { content: textContent },
+    });
   }
 
   /**
@@ -71,35 +69,31 @@ class WSocket {
    *
    * @param {number} messageId - The ID of current message
    * @param {string} textContent - The text content of message
+   * @param {number} receiverId - The ID of current receiver
    */
   updateMessage(messageId, textContent, receiverId) {
-    this.ws.send(
-      JSON.stringify({
-        type: "UPDATE_MESSAGE",
-        receiver: +receiverId,
-        csrfToken: this.userState.csrfToken,
-        payload: {
-          messageId: +messageId,
-          content: textContent,
-        },
-      }),
-    );
+    CSRFProtection.addCSRFTokenWebSocket(this.ws, {
+      type: "UPDATE_MESSAGE",
+      receiver: +receiverId,
+      payload: {
+        messageId: +messageId,
+        content: textContent,
+      },
+    });
   }
 
   /**
    * Deletes message from conversation with current companion
    *
    * @param {number} messageId - The ID of current message
+   * @param {number} receiverId - The ID of current receiver
    */
   deleteMessage(messageId, receiverId) {
-    this.ws.send(
-      JSON.stringify({
-        type: "DELETE_MESSAGE",
-        receiver: +receiverId,
-        csrfToken: this.userState.csrfToken,
-        payload: { messageId: +messageId },
-      }),
-    );
+    CSRFProtection.addCSRFTokenWebSocket(this.ws, {
+      type: "DELETE_MESSAGE",
+      receiver: +receiverId,
+      payload: { messageId: +messageId },
+    });
   }
 
   /**

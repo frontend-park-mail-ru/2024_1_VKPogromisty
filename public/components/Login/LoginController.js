@@ -21,12 +21,11 @@ export default class LoginController {
   /**
    * Создаёт контроллер
    * @param {Routing} router - Объект класса роутер
-   * @param {UserState} userState - Текущее состояние юзера
    * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(router, userState, webSocket) {
+  constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.#loginModel = new LoginModel(this.eventBus, userState, webSocket);
+    this.#loginModel = new LoginModel(this.eventBus, webSocket);
     this.#loginView = new LoginView(this.eventBus);
 
     this.eventBus.addEventListener(

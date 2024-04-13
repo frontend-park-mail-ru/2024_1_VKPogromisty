@@ -2,6 +2,17 @@ import PostModel from "./PostModel.js";
 import PostView from "./PostView.js";
 import EventBus from "./public/MVC/EventBus.js";
 
+/**
+ * A Post structure
+ * @typedef {Object} Post
+ * @property {number} authorId - The ID of author
+ * @property {string} createdAt - The date of creating post
+ * @property {string} content - The text content of post
+ * @property {number} postId - The ID of post
+ * @property {string} updatedAt - The last date of updating
+ * @property {File[]} attachments - The images of post
+ */
+
 const incomingEvents = [
   "clickedUpdatePost",
   "canceledUpdatePost",
@@ -13,26 +24,25 @@ const incomingEvents = [
 ];
 
 /**
- * MessengerController - класс для связи PostModel и PostView.
+ * PostController - класс для связи PostModel и PostView.
  * @property {EventBus} eventBus - EventBus - класс для обработки событий между View и Model
- * @property {MessengerView} PostView - PostView - класс для работы с визуалом на странице.
- * @property {MessengerModel} PostModel - PostModel - класс для обработки данных, общения с бэком.
+ * @property {PostView} PostView - PostView - класс для работы с визуалом на странице.
+ * @property {PostModel} PostModel - PostModel - класс для обработки данных, общения с бэком.
  */
 class PostController {
   /**
    * Creates controller
    * @param {Routing} router - The router
-   * @param {UserState} userState - The current state of session's user
-   * @param {WSocket} webSocket - The current WebSocket
    */
-  constructor(router, userState) {
+  constructor(router) {
     this.eventBus = new EventBus(incomingEvents);
-    this.postModel = new PostModel(this.eventBus, router, userState);
-    this.postView = new PostView(this.eventBus, userState);
+    this.postModel = new PostModel(this.eventBus, router);
+    this.postView = new PostView(this.eventBus);
   }
 
   /**
-   * Renders MessengerView
+   * Renders PostView
+   * @param {Post} post - The current post
    */
   renderPostView(post) {
     this.postView.renderPost(post);

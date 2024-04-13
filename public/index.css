@@ -27,6 +27,7 @@
 body {
   background-color: var(--main-bg-color);
   font-family: var(--page-font-family);
+  position: relative;
 }
 
 .form-wrapper {
@@ -1643,4 +1644,30 @@ input::-webkit-inner-spin-button {
   margin-left: auto;
   object-fit: cover;
   margin-right: auto;
+}
+
+.custom-alert {
+  position: absolute;
+  top: 100px;
+  box-sizing: border-box;
+  padding: 15px 10px;
+  color: white;
+  border-radius: 7px;
+  right: 60px;
+  height: 50px;
+}
+
+.custom-alert-error {
+  border: 1px solid red;
+  background-color: #e0908d;
+}
+
+.custom-alert-success {
+  border: 1px solid green;
+  background-color: #79ef46;
+}
+
+.custom-alert-warning {
+  border: 1px solid rgb(181, 181, 6);
+  background-color: #c9c907;
 }

@@ -4,6 +4,7 @@ import { Main } from "../Main/main.js";
 import PostController from "../Post/PostController.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
+import UserState from "../UserState.js";
 
 const staticUrl = `${API_URL}/static`;
 
@@ -66,12 +67,11 @@ class ProfileView extends BaseView {
    * @param {Routing} router - Объект класса Routing
    * @param {UserState} userState - Объект класса UserState
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.userState = userState;
-    this.postController = new PostController(router, userState);
+    this.postController = new PostController(router);
 
     this.eventBus.addEventListener(
       "receiveOwnProfileData",
@@ -109,11 +109,11 @@ class ProfileView extends BaseView {
 
   /**
    * Renders header and sidebar of page
-   * @param {UserInfo} userInfo - The info about session's user
+   * @param {number} user_id - The ID of session's user
    */
   renderProfileMain(user_id) {
     this.userId = user_id;
-    const { userId, avatar, firstName, lastName } = this.userState;
+    const { userId, avatar, firstName, lastName } = UserState;
 
     new Header(document.body).renderForm({
       userId,
@@ -162,8 +162,7 @@ class ProfileView extends BaseView {
     const { userId, firstName, lastName, dateOfBirth, avatar } = User;
     this.mainElement = document.getElementById("activity");
     this.isSubscriber = isSubscriber;
-    const isMe = (this.isMe =
-      Number(this.userId) === Number(this.userState.userId));
+    const isMe = (this.isMe = Number(this.userId) === Number(UserState.userId));
 
     const template = Handlebars.templates["profileMain.hbs"];
     this.mainElement.innerHTML = template({
@@ -181,6 +180,7 @@ class ProfileView extends BaseView {
     this.postsElement = document.getElementById("posts");
     this.lastPostId = 0;
     this.isAllPosts = false;
+    this.isWaitPosts = true;
 
     const newsTextarea = document.getElementById("news-content__textarea");
 
@@ -226,7 +226,7 @@ class ProfileView extends BaseView {
       publishButton.addEventListener("click", () => {
         const content = document.getElementById("news-content__textarea").value;
 
-        if (content === "" && fileInput.files.length === 0) {
+        if (content.trim() === "" && fileInput.files.length === 0) {
           return;
         }
 

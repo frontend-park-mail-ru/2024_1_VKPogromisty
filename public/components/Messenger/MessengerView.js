@@ -3,6 +3,7 @@ import { formatMinutesHours } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
+import UserState from "../UserState.js";
 
 /**
  * A User structure
@@ -47,11 +48,10 @@ class MessengerView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.userState = userState;
     this.promissedMessages = new Map();
 
     this.eventBus.addEventListener(
@@ -84,7 +84,7 @@ class MessengerView extends BaseView {
    * Renders main part of page of messenger
    */
   renderMain() {
-    const { userId, avatar, firstName, lastName } = this.userState;
+    const { userId, avatar, firstName, lastName } = UserState;
 
     new Header(document.body).renderForm({
       userId,
@@ -115,7 +115,7 @@ class MessengerView extends BaseView {
     if (window.location.pathname !== "/messenger") {
       return;
     }
-    if (message.senderId === this.userState.userId) {
+    if (message.senderId === UserState.userId) {
       if (document.getElementById(`dialog-${message.receiverId}`)) {
         document.getElementById(
           `chatter-info__message-span-${message.receiverId}`,
@@ -133,12 +133,22 @@ class MessengerView extends BaseView {
       }
     } else {
       if (document.getElementById(`dialog-${message.senderId}`)) {
-        document.getElementById(
-          `chatter-info__message-span-${message.senderId}-${message.id}`,
-        ).innerHTML = message.content;
-        document.getElementById(
+        const messageContent = document.querySelector(
+          `#dialog-${message.senderId} .chatter-content__message-span`,
+        );
+        messageContent.innerHTML = message.content;
+        messageContent.setAttribute(
+          "id",
+          `chatter-content__message-span-${message.senderId}-${message.id}`,
+        );
+        const messageTime = document.querySelector(
+          `#dialog-${message.senderId} .chatter-content__time-span`,
+        );
+        messageTime.innerHTML = formatMinutesHours(message.createdAt);
+        messageTime.setAttribute(
+          "id",
           `chatter-content__time-span-${message.senderId}-${message.id}`,
-        ).innerHTML = formatMinutesHours(message.createdAt);
+        );
       } else {
         this.promissedMessages.set(message.senderId, {
           content: message.content,
@@ -154,7 +164,7 @@ class MessengerView extends BaseView {
     if (window.location.pathname !== "/messenger") {
       return;
     }
-    if (message.senderId === this.userState.userId) {
+    if (message.senderId === UserState.userId) {
       if (document.getElementById(`dialog-${message.receiverId}`)) {
         document.getElementById(
           `chatter-info__message-span-${message.receiverId}`,
@@ -163,7 +173,7 @@ class MessengerView extends BaseView {
     } else {
       if (document.getElementById(`dialog-${message.senderId}`)) {
         document.getElementById(
-          `chatter-info__message-span-${message.senderId}-${message.id}`,
+          `chatter-content__message-span-${message.senderId}-${message.id}`,
         ).innerHTML = message.content;
       }
     }
@@ -194,7 +204,7 @@ class MessengerView extends BaseView {
     const noDialogs = document.getElementById("no-dialogs__span");
 
     dialogs.forEach((elem) => {
-      if (elem.user1.userId === this.userState.userId) {
+      if (elem.user1.userId === UserState.userId) {
         elem.companion = elem.user2;
       } else {
         elem.companion = elem.user1;
@@ -206,9 +216,7 @@ class MessengerView extends BaseView {
 
       this.dialogsElement.innerHTML += template({ staticUrl, elem });
 
-      if (noDialogs) {
-        noDialogs.remove();
-      }
+      noDialogs?.remove();
     });
 
     const chats = document.querySelectorAll(".dialog");
@@ -226,7 +234,7 @@ class MessengerView extends BaseView {
   serverErrored() {
     const serverError = document.getElementById("server-error-500");
 
-    serverError.classList.remove("server-error-500");
+    serverError?.classList.remove("server-error-500");
   }
 }
 

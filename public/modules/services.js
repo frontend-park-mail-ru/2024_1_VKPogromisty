@@ -1,4 +1,5 @@
 import { API_URL } from "./consts.js";
+import CSRFProtection from "../components/CSRFProtection.js";
 
 /**
  * @typedef {Object} APIResponse
@@ -95,22 +96,6 @@ export class AuthService {
   }
 
   /**
-   * Gets CSRF token from the server
-   *
-   * @returns {Promise<APIResponse>} {@link APIResponse}
-   */
-  async getCSRFToken() {
-    const response = await fetch(`${API_URL}/csrf/`, {
-      method: "GET",
-      credentials: "include",
-    });
-
-    const data = await response.json();
-
-    return genResponse(response.status, data.body, data.message);
-  }
-
-  /**
    * Logs out the user
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
@@ -143,13 +128,10 @@ export class ProfileService {
    * Gets the own profile's data from the server
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async getOwnProfileData(userState) {
-    const response = await fetch(this.baseUrl, {
+  async getOwnProfileData() {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     const data = await response.json();
@@ -162,14 +144,14 @@ export class ProfileService {
    * @param {number} userId - The ID of current user
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async getOtherProfileData(userId, userState) {
-    const response = await fetch(this.baseUrl + `${userId}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
+  async getOtherProfileData(userId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `${userId}`,
+      {
+        method: "GET",
+        credentials: "include",
       },
-    });
+    );
 
     const data = await response.json();
 
@@ -194,7 +176,6 @@ export class ProfileService {
     password,
     repeatPassword,
     avatar,
-    userState,
   ) {
     const formData = new FormData();
     formData.append("firstName", firstName);
@@ -206,13 +187,10 @@ export class ProfileService {
     }
     formData.append("avatar", avatar);
 
-    const response = await fetch(this.baseUrl, {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "PUT",
       body: formData,
       credentials: "include",
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     const data = await response.json();
@@ -224,13 +202,10 @@ export class ProfileService {
    * Delete the profile from the server
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async deleteProfile(userState) {
-    const response = await fetch(this.baseUrl, {
+  async deleteProfile() {
+    const response = await CSRFProtection(this.baseUrl, {
       method: "DELETE",
       credentials: "include",
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     if (response.ok) {
@@ -259,15 +234,12 @@ export class PostService {
    * @param {number} userId - The ID of current user
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async getPosts(userId, lastPostId, userState) {
-    const response = await fetch(
+  async getPosts(userId, lastPostId) {
+    const response = await CSRFProtection.addCSRFToken(
       this.baseUrl + `?userId=${userId}&lastPostId=${lastPostId}`,
       {
         method: "GET",
         credentials: "include",
-        headers: {
-          "X-CSRF-Token": `${userState.csrfToken}`,
-        },
       },
     );
 
@@ -276,13 +248,10 @@ export class PostService {
     return genResponse(response.status, data.body, data.message);
   }
 
-  async getCurrentPost(postId, userState) {
-    const response = await fetch(this.baseUrl + postId, {
+  async getCurrentPost(postId) {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl + postId, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "X-CSRF-Token": userState.csrfToken,
-      },
     });
 
     const data = await response.json();
@@ -296,15 +265,12 @@ export class PostService {
    * @param {number} lastPostId - The ID of last post
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async getFriendsPosts(lastPostId, userState) {
-    const response = await fetch(
+  async getFriendsPosts(lastPostId) {
+    const response = await CSRFProtection.addCSRFToken(
       this.baseUrl + `friends?lastPostId=${lastPostId}`,
       {
         method: "GET",
         credentials: "include",
-        headers: {
-          "X-CSRF-Token": `${userState.csrfToken}`,
-        },
       },
     );
 
@@ -319,7 +285,7 @@ export class PostService {
    * @param {File[]} attachments - The images of post
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async publishPost(content, attachments, userState) {
+  async publishPost(content, attachments) {
     const formData = new FormData();
 
     formData.append("content", content);
@@ -328,13 +294,10 @@ export class PostService {
       formData.append("attachments", elem);
     });
 
-    const response = await fetch(this.baseUrl, {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "POST",
       credentials: "include",
       body: formData,
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     const data = await response.json();
@@ -347,16 +310,13 @@ export class PostService {
    * @param {number} post_id - The ID of post
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async deletePost(post_id, userState) {
+  async deletePost(post_id) {
     const postId = Number(post_id);
 
-    const response = await fetch(this.baseUrl, {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "DELETE",
       credentials: "include",
       body: JSON.stringify({ postId }),
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     if (response.status === 204) {
@@ -373,16 +333,13 @@ export class PostService {
    * @param {string} content - The text content of current post
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async updatePost(post_id, content, userState) {
+  async updatePost(post_id, content) {
     const postId = Number(post_id);
 
-    const response = await fetch(this.baseUrl, {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "PUT",
       credentials: "include",
       body: JSON.stringify({ postId, content }),
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     const data = await response.json();
@@ -406,14 +363,14 @@ export class ChatService {
    *
    * @returns {Promise<APIResponse>} {@link ApiResponse}
    */
-  async getDialogs(userState) {
-    const response = await fetch(this.baseUrl + "/dialogs", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "X-CSRF-Token": userState.csrfToken,
+  async getDialogs() {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "/dialogs",
+      {
+        method: "GET",
+        credentials: "include",
       },
-    });
+    );
 
     const data = await response.json();
 
@@ -427,16 +384,13 @@ export class ChatService {
    * @param {number} lastMessageId - The ID of last message in conversation
    * @returns {Promise<APIResponse>} {@link ApiResponse}
    */
-  async getMessages(companionId, lastMessageId, userState) {
-    const response = await fetch(
+  async getMessages(companionId, lastMessageId) {
+    const response = await CSRFProtection.addCSRFToken(
       this.baseUrl +
         `/messages?peerId=${companionId}&lastMessageId=${lastMessageId}`,
       {
         method: "GET",
         credentials: "include",
-        headers: {
-          "X-CSRF-Token": `${userState.csrfToken}`,
-        },
       },
     );
 
@@ -459,13 +413,10 @@ export class FriendsService {
    * Gets friends of session's user
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async getFriends(userState) {
-    const response = await fetch(this.baseUrl, {
+  async getFriends() {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     const data = await response.json();
@@ -487,13 +438,10 @@ export class SubscribersService {
    * Gets subscribers of session's user
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async getSubscribers(userState) {
-    const response = await fetch(this.baseUrl, {
+  async getSubscribers() {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     const data = await response.json();
@@ -517,14 +465,14 @@ export class SubscriptionsService {
    * Gets subscriptions of session's user
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async getSubscriptions(userState) {
-    const response = await fetch(this.baseUrl + "subscriptions", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
+  async getSubscriptions() {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "subscriptions",
+      {
+        method: "GET",
+        credentials: "include",
       },
-    });
+    );
 
     const data = await response.json();
 
@@ -536,16 +484,13 @@ export class SubscriptionsService {
    * @param {number} userId - The ID of user
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async postSubscription(userId, userState) {
+  async postSubscription(userId) {
     const subscribedTo = Number(userId);
 
-    const response = await fetch(this.baseUrl, {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "POST",
       credentials: "include",
       body: JSON.stringify({ subscribedTo }),
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     const data = await response.json();
@@ -558,16 +503,13 @@ export class SubscriptionsService {
    * @param {number} userId - The ID of user
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async deleteSubscription(userId, userState) {
+  async deleteSubscription(userId) {
     const subscribedTo = Number(userId);
 
-    const response = await fetch(this.baseUrl, {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "DELETE",
       credentials: "include",
       body: JSON.stringify({ subscribedTo }),
-      headers: {
-        "X-CSRF-Token": `${userState.csrfToken}`,
-      },
     });
 
     if (response.status === 204) {
