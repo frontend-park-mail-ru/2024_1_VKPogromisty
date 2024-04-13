@@ -1,4 +1,4 @@
-import BaseView from "./public/MVC/BaseView.js";
+import BaseView from "../../MVC/BaseView.js";
 import { formatFullDate } from "../../modules/dateRemaking.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";

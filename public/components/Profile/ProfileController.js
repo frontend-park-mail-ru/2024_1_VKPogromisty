@@ -1,6 +1,6 @@
 import ProfileModel from "./ProfileModel.js";
 import ProfileView from "./ProfileView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "receiveProfileData",

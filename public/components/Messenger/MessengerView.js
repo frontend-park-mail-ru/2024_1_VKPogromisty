@@ -1,4 +1,4 @@
-import BaseView from "./public/MVC/BaseView.js";
+import BaseView from "../../MVC/BaseView.js";
 import { formatMinutesHours } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";

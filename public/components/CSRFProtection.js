@@ -59,4 +59,4 @@ class CSRFProtection {
   }
 }
 
-export default new CSRFProtection();
+export default new CSRFProtection;

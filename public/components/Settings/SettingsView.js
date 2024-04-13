@@ -153,7 +153,7 @@ class SettingsView extends BaseView {
         return parts[parts.length - 1];
       })();
 
-      if (validExtensions.indexOf(typeFile) === -1) {
+      if (!validExtensions.includes(typeFile)) {
         incorrectAvatarForm.classList.remove(correct);
         avatar.files = null;
       } else {
@@ -197,6 +197,7 @@ class SettingsView extends BaseView {
     const firstName = document.getElementById("first-name");
     const lastName = document.getElementById("last-name");
     const avatar = document.getElementById("avatar");
+    const incorrectAvatarForm = document.getElementById("incorrect-avatar");
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
     const incorrectRepeatPassword = document.getElementById(
@@ -211,6 +212,7 @@ class SettingsView extends BaseView {
     incorrectPassword.classList.add(correct);
     incorrectFirstName.classList.add(correct);
     incorrectLastName.classList.add(correct);
+    incorrectAvatarForm.classList.add(correct);
 
     let flag = true;
 
@@ -236,6 +238,18 @@ class SettingsView extends BaseView {
 
     if (!validateName(lastName.value.trim())) {
       incorrectLastName.classList.remove(correct);
+      flag = false;
+    }
+
+    const file = avatar.files[0];
+
+    const typeFile = (() => {
+      const parts = file.name.split(".");
+      return parts[parts.length - 1];
+    })();
+
+    if (!validExtensions.includes(typeFile)) {
+      incorrectAvatarForm.classList.remove(correct);
       flag = false;
     }
 
