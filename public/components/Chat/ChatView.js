@@ -1,4 +1,4 @@
-import BaseView from "./public/MVC/BaseView.js";
+import BaseView from "../../MVC/BaseView.js";
 import { formatMinutesHours } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
@@ -139,7 +139,7 @@ class ChatView extends BaseView {
   renderCompanion({ User }) {
     const { userId, avatar, firstName, lastName } = User;
 
-    const template = Handlebars.templates["chatMain.hbs"];
+    const template = require("./chatMain.hbs");
 
     this.mainElement.innerHTML = template({
       userId,
@@ -208,7 +208,7 @@ class ChatView extends BaseView {
    */
   renderMessages(messages) {
     this.isWaitMessages = false;
-    const template = Handlebars.templates["message.hbs"];
+    const template = require("./message.hbs");
     const noMessages = messages.length === 0;
 
     if (noMessages) {
@@ -266,7 +266,7 @@ class ChatView extends BaseView {
       return;
     }
 
-    const template = Handlebars.templates["message.hbs"];
+    const template = require("./message.hbs");
     const messages = [message];
 
     message.isMe = message.senderId === UserState.userId;
