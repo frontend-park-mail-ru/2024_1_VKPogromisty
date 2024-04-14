@@ -13,6 +13,8 @@ import WSocket from "./components/WebSocket.js";
 import FeedController from "./components/Feed/FeedController.js";
 import SettingsController from "./components/Settings/SettingsController.js";
 import CSRFProtection from "./components/CSRFProtection.js";
+import "./reset.css";
+import "./index.css";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const webSocket = new WSocket(WEBSOCKET_URL);
