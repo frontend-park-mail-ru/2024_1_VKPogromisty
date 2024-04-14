@@ -129,12 +129,12 @@ class PostView extends BaseView {
 
     document.querySelectorAll(".reactions__heart-img").forEach((elem) => {
       elem.addEventListener("mouseover", () => {
-        elem.setAttribute("src", "../static/images/filled-heart.png");
+        elem.setAttribute("src", "dist/images/filled-heart.png");
         elem.style.width = "28px";
         elem.style.height = "28px";
       });
       elem.addEventListener("mouseout", () => {
-        elem.setAttribute("src", "../static/images/heart.png");
+        elem.setAttribute("src", "dist/images/heart.png");
         elem.style.width = "25px";
         elem.style.height = "25px";
       });
@@ -157,7 +157,7 @@ class PostView extends BaseView {
         const ok = document.createElement("img");
         ok.classList.add("post-author__accept-img");
         ok.setAttribute("data-id", id);
-        ok.setAttribute("src", "../static/images/check.png");
+        ok.setAttribute("src", "dist/images/check.png");
         ok.addEventListener("click", () => {
           if (textarea.value.trim() === "") {
             return;
@@ -173,7 +173,7 @@ class PostView extends BaseView {
         const cancel = document.createElement("img");
         cancel.classList.add("post-author__cancel-img");
         cancel.setAttribute("data-id", id);
-        cancel.setAttribute("src", "../static/images/cancel.png");
+        cancel.setAttribute("src", "dist/images/cancel.png");
         cancel.addEventListener("click", () => {
           this.eventBus.emit("canceledUpdatePost", id);
         });
@@ -224,7 +224,7 @@ class PostView extends BaseView {
       );
 
       const img = document.createElement("img");
-      img.setAttribute("src", "../static/images/dot.png");
+      img.setAttribute("src", "dist/images/dot.png");
       img.classList.add("post-author-time__dot-img");
 
       const span = document.createElement("span");

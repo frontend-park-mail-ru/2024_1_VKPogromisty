@@ -124,7 +124,7 @@ class FriendsModel extends BaseModel {
     const result = await this.subscriptionsService.postSubscription(userId);
 
     switch (result.status) {
-      case 200:
+      case 201:
         this.eventBus.emit("addFriendSuccess", userId);
         break;
       case 401:

@@ -152,24 +152,30 @@ class ChatView extends BaseView {
     this.chatElement = document.getElementById("messages");
 
     const input = document.getElementById("print-message__text-input");
+    const sendButton = document.getElementById("message-menu__send-button");
 
-    document
-      .getElementById("message-menu__send-button")
-      .addEventListener("click", () => {
-        if (input.value === "") {
-          return;
-        }
+    sendButton.addEventListener("click", () => {
+      if (input.value === "") {
+        return;
+      }
 
-        this.chatElement.scrollTop = 0;
+      this.chatElement.scrollTop = 0;
 
-        this.eventBus.emit("clickedSendMessage", {
-          companionId: this.companionId,
-          textContent: input.value,
-        });
-
-        input.value = "";
-        input.focus();
+      this.eventBus.emit("clickedSendMessage", {
+        companionId: this.companionId,
+        textContent: input.value,
       });
+
+      input.value = "";
+      input.focus();
+    });
+
+    input.onkeydown = (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendButton.click();
+      }
+    };
 
     const printMessage = document.getElementById("print-message");
     const messageTextarea = document.getElementById(
@@ -322,7 +328,7 @@ class ChatView extends BaseView {
         elem.remove();
       });
 
-      okMessage.setAttribute("src", "../static/images/check.png");
+      okMessage.setAttribute("src", "dist/images/check.png");
       okMessage.setAttribute("data-id", messageId);
       okMessage.classList.add("message-menu__accept-img");
 
@@ -341,8 +347,22 @@ class ChatView extends BaseView {
 
         sendMessage.style.display = "block";
         okMessage.remove();
+
+        inputMessage.onkeydown = (event) => {
+          if (event.key === "Enter") {
+            sendMessage.click();
+          }
+        };
+
         inputMessage.value = "";
       });
+
+      inputMessage.onkeydown = (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          okMessage.click();
+        }
+      };
 
       inputMessage.value = messageContent.innerHTML;
       sendMessage.style.display = "none";

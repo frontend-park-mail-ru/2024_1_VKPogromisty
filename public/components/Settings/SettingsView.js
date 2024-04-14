@@ -243,14 +243,16 @@ class SettingsView extends BaseView {
 
     const file = avatar.files[0];
 
-    const typeFile = (() => {
-      const parts = file.name.split(".");
-      return parts[parts.length - 1];
-    })();
+    if (file) {
+      const typeFile = (() => {
+        const parts = file.name.split(".");
+        return parts[parts.length - 1];
+      })();
 
-    if (!validExtensions.includes(typeFile)) {
-      incorrectAvatarForm.classList.remove(correct);
-      flag = false;
+      if (!validExtensions.includes(typeFile)) {
+        incorrectAvatarForm.classList.remove(correct);
+        flag = false;
+      }
     }
 
     if (!flag) {
@@ -275,6 +277,9 @@ class SettingsView extends BaseView {
   changeSuccess() {
     const img = document.getElementById("user__avatar-img");
     img.setAttribute("src", `${staticUrl}/${UserState.avatar}`);
+
+    const fullHeaderName = document.getElementById("user__username-span");
+    fullHeaderName.innerHTML = `${UserState.firstName} ${UserState.lastName}`;
 
     this.router.redirect(`/profile/${UserState.userId}`);
   }

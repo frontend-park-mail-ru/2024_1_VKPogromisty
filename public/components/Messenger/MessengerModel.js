@@ -59,7 +59,7 @@ class MessengerModel extends BaseModel {
           this.eventBus.emit("updateLastMessage", data.payload);
           break;
         case "DELETE_MESSAGE":
-          customAlert("error");
+          //customAlert("error");
           break;
         default:
           this.eventBus.emit("serverError", {});
