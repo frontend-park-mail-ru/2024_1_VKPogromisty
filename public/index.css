@@ -194,7 +194,7 @@ input::-webkit-inner-spin-button {
   width: 100%;
 }
 
-.input-avatar span {
+.input-avatar__span {
   padding: 10px 20px;
   display: block;
   background-color: var(--background-input-color);
@@ -205,9 +205,10 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
   margin-bottom: 10px;
   max-width: 364px;
+  transition-duration: 0.5s;
 }
 
-.input-avatar input[type="file"] {
+.input-avatar__file-input {
   position: absolute;
   z-index: -1;
   opacity: 0;
@@ -216,11 +217,7 @@ input::-webkit-inner-spin-button {
   height: 0;
 }
 
-.upload-image {
-  transition-duration: 0.5s;
-}
-
-.upload-image:hover {
+.input-avatar__span:hover {
   filter: brightness(105%);
 }
 
@@ -494,13 +491,6 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
 }
 
-.post-header .author-name {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  font-size: 24px;
-}
-
 .post-menu {
   box-sizing: border-box;
   width: 30px;
@@ -549,11 +539,6 @@ input::-webkit-inner-spin-button {
   margin: 5px 0px 15px 0px;
   border-radius: 7px;
   box-shadow: 0 0 5px 1px rgb(145, 143, 143);
-}
-
-.post-content p {
-  box-sizing: border-box;
-  white-space: normal;
 }
 
 .post-reaction {
@@ -650,27 +635,6 @@ input::-webkit-inner-spin-button {
   font-family: var(--ordinary-text);
 }
 
-.comment {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  align-content: center;
-}
-
-.comment div {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin: 10px 0px 15px 0px;
-}
-
-.comment-author {
-  box-sizing: border-box;
-  font-size: 10px;
-  cursor: pointer;
-}
-
 .post-give-comment {
   box-sizing: border-box;
   height: 60px;
@@ -693,11 +657,6 @@ input::-webkit-inner-spin-button {
 .post-footer {
   box-sizing: border-box;
   display: flex;
-}
-
-.post-footer .author-name {
-  box-sizing: border-box;
-  margin-top: 15px;
 }
 
 .comment-buttons {
@@ -1657,17 +1616,17 @@ input::-webkit-inner-spin-button {
   height: 50px;
 }
 
-.custom-alert-error {
+.custom-alert__error {
   border: 1px solid red;
   background-color: #e0908d;
 }
 
-.custom-alert-success {
+.custom-alert__success {
   border: 1px solid green;
   background-color: #79ef46;
 }
 
-.custom-alert-warning {
+.custom-alert__warning {
   border: 1px solid rgb(181, 181, 6);
   background-color: #c9c907;
 }

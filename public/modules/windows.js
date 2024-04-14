@@ -14,13 +14,13 @@ export function customAlert(
 
   switch (typeAlert) {
     case "warning":
-      alertDiv.classList.add("custom-alert", "custom-alert-warning");
+      alertDiv.classList.add("custom-alert", "custom-alert__warning");
       break;
     case "success":
-      alertDiv.classList.add("custom-alert", "custom-alert-success");
+      alertDiv.classList.add("custom-alert", "custom-alert__success");
       break;
     default:
-      alertDiv.classList.add("custom-alert", "custom-alert-error");
+      alertDiv.classList.add("custom-alert", "custom-alert__error");
   }
   alertDiv.innerHTML = alertText;
   document.body.appendChild(alertDiv);
