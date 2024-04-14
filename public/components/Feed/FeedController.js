@@ -1,6 +1,6 @@
 import FeedModel from "./FeedModel.js";
 import FeedView from "./FeedView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "readyRenderPosts",

@@ -1,4 +1,4 @@
-import BaseView from "./public/MVC/BaseView.js";
+import BaseView from "../../MVC/BaseView.js";
 import { formatMinutesHours } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
@@ -99,7 +99,7 @@ class MessengerView extends BaseView {
     });
 
     this.mainElement = document.getElementById("activity");
-    this.mainElement.innerHTML = Handlebars.templates["messengerMain.hbs"]({
+    this.mainElement.innerHTML = require("./messengerMain.hbs")({
       noDialogs: true,
     });
     this.dialogsElement = document.getElementById("dialogs");
@@ -182,7 +182,7 @@ class MessengerView extends BaseView {
   addDialog(profile) {
     const lastMessage = this.promissedMessages.get(profile.User.userId);
     this.promissedMessages.delete(profile.User.userId);
-    this.dialogsElement.innerHTML += Handlebars.templates["messenge.hbs"]({
+    this.dialogsElement.innerHTML += require("./messenge.hbs")({
       staticUrl,
       elem: { companion: profile.User, lastMessage },
     });
@@ -200,7 +200,7 @@ class MessengerView extends BaseView {
    * @param {Dialog[]} dialogs
    */
   renderDialogs(dialogs) {
-    const template = Handlebars.templates["messenge.hbs"];
+    const template = require("./messenge.hbs");
     const noDialogs = document.getElementById("no-dialogs__span");
 
     dialogs.forEach((elem) => {

@@ -8,6 +8,6 @@ handlebars ./public/components/Chat/chatMain.hbs -f ./public/components/Chat/cha
 handlebars ./public/components/Friends/friendsMain.hbs -f ./public/components/Friends/friendsMain.precompiled.js &&
 handlebars ./public/components/Main/main.hbs -f ./public/components/Main/main.precompiled.js &&
 handlebars ./public/components/Chat/message.hbs -f ./public/components/Chat/message.precompiled.js &&
-handlebars ./public/components/Settings/settingsMain.hbs -f ./public/components/Settings/settingsMain.precompiled.js
+handlebars ./public/components/Settings/settingsMain.hbs -f ./public/components/Settings/settingsMain.precompiled.js &&
 handlebars ./public/components/Post/post.hbs -f ./public/components/Post/post.precompiled.js &&
-handlebars ./public/components/Messenger/messenger.hbs -f ./public/components/Messenger/messenger.precompiled.js
+handlebars ./public/components/Messenger/messenge.hbs -f ./public/components/Messenger/messenge.precompiled.js

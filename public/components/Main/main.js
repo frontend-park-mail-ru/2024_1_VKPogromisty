@@ -53,7 +53,7 @@ export class Main {
    */
   renderForm(userId) {
     if (document.getElementById("main") === null) {
-      const template = Handlebars.templates["main.hbs"];
+      const template = require("./main.hbs");
 
       const fullSidebar = sidebar.concat({
         href: `/profile/${userId}`,

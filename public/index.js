@@ -1,3 +1,5 @@
+import "./reset.css";
+import "./index.css";
 import { Routing } from "./routes.js";
 import SignupController from "./components/Signup/SignupController.js";
 import ProfileController from "./components/Profile/ProfileController.js";

@@ -52,7 +52,7 @@ class FriendsView extends BaseView {
   constructor(eventBus) {
     super(eventBus);
 
-    this.template = Handlebars.templates["friendsMain.hbs"];
+    this.template = require("./friendsMain.hbs");
 
     this.eventBus.addEventListener(
       "receiveOwnProfileData",

@@ -1,6 +1,6 @@
 import FriendsModel from "./FriendsModel.js";
 import FriendsView from "./FriendsView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "readyRenderFriends",

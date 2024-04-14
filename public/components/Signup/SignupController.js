@@ -1,6 +1,6 @@
 import SignupModel from "./SignupModel.js";
 import SignupView from "./SingupView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "attemptSignup",

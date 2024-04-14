@@ -1,6 +1,6 @@
 import ChatModel from "./ChatModel.js";
 import ChatView from "./ChatView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "readyRenderCompanion",

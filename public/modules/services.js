@@ -203,7 +203,7 @@ export class ProfileService {
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async deleteProfile() {
-    const response = await CSRFProtection(this.baseUrl, {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "DELETE",
       credentials: "include",
     });
@@ -236,7 +236,7 @@ export class PostService {
    */
   async getPosts(userId, lastPostId) {
     const response = await CSRFProtection.addCSRFToken(
-      this.baseUrl + `?userId=${userId}&lastPostId=${lastPostId}`,
+      this.baseUrl + `?userId=${userId}&lastPostId=${lastPostId}&postsAmount=0`,
       {
         method: "GET",
         credentials: "include",
@@ -267,7 +267,7 @@ export class PostService {
    */
   async getFriendsPosts(lastPostId) {
     const response = await CSRFProtection.addCSRFToken(
-      this.baseUrl + `friends?lastPostId=${lastPostId}`,
+      this.baseUrl + `friends?lastPostId=${lastPostId}&postsAmount=0`,
       {
         method: "GET",
         credentials: "include",

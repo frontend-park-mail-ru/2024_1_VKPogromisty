@@ -1,4 +1,4 @@
-import BaseView from "./public/MVC/BaseView.js";
+import BaseView from "../../MVC/BaseView.js";
 import { formatFullDate } from "../../modules/dateRemaking.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
@@ -80,7 +80,7 @@ class PostView extends BaseView {
   renderPost({ post, author, publish }) {
     const { userId, avatar } = UserState;
 
-    const template = Handlebars.templates["post.hbs"];
+    const template = require("./post.hbs");
     const postId = post.postId;
 
     if (post.content.trim() === "" && !post.attachments) {

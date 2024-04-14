@@ -1,6 +1,6 @@
 import MessengerModel from "./MessengerModel.js";
 import MessengerView from "./MessengerView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "needUpgradeWebSocket",

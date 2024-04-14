@@ -164,7 +164,7 @@ class ProfileView extends BaseView {
     this.isSubscriber = isSubscriber;
     const isMe = (this.isMe = Number(this.userId) === Number(UserState.userId));
 
-    const template = Handlebars.templates["profileMain.hbs"];
+    const template = require("./profileMain.hbs");
     this.mainElement.innerHTML = template({
       avatar,
       firstName,

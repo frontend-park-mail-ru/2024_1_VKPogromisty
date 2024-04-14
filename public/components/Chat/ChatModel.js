@@ -3,7 +3,7 @@ import {
   ChatService,
   ProfileService,
 } from "../../modules/services.js";
-import BaseModel from "./public/MVC/BaseModel.js";
+import BaseModel from "../../MVC/BaseModel.js";
 
 /**
  * A LastMessages structure

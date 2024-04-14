@@ -1,6 +1,6 @@
 import PostModel from "./PostModel.js";
 import PostView from "./PostView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 /**
  * A Post structure

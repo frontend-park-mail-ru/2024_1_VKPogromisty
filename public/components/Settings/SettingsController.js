@@ -1,6 +1,6 @@
 import SettingsModel from "./SettingsModel.js";
 import SettingsView from "./SettingsView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "clickedSaveChanges",

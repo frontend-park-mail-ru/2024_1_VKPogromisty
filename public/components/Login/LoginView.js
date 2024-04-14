@@ -58,7 +58,7 @@ class LoginView extends BaseView {
    * @return {void}
    */
   render(element) {
-    const template = Handlebars.templates["login.hbs"];
+    const template = require("./login.hbs");
     element.innerHTML = template({ inputs });
 
     const email = document.getElementById("email");

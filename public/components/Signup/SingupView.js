@@ -108,7 +108,7 @@ class SignupView extends BaseView {
    * @return {void}
    */
   render(element) {
-    const template = Handlebars.templates["signup.hbs"];
+    const template = require("./signup.hbs");
     element.innerHTML = template({ main_inputs, part_of_date });
 
     const email = document.getElementById("email");
@@ -232,7 +232,7 @@ class SignupView extends BaseView {
         return parts[parts.length - 1];
       })();
 
-      if (validExtensions.indexOf(typeFile) === -1) {
+      if (!validExtensions.includes(typeFile)) {
         incorrectAvatar.classList.remove(correct);
         avatar.files = null;
       } else {
@@ -311,7 +311,7 @@ class SignupView extends BaseView {
 
     let flag = true;
 
-    if (!validateEmail(email.value.trim())) {
+    if (!validateEmail(email.value)) {
       incorrectEmail.classList.remove(correct);
       flag = false;
     }
@@ -326,18 +326,30 @@ class SignupView extends BaseView {
       flag = false;
     }
 
-    if (!validateName(firstName.value.trim())) {
+    if (!validateName(firstName.value)) {
       incorrectFirstName.classList.remove(correct);
       flag = false;
     }
 
-    if (!validateName(lastName.value.trim())) {
+    if (!validateName(lastName.value)) {
       incorrectLastName.classList.remove(correct);
       flag = false;
     }
 
     if (!validateDateOfBirth(day.value, month.value, year.value)) {
       incorrectDateOfBirthday.classList.remove(correct);
+      flag = false;
+    }
+
+    const file = avatar.files[0];
+
+    const typeFile = (() => {
+      const parts = file.name.split(".");
+      return parts[parts.length - 1];
+    })();
+
+    if (!validExtensions.includes(typeFile)) {
+      incorrectAvatar.classList.remove(correct);
       flag = false;
     }
 

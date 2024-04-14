@@ -106,7 +106,7 @@ class FeedView extends BaseView {
    */
   renderFeedMain() {
     const { userId, avatar, firstName, lastName } = UserState;
-    const template = Handlebars.templates["feedMain.hbs"];
+    const template = require("./feedMain.hbs");
     const userAvatar = `${staticUrl}/${avatar}`;
 
     new Header(document.body).renderForm({

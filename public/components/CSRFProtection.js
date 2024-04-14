@@ -39,9 +39,12 @@ class CSRFProtection {
 
     if (result.status === 403) {
       await this.updateCSRFToken();
+      state.headers["X-CSRF-Token"] = this.csrfToken;
+    } else {
+      return result;
     }
 
-    return await fetch(url, state);
+    return fetch(url, state);
   }
 
   /**
