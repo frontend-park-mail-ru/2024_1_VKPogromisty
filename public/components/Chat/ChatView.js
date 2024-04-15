@@ -1,8 +1,9 @@
-import BaseView from "./public/MVC/BaseView.js";
+import BaseView from "../../MVC/BaseView.js";
 import { formatMinutesHours } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
+import UserState from "../UserState.js";
 
 /**
  * A User structure
@@ -39,11 +40,10 @@ class ChatView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.userState = userState;
 
     this.eventBus.addEventListener(
       "receiveCompanionData",
@@ -69,6 +69,10 @@ class ChatView extends BaseView {
       "updateMessageSuccess",
       this.renderUpdateMessage.bind(this),
     );
+    this.eventBus.addEventListener(
+      "serverError",
+      this.serverErrored.bind(this),
+    );
   }
 
   /**
@@ -77,9 +81,9 @@ class ChatView extends BaseView {
    * @param {number} companionId
    */
   renderMain(companionId) {
-    this.companionId = companionId;
+    this.companionId = +companionId;
 
-    const { userId, avatar, firstName, lastName } = this.userState;
+    const { userId, avatar, firstName, lastName } = UserState;
 
     new Header(document.body).renderForm({
       userId,
@@ -100,6 +104,12 @@ class ChatView extends BaseView {
       );
       this.eventBus.emit("clickLogoutButton", {});
     });
+
+    document.onkeydown = (event) => {
+      if (event.key === "Escape") {
+        this.router.redirect("/messenger");
+      }
+    };
 
     this.eventBus.emit("readyRenderCompanion", this.companionId);
   }
@@ -129,7 +139,7 @@ class ChatView extends BaseView {
   renderCompanion({ User }) {
     const { userId, avatar, firstName, lastName } = User;
 
-    const template = Handlebars.templates["chatMain.hbs"];
+    const template = require("./chatMain.hbs");
 
     this.mainElement.innerHTML = template({
       userId,
@@ -139,44 +149,33 @@ class ChatView extends BaseView {
       staticUrl,
     });
 
+    this.chatElement = document.getElementById("messages");
+
     const input = document.getElementById("print-message__text-input");
+    const sendButton = document.getElementById("message-menu__send-button");
 
-    document
-      .getElementById("message-menu__send-button")
-      .addEventListener("click", () => {
-        if (input.value === "") {
-          return;
-        }
+    sendButton.addEventListener("click", () => {
+      if (input.value === "") {
+        return;
+      }
 
-        this.eventBus.emit("clickedSendMessage", {
-          companionId: this.companionId,
-          textContent: input.value,
-        });
+      this.chatElement.scrollTop = 0;
 
-        input.value = "";
+      this.eventBus.emit("clickedSendMessage", {
+        companionId: this.companionId,
+        textContent: input.value,
       });
 
-    input.addEventListener(
-      "keypress",
-      (event) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          if (input.value === "") {
-            return;
-          }
+      input.value = "";
+      input.focus();
+    });
 
-          this.eventBus.emit("clickedSendMessage", {
-            companionId: this.companionId,
-            textContent: input.value,
-          });
-
-          input.value = "";
-        }
-      },
-      { capture: true },
-    );
-
-    this.chatElement = document.getElementById("messages");
+    input.onkeydown = (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendButton.click();
+      }
+    };
 
     const printMessage = document.getElementById("print-message");
     const messageTextarea = document.getElementById(
@@ -214,9 +213,8 @@ class ChatView extends BaseView {
    * @param {Message[]} messages - The messages of conversation with current companion
    */
   renderMessages(messages) {
-    console.log(messages);
     this.isWaitMessages = false;
-    const template = Handlebars.templates["message.hbs"];
+    const template = require("./message.hbs");
     const noMessages = messages.length === 0;
 
     if (noMessages) {
@@ -224,11 +222,18 @@ class ChatView extends BaseView {
     }
 
     messages.forEach((elem) => {
-      elem.isMe = elem.senderId === this.userState.userId;
-      elem.isUpdated = elem.createdAt !== elem.updatedAt;
-      elem.createdAt = formatMinutesHours(elem.createdAt);
-      if (elem.id < this.lastMessageId || this.lastMessageId === 0) {
-        this.lastMessageId = elem.id;
+      if (elem.content.trim() === "" && !elem.attachments) {
+        this.eventBus.emit("clickedDeleteMessage", {
+          messageId: elem.id,
+          receiver: this.companionId,
+        });
+      } else {
+        elem.isMe = elem.senderId === UserState.userId;
+        elem.isUpdated = elem.createdAt !== elem.updatedAt;
+        elem.createdAt = formatMinutesHours(elem.createdAt);
+        if (elem.id < this.lastMessageId || this.lastMessageId === 0) {
+          this.lastMessageId = elem.id;
+        }
       }
     });
 
@@ -257,10 +262,20 @@ class ChatView extends BaseView {
    * @param {Message[]} messages - The messages of conversation with current companion
    */
   renderAddMessage(message) {
-    const template = Handlebars.templates["message.hbs"];
+    if (window.location.pathname !== `/chat/${this.companionId}`) {
+      return;
+    }
+    if (
+      message.senderId !== +this.companionId &&
+      message.receiverId !== +this.companionId
+    ) {
+      return;
+    }
+
+    const template = require("./message.hbs");
     const messages = [message];
 
-    message.isMe = message.senderId === this.userState.userId;
+    message.isMe = message.senderId === UserState.userId;
     message.createdAt = formatMinutesHours(message.createdAt);
 
     this.chatElement.innerHTML =
@@ -307,23 +322,47 @@ class ChatView extends BaseView {
       const okMessage = document.createElement("img");
       const parentSend = sendMessage.parentElement;
 
-      okMessage.setAttribute("src", "../static/images/check.png");
+      Array.from(
+        document.getElementsByClassName("message-menu__accept-img"),
+      ).forEach((elem) => {
+        elem.remove();
+      });
+
+      okMessage.setAttribute("src", "dist/images/check.png");
       okMessage.setAttribute("data-id", messageId);
       okMessage.classList.add("message-menu__accept-img");
 
       okMessage.addEventListener("click", () => {
-        if (inputMessage.value !== messageContent.innerHTML) {
+        if (
+          inputMessage.value !== messageContent.innerHTML &&
+          inputMessage.value.trim() !== ""
+        ) {
           this.eventBus.emit("clickedUpdateMessage", {
             messageId: messageId,
             textContent: inputMessage.value,
             receiver: this.companionId,
           });
+          inputMessage.focus();
         }
 
         sendMessage.style.display = "block";
         okMessage.remove();
+
+        inputMessage.onkeydown = (event) => {
+          if (event.key === "Enter") {
+            sendMessage.click();
+          }
+        };
+
         inputMessage.value = "";
       });
+
+      inputMessage.onkeydown = (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          okMessage.click();
+        }
+      };
 
       inputMessage.value = messageContent.innerHTML;
       sendMessage.style.display = "none";
@@ -337,6 +376,9 @@ class ChatView extends BaseView {
    * @param {Message} message - The message of conversation with current companion
    */
   renderUpdateMessage(message) {
+    if (window.location.pathname !== `/chat/${this.companionId}`) {
+      return;
+    }
     const contentPlace = document.getElementById(
       `message-content-${message.id}`,
     );
@@ -362,6 +404,9 @@ class ChatView extends BaseView {
    * @param {Message} message - The message of conversation with current companion
    */
   renderDeleteMessage(message) {
+    if (window.location.pathname !== `/chat/${this.companionId}`) {
+      return;
+    }
     const messageAtPage = document.getElementById(
       `message-${message.messageId}`,
     );
@@ -369,6 +414,16 @@ class ChatView extends BaseView {
     if (messageAtPage) {
       messageAtPage.parentElement.remove();
     }
+  }
+
+  /**
+   * Shows that mistake called
+   * @return {void}
+   */
+  serverErrored() {
+    const serverError = document.getElementById("server-error-500");
+
+    serverError.classList.remove("server-error-500");
   }
 }
 

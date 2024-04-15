@@ -1,11 +1,10 @@
-import {
-  formatDayMonthYear,
-  formatFullDate,
-} from "../../modules/dateRemaking.js";
+import { formatDayMonthYear } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
+import PostController from "../Post/PostController.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
+import UserState from "../UserState.js";
 
 const staticUrl = `${API_URL}/static`;
 
@@ -54,6 +53,7 @@ const staticUrl = `${API_URL}/static`;
  * @typedef {Object} ProfileInfo
  * @property {UserInfo} User - The info about profile's user
  * @property {boolean} isSubscribedTo - Is the session's user a subscriber of profile's user
+ * @property {boolean} isSubscriber - Is the profile's user a subscriber of session's user
  */
 
 /**
@@ -67,11 +67,11 @@ class ProfileView extends BaseView {
    * @param {Routing} router - Объект класса Routing
    * @param {UserState} userState - Объект класса UserState
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.userState = userState;
+    this.postController = new PostController(router);
 
     this.eventBus.addEventListener(
       "receiveOwnProfileData",
@@ -98,16 +98,8 @@ class ProfileView extends BaseView {
       this.renderPosts.bind(this),
     );
     this.eventBus.addEventListener(
-      "postDeleteSuccess",
-      this.postDeletedSuccess.bind(this),
-    );
-    this.eventBus.addEventListener(
       "publishedPostSuccess",
       this.postPublishedSuccess.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "postUpdateSuccess",
-      this.postUpdatedSuccess.bind(this),
     );
     this.eventBus.addEventListener(
       "serverError",
@@ -117,11 +109,11 @@ class ProfileView extends BaseView {
 
   /**
    * Renders header and sidebar of page
-   * @param {UserInfo} userInfo - The info about session's user
+   * @param {number} user_id - The ID of session's user
    */
   renderProfileMain(user_id) {
     this.userId = user_id;
-    const { userId, avatar, firstName, lastName } = this.userState;
+    const { userId, avatar, firstName, lastName } = UserState;
 
     new Header(document.body).renderForm({
       userId,
@@ -132,7 +124,6 @@ class ProfileView extends BaseView {
     new Main(document.body).renderForm(userId);
 
     document.getElementById("logout-button").addEventListener("click", () => {
-      document.removeEventListener("scroll", this.checksNewPosts.bind(this));
       this.eventBus.emit("clickLogoutButton", {});
     });
 
@@ -165,15 +156,15 @@ class ProfileView extends BaseView {
    * Renders user's profile
    * @param {ProfileInfo} profileInfo - The info of profile's user
    */
-  renderProfile({ User, isSubscribedTo }) {
+  renderProfile({ User, isSubscribedTo, isSubscriber }) {
     User.dateOfBirth = formatDayMonthYear(User.dateOfBirth);
 
     const { userId, firstName, lastName, dateOfBirth, avatar } = User;
     this.mainElement = document.getElementById("activity");
-    const isMe = (this.isMe =
-      Number(this.userId) === Number(this.userState.userId));
+    this.isSubscriber = isSubscriber;
+    const isMe = (this.isMe = Number(this.userId) === Number(UserState.userId));
 
-    const template = Handlebars.templates["profileMain.hbs"];
+    const template = require("./profileMain.hbs");
     this.mainElement.innerHTML = template({
       avatar,
       firstName,
@@ -183,11 +174,13 @@ class ProfileView extends BaseView {
       staticUrl,
       isMe,
       isSubscribedTo,
+      isSubscriber,
     });
 
     this.postsElement = document.getElementById("posts");
     this.lastPostId = 0;
     this.isAllPosts = false;
+    this.isWaitPosts = true;
 
     const newsTextarea = document.getElementById("news-content__textarea");
 
@@ -198,7 +191,7 @@ class ProfileView extends BaseView {
       });
     }
 
-    document.addEventListener("scroll", this.checksNewPosts.bind(this));
+    document.onscroll = this.checksNewPosts.bind(this);
 
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
@@ -233,13 +226,20 @@ class ProfileView extends BaseView {
       publishButton.addEventListener("click", () => {
         const content = document.getElementById("news-content__textarea").value;
 
-        if (content === "") {
+        if (content.trim() === "" && fileInput.files.length === 0) {
           return;
         }
+
         this.eventBus.emit("clickedPublishPost", {
           content: content,
           attachments: fileInput.files,
         });
+
+        document.getElementById("news-img-content").innerHTML = "";
+        const textarea = document.getElementById("news-content__textarea");
+        textarea.value = "";
+        textarea.style.height = "60px";
+        fileInput.value = null;
       });
     }
 
@@ -262,6 +262,12 @@ class ProfileView extends BaseView {
       });
     }
 
+    if (this.sendMessageUser !== null) {
+      this.sendMessageUser.addEventListener("click", () => {
+        this.router.redirect(`/chat/${this.userId}`);
+      });
+    }
+
     this.eventBus.emit("readyRenderPosts", {
       userId: this.userId,
       lastPostId: this.lastPostId,
@@ -279,7 +285,11 @@ class ProfileView extends BaseView {
     this.subscribeUser.classList.add(
       "subscribed-to-options__button-unsubscribe",
     );
-    this.subscribeUser.innerHTML = "Отписаться";
+    if (this.isSubscriber) {
+      this.subscribeUser.innerHTML = "Удалить из друзей";
+    } else {
+      this.subscribeUser.innerHTML = "Отписаться";
+    }
     this.sendMessageUser.classList.remove(
       "subscribed-to-options__button-subscribe-message",
     );
@@ -297,7 +307,11 @@ class ProfileView extends BaseView {
       "subscribed-to-options__button-unsubscribe",
     );
     this.subscribeUser.classList.add("subscribed-to-options__button-subscribe");
-    this.subscribeUser.innerHTML = "Подписаться";
+    if (this.isSubscriber) {
+      this.subscribeUser.innerHTML = "Принять заявку в друзья";
+    } else {
+      this.subscribeUser.innerHTML = "Подписаться";
+    }
     this.sendMessageUser.classList.remove(
       "subscribed-to-options__button-unsubscribe-message",
     );
@@ -313,25 +327,15 @@ class ProfileView extends BaseView {
    */
   renderPosts({ author, posts }) {
     this.isWaitPosts = false;
-    const template = Handlebars.templates["profilePost.hbs"];
-    const avatar = this.userState.avatar;
-
-    const isMe = this.isMe;
 
     if (posts) {
       posts.forEach((elem) => {
-        if (elem.createdAt !== elem.updatedAt) {
-          elem.hasUpdated = true;
-        }
         if (elem.postId < this.lastPostId || this.lastPostId === 0) {
           this.lastPostId = elem.postId;
         }
       });
       posts.forEach((elem) => {
-        elem.createdAt = formatFullDate(elem.createdAt);
-      });
-      posts.forEach((elem) => {
-        elem.updatedAt = `обновлено ${formatFullDate(elem.updatedAt)}`;
+        this.postController.renderPostView({ post: elem, author: author });
       });
     } else {
       this.isAllPosts = true;
@@ -339,68 +343,6 @@ class ProfileView extends BaseView {
         .getElementById("no-more-posts")
         .classList.replace("no-more-posts__hidden", "no-more-posts__visible");
     }
-
-    this.postsElement.innerHTML += template({
-      posts,
-      avatar,
-      staticUrl,
-      author,
-      isMe,
-    });
-
-    const trashes = document.querySelectorAll(".post-author__trash-basket-img");
-    const edits = document.querySelectorAll(".post-author__edit-img");
-
-    trashes.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeletePost", elem.dataset.id);
-      });
-    });
-
-    edits.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        const parent = elem.parentNode;
-        const nextElem = elem.nextElementSibling;
-        const id = elem.dataset.id;
-        const textarea = document.getElementById(`textarea-${id}`);
-
-        textarea.removeAttribute("readonly");
-        textarea.focus();
-
-        const ok = document.createElement("img");
-        ok.classList.add("post-author__accept-img");
-        ok.setAttribute("data-id", id);
-        ok.setAttribute("src", "../static/images/check.png");
-        ok.addEventListener("click", () => {
-          if (textarea.value === "") {
-            return;
-          }
-
-          this.eventBus.emit("clickedUpdatePost", {
-            content: textarea.value,
-            attachments: null,
-            post_id: id,
-          });
-        });
-
-        const cancel = document.createElement("img");
-        cancel.classList.add("post-author__cancel-img");
-        cancel.setAttribute("data-id", id);
-        cancel.setAttribute("src", "../static/images/cancel.png");
-        cancel.addEventListener("click", () => {
-          textarea.toggleAttribute("readonly");
-          elem.style["display"] = "block";
-          nextElem.style["display"] = "block";
-          cancel.remove();
-          ok.remove();
-        });
-
-        parent.appendChild(ok);
-        parent.appendChild(cancel);
-        elem.style["display"] = "none";
-        nextElem.style["display"] = "none";
-      });
-    });
   }
 
   /**
@@ -409,129 +351,11 @@ class ProfileView extends BaseView {
    * @return {void}
    */
   postPublishedSuccess({ post, author }) {
-    document.getElementById("news-img-content").innerHTML = "";
-    document.getElementById("news-content__textarea").value = "";
-
-    const template = Handlebars.templates["profilePost.hbs"];
-    const avatar = this.userState.avatar;
-
-    post.createdAt = formatFullDate(post.createdAt);
-
-    const isMe = this.isMe;
-    const posts = [post];
-
-    this.postsElement.innerHTML =
-      template({
-        posts,
-        avatar,
-        staticUrl,
-        author,
-        isMe,
-      }) + this.postsElement.innerHTML;
-
-    const trashes = document.querySelectorAll(".post-author__trash-basket-img");
-    const edits = document.querySelectorAll(".post-author__edit-img");
-
-    trashes.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeletePost", elem.dataset.id);
-      });
+    this.postController.renderPostView({
+      post: post,
+      author: author,
+      publish: true,
     });
-
-    edits.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        const parent = elem.parentNode;
-        const nextElem = elem.nextElementSibling;
-        const id = elem.dataset.id;
-        const textarea = document.getElementById(`textarea-${id}`);
-
-        textarea.removeAttribute("readonly");
-        textarea.focus();
-
-        const ok = document.createElement("img");
-        ok.classList.add("post-author__accept-img");
-        ok.setAttribute("data-id", id);
-        ok.setAttribute("src", "../static/images/check.png");
-        ok.addEventListener("click", () => {
-          if (textarea.value === "") {
-            return;
-          }
-
-          this.eventBus.emit("clickedUpdatePost", {
-            content: textarea.value,
-            attachments: null,
-            post_id: id,
-          });
-        });
-
-        const cancel = document.createElement("img");
-        cancel.classList.add("post-author__cancel-img");
-        cancel.setAttribute("data-id", id);
-        cancel.setAttribute("src", "../static/images/cancel.png");
-        cancel.addEventListener("click", () => {
-          textarea.toggleAttribute("readonly");
-          elem.style["display"] = "block";
-          nextElem.style["display"] = "block";
-          cancel.remove();
-          ok.remove();
-        });
-
-        parent.appendChild(ok);
-        parent.appendChild(cancel);
-        elem.style["display"] = "none";
-        nextElem.style["display"] = "none";
-      });
-    });
-  }
-
-  /**
-   * Updates the current post on page
-   * @param {Post} postInfo - The info about updated post
-   * @return {void}
-   */
-  postUpdatedSuccess({ postId, updatedAt }) {
-    const postMenu = document.getElementById(`post-menu-${postId}`);
-    const textarea = document.getElementById(`textarea-${postId}`);
-    const edited = document.getElementById(`edited-${postId}`);
-
-    if (edited) {
-      edited.innerHTML = `обновлено ${formatFullDate(updatedAt)}`;
-    } else {
-      const postAuthorTime = document.getElementById(
-        `post-author-time-${postId}`,
-      );
-
-      const img = document.createElement("img");
-      img.setAttribute("src", "../static/images/dot.png");
-      img.classList.add("post-author-time__dot-img");
-
-      const span = document.createElement("span");
-      span.setAttribute("id", `edited-${postId}`);
-      span.classList.add("post-author-time__last-time-span");
-      span.innerHTML = `обновлено ${formatFullDate(updatedAt)}`;
-
-      postAuthorTime.appendChild(img);
-      postAuthorTime.appendChild(span);
-    }
-
-    textarea.toggleAttribute("readonly");
-    postMenu.lastChild.remove();
-    postMenu.lastChild.remove();
-    postMenu.firstElementChild.style["display"] = "block";
-    postMenu.firstElementChild.nextElementSibling.style["display"] = "block";
-  }
-
-  /**
-   * Deletes post from the page
-   * @param {number} postId - The ID of post deleted
-   * @return {void}
-   */
-  postDeletedSuccess(postId) {
-    const post = document.getElementById(`post${postId}`);
-
-    if (post !== null) {
-      post.remove();
-    }
   }
 
   /**

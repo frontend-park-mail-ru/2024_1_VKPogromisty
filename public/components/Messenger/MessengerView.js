@@ -1,8 +1,9 @@
-import BaseView from "./public/MVC/BaseView.js";
+import BaseView from "../../MVC/BaseView.js";
 import { formatMinutesHours } from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
+import UserState from "../UserState.js";
 
 /**
  * A User structure
@@ -47,15 +48,35 @@ class MessengerView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.userState = userState;
+    this.promissedMessages = new Map();
 
+    this.eventBus.addEventListener(
+      "updatedWebSocket",
+      this.updatedWebSocket.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "sendMessageSuccess",
+      this.sendedMessage.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "updateLastMessage",
+      this.updatedMessage.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "receiveProfileData",
+      this.addDialog.bind(this),
+    );
     this.eventBus.addEventListener(
       "getDialogsSuccess",
       this.renderDialogs.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "serverError",
+      this.serverErrored.bind(this),
     );
   }
 
@@ -63,7 +84,7 @@ class MessengerView extends BaseView {
    * Renders main part of page of messenger
    */
   renderMain() {
-    const { userId, avatar, firstName, lastName } = this.userState;
+    const { userId, avatar, firstName, lastName } = UserState;
 
     new Header(document.body).renderForm({
       userId,
@@ -78,8 +99,99 @@ class MessengerView extends BaseView {
     });
 
     this.mainElement = document.getElementById("activity");
+    this.mainElement.innerHTML = require("./messengerMain.hbs")({
+      noDialogs: true,
+    });
+    this.dialogsElement = document.getElementById("dialogs");
 
+    this.eventBus.emit("needUpgradeWebSocket", {});
+  }
+
+  updatedWebSocket() {
     this.eventBus.emit("readyRenderDialogs", {});
+  }
+
+  sendedMessage(message) {
+    if (window.location.pathname !== "/messenger") {
+      return;
+    }
+    if (message.senderId === UserState.userId) {
+      if (document.getElementById(`dialog-${message.receiverId}`)) {
+        document.getElementById(
+          `chatter-info__message-span-${message.receiverId}`,
+        ).innerHTML = message.content;
+        document.getElementById(
+          `chatter-content__time-span-${message.receiverId}`,
+        ).innerHTML = formatMinutesHours(message.createdAt);
+      } else {
+        this.promissedMessages.set(message.receiverId, {
+          content: message.content,
+          createdAt: formatMinutesHours(message.createdAt),
+          id: message.id,
+        });
+        this.eventBus.emit("needGetProfile", message.receiverId);
+      }
+    } else {
+      if (document.getElementById(`dialog-${message.senderId}`)) {
+        const messageContent = document.querySelector(
+          `#dialog-${message.senderId} .chatter-content__message-span`,
+        );
+        messageContent.innerHTML = message.content;
+        messageContent.setAttribute(
+          "id",
+          `chatter-content__message-span-${message.senderId}-${message.id}`,
+        );
+        const messageTime = document.querySelector(
+          `#dialog-${message.senderId} .chatter-content__time-span`,
+        );
+        messageTime.innerHTML = formatMinutesHours(message.createdAt);
+        messageTime.setAttribute(
+          "id",
+          `chatter-content__time-span-${message.senderId}-${message.id}`,
+        );
+      } else {
+        this.promissedMessages.set(message.senderId, {
+          content: message.content,
+          createdAt: formatMinutesHours(message.createdAt),
+          id: message.id,
+        });
+        this.eventBus.emit("needGetProfile", message.senderId);
+      }
+    }
+  }
+
+  updatedMessage(message) {
+    if (window.location.pathname !== "/messenger") {
+      return;
+    }
+    if (message.senderId === UserState.userId) {
+      if (document.getElementById(`dialog-${message.receiverId}`)) {
+        document.getElementById(
+          `chatter-info__message-span-${message.receiverId}`,
+        ).innerHTML = message.content;
+      }
+    } else {
+      if (document.getElementById(`dialog-${message.senderId}`)) {
+        document.getElementById(
+          `chatter-content__message-span-${message.senderId}-${message.id}`,
+        ).innerHTML = message.content;
+      }
+    }
+  }
+
+  addDialog(profile) {
+    const lastMessage = this.promissedMessages.get(profile.User.userId);
+    this.promissedMessages.delete(profile.User.userId);
+    this.dialogsElement.innerHTML += require("./messenge.hbs")({
+      staticUrl,
+      elem: { companion: profile.User, lastMessage },
+    });
+    const chats = document.querySelectorAll(".dialog");
+    chats.forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.router.redirect(`/chat/${elem.dataset.id}`);
+      });
+    });
   }
 
   /**
@@ -88,11 +200,11 @@ class MessengerView extends BaseView {
    * @param {Dialog[]} dialogs
    */
   renderDialogs(dialogs) {
-    const template = Handlebars.templates["messengerMain.hbs"];
-    const noDialogs = dialogs.length === 0;
+    const template = require("./messenge.hbs");
+    const noDialogs = document.getElementById("no-dialogs__span");
 
     dialogs.forEach((elem) => {
-      if (elem.user1.userId === this.userState.userId) {
+      if (elem.user1.userId === UserState.userId) {
         elem.companion = elem.user2;
       } else {
         elem.companion = elem.user1;
@@ -101,9 +213,11 @@ class MessengerView extends BaseView {
       elem.lastMessage.createdAt = formatMinutesHours(
         elem.lastMessage.createdAt,
       );
-    });
 
-    this.mainElement.innerHTML = template({ staticUrl, dialogs, noDialogs });
+      this.dialogsElement.innerHTML += template({ staticUrl, elem });
+
+      noDialogs?.remove();
+    });
 
     const chats = document.querySelectorAll(".dialog");
     chats.forEach((elem) => {
@@ -111,6 +225,16 @@ class MessengerView extends BaseView {
         this.router.redirect(`/chat/${elem.dataset.id}`);
       });
     });
+  }
+
+  /**
+   * Shows that mistake called
+   * @return {void}
+   */
+  serverErrored() {
+    const serverError = document.getElementById("server-error-500");
+
+    serverError?.classList.remove("server-error-500");
   }
 }
 

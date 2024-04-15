@@ -24,12 +24,11 @@ class ProfileModel extends BaseModel {
    * @param {Routing} router - Объект класса Routing
    * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket, userState) {
+  constructor(eventBus, router, webSocket) {
     super(eventBus);
 
     this.router = router;
     this.webSocket = webSocket;
-    this.userState = userState;
     this.profileService = new ProfileService();
     this.postService = new PostService();
     this.subscriptionsService = new SubscriptionsService();
@@ -55,14 +54,6 @@ class ProfileModel extends BaseModel {
       "clickedPublishPost",
       this.publishPost.bind(this),
     );
-    this.eventBus.addEventListener(
-      "clickedDeletePost",
-      this.deletePost.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "clickedUpdatePost",
-      this.updatePost.bind(this),
-    );
   }
 
   /**
@@ -71,10 +62,8 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async getProfileData(userId) {
-    const resultProfileMain = await this.profileService.getOtherProfileData(
-      userId,
-      this.userState,
-    );
+    const resultProfileMain =
+      await this.profileService.getOtherProfileData(userId);
 
     switch (resultProfileMain.status) {
       case 200:
@@ -94,13 +83,10 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async subscribeToUser(userId) {
-    const result = await this.subscriptionsService.postSubscription(
-      userId,
-      this.userState,
-    );
+    const result = await this.subscriptionsService.postSubscription(userId);
 
     switch (result.status) {
-      case 200:
+      case 201:
         this.eventBus.emit("subscribedSuccess", {});
         break;
       case 401:
@@ -117,10 +103,7 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async unsubscribeFromUser(userId) {
-    const result = await this.subscriptionsService.deleteSubscription(
-      userId,
-      this.userState,
-    );
+    const result = await this.subscriptionsService.deleteSubscription(userId);
 
     switch (result.status) {
       case 204:
@@ -140,11 +123,7 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async getPosts({ userId, lastPostId }) {
-    const result = await this.postService.getPosts(
-      userId,
-      lastPostId,
-      this.userState,
-    );
+    const result = await this.postService.getPosts(userId, lastPostId);
 
     switch (result.status) {
       case 200:
@@ -165,60 +144,11 @@ class ProfileModel extends BaseModel {
    * @return {void}
    */
   async publishPost({ content, attachments }) {
-    const result = await this.postService.publishPost(
-      content,
-      attachments,
-      this.userState,
-    );
+    const result = await this.postService.publishPost(content, attachments);
 
     switch (result.status) {
       case 201:
         this.eventBus.emit("publishedPostSuccess", result.body);
-        break;
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
-  }
-
-  /**
-   * Deletes the post from user's profile
-   * @param {number} post_id - The ID of post current profile
-   * @return {void}
-   */
-  async deletePost(post_id) {
-    const result = await this.postService.deletePost(post_id, this.userState);
-
-    switch (result.status) {
-      case 204:
-        this.eventBus.emit("postDeleteSuccess", post_id);
-        break;
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
-  }
-
-  /**
-   * Updates the post from user's profile
-   * @param {number} post_id - The ID of post current profile
-   * @param {string} content - The text content of current post
-   * @return {void}
-   */
-  async updatePost({ post_id, content }) {
-    const result = await this.postService.updatePost(
-      post_id,
-      content,
-      this.userState,
-    );
-
-    switch (result.status) {
-      case 200:
-        this.eventBus.emit("postUpdateSuccess", result.body);
         break;
       case 401:
         this.router.redirect("/login");

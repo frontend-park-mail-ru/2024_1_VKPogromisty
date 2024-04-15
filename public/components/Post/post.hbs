@@ -1,11 +1,12 @@
-{{#each posts}}
-<div id="post{{ this.post.postId }}" class="post">
+<div id="post-{{ this.post.postId }}" class="post">
   <div class="post-header">
     <div class="post-author">
-      <img
-        class="post-author__user-avatar-img"
-        src="{{ ../staticUrl }}/{{ this.author.avatar }}"
-      />
+      <a href="/profile/{{ this.author.userId }}">
+        <img
+          class="post-author__user-avatar-img"
+          src="{{ this.staticUrl }}/{{ this.author.avatar }}"
+        />
+      </a>
       <div class="post-author-info">
         <span class="post-author__name-span"
           >{{ this.author.firstName }} {{ this.author.lastName }}</span
@@ -18,10 +19,7 @@
             {{ this.post.createdAt }}
           </span>
           {{#if this.post.hasUpdated}}
-          <img
-            class="post-author-time__dot-img"
-            src="../static/images/dot.png"
-          />
+          <img class="post-author-time__dot-img" src="dist/images/dot.png" />
           <span
             class="post-author-time__last-time-span"
             id="edited-{{ this.post.postId }}"
@@ -33,23 +31,23 @@
       </div>
     </div>
     <div class="post-menu" id="post-menu-{{ this.post.postId }}">
-      {{#if ../isMe}}
+      {{#if isMe}}
       <img
         class="post-author__edit-img"
         id="edit-img-{{ this.post.postId }}"
         data-id="{{ this.post.postId }}"
-        src="../static/images/edit.png"
+        src="dist/images/edit.png"
       />
       <img
         class="post-author__trash-basket-img"
         id="trash-basket-{{ this.post.postId }}"
         data-id="{{ this.post.postId }}"
-        src="../static/images/trash-can.png"
+        src="dist/images/trash-can.png"
       />
       {{/if}}
     </div>
   </div>
-  <div class="post-content">
+  <div class="post-content" id="post-content-{{ this.post.postId }}">
     <textarea
       class="post-content__text-span"
       id="textarea-{{ this.post.postId }}"
@@ -57,31 +55,28 @@
       >{{ this.post.content }}</textarea
     >
     {{#each this.post.attachments}}
-    <img class="post-content__img" src="{{ ../../staticUrl }}/{{ this }}" />
+    <img class="post-content__img" src="{{ ../staticUrl }}/{{ this }}" />
     {{/each}}
   </div>
   <div class="post-reaction">
     <div class="reactions">
       <button class="reactions-like">
-        <img class="reactions__heart-img" src="../static/images/heart.png" />
+        <img class="reactions__heart-img" src="dist/images/heart.png" />
       </button>
       <button class="show-comments">
         <img
           class="show-comments__messenger-img"
-          src="../static/images/messenger.png"
+          src="dist/images/messenger.png"
         />
       </button>
-      <span class="show-comments-label__span">Показать комментарии</span>
-    </div>
-    <div class="comment-menu">
-      <img class="post-menu__ellipsees-img" src="../static/images/more.png" />
+      <span class="show-comments-label__span"></span>
     </div>
   </div>
   <div class="post-give-comment">
     <div class="post-footer">
       <img
         class="post-author__user-avatar-img"
-        src="{{../staticUrl}}/{{ ../avatar }}"
+        src="{{ staticUrl }}/{{ avatar }}"
       />
       <input
         id="user-comment{{ this.post.postId }}"
@@ -95,10 +90,9 @@
     <div class="comment-buttons">
       <img
         class="comment-buttons__paper-clip-img"
-        src="../static/images/attach-paperclip-symbol.png"
+        src="dist/images/attach-paperclip-symbol.png"
       />
-      <img class="post-comment-img" src="../static/images/send.png" />
+      <img class="post-comment-img" src="dist/images/send.png" />
     </div>
   </div>
 </div>
-{{/each}}

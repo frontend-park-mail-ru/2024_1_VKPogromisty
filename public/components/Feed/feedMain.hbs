@@ -5,7 +5,7 @@
         ><img
           id="user-avatar-news"
           class="news-avatar__img"
-          src="{{ staticUrl }}/{{ this.avatar }}"
+          src="{{ this.userAvatar }}"
       /></a>
     </div>
     <div class="news">
@@ -15,7 +15,7 @@
       <button type="button" class="news__file-button" id="news__file-button">
         <img
           class="news__img"
-          src="../static/images/attach-paperclip-symbol.png"
+          src="dist/images/attach-paperclip-symbol.png"
           id="news__img"
         />
       </button>
@@ -23,6 +23,7 @@
         type="file"
         class="news__file-input"
         id="news__file-input"
+        accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
         multiple
       />
     </div>

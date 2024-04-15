@@ -1,3 +1,4 @@
+import "./index.css";
 import { Routing } from "./routes.js";
 import SignupController from "./components/Signup/SignupController.js";
 import ProfileController from "./components/Profile/ProfileController.js";
@@ -9,25 +10,20 @@ import ChatController from "./components/Chat/ChatController.js";
 import { WEBSOCKET_URL } from "./modules/consts.js";
 import WSocket from "./components/WebSocket.js";
 import FeedController from "./components/Feed/FeedController.js";
-import { AuthService } from "./modules/services.js";
+import SettingsController from "./components/Settings/SettingsController.js";
+import CSRFProtection from "./components/CSRFProtection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const userState = new UserState();
-  const webSocket = new WSocket(WEBSOCKET_URL, userState);
-
+  const webSocket = new WSocket(WEBSOCKET_URL);
   const router = new Routing();
-  const authService = new AuthService();
-  const signupController = new SignupController(router, userState, webSocket);
-  const profileController = new ProfileController(router, userState, webSocket);
-  const loginController = new LoginController(router, userState, webSocket);
-  const friendsController = new FriendsController(router, userState, webSocket);
-  const messengerController = new MessengerController(
-    router,
-    userState,
-    webSocket,
-  );
-  const chatController = new ChatController(router, userState, webSocket);
-  const feedController = new FeedController(router, userState, webSocket);
+  const signupController = new SignupController(router, webSocket);
+  const profileController = new ProfileController(router, webSocket);
+  const loginController = new LoginController(router, webSocket);
+  const friendsController = new FriendsController(router, webSocket);
+  const messengerController = new MessengerController(router, webSocket);
+  const chatController = new ChatController(router, webSocket);
+  const feedController = new FeedController(router, webSocket);
+  const settingsController = new SettingsController(router, webSocket);
 
   const config = {
     paths: [
@@ -58,6 +54,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Профиль",
       },
       {
+        path: /\/settings/,
+        func: settingsController.renderSettingsView.bind(settingsController),
+        title: "Настройки",
+      },
+      {
         path: /\/messenger/,
         func: messengerController.renderMessengerView.bind(messengerController),
         title: "Мессенджер",
@@ -75,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       {
         path: /\//,
         func: feedController.renderFeed.bind(feedController),
+        akaPath: "feed",
         title: "Новости",
       },
     ],
@@ -82,29 +84,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   router.setConfig(config);
 
-  const result = await authService.getCSRFToken();
+  const result = await CSRFProtection.updateCSRFToken();
 
   const currentPageUrl = window.location.pathname;
   switch (currentPageUrl) {
     case "/login":
     case "/signup":
     case "/":
-      if (result.status === 200) {
-        userState.csrfToken = result.body.csrfToken;
-        await userState.updateState();
+      if (result) {
+        await UserState.updateState();
         router.redirect("/feed");
       } else {
-        router.redirect(currentPageUrl);
+        router.redirect(currentPageUrl, false);
       }
       break;
     default:
-      if (result.status === 200) {
-        userState.csrfToken = result.body.csrfToken;
-        await userState.updateState();
+      if (result) {
+        await UserState.updateState();
         webSocket.openWebSocket();
         router.redirect(currentPageUrl);
       } else {
-        router.redirect("/login");
+        router.redirect("/login", false);
       }
   }
 });

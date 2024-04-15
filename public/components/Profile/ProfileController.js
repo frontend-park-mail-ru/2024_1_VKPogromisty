@@ -1,6 +1,6 @@
 import ProfileModel from "./ProfileModel.js";
 import ProfileView from "./ProfileView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "receiveProfileData",
@@ -32,18 +32,12 @@ class ProfileController {
   /**
    * Creates controller
    * @param {Routing} router - The router
-   * @param {UserState} userState - The current state of session's user
    * @param {WSocket} webSocket - The current WebSocket
    */
-  constructor(router, userState, webSocket) {
+  constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.profileModel = new ProfileModel(
-      this.eventBus,
-      router,
-      webSocket,
-      userState,
-    );
-    this.profileView = new ProfileView(this.eventBus, router, userState);
+    this.profileModel = new ProfileModel(this.eventBus, router, webSocket);
+    this.profileView = new ProfileView(this.eventBus, router);
   }
 
   /**

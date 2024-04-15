@@ -14,19 +14,14 @@ import { ProfileService } from "../modules/services.js";
  */
 class UserState {
   /**
-   * Creates an object of class UserState
-   */
-  constructor() {
-    this.profileService = new ProfileService();
-  }
-
-  /**
    * Updates state of session's user
    *
    * @returns {Promise<Boolean>}
    */
   async updateState() {
-    const result = await this.profileService.getOwnProfileData(this);
+    const profileService = new ProfileService();
+
+    const result = await profileService.getOwnProfileData();
 
     switch (result.status) {
       case 200:
@@ -36,6 +31,8 @@ class UserState {
         this.lastName = result.body.User.lastName;
         this.createdAt = result.body.User.createdAt;
         this.updatedAt = result.body.User.updatedAt;
+        this.email = result.body.User.email;
+        this.dateOfBirth = result.body.User.dateOfBirth;
         return true;
       default:
         return false;
@@ -43,4 +40,4 @@ class UserState {
   }
 }
 
-export default UserState;
+export default new UserState();

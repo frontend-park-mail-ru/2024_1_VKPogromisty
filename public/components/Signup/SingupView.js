@@ -8,7 +8,7 @@ import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
 
 const correct = "form__input__correct";
-
+const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const main_inputs = [
   {
     inscription: "Фамилия",
@@ -87,8 +87,10 @@ class SignupView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus) {
+  constructor(eventBus, router) {
     super(eventBus);
+
+    this.router = router;
     this.eventBus.addEventListener(
       "receiveSignupResult",
       this.handleSignupResult.bind(this),
@@ -108,7 +110,7 @@ class SignupView extends BaseView {
    * @return {void}
    */
   render(element) {
-    const template = Handlebars.templates["signup.hbs"];
+    const template = require("./signup.hbs");
     element.innerHTML = template({ main_inputs, part_of_date });
 
     const email = document.getElementById("email");
@@ -119,6 +121,8 @@ class SignupView extends BaseView {
     const day = document.getElementById("day");
     const month = document.getElementById("month");
     const year = document.getElementById("year");
+    const avatar = document.getElementById("avatar");
+    const incorrectAvatar = document.getElementById("incorrect-avatar");
     const signupShowPassword = document.getElementById("signup-show-password");
     const signupShowRepeatPassword = document.getElementById(
       "signup-show-repeat-password",
@@ -138,7 +142,7 @@ class SignupView extends BaseView {
     email.addEventListener("focusout", () => {
       incorrectEmail.classList.add(correct);
 
-      if (!validateEmail(email.value)) {
+      if (!validateEmail(email.value.trim())) {
         incorrectEmail.classList.remove(correct);
       }
     });
@@ -166,7 +170,7 @@ class SignupView extends BaseView {
     firstName.addEventListener("focusout", () => {
       incorrectFirstName.classList.add(correct);
 
-      if (!validateName(firstName.value)) {
+      if (!validateName(firstName.value.trim())) {
         incorrectFirstName.classList.remove(correct);
       }
     });
@@ -174,7 +178,7 @@ class SignupView extends BaseView {
     lastName.addEventListener("focusout", () => {
       incorrectLastName.classList.add(correct);
 
-      if (!validateName(lastName.value)) {
+      if (!validateName(lastName.value.trim())) {
         incorrectLastName.classList.remove(correct);
       }
     });
@@ -219,16 +223,27 @@ class SignupView extends BaseView {
       }
     });
 
-    const uploadImg = document.getElementById("sign-up-upload-img");
+    avatar.addEventListener("change", () => {
+      incorrectAvatar.classList.add(correct);
 
-    document
-      .getElementById("button-sign-up")
-      .addEventListener("click", async () => {
-        this.isValidForm();
-      });
+      const file = avatar.files[0];
+      const img = URL.createObjectURL(file);
 
-    document.getElementById("avatar").addEventListener("change", () => {
-      uploadImg.classList.remove("form__input__correct");
+      const typeFile = (() => {
+        const parts = file.name.split(".");
+        return parts[parts.length - 1];
+      })();
+
+      if (!validExtensions.includes(typeFile)) {
+        incorrectAvatar.classList.remove(correct);
+        avatar.files = null;
+      } else {
+        document.getElementById("prewatch").setAttribute("src", img);
+      }
+    });
+
+    document.getElementById("button-sign-up").addEventListener("click", () => {
+      this.isValidForm();
     });
   }
 
@@ -243,7 +258,7 @@ class SignupView extends BaseView {
 
     if (result) {
       document.body.innerHTML = "";
-      this.eventBus.emit("signupSuccess", "/feed");
+      this.router.redirect("/feed");
     } else {
       repeatEmail.classList.remove(correct);
     }
@@ -273,6 +288,7 @@ class SignupView extends BaseView {
     const month = document.getElementById("month");
     const year = document.getElementById("year");
     const avatar = document.getElementById("avatar");
+    const incorrectAvatar = document.getElementById("incorrect-avatar");
     const incorrectEmail = document.getElementById("incorrect-email");
     const incorrectPassword = document.getElementById("incorrect-password");
     const incorrectRepeatPassword = document.getElementById(
@@ -291,6 +307,7 @@ class SignupView extends BaseView {
     incorrectFirstName.classList.add(correct);
     incorrectLastName.classList.add(correct);
     incorrectDateOfBirthday.classList.add(correct);
+    incorrectAvatar.classList.add(correct);
 
     let flag = true;
 
@@ -322,6 +339,20 @@ class SignupView extends BaseView {
     if (!validateDateOfBirth(day.value, month.value, year.value)) {
       incorrectDateOfBirthday.classList.remove(correct);
       flag = false;
+    }
+
+    const file = avatar.files[0];
+
+    if (file) {
+      const typeFile = (() => {
+        const parts = file.name.split(".");
+        return parts[parts.length - 1];
+      })();
+
+      if (!validExtensions.includes(typeFile)) {
+        incorrectAvatar.classList.remove(correct);
+        flag = false;
+      }
     }
 
     if (!flag) {

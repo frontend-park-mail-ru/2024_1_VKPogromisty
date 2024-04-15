@@ -1,6 +1,6 @@
 import SignupModel from "./SignupModel.js";
 import SignupView from "./SingupView.js";
-import EventBus from "./public/MVC/EventBus.js";
+import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "attemptSignup",
@@ -21,18 +21,12 @@ export default class SignupController {
   /**
    * Creates controller
    * @param {Routing} router - The router
-   * @param {UserState} userState - The current state of session's user
    * @param {WSocket} webSocket - The current WebSocket
    */
-  constructor(router, userState, webSocket) {
+  constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.#signupModel = new SignupModel(this.eventBus, userState, webSocket);
-    this.#signupView = new SignupView(this.eventBus);
-
-    this.eventBus.addEventListener(
-      "signupSuccess",
-      router.redirect.bind(router),
-    );
+    this.#signupModel = new SignupModel(this.eventBus, webSocket);
+    this.#signupView = new SignupView(this.eventBus, router);
   }
 
   /**

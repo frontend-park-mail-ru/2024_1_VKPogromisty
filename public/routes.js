@@ -6,6 +6,8 @@
  * @property {string} title - The title of the page
  */
 
+const restrictedPaths = ["/login", "/signup"];
+
 import { ProfileService } from "./modules/services.js";
 
 /**
@@ -53,6 +55,10 @@ export class Routing {
       },
       { capture: true },
     );
+
+    window.onpopstate = (event) => {
+      this.redirect(event.state.url, false);
+    };
   }
 
   /**
@@ -66,21 +72,32 @@ export class Routing {
 
   /**
    * Redirects to the current page
-   * @param {string} url
+   * @param {string} url - The url of current page
+   * @param {boolean} addToHistory - Checks if need to add to history
    * @returns {void}
    */
-  redirect(url) {
+  redirect(url, addToHistory = true) {
     const foundedUrl = this.#config.paths.find(
       (elem) => elem.path.exec(url) !== null,
     );
+
     const slugs = foundedUrl.path.exec(url).groups;
 
+    if (foundedUrl.akaPath === "feed") {
+      url = "feed";
+    }
+
     const state = {
-      title: window.location.pathname,
+      url: url,
     };
 
-    history.pushState(state, "", url);
+    if (addToHistory && restrictedPaths.indexOf(url) === -1) {
+      history.pushState(state, "", url);
+    }
+
     document.title = `Socio - ${foundedUrl.title}`;
+    document.onscroll = null;
+    document.onkeydown = null;
 
     foundedUrl.func(slugs);
   }

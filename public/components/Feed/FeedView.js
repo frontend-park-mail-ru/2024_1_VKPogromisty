@@ -2,7 +2,8 @@ import BaseView from "../../MVC/BaseView.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
-import { formatFullDate } from "../../modules/dateRemaking.js";
+import PostController from "../Post/PostController.js";
+import UserState from "../UserState.js";
 
 /**
  * A Author structure
@@ -39,19 +40,19 @@ const staticUrl = `${API_URL}/static`;
 
 const rightSidebar = [
   {
-    href: "#",
+    href: "/nothing",
     text: "НОВОСТИ",
   },
   {
-    href: "#",
+    href: "/nothing",
     text: "СООБЩЕСТВА",
   },
   {
-    href: "#",
+    href: "/nothing",
     text: "ДРУЗЬЯ",
   },
   {
-    href: "#",
+    href: "/nothing",
     text: "ФОТОГРАФИИ",
   },
 ];
@@ -65,13 +66,12 @@ class FeedView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Объект класса Routing
-   * @param {UserState} userState - Текущее состояние юзера
    */
-  constructor(eventBus, router, userState) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.userState = userState;
+    this.postController = new PostController(router);
 
     this.eventBus.addEventListener(
       "getPostsSuccess",
@@ -82,12 +82,8 @@ class FeedView extends BaseView {
       this.renderPublishedSuccess.bind(this),
     );
     this.eventBus.addEventListener(
-      "postDeleteSuccess",
-      this.postDeletedSuccess.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "postUpdateSuccess",
-      this.postUpdatedSuccess.bind(this),
+      "serverError",
+      this.serverErrored.bind(this),
     );
   }
 
@@ -109,8 +105,8 @@ class FeedView extends BaseView {
    * Renders main part of feed
    */
   renderFeedMain() {
-    const { userId, avatar, firstName, lastName } = this.userState;
-    const template = Handlebars.templates["feedMain.hbs"];
+    const { userId, avatar, firstName, lastName } = UserState;
+    const template = require("./feedMain.hbs");
     const userAvatar = `${staticUrl}/${avatar}`;
 
     new Header(document.body).renderForm({
@@ -125,22 +121,20 @@ class FeedView extends BaseView {
     this.mainElement.innerHTML = template({ userId, userAvatar, rightSidebar });
     this.lastPostId = 0;
     this.isAllPosts = false;
+    this.isWaitPosts = true;
 
     document.getElementById("logout-button").addEventListener("click", () => {
-      document.removeEventListener("scroll", this.checksNewPosts.bind(this));
       this.eventBus.emit("clickLogoutButton", {});
     });
 
     const newsTextarea = document.getElementById("news-content__textarea");
 
-    if (newsTextarea) {
-      newsTextarea.addEventListener("input", () => {
-        newsTextarea.style.height = "auto";
-        newsTextarea.style.height = newsTextarea.scrollHeight - 4 + "px";
-      });
-    }
+    newsTextarea.addEventListener("input", () => {
+      newsTextarea.style.height = "auto";
+      newsTextarea.style.height = newsTextarea.scrollHeight - 4 + "px";
+    });
 
-    document.addEventListener("scroll", this.checksNewPosts.bind(this));
+    document.onscroll = this.checksNewPosts.bind(this);
 
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
@@ -175,13 +169,20 @@ class FeedView extends BaseView {
       publishButton.addEventListener("click", () => {
         const content = document.getElementById("news-content__textarea").value;
 
-        if (content === "") {
+        if (content === "" && fileInput.files.length === 0) {
           return;
         }
+
         this.eventBus.emit("clickedPublishPost", {
           content: content,
           attachments: fileInput.files,
         });
+
+        document.getElementById("news-img-content").innerHTML = "";
+        const textarea = document.getElementById("news-content__textarea");
+        textarea.value = "";
+        textarea.style.height = "60px";
+        fileInput.files = null;
       });
     }
 
@@ -196,23 +197,15 @@ class FeedView extends BaseView {
    */
   renderPosts(posts) {
     this.isWaitPosts = false;
-    const template = Handlebars.templates["feedPost.hbs"];
-    const avatar = this.userState.avatar;
 
     if (posts) {
       posts.forEach((elem) => {
-        if (elem.post.createdAt !== elem.post.updatedAt) {
-          elem.post.hasUpdated = true;
-        }
         if (elem.post.postId < this.lastPostId || this.lastPostId === 0) {
           this.lastPostId = elem.post.postId;
         }
       });
       posts.forEach((elem) => {
-        elem.post.createdAt = formatFullDate(elem.post.createdAt);
-      });
-      posts.forEach((elem) => {
-        elem.post.updatedAt = `обновлено ${formatFullDate(elem.post.updatedAt)}`;
+        this.postController.renderPostView(elem);
       });
     } else {
       this.isAllPosts = true;
@@ -220,141 +213,34 @@ class FeedView extends BaseView {
         .getElementById("no-more-posts")
         .classList.replace("no-more-posts__hidden", "no-more-posts__visible");
     }
-
-    this.postsElement.innerHTML += template({
-      posts,
-      avatar,
-      staticUrl,
-    });
   }
 
   /**
    * The post to be published
    *
-   * @param {PostInfo} post
+   * @param {PostInfo} postInfo
    */
-  renderPublishedSuccess(post) {
-    document.getElementById("news-img-content").innerHTML = "";
-    document.getElementById("news-content__textarea").value = "";
-
-    const template = Handlebars.templates["feedPost.hbs"];
-    const avatar = this.userState.avatar;
-    post.post.createdAt = formatFullDate(post.post.createdAt);
-
-    const posts = [post];
-    const isMe = true;
-
-    this.postsElement.innerHTML =
-      template({
-        posts,
-        avatar,
-        staticUrl,
-        isMe,
-      }) + this.postsElement.innerHTML;
-
-    const trashes = document.querySelectorAll(".post-author__trash-basket-img");
-    const edits = document.querySelectorAll(".post-author__edit-img");
-
-    trashes.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeletePost", elem.dataset.id);
-      });
-    });
-
-    edits.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        const parent = elem.parentNode;
-        const nextElem = elem.nextElementSibling;
-        const id = elem.dataset.id;
-        const textarea = document.getElementById(`textarea-${id}`);
-
-        textarea.removeAttribute("readonly");
-        textarea.focus();
-
-        const ok = document.createElement("img");
-        ok.classList.add("post-author__accept-img");
-        ok.setAttribute("data-id", id);
-        ok.setAttribute("src", "../static/images/check.png");
-        ok.addEventListener("click", () => {
-          if (textarea.value === "") {
-            return;
-          }
-
-          this.eventBus.emit("clickedUpdatePost", {
-            content: textarea.value,
-            attachments: null,
-            post_id: id,
-          });
-        });
-
-        const cancel = document.createElement("img");
-        cancel.classList.add("post-author__cancel-img");
-        cancel.setAttribute("data-id", id);
-        cancel.setAttribute("src", "../static/images/cancel.png");
-        cancel.addEventListener("click", () => {
-          textarea.toggleAttribute("readonly");
-          elem.style["display"] = "block";
-          nextElem.style["display"] = "block";
-          cancel.remove();
-          ok.remove();
-        });
-
-        parent.appendChild(ok);
-        parent.appendChild(cancel);
-        elem.style["display"] = "none";
-        nextElem.style["display"] = "none";
-      });
+  renderPublishedSuccess(postInfo) {
+    const { post, author } = postInfo;
+    this.postController.renderPostView({
+      post: post,
+      author: author,
+      publish: true,
     });
   }
 
-  /**
-   * Updates the current post on page
-   * @param {Post} postInfo - The info about updated post
-   * @return {void}
-   */
-  postUpdatedSuccess({ postId, updatedAt }) {
-    const postMenu = document.getElementById(`post-menu-${postId}`);
-    const textarea = document.getElementById(`textarea-${postId}`);
-    const edited = document.getElementById(`edited-${postId}`);
-
-    if (edited) {
-      edited.innerHTML = `обновлено ${formatFullDate(updatedAt)}`;
-    } else {
-      const postAuthorTime = document.getElementById(
-        `post-author-time-${postId}`,
-      );
-
-      const img = document.createElement("img");
-      img.setAttribute("src", "../static/images/dot.png");
-      img.classList.add("post-author-time__dot-img");
-
-      const span = document.createElement("span");
-      span.setAttribute("id", `edited-${postId}`);
-      span.classList.add("post-author-time__last-time-span");
-      span.innerHTML = `обновлено ${formatFullDate(updatedAt)}`;
-
-      postAuthorTime.appendChild(img);
-      postAuthorTime.appendChild(span);
-    }
-
-    textarea.toggleAttribute("readonly");
-    postMenu.lastChild.remove();
-    postMenu.lastChild.remove();
-    postMenu.firstElementChild.style["display"] = "block";
-    postMenu.firstElementChild.nextElementSibling.style["display"] = "block";
+  deleteScrollListener() {
+    document.removeEventListener("scroll", this.checksNewPosts.bind(this));
   }
 
   /**
-   * Deletes post from the page
-   * @param {number} postId - The ID of post deleted
+   * Shows that mistake called
    * @return {void}
    */
-  postDeletedSuccess(postId) {
-    const post = document.getElementById(`post${postId}`);
+  serverErrored() {
+    const serverError = document.getElementById("server-error-500");
 
-    if (post !== null) {
-      post.remove();
-    }
+    serverError.classList.remove("server-error-500");
   }
 }
 

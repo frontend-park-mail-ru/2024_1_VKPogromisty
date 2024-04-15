@@ -12,15 +12,15 @@ const sidebar = [
     text: "Друзья",
   },
   {
-    href: "#",
+    href: "/groups",
     text: "Сообщества",
   },
   {
-    href: "#",
+    href: "/settings",
     text: "Настройки",
   },
   {
-    href: "#",
+    href: "/stickers",
     text: "Стикеры",
   },
 ];
@@ -53,7 +53,7 @@ export class Main {
    */
   renderForm(userId) {
     if (document.getElementById("main") === null) {
-      const template = Handlebars.templates["main.hbs"];
+      const template = require("./main.hbs");
 
       const fullSidebar = sidebar.concat({
         href: `/profile/${userId}`,

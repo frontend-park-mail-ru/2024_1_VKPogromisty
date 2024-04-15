@@ -3,6 +3,7 @@ import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 import { formatDayMonthYear } from "../../modules/dateRemaking.js";
+import UserState from "../UserState.js";
 
 /**
  * A Friend structure
@@ -48,11 +49,10 @@ class FriendsView extends BaseView {
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {UserState} userState - Текущее состояние юзера
    */
-  constructor(eventBus, userState) {
+  constructor(eventBus) {
     super(eventBus);
 
-    this.userState = userState;
-    this.template = Handlebars.templates["friendsMain.hbs"];
+    this.template = require("./friendsMain.hbs");
 
     this.eventBus.addEventListener(
       "receiveOwnProfileData",
@@ -90,7 +90,7 @@ class FriendsView extends BaseView {
    * @param {string} path - The certain path
    */
   renderMain(path) {
-    const { userId, avatar, firstName, lastName } = this.userState;
+    const { userId, avatar, firstName, lastName } = UserState;
 
     new Header(document.body).renderForm({
       userId,

@@ -42,7 +42,7 @@ export class Header {
   renderForm({ userId, firstName, lastName, avatar }) {
     document.onscroll = null;
     if (document.getElementById("header") === null) {
-      const template = Handlebars.templates["header.hbs"];
+      const template = require("./header.hbs");
 
       this.#parent.innerHTML += template({
         avatar,
