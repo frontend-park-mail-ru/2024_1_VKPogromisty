@@ -1,0 +1,49 @@
+<div class="conversation">
+  <div class="companion">
+    <div class="companion-header">
+      <a href="/profile/{{ this.userId }}"
+        ><img
+          class="companion__avatar-img"
+          src="{{ staticUrl }}/{{ this.avatar }}"
+      /></a>
+      <div class="companion-info">
+        <span class="companion__name-span"
+          >{{ this.firstName }} {{ this.lastName }}</span
+        >
+        <span class="companion__status-span">Online</span>
+      </div>
+    </div>
+    <div class="go-back">
+      <a href="/messenger" class="go-back__a"
+        ><button type="button" class="go-back__button">К диалогам</button></a
+      >
+    </div>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="add-message">
+    <button type="button" class="news__file-button" id="news__file-button">
+      <img
+        class="news__img"
+        src="dist/images/attach-paperclip-symbol.png"
+        id="news__img"
+      />
+    </button>
+    <div class="print-message" id="print-message">
+      <textarea
+        class="print-message__text-input"
+        id="print-message__text-input"
+        placeholder="Напишите сообщение..."
+        autocomplete="off"
+      ></textarea>
+      <div class="message-menu" id="message-menu">
+        <button
+          type="button"
+          class="message-menu__send-button"
+          id="message-menu__send-button"
+        >
+          <img class="message-menu__send-img" src="dist/images/send.png" />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

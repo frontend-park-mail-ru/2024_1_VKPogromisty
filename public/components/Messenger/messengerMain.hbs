@@ -1,0 +1,19 @@
+<div class="messenger">
+  <div class="search-place">
+    <div class="search-dialog">
+      <img
+        class="search-dialog__magnifier-img"
+        src="dist/images/magnifying-glass.png"
+      />
+      <input class="search-dialog__input" type="text" placeholder="Поиск" />
+    </div>
+  </div>
+  <div class="dialogs" id="dialogs"></div>
+</div>
+<div class="no-dialogs">
+  {{#if noDialogs}}
+  <span class="no-dialogs__span" id="no-dialogs__span"
+    >У вас нет текущих диалогов</span
+  >
+  {{/if}}
+</div>

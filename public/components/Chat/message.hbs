@@ -1,0 +1,62 @@
+{{#each messages}}
+{{#if isMe}}
+<div class="message-ables">
+  <div class="ables">
+    <img
+      class="message__edit-img"
+      id="edit-img-{{ this.id }}"
+      data-id="{{ this.id }}"
+      src="dist/images/edit.png"
+    />
+    <img
+      class="message__trash-basket-img"
+      id="trash-basket-{{ this.id }}"
+      data-id="{{ this.id }}"
+      src="dist/images/trash-can.png"
+    />
+  </div>
+  <div class="message right-message" id="message-{{ this.id }}">
+    <div class="message-content-div">
+      <span class="message-content" id="message-content-{{ this.id }}">{{
+        this.content
+      }}</span>
+    </div>
+    <div class="message-time-edited" id="message-time-edited-{{ this.id }}">
+      <span class="message-time-edited__span-time">{{ this.createdAt }}</span>
+      {{#if isUpdated}}
+      <span
+        class="message-time-edited__span-edited"
+        id="message-edited-{{ this.id }}"
+        >ред.</span
+      >
+      {{/if}}
+    </div>
+  </div>
+</div>
+{{else}}
+<div class="message-ables">
+  <div class="message left-message" id="message-{{ this.id }}">
+    <div class="message-content-div">
+      <span class="message-content" id="message-content-{{ this.id }}">{{
+        this.content
+      }}</span>
+    </div>
+    <div class="message-time-edited" id="message-time-edited-{{ this.id }}">
+      <span class="message-time-edited__span-time">{{ this.createdAt }}</span>
+      {{#if isUpdated}}
+      <span
+        class="message-time-edited__span-edited"
+        id="message-edited-{{ this.id }}"
+        >ред.</span
+      >
+      {{/if}}
+    </div>
+  </div>
+</div>
+{{/if}}
+{{/each}}
+{{#if noMessages}}
+<span class="messages__start-dialog-span" id="messages__start-dialog-span"
+  >Начните диалог</span
+>
+{{/if}}

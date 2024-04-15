@@ -1,34 +1,63 @@
-<div class="form-wrapper">
-  <div class="form">
-    <div class="image-container">
-      <img src="../static/images/Logo.png" alt="Logo" />
-    </div>
-    <div class="sign-in-text">
-      <div class="text-sign-in-first-part">Войдите в</div>
-      <div class="text-sign-in-second-part">Socio</div>
-    </div>
-    <form class="login-form" action="/submit" method="POST">
-      {{#each inputs}}
-      <div class="input-group">
-        <div class="inscription-form">
-          {{ this.inscription }}
-        </div>
-        <input
-          type="{{ this.type }}"
-          id="{{ this.id }}"
-          name="{{ this.name }}"
-          placeholder="{{ this.placeholder }}"
-          required
+<div id="main">
+  <div class="form-wrapper">
+    <div class="form">
+      <div class="image-container-login-signup">
+        <img
+          src="dist/images/Logo.png"
+          alt="Logo"
+          class="image-container-login-signup__img"
         />
-        <div class="error" id="{{ this.incorrect }}"></div>
       </div>
-      {{/each}}
-      <button type="button" class="button-sign-in" id="button-sign-in">
-        Войти
-      </button>
-      <a href="/signup" class="link_sign_up" id="button-sign-up"
-        >Ещё нет аккаунта? Зарегистрироваться</a
-      >
-    </form>
+      <div class="login-signup-text">
+        <div class="login-signup-text__first-part">Войдите в</div>
+        <div class="login-signup-text__second-part">Socio</div>
+      </div>
+      <form class="login-form" action="/submit" method="POST">
+        <div
+          class="form__input__error form__input__correct"
+          id="incorrect-form-login"
+        >
+          Некорректные данные
+        </div>
+        <div id="server-error" class="form__input__error form__input__correct">
+          Неожиданная ошибка сервера
+        </div>
+        {{#each inputs}}
+        <div class="input-group">
+          <div class="inscription-form">
+            {{ this.inscription }}
+          </div>
+          <input
+            class="input-group__input"
+            type="{{ this.type }}"
+            id="{{ this.id }}"
+            name="{{ this.name }}"
+            placeholder="{{ this.placeholder }}"
+            required
+          />
+          <div
+            class="form__input__error form__input__correct"
+            id="{{ this.incorrect }}"
+          >
+            {{ this.incorrectText }}
+          </div>
+          {{#if this.isPassword}}
+          <div class="show-password" id="login-show-password">
+            <img
+              src="dist/images/close_eye.png"
+              class="show-password__button"
+            />
+          </div>
+          {{/if}}
+        </div>
+        {{/each}}
+        <button type="button" class="button-sign-in" id="button-sign-in">
+          Войти
+        </button>
+        <a href="/signup" class="link-sign-up" id="button-sign-up"
+          >Ещё нет аккаунта? Зарегистрироваться</a
+        >
+      </form>
+    </div>
   </div>
 </div>

@@ -1,1 +1,2 @@
-export const API_URL = "http://localhost:8080/api/v1"; //'http://94.139.246.134:8080/api/v1';
+export const API_URL = "https://socio-project.ru/api/v1";
+export const WEBSOCKET_URL = "wss://socio-project.ru/api/v1/chat/ws/";

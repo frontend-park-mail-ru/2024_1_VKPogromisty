@@ -4,10 +4,16 @@
     "node": true,
     "es2021": true
   },
+  "ignorePatterns": ["*.precompiled.js"],
   "extends": "eslint:recommended",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "rules": {}
+  "globals": {
+    "Handlebars": "readonly"
+  },
+  "rules": {
+    "no-console": "error"
+  }
 }

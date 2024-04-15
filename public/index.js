@@ -1,105 +1,110 @@
-import { PostService, AuthService } from "./modules/services.js";
-import { FeedHeader, FeedMain, FeedPost } from "./components/Feed/feed.js";
-import { LoginForm } from "./components/Login/loginForm.js";
-import { SignUpForm } from "./components/Signup/signup.js";
+import "./index.css";
+import { Routing } from "./routes.js";
+import SignupController from "./components/Signup/SignupController.js";
+import ProfileController from "./components/Profile/ProfileController.js";
+import LoginController from "./components/Login/LoginController.js";
+import FriendsController from "./components/Friends/FriendsController.js";
+import UserState from "./components/UserState.js";
+import MessengerController from "./components/Messenger/MessengerController.js";
+import ChatController from "./components/Chat/ChatController.js";
+import { WEBSOCKET_URL } from "./modules/consts.js";
+import WSocket from "./components/WebSocket.js";
+import FeedController from "./components/Feed/FeedController.js";
+import SettingsController from "./components/Settings/SettingsController.js";
+import CSRFProtection from "./components/CSRFProtection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const main = document.getElementById("main");
-  const header = document.getElementById("header");
+  const webSocket = new WSocket(WEBSOCKET_URL);
+  const router = new Routing();
+  const signupController = new SignupController(router, webSocket);
+  const profileController = new ProfileController(router, webSocket);
+  const loginController = new LoginController(router, webSocket);
+  const friendsController = new FriendsController(router, webSocket);
+  const messengerController = new MessengerController(router, webSocket);
+  const chatController = new ChatController(router, webSocket);
+  const feedController = new FeedController(router, webSocket);
+  const settingsController = new SettingsController(router, webSocket);
 
-  function clearHeaderMain() {
-    header.innerHTML = "";
-    main.innerHTML = "";
-  }
+  const config = {
+    paths: [
+      {
+        path: /\/login/,
+        func: (slugs) => {
+          loginController.renderLoginView(slugs);
+          webSocket.closeWebSocket();
+        },
+        title: "Вход",
+      },
+      {
+        path: /\/signup/,
+        func: (slugs) => {
+          signupController.renderSignupView(slugs);
+          webSocket.closeWebSocket();
+        },
+        title: "Регистрация",
+      },
+      {
+        path: /\/feed/,
+        func: feedController.renderFeed.bind(feedController),
+        title: "Новости",
+      },
+      {
+        path: /\/profile\/(?<userId>[0-9]+)/,
+        func: profileController.renderProfileView.bind(profileController),
+        title: "Профиль",
+      },
+      {
+        path: /\/settings/,
+        func: settingsController.renderSettingsView.bind(settingsController),
+        title: "Настройки",
+      },
+      {
+        path: /\/messenger/,
+        func: messengerController.renderMessengerView.bind(messengerController),
+        title: "Мессенджер",
+      },
+      {
+        path: /\/community\/(?<section>.+)/,
+        func: friendsController.renderView.bind(friendsController),
+        title: "Друзья",
+      },
+      {
+        path: /\/chat\/(?<companionId>[0-9]+)/,
+        func: chatController.renderChatView.bind(chatController),
+        title: "Диалог",
+      },
+      {
+        path: /\//,
+        func: feedController.renderFeed.bind(feedController),
+        akaPath: "feed",
+        title: "Новости",
+      },
+    ],
+  };
 
-  function renderLogin() {
-    history.replaceState("", "", "/login");
-    clearHeaderMain();
+  router.setConfig(config);
 
-    const loginForm = new LoginForm(main);
+  const result = await CSRFProtection.updateCSRFToken();
 
-    loginForm.renderForm();
-
-    document
-      .getElementById("button-sign-up")
-      .addEventListener("click", (event) => {
-        event.preventDefault();
-        renderSignUp();
-      });
-
-    document
-      .getElementById("button-sign-in")
-      .addEventListener("click", async () => {
-        if (await loginForm.isValidForm()) {
-          await renderFeed();
-        }
-      });
-  }
-
-  async function renderFeed() {
-    history.replaceState("", "", "/feed");
-    clearHeaderMain();
-
-    const postService = new PostService();
-    const feedHeader = new FeedHeader(header);
-    const feedMain = new FeedMain(main);
-
-    feedHeader.renderForm();
-    feedMain.renderForm();
-
-    const post = new FeedPost(document.getElementById("activity"));
-    const posts = await postService.getPosts();
-
-    post.renderPosts(posts.body);
-
-    document
-      .getElementById("logout-button")
-      .addEventListener("click", async () => {
-        await authService.logout();
-          renderLogin();
-      });
-  }
-
-  function renderSignUp() {
-    history.replaceState("", "", "/signup");
-    clearHeaderMain();
-
-    const signupForm = new SignUpForm(main);
-
-    signupForm.renderForm();
-
-    document
-      .getElementById("button-sign-in")
-      .addEventListener("click", (event) => {
-        event.preventDefault();
-        renderLogin();
-      });
-
-    document
-      .getElementById("button-sign-up")
-      .addEventListener("click", async () => {
-        if (await signupForm.isValidForm()) {
-          renderFeed();
-        }
-      });
-  }
-
-  const authService = new AuthService();
-  const isAuthorized = await authService.isAuthorized();
-
-  async function route() {
-    if (isAuthorized.body) {
-      await renderFeed();
-    } else {
-      const currentPageUrl = window.location.pathname;
-      if (currentPageUrl === "/signup") {
-        renderSignUp();
+  const currentPageUrl = window.location.pathname;
+  switch (currentPageUrl) {
+    case "/login":
+    case "/signup":
+    case "/":
+      if (result) {
+        await UserState.updateState();
+        router.redirect("/feed");
       } else {
-        renderLogin();
+        router.redirect(currentPageUrl, false);
       }
-    }
+      break;
+    default:
+      if (result) {
+        await UserState.updateState();
+        webSocket.openWebSocket();
+        router.redirect(currentPageUrl);
+      } else {
+        router.redirect("/login", false);
+      }
   }
-
-  document.addEventListener("navigate", route);
-  route();
 });

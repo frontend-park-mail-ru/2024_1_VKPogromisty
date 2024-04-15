@@ -13,7 +13,7 @@ export function validatePassword(password) {
  * @returns {boolean}
  */
 export function validateEmail(email) {
-  return email.match(/^[\w.]+@[\w.]+\.[\w.]+$/) !== null;
+  return email.match(/@/) !== null;
 }
 
 /**
@@ -33,11 +33,14 @@ export function validateDateOfBirth(inDay, inMonth, inYear) {
   }
 
   const providedDate = new Date(intYear, intMonth - 1, intDay);
+  const currentDate = new Date();
 
   if (
     providedDate.getDate() !== intDay ||
     providedDate.getMonth() + 1 !== intMonth ||
-    providedDate.getFullYear() !== intYear
+    providedDate.getFullYear() !== intYear ||
+    intYear >= currentDate.getFullYear() ||
+    intYear < 1900
   ) {
     return false;
   }
