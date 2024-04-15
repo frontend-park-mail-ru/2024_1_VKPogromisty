@@ -26,12 +26,7 @@ export default class SignupController {
   constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
     this.#signupModel = new SignupModel(this.eventBus, webSocket);
-    this.#signupView = new SignupView(this.eventBus);
-
-    this.eventBus.addEventListener(
-      "signupSuccess",
-      router.redirect.bind(router),
-    );
+    this.#signupView = new SignupView(this.eventBus, router);
   }
 
   /**

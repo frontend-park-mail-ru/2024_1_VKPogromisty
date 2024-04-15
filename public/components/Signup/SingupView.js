@@ -87,8 +87,10 @@ class SignupView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus) {
+  constructor(eventBus, router) {
     super(eventBus);
+
+    this.router = router;
     this.eventBus.addEventListener(
       "receiveSignupResult",
       this.handleSignupResult.bind(this),
@@ -240,11 +242,9 @@ class SignupView extends BaseView {
       }
     });
 
-    document
-      .getElementById("button-sign-up")
-      .addEventListener("click", async () => {
-        this.isValidForm();
-      });
+    document.getElementById("button-sign-up").addEventListener("click", () => {
+      this.isValidForm();
+    });
   }
 
   /**
@@ -258,7 +258,7 @@ class SignupView extends BaseView {
 
     if (result) {
       document.body.innerHTML = "";
-      this.eventBus.emit("signupSuccess", "/feed");
+      this.router.redirect("/feed");
     } else {
       repeatEmail.classList.remove(correct);
     }
@@ -343,14 +343,16 @@ class SignupView extends BaseView {
 
     const file = avatar.files[0];
 
-    const typeFile = (() => {
-      const parts = file.name.split(".");
-      return parts[parts.length - 1];
-    })();
+    if (file) {
+      const typeFile = (() => {
+        const parts = file.name.split(".");
+        return parts[parts.length - 1];
+      })();
 
-    if (!validExtensions.includes(typeFile)) {
-      incorrectAvatar.classList.remove(correct);
-      flag = false;
+      if (!validExtensions.includes(typeFile)) {
+        incorrectAvatar.classList.remove(correct);
+        flag = false;
+      }
     }
 
     if (!flag) {
