@@ -25,7 +25,7 @@ self.addEventListener("fetch", (event) => {
               cache.put(event.request, responseClone);
             } catch (e) {
               // eslint-disable-next-line
-              console.log(e);
+              console.error(e);
             }
           });
 

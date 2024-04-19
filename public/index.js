@@ -16,13 +16,7 @@ import CSRFProtection from "./components/CSRFProtection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   if ("serviceWorker" in navigator) {
-    runtime
-      .register()
-      .then(() => {})
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.log("Registration failed with " + error);
-      });
+    runtime.register();
   }
 
   const webSocket = new WSocket(WEBSOCKET_URL);

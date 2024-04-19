@@ -42,7 +42,7 @@ class WSocket {
       this.ws.onclose = (event) => {
         if (event.code !== 1000) {
           this.intervalId = setInterval(() => {
-            this.ws = new WebSocket(this.url);
+            this.openWebSocket();
           }, 5000);
         }
       };
