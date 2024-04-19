@@ -1,5 +1,6 @@
 import "./index.css";
 import { Routing } from "./routes.js";
+import runtime from "serviceworker-webpack5-plugin/lib/runtime.js";
 import SignupController from "./components/Signup/SignupController.js";
 import ProfileController from "./components/Profile/ProfileController.js";
 import LoginController from "./components/Login/LoginController.js";
@@ -14,6 +15,16 @@ import SettingsController from "./components/Settings/SettingsController.js";
 import CSRFProtection from "./components/CSRFProtection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  if ("serviceWorker" in navigator) {
+    runtime
+      .register()
+      .then(() => {})
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log("Registration failed with " + error);
+      });
+  }
+
   const webSocket = new WSocket(WEBSOCKET_URL);
   const router = new Routing();
   const signupController = new SignupController(router, webSocket);

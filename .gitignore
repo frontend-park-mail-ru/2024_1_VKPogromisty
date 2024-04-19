@@ -1,4 +1,5 @@
 node_modules
 dist
+serviceworker-webpack5-plugin
 
 **/*.precompiled.js

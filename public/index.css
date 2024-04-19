@@ -1122,6 +1122,7 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 70%;
 }
 
 .companion-info {

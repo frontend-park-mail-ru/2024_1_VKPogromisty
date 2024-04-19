@@ -68,6 +68,8 @@
     "express": "^4.18.3",
     "handlebars": "^4.7.8",
     "mini-css-extract-plugin": "^2.8.1",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "serviceworker-webpack-plugin": "^1.0.1",
+    "serviceworker-webpack5-plugin": "^2.0.0"
   }
 }

@@ -34,6 +34,18 @@ class WSocket {
         this.ws.readyState !== WebSocket.CONNECTING)
     ) {
       this.ws = new WebSocket(this.url);
+      this.ws.onopen = () => {
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+        }
+      };
+      this.ws.onclose = (event) => {
+        if (event.code !== 1000) {
+          this.intervalId = setInterval(() => {
+            this.ws = new WebSocket(this.url);
+          }, 5000);
+        }
+      };
     }
   }
 
