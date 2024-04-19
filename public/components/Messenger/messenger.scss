@@ -1,0 +1,134 @@
+.messenger {
+  width: 650px;
+}
+
+.no-dialogs {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.no-dialogs__span {
+  color: #928888;
+  text-align: center;
+  font-size: 22px;
+}
+
+.search-place {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 7px;
+  border: 1px solid black;
+  height: 60px;
+  padding-left: 10px;
+  margin-bottom: 20px;
+}
+
+.search-dialog {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.search-dialog__input {
+  background-color: inherit;
+}
+
+.search-dialog__magnifier-img {
+  width: 16px;
+  height: 16px;
+}
+
+.dialogs {
+  width: 650px;
+  border-radius: 7px;
+  background-color: #f4e3e3;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.dialog {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.dialog:first-child {
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+}
+
+.dialog:last-child {
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+}
+
+.dialog:not(:last-child) {
+  border-bottom: 1px solid #e35f7f;
+}
+
+.dialog:hover {
+  background-color: #f8dada;
+}
+
+.chatter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 70%;
+  border-radius: 7px;
+}
+
+.chatter__avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.chatter-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  margin-left: 20px;
+}
+
+.chatter-content {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.chatter-info__name-span {
+  font-size: large;
+  font-weight: 600;
+  width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chatter-content__message-span {
+  font-size: medium;
+  width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 1px;
+}
+
+.chatter-content__time-span {
+  font-size: 13px;
+  color: $button-feed;
+}

@@ -1,0 +1,83 @@
+.register-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 400px;
+}
+
+.sign-up-upload-img {
+  width: 20px;
+  margin-left: 15px;
+}
+
+.vertical-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: larger;
+  color: $text-input-color;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.date-birthday {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.date-birthday__input {
+  margin: 10px 5px;
+  width: 60px;
+  height: 22px;
+  text-align: center;
+  padding: 10px;
+  border: 1px solid rgb(0, 0, 0, 0.3);
+  border-radius: 12px;
+  font-size: 16px;
+  background-color: $input-color;
+}
+
+.input-avatar {
+  position: relative;
+  display: inline-block;
+  transition-duration: $tramsform-duration;
+  min-height: fit-content;
+  width: 100%;
+}
+
+.input-avatar__span {
+  padding: 10px 20px;
+  display: block;
+  background-color: $background-input-color;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  max-width: 364px;
+  transition-duration: 0.5s;
+}
+
+.input-avatar__file-input {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  display: block;
+  width: 0;
+  height: 0;
+}
+
+.input-avatar__span:hover {
+  filter: brightness(105%);
+}
+
+.sign-up-form {
+  display: flex;
+  flex-direction: column;
+}

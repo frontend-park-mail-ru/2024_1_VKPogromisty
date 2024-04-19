@@ -1,0 +1,114 @@
+.search-friend {
+  display: flex;
+  flex-direction: row;
+  height: 30px;
+  align-items: center;
+  padding-left: 10px;
+  width: 500px;
+  min-width: 100px;
+  background-color: #fceeeb;
+}
+
+.search-friend__magnifier-img {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.search-friend__input {
+  background-color: inherit;
+}
+
+.friends {
+  width: 100%;
+  border-radius: 7px;
+  border: 1px solid black;
+}
+
+.friend__avatar-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
+}
+
+.friend {
+  display: flex;
+}
+
+.friends-field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 20px;
+  height: 70px;
+}
+
+.friends-field:not(:last-child) {
+  border-bottom: 1px solid black;
+}
+
+.friend-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.friend-info__name-span {
+  font-weight: bolder;
+}
+
+.friend-content__date-of-birth-span {
+  color: $button-feed;
+  font-size: 13px;
+}
+
+.friend-ables__add-friend-button,
+.friend-ables__unsubscribe-button,
+.friend-ables__delete-friend-button {
+  background-color: #e0908d;
+  color: white;
+  border-radius: 7px;
+  height: 30px;
+}
+
+.right-sidebar-friends {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 200px;
+  font-size: 24;
+  font-style: $page-font-family;
+  box-sizing: border-box;
+  margin: 15px 0px;
+  padding: 0px 70px;
+}
+
+.friend-ables {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.friend-ables__send-message-button {
+  margin-right: 10px;
+  background-color: #e0908d;
+  height: 30px;
+  border-radius: 7px;
+}
+
+.friend-ables__send-message-img {
+  height: 22px;
+  width: 22px;
+  filter: invert(100%);
+}
+
+.no-friends {
+  text-align: center;
+  margin-top: 40px;
+}

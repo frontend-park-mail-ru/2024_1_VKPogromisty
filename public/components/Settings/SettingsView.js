@@ -8,6 +8,7 @@ import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
 import UserState from "../UserState.js";
+import "./settings.scss";
 
 const correct = "form__input__correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];

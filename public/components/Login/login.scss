@@ -1,0 +1,89 @@
+.form-wrapper {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-width: fit-content;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.login-signup-text {
+  color: #000000;
+}
+.login-signup-text__first-part {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+.login-signup-text__second-part {
+  font-size: 44px;
+  font-weight: 900;
+  margin-bottom: 100px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+.inscription-form {
+  font-size: 14px;
+  color: #000;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+  justify-content: center;
+  color: $text-input-color;
+  font-size: 16px;
+}
+
+.input-group__input {
+  padding: 10px 0px 10px 10px;
+  border: 1px solid rgb(0, 0, 0, 0.3);
+  font-size: 18px;
+  background-color: $input-color;
+  border-radius: 12px;
+  height: 22px;
+}
+
+.image-container-login-signup {
+  text-align: center;
+}
+
+.image-container-login-signup__img {
+  width: 184px;
+  height: 154px;
+  display: inline-block;
+  margin-bottom: 40px;
+}
+
+.button-sign-in {
+  padding: 10px 20px;
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  background-color: $button-sign-in-bg-color;
+  color: $button-sign-in-color;
+  border: 1px solid $button-sign-in-border-color;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.link-sign-up {
+  color: $link-sign-up-color;
+  display: block;
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
