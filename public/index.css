@@ -912,6 +912,7 @@ input::-webkit-inner-spin-button {
   border-radius: 7px;
   background-color: #f4e3e3;
   border: 1px solid black;
+  box-sizing: border-box;
 }
 
 .search-dialog {
@@ -1122,6 +1123,7 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 70%;
 }
 
 .companion-info {
