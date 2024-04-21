@@ -55,13 +55,13 @@
     background-color: inherit;
     margin-right: 10px;
   }
-  
+
   &__img {
     width: 16px;
     height: 16px;
     cursor: pointer;
   }
-  
+
   &__file-input {
     display: none;
   }
@@ -173,7 +173,7 @@
   &__accept-img {
     cursor: pointer;
   }
-  
+
   &__cancel-img {
     cursor: pointer;
     margin-left: 10px;
@@ -380,5 +380,5 @@
 }
 
 .no-posts__span {
-  @include no-anything
+  @include no-anything;
 }

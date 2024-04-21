@@ -97,7 +97,7 @@
     height: 30px;
     border-radius: 7px;
   }
-  
+
   &__send-message-img {
     height: 22px;
     width: 22px;
@@ -112,6 +112,6 @@
 
 @each $type in subscribers, subscriptions, friends {
   .no-#{$type}__span {
-    @include no-anything
+    @include no-anything;
   }
 }

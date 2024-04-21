@@ -99,7 +99,8 @@ body {
       font-family: $ordinary-text;
       font-size: 18px;
       font-weight: 600;
-      ::before, ::after {
+      ::before,
+      ::after {
         box-sizing: border-box;
       }
     }

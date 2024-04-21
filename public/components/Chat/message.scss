@@ -37,7 +37,7 @@
   }
 
   &__start-dialog-span {
-    @include no-anything
+    @include no-anything;
   }
 }
 
@@ -51,7 +51,7 @@
   &-content {
     margin-bottom: 5px;
     overflow-wrap: break-word;
-  
+
     &-div {
       margin-bottom: 5px;
     }
@@ -72,7 +72,6 @@
       }
     }
   }
-  
 }
 
 .left-message {
@@ -94,14 +93,14 @@
     align-items: center;
     width: 70%;
   }
-  
+
   &-info {
     @include column-flexible;
     justify-content: space-between;
     margin-left: 20px;
     height: 55%;
   }
-  
+
   &__name-span {
     font-size: large;
     font-family: $ordinary-text;
@@ -110,12 +109,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   &__status-span {
     font-size: small;
     color: #928888;
   }
-  
+
   &__avatar-img {
     width: 40px;
     height: 40px;
@@ -129,7 +128,7 @@
   &__a {
     cursor: auto;
   }
-  
+
   &__button {
     background-color: inherit;
     color: rgb(143, 143, 143);
