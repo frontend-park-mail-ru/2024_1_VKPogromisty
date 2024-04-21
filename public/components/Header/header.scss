@@ -1,15 +1,25 @@
 @import "public/index.scss";
 
 .left-side {
+  @include flexible;
   box-sizing: border-box;
-  display: flex;
   align-items: center;
+
+  &__img {
+    box-sizing: border-box;
+    width: 50px;
+    margin-right: 50px;
+    max-width: 100%;
+    cursor: pointer;
+    filter: invert(100%);
+  }
 }
+
 .header {
+  @include flexible;
   box-sizing: border-box;
   padding: 15px 25px 15px 115px;
   width: 100%;
-  display: flex;
   background-color: $feed-header-color;
   align-items: center;
   justify-content: space-between;
@@ -33,56 +43,47 @@
 }
 
 .user {
+  @include row-flexible;
   box-sizing: border-box;
   align-items: center;
-  display: flex;
-  flex-direction: row;
   font-family: $ordinary-text;
   font-size: 26px;
-}
-.user__username-span {
-  color: #fff;
-  font-size: large;
-  margin-right: 23px;
-  width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
-.user__avatar-img {
-  box-sizing: border-box;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  object-fit: cover;
-}
+  &__username-span {
+    color: #fff;
+    font-size: large;
+    margin-right: 23px;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  &__avatar-img {
+    box-sizing: border-box;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    object-fit: cover;
+  }
 
-.left-side__img {
-  box-sizing: border-box;
-  width: 50px;
-  margin-right: 50px;
-  max-width: 100%;
-  cursor: pointer;
-  filter: invert(100%);
-}
-
-.user__notification-img {
-  width: 30px;
-  filter: brightness(2400%);
-  margin-right: 20px;
-}
-
-.user__logout-button {
-  padding: 4px 15px;
-  display: block;
-  margin: 0 auto;
-  background-color: $input-color;
-  color: #000;
-  border: 1px solid #000;
-  border-radius: 12px;
-  font-size: 20px;
-  cursor: pointer;
-  margin-left: 20px;
+  &__notification-img {
+    width: 30px;
+    filter: brightness(2400%);
+    margin-right: 20px;
+  }
+  
+  &__logout-button {
+    padding: 4px 15px;
+    display: block;
+    margin: 0 auto;
+    background-color: $input-color;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 12px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 20px;
+  }
 }

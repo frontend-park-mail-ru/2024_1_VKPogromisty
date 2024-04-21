@@ -26,7 +26,7 @@
     ]
   },
   "scripts": {
-    "prestart": "npx prettier --write ./public && npm run build",
+    "prestart": "npm run build",
     "build": "webpack",
     "start": "node ./server/index.js",
     "lint": "npx prettier --write ./public && npx eslint ./public",

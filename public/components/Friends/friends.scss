@@ -1,24 +1,23 @@
 @import "public/index.scss";
 
 .search-friend {
-  display: flex;
-  flex-direction: row;
+  @include row-flexible;
   height: 30px;
   align-items: center;
   padding-left: 10px;
   width: 500px;
   min-width: 100px;
   background-color: #fceeeb;
-}
 
-.search-friend__magnifier-img {
-  width: 16px;
-  height: 16px;
-  margin-right: 5px;
-}
+  &__magnifier-img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+  }
 
-.search-friend__input {
-  background-color: inherit;
+  &__input {
+    background-color: inherit;
+  }
 }
 
 .friends {
@@ -27,40 +26,38 @@
   border: 1px solid black;
 }
 
-.friend__avatar-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 15px;
-  object-fit: cover;
-}
-
 .friend {
-  display: flex;
+  @include flexible;
+
+  &__avatar-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+  }
 }
 
 .friends-field {
-  display: flex;
-  flex-direction: row;
+  @include row-flexible;
   align-items: center;
   justify-content: space-between;
   padding: 0px 20px;
   height: 70px;
-}
 
-.friends-field:not(:last-child) {
-  border-bottom: 1px solid black;
+  &:not(:last-child) {
+    border-bottom: 1px solid black;
+  }
 }
 
 .friend-info {
-  display: flex;
-  flex-direction: column;
+  @include column-flexible;
   justify-content: space-between;
   padding-bottom: 10px;
-}
 
-.friend-info__name-span {
-  font-weight: bolder;
+  &__name-span {
+    font-weight: bolder;
+  }
 }
 
 .friend-content__date-of-birth-span {
@@ -68,18 +65,8 @@
   font-size: 13px;
 }
 
-.friend-ables__add-friend-button,
-.friend-ables__unsubscribe-button,
-.friend-ables__delete-friend-button {
-  background-color: #e0908d;
-  color: white;
-  border-radius: 7px;
-  height: 30px;
-}
-
 .right-sidebar-friends {
-  display: flex;
-  flex-direction: row;
+  @include row-flexible;
   justify-content: space-between;
   width: 100%;
   min-width: 200px;
@@ -91,26 +78,40 @@
 }
 
 .friend-ables {
-  display: flex;
-  flex-direction: row;
+  @include row-flexible;
   align-items: center;
   justify-content: space-between;
-}
 
-.friend-ables__send-message-button {
-  margin-right: 10px;
-  background-color: #e0908d;
-  height: 30px;
-  border-radius: 7px;
-}
+  @each $type in add-friend, unsubscribe, delete-friend {
+    &__#{$type}-button {
+      background-color: #e0908d;
+      color: white;
+      border-radius: 7px;
+      height: 30px;
+    }
+  }
 
-.friend-ables__send-message-img {
-  height: 22px;
-  width: 22px;
-  filter: invert(100%);
+  &__send-message-button {
+    margin-right: 10px;
+    background-color: #e0908d;
+    height: 30px;
+    border-radius: 7px;
+  }
+  
+  &__send-message-img {
+    height: 22px;
+    width: 22px;
+    filter: invert(100%);
+  }
 }
 
 .no-friends {
   text-align: center;
   margin-top: 40px;
+}
+
+@each $type in subscribers, subscriptions, friends {
+  .no-#{$type}__span {
+    @include no-anything
+  }
 }

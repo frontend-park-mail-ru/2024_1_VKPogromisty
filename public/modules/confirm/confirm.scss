@@ -1,0 +1,51 @@
+@import "public/index.scss";
+
+.confirm-window {
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 7px;
+  padding: 20px;
+  background-color: #f5f7f9;
+  top: 300px;
+  left: 500px;
+}
+
+.blured {
+  filter: blur(1px);
+}
+
+.confirm-header {
+  height: 50px;
+  font-size: 22px;
+}
+
+.confirm-content {
+  height: 50px;
+  font-size: 18px;
+}
+
+.confirm-ables {
+  @include row-flexible;
+  justify-content: space-around;
+
+  &__button-ok {
+    background-color: inherit;
+    border-radius: 15px;
+    padding: 7px 10px;
+
+    &:hover {
+      background-color: #dbe8f5;
+    }
+  }
+
+  &__button-cancel {
+    border-radius: 15px;
+    padding: 7px 15px;
+    background: #81d0ea;
+    color: white;
+
+    &:hover {
+      filter: brightness(110%);
+    }
+  }
+}

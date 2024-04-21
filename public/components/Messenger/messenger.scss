@@ -2,6 +2,8 @@
 
 .messenger {
   width: 650px;
+  display: flex;
+  flex-direction: column;
 }
 
 .no-dialogs {
@@ -9,10 +11,20 @@
   margin-top: 40px;
 }
 
-.no-dialogs__span {
+@mixin no-dialogs__span {
   color: #928888;
   text-align: center;
   font-size: 22px;
+}
+
+.no-dialogs__span__invisible {
+  @include no-dialogs__span;
+  @include invisible;
+}
+
+.no-dialogs__span__visible {
+  @include no-dialogs__span;
+  @include visible;
 }
 
 .search-place {
@@ -49,6 +61,8 @@
   background-color: #f4e3e3;
   border: 1px solid black;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .dialog {

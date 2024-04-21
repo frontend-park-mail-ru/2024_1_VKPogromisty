@@ -1,33 +1,33 @@
 @import "public/index.scss";
 .form-wrapper {
+  @include flexible;
   text-align: center;
-  display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   min-width: fit-content;
 }
 .form {
-  display: flex;
-  flex-direction: column;
+  @include column-flexible;
   justify-content: center;
 }
 .login-signup-text {
   color: #000000;
-}
-.login-signup-text__first-part {
-  font-size: 40px;
-  margin-bottom: 10px;
-}
-.login-signup-text__second-part {
-  font-size: 44px;
-  font-weight: 900;
-  margin-bottom: 100px;
+
+  &__first-part {
+    font-size: 40px;
+    margin-bottom: 10px;
+  }
+
+  &__second-part {
+    font-size: 44px;
+    font-weight: 900;
+    margin-bottom: 100px;
+  }
 }
 
 .login-form {
-  display: flex;
-  flex-direction: column;
+  @include column-flexible;
 }
 .inscription-form {
   font-size: 14px;
@@ -38,32 +38,31 @@
 }
 
 .input-group {
-  display: flex;
-  flex-direction: column;
+  @include column-flexible;
   margin-bottom: 24px;
   justify-content: center;
   color: $text-input-color;
   font-size: 16px;
-}
 
-.input-group__input {
-  padding: 10px 0px 10px 10px;
-  border: 1px solid rgb(0, 0, 0, 0.3);
-  font-size: 18px;
-  background-color: $input-color;
-  border-radius: 12px;
-  height: 22px;
+  &__input {
+    padding: 10px 0px 10px 10px;
+    border: 1px solid rgb(0, 0, 0, 0.3);
+    font-size: 18px;
+    background-color: $input-color;
+    border-radius: 12px;
+    height: 22px;
+  }
 }
 
 .image-container-login-signup {
   text-align: center;
-}
 
-.image-container-login-signup__img {
-  width: 184px;
-  height: 154px;
-  display: inline-block;
-  margin-bottom: 40px;
+  &__img {
+    width: 184px;
+    height: 154px;
+    display: inline-block;
+    margin-bottom: 40px;
+  }
 }
 
 .button-sign-in {

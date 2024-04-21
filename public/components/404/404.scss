@@ -1,0 +1,17 @@
+@import "public/index.scss";
+
+.not-found-404 {
+  @include column-flexible;
+
+  @each $type in discription, code {
+    &__span-#{$type} {
+      margin: 100px auto 0px;
+      color: gray;
+      font-size: 40px;
+
+      @if $type == code {
+        margin-top: 30px;
+      }
+    }
+  }
+}
