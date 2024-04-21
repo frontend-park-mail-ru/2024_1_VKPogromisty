@@ -1,6 +1,7 @@
 import { validateEmail, validatePassword } from "/public/modules/validators.js";
 import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
+import "./login.scss";
 
 const INPUT_CORRECT = "form__input__correct";
 

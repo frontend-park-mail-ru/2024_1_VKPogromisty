@@ -4,6 +4,7 @@ import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import "./messenger.scss";
 
 /**
  * A User structure

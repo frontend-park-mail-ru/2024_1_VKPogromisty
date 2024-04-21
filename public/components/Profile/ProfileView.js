@@ -5,6 +5,7 @@ import PostController from "../Post/PostController.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import "./profile.scss";
 
 const staticUrl = `${API_URL}/static`;
 

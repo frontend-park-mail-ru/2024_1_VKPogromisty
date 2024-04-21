@@ -1,4 +1,5 @@
 import { API_URL } from "/public/modules/consts.js";
+import "./header.scss";
 
 const staticUrl = `${API_URL}/static`;
 

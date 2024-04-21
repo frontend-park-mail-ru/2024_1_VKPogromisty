@@ -1,0 +1,215 @@
+$main-bg-color: rgba(235, 158, 158, 0.23);
+$input-color: #fceeeb;
+$button-sign-in-bg-color: #000000;
+$button-sign-in-color: #ffffff;
+$button-sign-in-border-color: black;
+$link-sign-up-color: #000000;
+$text-input-color: #858080;
+$hovered-text-input: #585353;
+$page-font-family: "Inter", sans-serif;
+$sign-buttons: #de8181;
+$background-input-color: #fceeeb;
+$tramsform-duration: 0.3s;
+$main-bg-color: rgb(248, 238, 238);
+$cursive-text: "Jim Nightshade", cursive;
+$ordinary-text: "Inter", sans-serif;
+$borders-color: 1px solid #e35f7f;
+$feed-header-color: #483d3d;
+$button-feed: #5d5151;
+$hovered-publish-button: #877777;
+$hovered-left-sidebar: #443b3b;
+
+@mixin flexible {
+  display: flex;
+}
+
+@mixin row-flexible {
+  @include flexible;
+  flex-direction: row;
+}
+
+@mixin column-flexible {
+  @include flexible;
+  flex-direction: column;
+}
+
+@mixin row-reverse-flexible {
+  @include flexible;
+  flex-direction: row-reverse;
+}
+
+@mixin column-reverse-flexible {
+  @include flexible;
+  flex-direction: column-reverse;
+}
+
+* {
+  border: none;
+}
+
+body {
+  background-color: $main-bg-color;
+  font-family: $page-font-family;
+  position: relative;
+  @include column-flexible;
+}
+
+.incorrect-data {
+  font-size: 30px;
+  color: $input-color;
+}
+
+.form__input_error {
+  color: red;
+  text-align: left;
+  font-size: 14px;
+}
+
+.error {
+  color: red;
+  text-align: left;
+  font-size: 14px;
+}
+
+.server-error-500 {
+  visibility: hidden;
+  text-align: center;
+}
+
+.right-sidebar {
+  @include row-flexible;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 200px;
+  font-style: $page-font-family;
+  box-sizing: border-box;
+  padding: 0px 20px;
+  margin: 15px 0px;
+
+  &-list {
+    box-sizing: border-box;
+    padding-left: 0px;
+    line-height: 40px;
+    list-style: none;
+
+    &__li {
+      box-sizing: border-box;
+      list-style-type: none;
+      margin-left: 0px;
+      font-family: $ordinary-text;
+      font-size: 18px;
+      font-weight: 600;
+      ::before,
+      ::after {
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+.right-sidebar__a {
+  box-sizing: border-box;
+  color: $text-input-color;
+  text-decoration: none;
+  font-size: 15px;
+
+  &:hover {
+    font-size: 16px;
+    color: $hovered-text-input;
+  }
+}
+
+.show-password {
+  position: absolute;
+  margin-left: 290px;
+  margin-top: 10px;
+  cursor: pointer;
+
+  &__button {
+    width: 30px;
+  }
+}
+
+.signup-show-password {
+  position: absolute;
+  margin-left: 360px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.form__input_correct {
+  visibility: hidden;
+}
+
+.right-sidebar__a_common {
+  font-size: 15px;
+  text-decoration: none;
+  color: $text-input-color;
+}
+
+.right-sidebar__a_bigger {
+  font-size: 16px;
+  color: $hovered-text-input;
+  text-decoration: none;
+}
+
+@mixin no-anything {
+  color: #928888;
+  text-align: center;
+  font-size: 22px;
+}
+
+@mixin custom-alert {
+  position: absolute;
+  top: 100px;
+  box-sizing: border-box;
+  padding: 15px 10px;
+  color: white;
+  border-radius: 7px;
+  right: 60px;
+  height: 50px;
+}
+
+.custom-alert_error {
+  @include custom-alert;
+  border: 1px solid red;
+  background-color: #e0908d;
+}
+
+.custom-alert_success {
+  @include custom-alert;
+  border: 1px solid green;
+  background-color: #79ef46;
+}
+
+.custom-alert_warning {
+  @include custom-alert;
+  border: 1px solid rgb(181, 181, 6);
+  background-color: #c9c907;
+}
+
+.sceleton-img {
+  width: 30px;
+  height: 30px;
+  animation: identifier 1s linear infinite;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 60px;
+}
+
+@keyframes identifier {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@mixin invisible {
+  display: none;
+}
+
+@mixin visible {
+  display: block;
+}

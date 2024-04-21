@@ -1,4 +1,4 @@
-import "./index.css";
+import "./reset.css";
 import { Routing } from "./routes.js";
 import runtime from "serviceworker-webpack5-plugin/lib/runtime.js";
 import SignupController from "./components/Signup/SignupController.js";

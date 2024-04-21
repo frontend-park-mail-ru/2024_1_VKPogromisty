@@ -4,6 +4,7 @@ import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 import { formatDayMonthYear } from "../../modules/dateRemaking.js";
 import UserState from "../UserState.js";
+import "./friends.scss";
 
 /**
  * A Friend structure

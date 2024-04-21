@@ -6,6 +6,7 @@ import {
 } from "/public/modules/validators.js";
 import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
+import "./signup.scss";
 
 const correct = "form__input__correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];

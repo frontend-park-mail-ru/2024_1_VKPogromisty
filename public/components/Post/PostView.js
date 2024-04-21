@@ -2,6 +2,7 @@ import BaseView from "../../MVC/BaseView.js";
 import { formatFullDate } from "../../modules/dateRemaking.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import "./post.scss";
 
 /**
  * @typedef {Object} UpdateInfo
