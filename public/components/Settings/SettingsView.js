@@ -9,8 +9,9 @@ import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
 import UserState from "../UserState.js";
 import "./settings.scss";
+import { customConfirm } from "../../modules/windows.js";
 
-const correct = "form__input__correct";
+const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const staticUrl = `${API_URL}/static`;
 
@@ -167,7 +168,15 @@ class SettingsView extends BaseView {
     });
 
     document.getElementById("delete-setting").addEventListener("click", () => {
-      this.eventBus.emit("clickedDeleteProfile", {});
+      customConfirm(
+        (() => {
+          this.eventBus.emit("clickedDeleteProfile", {});
+        }).bind(this),
+        "Удалить аккаунт?",
+        "Вы уверены, что хотите удалить аккаунт?",
+        "Удалить",
+        "Отмена",
+      );
     });
 
     document.getElementById("logout-button").addEventListener("click", () => {
