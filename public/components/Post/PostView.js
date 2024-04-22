@@ -3,6 +3,7 @@ import { formatFullDate } from "../../modules/dateRemaking.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
 import "./post.scss";
+import { customConfirm } from "../../modules/windows.js";
 
 /**
  * @typedef {Object} UpdateInfo
@@ -190,7 +191,15 @@ class PostView extends BaseView {
       .querySelectorAll(".post-author__trash-basket-img")
       .forEach((elem) => {
         elem.addEventListener("click", () => {
-          this.eventBus.emit("clickedDeleteButton", elem.dataset.id);
+          customConfirm(
+            (() => {
+              this.eventBus.emit("clickedDeleteButton", elem.dataset.id);
+            }).bind(this),
+            "Удалить пост?",
+            "Вы уверены, что хотите удалить пост?",
+            "Удалить",
+            "Отмена",
+          );
         });
       });
 
