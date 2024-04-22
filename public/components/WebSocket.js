@@ -22,6 +22,7 @@ class WSocket {
     this.messageEvents = {};
     this.errorsEvents = {};
     this.closingEvents = {};
+    this.promisedEvents = [];
   }
 
   /**
@@ -38,6 +39,19 @@ class WSocket {
         if (this.intervalId) {
           clearInterval(this.intervalId);
         }
+        this.promisedEvents.forEach(({ method, eventName, func }) => {
+          switch (method) {
+            case "message":
+              this.addEventOnMessage(eventName, func);
+              break;
+            case "close":
+              this.addEventOnClose(eventName, func);
+              break;
+            case "error":
+              this.addEventOnError(eventName, func);
+          }
+        });
+        this.promisedEvents = [];
       };
       this.ws.onclose = (event) => {
         if (event.code !== 1000) {
@@ -119,8 +133,12 @@ class WSocket {
       return;
     }
 
-    this.messageEvents[eventName] = true;
-    this.ws.addEventListener("message", (event) => func(event));
+    if (this.ws && this.ws.readyState === this.ws.OPEN) {
+      this.ws.addEventListener("message", (event) => func(event));
+      this.messageEvents[eventName] = true;
+    } else {
+      this.promisedEvents.push({ method: "message", eventName, func });
+    }
   }
 
   /**
@@ -134,8 +152,12 @@ class WSocket {
       return;
     }
 
-    this.closingEvents[eventName] = true;
-    this.ws.addEventListener("close", (event) => func(event));
+    if (this.ws && this.ws.readyState === this.ws.OPEN) {
+      this.closingEvents[eventName] = true;
+      this.ws.addEventListener("close", (event) => func(event));
+    } else {
+      this.promisedEvents.push({ method: "close", eventName, func });
+    }
   }
 
   /**
@@ -149,8 +171,12 @@ class WSocket {
       return;
     }
 
-    this.errorsEvents[eventName] = true;
-    this.ws.addEventListener("error", (event) => func(event));
+    if (this.ws && this.ws.readyState === this.ws.OPEN) {
+      this.errorsEvents[eventName] = true;
+      this.ws.addEventListener("error", (event) => func(event));
+    } else {
+      this.promisedEvents.push({ method: "error", eventName, func });
+    }
   }
 }
 
