@@ -55,10 +55,6 @@ class ChatModel extends BaseModel {
       this.getCompanion.bind(this),
     );
     this.eventBus.addEventListener(
-      "needUpdateWebSocket",
-      this.updateWebSocket.bind(this),
-    );
-    this.eventBus.addEventListener(
       "readyRenderMessages",
       this.getMessages.bind(this),
     );
@@ -75,6 +71,8 @@ class ChatModel extends BaseModel {
       this.updateMessage.bind(this),
     );
     this.eventBus.addEventListener("clickLogoutButton", this.logout.bind(this));
+
+    this.updateWebSocket();
   }
 
   /**
@@ -126,8 +124,6 @@ class ChatModel extends BaseModel {
     this.webSocket.addEventOnClose("messageClose", () => {
       this.eventBus.emit("serverError", {});
     });
-
-    this.eventBus.emit("updatedWebSocket", {});
   }
 
   /**
