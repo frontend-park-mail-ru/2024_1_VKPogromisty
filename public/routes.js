@@ -1,3 +1,6 @@
+import { ProfileService } from "./modules/services.js";
+import { renderNotFound } from "./components/404/404.js";
+
 /**
  * A direct structure
  * @typedef {Object} Direct
@@ -5,10 +8,6 @@
  * @property {Function} func - The callback
  * @property {string} title - The title of the page
  */
-
-const restrictedPaths = ["/login", "/signup"];
-
-import { ProfileService } from "./modules/services.js";
 
 /**
  * The type of config
@@ -23,6 +22,9 @@ import { ProfileService } from "./modules/services.js";
  * @property {Author} userState - The current state of session's user
  * @method redirect - Redirects to the current page
  */
+
+const restrictedPaths = ["/login", "/signup"];
+
 export class Routing {
   #config;
 
@@ -83,6 +85,15 @@ export class Routing {
 
     const slugs = foundedUrl.path.exec(url).groups;
 
+    if (foundedUrl.akaPath === "feed" && window.location.pathname !== "/") {
+      document.title = "Not Found";
+      if (addToHistory) {
+        history.pushState({ url: url }, "", url);
+      }
+      renderNotFound();
+      return;
+    }
+
     if (foundedUrl.akaPath === "feed") {
       url = "feed";
     }
@@ -91,8 +102,10 @@ export class Routing {
       url: url,
     };
 
-    if (addToHistory && restrictedPaths.indexOf(url) === -1) {
+    if (addToHistory && restrictedPaths.indexOf(history.state?.url) === -1) {
       history.pushState(state, "", url);
+    } else if (addToHistory) {
+      history.replaceState(state, "", url);
     }
 
     document.title = `Socio - ${foundedUrl.title}`;
