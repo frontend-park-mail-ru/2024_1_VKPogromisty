@@ -8,6 +8,10 @@
         {{#each fullSidebar}}
         <li class="sidebar-list__li">
           <a class="sidebar-list__a" href="{{ this.href }}">{{ this.text }}</a>
+          <img
+            src="dist/images/{{ this.icon }}.png"
+            class="sidebar__{{ this.icon }}-img"
+          />
         </li>
         {{/each}}
       </ul>

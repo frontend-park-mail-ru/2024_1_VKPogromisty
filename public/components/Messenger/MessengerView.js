@@ -1,5 +1,8 @@
 import BaseView from "../../MVC/BaseView.js";
-import { formatMinutesHours } from "../../modules/dateRemaking.js";
+import {
+  formatDayMonthYear,
+  formatMinutesHours,
+} from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
@@ -56,10 +59,6 @@ class MessengerView extends BaseView {
     this.promissedMessages = new Map();
 
     this.eventBus.addEventListener(
-      "updatedWebSocket",
-      this.updatedWebSocket.bind(this),
-    );
-    this.eventBus.addEventListener(
       "sendMessageSuccess",
       this.sendedMessage.bind(this),
     );
@@ -99,16 +98,14 @@ class MessengerView extends BaseView {
       this.eventBus.emit("clickedLogoutButton", {});
     });
 
+    this.today = new Date();
+
     this.mainElement = document.getElementById("activity");
     this.mainElement.innerHTML = require("./messengerMain.hbs")({
       noDialogs: true,
     });
     this.dialogsElement = document.getElementById("dialogs");
 
-    this.eventBus.emit("needUpgradeWebSocket", {});
-  }
-
-  updatedWebSocket() {
     this.eventBus.emit("readyRenderDialogs", {});
   }
 
@@ -117,7 +114,22 @@ class MessengerView extends BaseView {
       return;
     }
     if (message.senderId === UserState.userId) {
-      if (document.getElementById(`dialog-${message.receiverId}`)) {
+      const oldDialog = document.getElementById(`dialog-${message.receiverId}`);
+
+      if (oldDialog) {
+        const updatedChatter = oldDialog.firstElementChild;
+        const updatedDialog = document.createElement("div");
+        updatedDialog.classList.add("dialog");
+        updatedDialog.setAttribute("data-id", message.id);
+        updatedDialog.appendChild(updatedChatter);
+        this.dialogsElement.insertBefore(
+          updatedDialog,
+          this.dialogsElement.firstElementChild,
+        );
+
+        oldDialog.remove();
+        updatedDialog.setAttribute("id", `dialog-${message.id}`);
+
         document.getElementById(
           `chatter-info__message-span-${message.receiverId}`,
         ).innerHTML = message.content;
@@ -133,7 +145,9 @@ class MessengerView extends BaseView {
         this.eventBus.emit("needGetProfile", message.receiverId);
       }
     } else {
-      if (document.getElementById(`dialog-${message.senderId}`)) {
+      const oldDialog = document.getElementById(`dialog-${message.senderId}`);
+
+      if (oldDialog) {
         const messageContent = document.querySelector(
           `#dialog-${message.senderId} .chatter-content__message-span`,
         );
@@ -150,6 +164,19 @@ class MessengerView extends BaseView {
           "id",
           `chatter-content__time-span-${message.senderId}-${message.id}`,
         );
+
+        const updatedChatter = oldDialog.firstElementChild;
+        const updatedDialog = document.createElement("div");
+        updatedDialog.classList.add("dialog");
+        updatedDialog.setAttribute("data-id", message.id);
+        updatedDialog.appendChild(updatedChatter);
+        this.dialogsElement.insertBefore(
+          updatedDialog,
+          this.dialogsElement.firstElementChild,
+        );
+
+        oldDialog.remove();
+        updatedDialog.setAttribute("id", `dialog-${message.id}`);
       } else {
         this.promissedMessages.set(message.senderId, {
           content: message.content,
@@ -166,27 +193,24 @@ class MessengerView extends BaseView {
       return;
     }
     if (message.senderId === UserState.userId) {
-      if (document.getElementById(`dialog-${message.receiverId}`)) {
-        document.getElementById(
-          `chatter-info__message-span-${message.receiverId}`,
-        ).innerHTML = message.content;
-      }
+      document.getElementById(
+        `chatter-info__message-span-${message.receiverId}`,
+      ).innerHTML = message.content;
     } else {
-      if (document.getElementById(`dialog-${message.senderId}`)) {
-        document.getElementById(
-          `chatter-content__message-span-${message.senderId}-${message.id}`,
-        ).innerHTML = message.content;
-      }
+      document.getElementById(
+        `chatter-content__message-span-${message.senderId}-${message.id}`,
+      ).innerHTML = message.content;
     }
   }
 
   addDialog(profile) {
     const lastMessage = this.promissedMessages.get(profile.User.userId);
     this.promissedMessages.delete(profile.User.userId);
-    this.dialogsElement.innerHTML += require("./messenge.hbs")({
-      staticUrl,
-      elem: { companion: profile.User, lastMessage },
-    });
+    this.dialogsElement.innerHTML =
+      require("./messenge.hbs")({
+        staticUrl,
+        elem: { companion: profile.User, lastMessage },
+      }) + this.dialogsElement.innerHTML;
     const chats = document.querySelectorAll(".dialog");
     chats.forEach((elem) => {
       elem.addEventListener("click", () => {
@@ -201,6 +225,18 @@ class MessengerView extends BaseView {
    * @param {Dialog[]} dialogs
    */
   renderDialogs(dialogs) {
+    document.getElementById("dialogs-sceleton")?.remove();
+
+    if (dialogs.length === 0) {
+      document
+        .getElementById("no-dialogs__span")
+        .classList.replace(
+          "no-dialogs__span__invisible",
+          "no-dialogs__span__visible",
+        );
+      return;
+    }
+
     const template = require("./messenge.hbs");
     const noDialogs = document.getElementById("no-dialogs__span");
 
@@ -211,9 +247,16 @@ class MessengerView extends BaseView {
         elem.companion = elem.user1;
       }
 
-      elem.lastMessage.createdAt = formatMinutesHours(
-        elem.lastMessage.createdAt,
-      );
+      const messageDate = new Date(elem.lastMessage.createdAt);
+      if (formatDayMonthYear(this.today) === formatDayMonthYear(messageDate)) {
+        elem.lastMessage.createdAt = formatMinutesHours(
+          elem.lastMessage.createdAt,
+        );
+      } else {
+        elem.lastMessage.createdAt = formatDayMonthYear(
+          elem.lastMessage.createdAt,
+        );
+      }
 
       this.dialogsElement.innerHTML += template({ staticUrl, elem });
 

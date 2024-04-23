@@ -3,7 +3,7 @@ import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
 import "./login.scss";
 
-const INPUT_CORRECT = "form__input__correct";
+const INPUT_CORRECT = "form__input_correct";
 
 const inputs = [
   {

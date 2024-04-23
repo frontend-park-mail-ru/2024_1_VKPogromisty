@@ -120,12 +120,15 @@
       id="news-content__textarea"
       rows="1"
       placeholder="Что нового?"
+      maxlength="30000"
     ></textarea>
     <div class="news-img-content" id="news-img-content"></div>
   </div>
 </div>
 {{/if}}
-<div class="posts" id="posts"></div>
-<div class="no-more-posts__hidden" id="no-more-posts">
+<div class="posts" id="posts">
+  <img class="sceleton-img" id="posts-sceleton" src="dist/images/loading.png" />
+</div>
+<div class="no-more-posts_hidden" id="no-more-posts">
   <span class="no-posts__span">Больше постов нет</span>
 </div>

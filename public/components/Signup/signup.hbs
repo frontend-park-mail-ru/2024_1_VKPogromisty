@@ -20,16 +20,10 @@
           enctype="multipart/form-data"
           class="sign-up-form"
         >
-          <div
-            id="server-error"
-            class="form__input__error form__input__correct"
-          >
+          <div id="server-error" class="form__input_error form__input_correct">
             Неожиданная ошибка сервера
           </div>
-          <div
-            id="repeat-email"
-            class="form__input__error form__input__correct"
-          >
+          <div id="repeat-email" class="form__input_error form__input_correct">
             Почта уже используется
           </div>
           {{#each main_inputs}}
@@ -54,7 +48,7 @@
             </div>
             {{/if}}
             <div
-              class="form__input__error form__input__correct"
+              class="form__input_error form__input_correct"
               id="{{ this.incorrect }}"
             >
               {{ this.incorrectText }}
@@ -77,7 +71,7 @@
             {{/each}}
           </div>
           <div
-            class="form__input__error form__input__correct"
+            class="form__input_error form__input_correct"
             id="incorrect-date-of-birthday"
           >
             Некорректная дата
@@ -103,7 +97,7 @@
             src="dist/images/user.png"
           />
           <div
-            class="form__input__error form__input__correct"
+            class="form__input_error form__input_correct"
             id="incorrect-avatar"
           >
             Недопустимый тип файла

@@ -1,20 +1,11 @@
 {{#each messages}}
+{{#if this.changedDay }}
+<div class="changed-day">
+  <span class="changed-day__span">{{ this.changedDay }}</span>
+</div>
+{{/if}}
 {{#if isMe}}
-<div class="message-ables">
-  <div class="ables">
-    <img
-      class="message__edit-img"
-      id="edit-img-{{ this.id }}"
-      data-id="{{ this.id }}"
-      src="dist/images/edit.png"
-    />
-    <img
-      class="message__trash-basket-img"
-      id="trash-basket-{{ this.id }}"
-      data-id="{{ this.id }}"
-      src="dist/images/trash-can.png"
-    />
-  </div>
+<div class="message-ables" data-timeCreated="{{ this.fullCreatedAt }}">
   <div class="message right-message" id="message-{{ this.id }}">
     <div class="message-content-div">
       <span class="message-content" id="message-content-{{ this.id }}">{{
@@ -32,9 +23,23 @@
       {{/if}}
     </div>
   </div>
+  <div class="ables">
+    <img
+      class="message__edit-img"
+      id="edit-img-{{ this.id }}"
+      data-id="{{ this.id }}"
+      src="dist/images/edit.png"
+    />
+    <img
+      class="message__trash-basket-img"
+      id="trash-basket-{{ this.id }}"
+      data-id="{{ this.id }}"
+      src="dist/images/trash-can.png"
+    />
+  </div>
 </div>
 {{else}}
-<div class="message-ables">
+<div class="message-ables" data-timeCreated="{{ this.fullCreatedAt }}">
   <div class="message left-message" id="message-{{ this.id }}">
     <div class="message-content-div">
       <span class="message-content" id="message-content-{{ this.id }}">{{
@@ -43,7 +48,7 @@
     </div>
     <div class="message-time-edited" id="message-time-edited-{{ this.id }}">
       <span class="message-time-edited__span-time">{{ this.createdAt }}</span>
-      {{#if isUpdated}}
+      {{#if this.isUpdated}}
       <span
         class="message-time-edited__span-edited"
         id="message-edited-{{ this.id }}"

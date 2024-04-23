@@ -7,8 +7,6 @@ const incomingEvents = [
   "receiveCompanionData",
   "readyRenderMessages",
   "getMessagesSuccess",
-  "needUpdateWebSocket",
-  "updatedWebSocket",
   "clickedSendMessage",
   "clickedDeleteMessage",
   "clickedUpdateMessage",

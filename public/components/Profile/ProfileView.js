@@ -216,7 +216,7 @@ class ProfileView extends BaseView {
 
           const img = document.createElement("img");
           img.setAttribute("src", src);
-          img.classList.add("news-img-content__img");
+          img.classList.add("news-img-content__img", "post-content__img");
 
           imgContent.appendChild(img);
         });
@@ -329,6 +329,8 @@ class ProfileView extends BaseView {
   renderPosts({ author, posts }) {
     this.isWaitPosts = false;
 
+    document.getElementById("posts-sceleton")?.remove();
+
     if (posts) {
       posts.forEach((elem) => {
         if (elem.postId < this.lastPostId || this.lastPostId === 0) {
@@ -342,7 +344,17 @@ class ProfileView extends BaseView {
       this.isAllPosts = true;
       document
         .getElementById("no-more-posts")
-        .classList.replace("no-more-posts__hidden", "no-more-posts__visible");
+        .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
+    }
+
+    if (!this.isAllPosts) {
+      const imgSceleton = document.createElement("img");
+
+      imgSceleton.classList.add("sceleton-img");
+      imgSceleton.setAttribute("id", "posts-sceleton");
+      imgSceleton.setAttribute("src", "dist/images/loading.png");
+
+      this.postsElement.appendChild(imgSceleton);
     }
   }
 

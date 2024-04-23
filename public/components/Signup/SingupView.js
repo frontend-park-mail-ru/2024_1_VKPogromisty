@@ -8,7 +8,7 @@ import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
 import "./signup.scss";
 
-const correct = "form__input__correct";
+const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const main_inputs = [
   {

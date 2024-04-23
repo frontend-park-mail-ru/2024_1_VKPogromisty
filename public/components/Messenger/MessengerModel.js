@@ -27,10 +27,6 @@ class MessengerModel extends BaseModel {
     this.profileService = new ProfileService();
 
     this.eventBus.addEventListener(
-      "needUpgradeWebSocket",
-      this.updateWebSocket.bind(this),
-    );
-    this.eventBus.addEventListener(
       "needGetProfile",
       this.getProfileData.bind(this),
     );
@@ -42,12 +38,14 @@ class MessengerModel extends BaseModel {
       "clickedLogoutButton",
       this.logout.bind(this),
     );
+
+    this.addWebSocketHandlers();
   }
 
   /**
    * Add events to WebSocket
    */
-  updateWebSocket() {
+  addWebSocketHandlers() {
     this.webSocket.addEventOnMessage("messengerMessage", (event) => {
       const data = JSON.parse(event.data);
 
@@ -59,7 +57,6 @@ class MessengerModel extends BaseModel {
           this.eventBus.emit("updateLastMessage", data.payload);
           break;
         case "DELETE_MESSAGE":
-          //customAlert("error");
           break;
         default:
           this.eventBus.emit("serverError", {});
@@ -73,8 +70,6 @@ class MessengerModel extends BaseModel {
     this.webSocket.addEventOnClose("messageClose", () => {
       this.eventBus.emit("serverError", {});
     });
-
-    this.eventBus.emit("updatedWebSocket", {});
   }
 
   /**

@@ -147,6 +147,16 @@
 .message-ables {
   @include row-reverse-flexible;
   margin-top: 15px;
+
+  &:hover {
+    .ables {
+      visibility: visible;
+    }
+  }
+}
+
+.ables {
+  visibility: hidden;
 }
 
 .add-message {

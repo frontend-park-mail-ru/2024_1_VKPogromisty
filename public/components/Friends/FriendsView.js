@@ -144,8 +144,8 @@ class FriendsView extends BaseView {
 
     const friendsLabel = document.getElementById("friends-label");
 
-    friendsLabel.classList.remove("right-sidebar__a-common");
-    friendsLabel.classList.add("right-sidebar__a-bigger");
+    friendsLabel.classList.remove("right-sidebar__a_common");
+    friendsLabel.classList.add("right-sidebar__a_bigger");
 
     const addFriends = document.querySelectorAll(
       ".friend-ables__delete-friend-button",
@@ -183,8 +183,8 @@ class FriendsView extends BaseView {
 
     const subscribersLabel = document.getElementById("subscribers-label");
 
-    subscribersLabel.classList.remove("right-sidebar__a-common");
-    subscribersLabel.classList.add("right-sidebar__a-bigger");
+    subscribersLabel.classList.remove("right-sidebar__a_common");
+    subscribersLabel.classList.add("right-sidebar__a_bigger");
 
     const addFriends = document.querySelectorAll(
       ".friend-ables__add-friend-button",
@@ -231,8 +231,8 @@ class FriendsView extends BaseView {
 
     const subscriptionsLabel = document.getElementById("subscriptions-label");
 
-    subscriptionsLabel.classList.remove("right-sidebar__a-common");
-    subscriptionsLabel.classList.add("right-sidebar__a-bigger");
+    subscriptionsLabel.classList.remove("right-sidebar__a_common");
+    subscriptionsLabel.classList.add("right-sidebar__a_bigger");
 
     const addFriends = document.querySelectorAll(
       ".friend-ables__unsubscribe-button",

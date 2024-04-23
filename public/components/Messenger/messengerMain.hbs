@@ -9,11 +9,14 @@
     </div>
   </div>
   <div class="dialogs" id="dialogs"></div>
+  <img
+    class="sceleton-img"
+    id="dialogs-sceleton"
+    src="dist/images/loading.png"
+  />
 </div>
 <div class="no-dialogs">
-  {{#if noDialogs}}
-  <span class="no-dialogs__span" id="no-dialogs__span"
+  <span class="no-dialogs__span__invisible" id="no-dialogs__span"
     >У вас нет текущих диалогов</span
   >
-  {{/if}}
 </div>

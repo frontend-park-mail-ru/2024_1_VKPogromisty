@@ -4,26 +4,32 @@ const sidebar = [
   {
     href: "/feed",
     text: "Новости",
+    icon: "megaphone",
   },
   {
     href: "/messenger",
     text: "Мессенджер",
+    icon: "mail",
   },
   {
     href: "/community/friends",
     text: "Друзья",
+    icon: "high-five",
   },
   {
     href: "/groups",
     text: "Сообщества",
+    icon: "people",
   },
   {
     href: "/settings",
     text: "Настройки",
+    icon: "settings",
   },
   {
     href: "/stickers",
     text: "Стикеры",
+    icon: "star",
   },
 ];
 
@@ -60,6 +66,7 @@ export class Main {
       const fullSidebar = sidebar.concat({
         href: `/profile/${userId}`,
         text: "Профиль",
+        icon: "user-avatar",
       });
 
       this.#parent.innerHTML += template({ fullSidebar });

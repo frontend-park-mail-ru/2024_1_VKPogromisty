@@ -6,9 +6,11 @@
         class="left-side__img"
         src="dist/images/Logo.png"
     /></a>
+    {{#if needSearch}}
     <div class="search">
       <input class="search__input" type="text" placeholder="Поиск" readonly />
     </div>
+    {{/if}}
   </div>
   <div class="user">
     <img class="user__notification-img" src="dist/images/notification.png" />
