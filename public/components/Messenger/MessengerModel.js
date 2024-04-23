@@ -39,13 +39,13 @@ class MessengerModel extends BaseModel {
       this.logout.bind(this),
     );
 
-    this.updateWebSocket();
+    this.addWebSocketHandlers();
   }
 
   /**
    * Add events to WebSocket
    */
-  updateWebSocket() {
+  addWebSocketHandlers() {
     this.webSocket.addEventOnMessage("messengerMessage", (event) => {
       const data = JSON.parse(event.data);
 

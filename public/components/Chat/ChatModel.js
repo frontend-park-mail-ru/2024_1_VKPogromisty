@@ -72,7 +72,7 @@ class ChatModel extends BaseModel {
     );
     this.eventBus.addEventListener("clickLogoutButton", this.logout.bind(this));
 
-    this.updateWebSocket();
+    this.addWebSocketHandlers();
   }
 
   /**
@@ -98,7 +98,7 @@ class ChatModel extends BaseModel {
   /**
    * Add events to WebSocket
    */
-  updateWebSocket() {
+  addWebSocketHandlers() {
     this.webSocket.addEventOnMessage("dialogMessage", (event) => {
       const data = JSON.parse(event.data);
 

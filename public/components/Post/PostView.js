@@ -114,7 +114,7 @@ class PostView extends BaseView {
     }
 
     const textarea = document.getElementById(`textarea-${postId}`);
-    textarea.style.height = textarea.scrollHeight - 4 + "px";
+    textarea.style.height = textarea.scrollHeight + "px";
 
     const content = document.getElementById(`post-content-${postId}`);
     const contentScrHeight = content.scrollHeight;

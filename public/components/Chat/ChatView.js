@@ -221,9 +221,7 @@ class ChatView extends BaseView {
    * @param {Message[]} messages - The messages of conversation with current companion
    */
   renderMessages(messages) {
-    if (this.lastMessageId === 0) {
-      document.getElementById("messages-sceleton").remove();
-    }
+    document.getElementById("messages-sceleton")?.remove();
 
     this.isWaitMessages = false;
     const template = require("./message.hbs");
@@ -265,9 +263,6 @@ class ChatView extends BaseView {
 
       const lastChangedDaySpan = document.createElement("span");
       lastChangedDaySpan.classList.add("changed-day__span");
-      lastChangedDaySpan.classList.add(
-        `changed-day__span-${messages[messages.length - 1].id}`,
-      );
       lastChangedDaySpan.innerHTML = formatDayMonthYear(this.previousDate);
 
       lastChangedDay.appendChild(lastChangedDaySpan);
@@ -339,7 +334,6 @@ class ChatView extends BaseView {
 
       const lastChangedDaySpan = document.createElement("span");
       lastChangedDaySpan.classList.add("changed-day__span");
-      lastChangedDaySpan.classList.add(`changed-day__span-${message.id}`);
       lastChangedDaySpan.innerHTML = formatToday;
 
       lastChangedDay.appendChild(lastChangedDaySpan);
