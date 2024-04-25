@@ -147,35 +147,35 @@ class PostView extends BaseView {
     document
       .querySelectorAll(".reactions__heart-img_unliked")
       .forEach((elem) => {
-        elem.onmouseover = () => {
+        elem.addEventListener("mouseenter", () => {
           elem.setAttribute("src", "dist/images/filled-heart.png");
           elem.style.width = "28px";
           elem.style.height = "28px";
-        };
-        elem.onmouseout = () => {
+        });
+        elem.addEventListener("mouseleave", () => {
           elem.setAttribute("src", "dist/images/heart.png");
           elem.style.width = "25px";
           elem.style.height = "25px";
-        };
-        elem.onclick = () => {
+        });
+        elem.addEventListener("click", () => {
           this.eventBus.emit("clickedLikePost", +elem.dataset.id);
-        };
+        });
       });
 
     document.querySelectorAll(".reactions__heart-img_liked").forEach((elem) => {
-      elem.onmouseover = () => {
+      elem.addEventListener("mouseenter", () => {
         elem.setAttribute("src", "dist/images/broken-heart.png");
         elem.style.width = "28px";
         elem.style.height = "28px";
-      };
-      elem.onmouseout = () => {
+      });
+      elem.addEventListener("mouseleave", () => {
         elem.setAttribute("src", "dist/images/filled-heart.png");
         elem.style.width = "25px";
         elem.style.height = "25px";
-      };
-      elem.onclick = () => {
+      });
+      elem.addEventListener("click", () => {
         this.eventBus.emit("clickedUnlikePost", +elem.dataset.id);
-      };
+      });
     });
 
     document.querySelectorAll(".post-author__edit-img").forEach((elem) => {
@@ -257,32 +257,32 @@ class PostView extends BaseView {
    * @param {number} postId - The ID of current post
    */
   likedPost(postId) {
-    const likedPost = document.querySelector(
+    const likedPostParent = document.querySelector(
       `#post-${postId} .reactions__heart-img_unliked`,
-    );
+    ).parentElement;
+    const likedPost = document.createElement("img");
     likedPost.setAttribute("src", "dist/images/filled-heart.png");
-    likedPost.classList.replace(
-      "reactions__heart-img_unliked",
-      "reactions__heart-img_liked",
-    );
+    likedPost.dataset.id = postId;
+    likedPost.classList.add("reactions__heart-img_liked");
     const likesCount = document.querySelector(
       `#post-${postId} .likes-count__span`,
     );
     likesCount.innerHTML = +likesCount.innerHTML + 1;
+    likedPostParent.replaceChild(likedPost, likedPostParent.firstElementChild);
 
-    likedPost.onmouseover = () => {
+    likedPost.addEventListener("mouseenter", () => {
       likedPost.setAttribute("src", "dist/images/broken-heart.png");
       likedPost.style.width = "28px";
       likedPost.style.height = "28px";
-    };
-    likedPost.onmouseout = () => {
+    });
+    likedPost.addEventListener("mouseleave", () => {
       likedPost.setAttribute("src", "dist/images/filled-heart.png");
       likedPost.style.width = "25px";
       likedPost.style.height = "25px";
-    };
-    likedPost.onclick = () => {
+    });
+    likedPost.addEventListener("click", () => {
       this.eventBus.emit("clickedUnlikePost", likedPost.dataset.id);
-    };
+    });
   }
 
   /**
@@ -291,32 +291,35 @@ class PostView extends BaseView {
    * @param {number} postId - The ID of current post
    */
   unlikedPost(postId) {
-    const unlikedPost = document.querySelector(
+    const unlikedPostParent = document.querySelector(
       `#post-${postId} .reactions__heart-img_liked`,
-    );
+    ).parentElement;
+    const unlikedPost = document.createElement("img");
+    unlikedPost.dataset.id = postId;
     unlikedPost.setAttribute("src", "dist/images/heart.png");
-    unlikedPost.classList.replace(
-      "reactions__heart-img_liked",
-      "reactions__heart-img_unliked",
-    );
+    unlikedPost.classList.add("reactions__heart-img_unliked");
     const likesCount = document.querySelector(
       `#post-${postId} .likes-count__span`,
     );
     likesCount.innerHTML = +likesCount.innerHTML - 1;
+    unlikedPostParent.replaceChild(
+      unlikedPost,
+      unlikedPostParent.firstElementChild,
+    );
 
-    unlikedPost.onmouseover = () => {
+    unlikedPost.addEventListener("mouseenter", () => {
       unlikedPost.setAttribute("src", "dist/images/filled-heart.png");
       unlikedPost.style.width = "28px";
       unlikedPost.style.height = "28px";
-    };
-    unlikedPost.onmouseout = () => {
+    });
+    unlikedPost.addEventListener("mouseleave", () => {
       unlikedPost.setAttribute("src", "dist/images/heart.png");
       unlikedPost.style.width = "25px";
       unlikedPost.style.height = "25px";
-    };
-    unlikedPost.onclick = () => {
+    });
+    unlikedPost.addEventListener("click", () => {
       this.eventBus.emit("clickedLikePost", unlikedPost.dataset.id);
-    };
+    });
   }
 
   /**
