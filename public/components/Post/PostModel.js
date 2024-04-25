@@ -33,6 +33,11 @@ class PostModel extends BaseModel {
       "canceledUpdatePost",
       this.getCurrentPost.bind(this),
     );
+    this.eventBus.addEventListener("clickedLikePost", this.likePost.bind(this));
+    this.eventBus.addEventListener(
+      "clickedUnlikePost",
+      this.unlikePost.bind(this),
+    );
     this.eventBus.addEventListener(
       "clickedDeleteButton",
       this.deletePost.bind(this),
@@ -70,6 +75,46 @@ class PostModel extends BaseModel {
     switch (result.status) {
       case 200:
         this.eventBus.emit("postUpdateSuccess", result.body);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Likes post
+   *
+   * @param {number} postId - The ID of current post
+   */
+  async likePost(postId) {
+    const result = await this.postService.likePost(postId);
+
+    switch (result.status) {
+      case 201:
+        this.eventBus.emit("postLikedSuccess", result.body.postId);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Unlikes post
+   *
+   * @param {number} postId - The ID of current post
+   */
+  async unlikePost(postId) {
+    const result = await this.postService.unlikePost(postId);
+
+    switch (result.status) {
+      case 204:
+        this.eventBus.emit("postUnlikedSuccess", postId);
         break;
       case 401:
         this.router.redirect("/login");

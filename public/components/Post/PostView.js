@@ -69,6 +69,14 @@ class PostView extends BaseView {
       this.canceledUpdatePost.bind(this),
     );
     this.eventBus.addEventListener(
+      "postLikedSuccess",
+      this.likedPost.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "postUnlikedSuccess",
+      this.unlikedPost.bind(this),
+    );
+    this.eventBus.addEventListener(
       "serverError",
       this.serverErrored.bind(this),
     );
@@ -97,6 +105,13 @@ class PostView extends BaseView {
     post.updatedAt = `обновлено ${formatFullDate(post.updatedAt)}`;
 
     this.mainElement = document.getElementById("posts");
+
+    if (post.likedBy) {
+      post.likesCount = post.likedBy.length;
+      post.isLikedByMe = post.likedBy.includes(UserState.userId);
+    } else {
+      post.likesCount = 0;
+    }
 
     if (publish) {
       this.mainElement.innerHTML =
@@ -129,17 +144,38 @@ class PostView extends BaseView {
       content.appendChild(showMore);
     }
 
-    document.querySelectorAll(".reactions__heart-img").forEach((elem) => {
-      elem.addEventListener("mouseover", () => {
-        elem.setAttribute("src", "dist/images/filled-heart.png");
+    document
+      .querySelectorAll(".reactions__heart-img_unliked")
+      .forEach((elem) => {
+        elem.onmouseover = () => {
+          elem.setAttribute("src", "dist/images/filled-heart.png");
+          elem.style.width = "28px";
+          elem.style.height = "28px";
+        };
+        elem.onmouseout = () => {
+          elem.setAttribute("src", "dist/images/heart.png");
+          elem.style.width = "25px";
+          elem.style.height = "25px";
+        };
+        elem.onclick = () => {
+          this.eventBus.emit("clickedLikePost", +elem.dataset.id);
+        };
+      });
+
+    document.querySelectorAll(".reactions__heart-img_liked").forEach((elem) => {
+      elem.onmouseover = () => {
+        elem.setAttribute("src", "dist/images/broken-heart.png");
         elem.style.width = "28px";
         elem.style.height = "28px";
-      });
-      elem.addEventListener("mouseout", () => {
-        elem.setAttribute("src", "dist/images/heart.png");
+      };
+      elem.onmouseout = () => {
+        elem.setAttribute("src", "dist/images/filled-heart.png");
         elem.style.width = "25px";
         elem.style.height = "25px";
-      });
+      };
+      elem.onclick = () => {
+        this.eventBus.emit("clickedUnlikePost", +elem.dataset.id);
+      };
     });
 
     document.querySelectorAll(".post-author__edit-img").forEach((elem) => {
@@ -152,7 +188,6 @@ class PostView extends BaseView {
         textarea.removeAttribute("readonly");
         textarea.addEventListener("input", () => {
           textarea.style.height = "auto";
-          textarea.style.height = textarea.scrollHeight - 4 + "px";
         });
         textarea.focus();
 
@@ -214,6 +249,74 @@ class PostView extends BaseView {
           elem.remove();
         });
       });
+  }
+
+  /**
+   * Set post liked
+   *
+   * @param {number} postId - The ID of current post
+   */
+  likedPost(postId) {
+    const likedPost = document.querySelector(
+      `#post-${postId} .reactions__heart-img_unliked`,
+    );
+    likedPost.setAttribute("src", "dist/images/filled-heart.png");
+    likedPost.classList.replace(
+      "reactions__heart-img_unliked",
+      "reactions__heart-img_liked",
+    );
+    const likesCount = document.querySelector(
+      `#post-${postId} .likes-count__span`,
+    );
+    likesCount.innerHTML = +likesCount.innerHTML + 1;
+
+    likedPost.onmouseover = () => {
+      likedPost.setAttribute("src", "dist/images/broken-heart.png");
+      likedPost.style.width = "28px";
+      likedPost.style.height = "28px";
+    };
+    likedPost.onmouseout = () => {
+      likedPost.setAttribute("src", "dist/images/filled-heart.png");
+      likedPost.style.width = "25px";
+      likedPost.style.height = "25px";
+    };
+    likedPost.onclick = () => {
+      this.eventBus.emit("clickedUnlikePost", likedPost.dataset.id);
+    };
+  }
+
+  /**
+   * Set post unliked
+   *
+   * @param {number} postId - The ID of current post
+   */
+  unlikedPost(postId) {
+    const unlikedPost = document.querySelector(
+      `#post-${postId} .reactions__heart-img_liked`,
+    );
+    unlikedPost.setAttribute("src", "dist/images/heart.png");
+    unlikedPost.classList.replace(
+      "reactions__heart-img_liked",
+      "reactions__heart-img_unliked",
+    );
+    const likesCount = document.querySelector(
+      `#post-${postId} .likes-count__span`,
+    );
+    likesCount.innerHTML = +likesCount.innerHTML - 1;
+
+    unlikedPost.onmouseover = () => {
+      unlikedPost.setAttribute("src", "dist/images/filled-heart.png");
+      unlikedPost.style.width = "28px";
+      unlikedPost.style.height = "28px";
+    };
+    unlikedPost.onmouseout = () => {
+      unlikedPost.setAttribute("src", "dist/images/heart.png");
+      unlikedPost.style.width = "25px";
+      unlikedPost.style.height = "25px";
+    };
+    unlikedPost.onclick = () => {
+      this.eventBus.emit("clickedLikePost", unlikedPost.dataset.id);
+    };
   }
 
   /**

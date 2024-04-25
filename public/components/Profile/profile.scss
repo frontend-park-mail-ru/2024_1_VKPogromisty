@@ -120,3 +120,17 @@
     filter: invert(100%);
   }
 }
+
+.favorites {
+  @include row-flexible;
+  padding: 10px;
+  align-items: center;
+
+  &__button {
+    padding: 10px;
+    background-color: #e0908d;
+    color: white;
+    border-radius: 12px;
+    height: 60%;
+  }
+}

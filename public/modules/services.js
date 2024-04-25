@@ -306,6 +306,53 @@ export class PostService {
   }
 
   /**
+   * Likes current post
+   *
+   * @param {number} post_id - The ID of current post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async likePost(post_id) {
+    const postId = Number(post_id);
+
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl + "like", {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify({ postId }),
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Unlikes current post
+   *
+   * @param {number} post_id - The ID of current post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async unlikePost(post_id) {
+    const postId = Number(post_id);
+
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "unlike",
+      {
+        method: "DELETE",
+        credentials: "include",
+        body: JSON.stringify({ postId }),
+      },
+    );
+
+    if (response.status === 204) {
+      return genResponse(response.status, null, null);
+    }
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
    * Deletes the post from the server
    * @param {number} post_id - The ID of post
    * @returns {Promise<APIResponse>} {@link APIResponse}
@@ -382,12 +429,13 @@ export class ChatService {
    *
    * @param {number} companionId - The ID of current companion
    * @param {number} lastMessageId - The ID of last message in conversation
+   * @param {number} [messagesAmount=20] - The amount of messages
    * @returns {Promise<APIResponse>} {@link ApiResponse}
    */
-  async getMessages(companionId, lastMessageId) {
+  async getMessages(companionId, lastMessageId, messagesAmount = 20) {
     const response = await CSRFProtection.addCSRFToken(
       this.baseUrl +
-        `/messages?peerId=${companionId}&lastMessageId=${lastMessageId}`,
+        `/messages?peerId=${companionId}&lastMessageId=${lastMessageId}&messagesAmount=${messagesAmount}`,
       {
         method: "GET",
         credentials: "include",

@@ -59,16 +59,11 @@ body {
   color: $input-color;
 }
 
-.form__input_error {
-  color: red;
-  text-align: left;
-  font-size: 14px;
-}
-
+.form__input_error,
 .error {
   color: red;
   text-align: left;
-  font-size: 14px;
+  font-size: 2vh;
 }
 
 .server-error-500 {
@@ -121,8 +116,7 @@ body {
 
 .show-password {
   position: absolute;
-  margin-left: 290px;
-  margin-top: 10px;
+  right: 1vh;
   cursor: pointer;
 
   &__button {

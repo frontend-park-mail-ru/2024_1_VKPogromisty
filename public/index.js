@@ -90,7 +90,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   router.setConfig(config);
 
   const result = await CSRFProtection.updateCSRFToken();
-
   const currentPageUrl = window.location.pathname;
   switch (currentPageUrl) {
     case "/login":

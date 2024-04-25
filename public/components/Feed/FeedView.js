@@ -201,7 +201,7 @@ class FeedView extends BaseView {
 
     document.getElementById("posts-sceleton")?.remove();
 
-    if (posts) {
+    if (posts.length > 0) {
       posts.forEach((elem) => {
         if (elem.post.postId < this.lastPostId || this.lastPostId === 0) {
           this.lastPostId = elem.post.postId;
