@@ -20,6 +20,10 @@
   filter: invert(45%);
 }
 
+.main {
+  flex-grow: 1;
+}
+
 .sidebar {
   @include column-flexible;
   justify-content: space-between;

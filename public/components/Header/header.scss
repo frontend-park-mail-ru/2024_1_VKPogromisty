@@ -17,8 +17,8 @@
 .header {
   @include flexible;
   box-sizing: border-box;
-  padding: 3vh 3vw 3vh 7vw;
-  width: 100vw;
+  padding: 20px 40px 20px 50px;
+  width: 100%;
   background-color: $feed-header-color;
   align-items: center;
   justify-content: space-between;

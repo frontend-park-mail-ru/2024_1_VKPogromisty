@@ -54,6 +54,7 @@ body {
   font-family: $page-font-family;
   position: relative;
   @include column-flexible;
+  min-height: 100vh;
 }
 
 .incorrect-data {
