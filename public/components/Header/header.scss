@@ -8,7 +8,6 @@
   &__img {
     box-sizing: border-box;
     width: 50px;
-    margin-right: 50px;
     max-width: 100%;
     cursor: pointer;
     filter: invert(100%);
@@ -18,8 +17,8 @@
 .header {
   @include flexible;
   box-sizing: border-box;
-  padding: 15px 25px 15px 115px;
-  width: 100%;
+  padding: 3vh 3vw 3vh 7vw;
+  width: 100vw;
   background-color: $feed-header-color;
   align-items: center;
   justify-content: space-between;
@@ -52,11 +51,15 @@
   &__username-span {
     color: #fff;
     font-size: large;
-    margin-right: 23px;
-    width: 150px;
+    margin-right: 10px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 200px;
+
+    @include mobile-style {
+      max-width: 0px;
+    }
   }
 
   &__avatar-img {
@@ -71,7 +74,7 @@
   &__notification-img {
     width: 30px;
     filter: brightness(2400%);
-    margin-right: 20px;
+    margin-right: 10px;
   }
 
   &__logout-button {

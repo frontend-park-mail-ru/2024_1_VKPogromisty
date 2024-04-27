@@ -99,14 +99,6 @@ class ChatView extends BaseView {
     this.lastMessageId = 0;
     this.isAllMessages = false;
 
-    document.getElementById("logout-button").addEventListener("click", () => {
-      this.chatElement.removeEventListener(
-        "scroll",
-        this.checksNewMessages.bind(this),
-      );
-      this.eventBus.emit("clickLogoutButton", {});
-    });
-
     document.onkeydown = (event) => {
       if (event.key === "Escape") {
         this.router.redirect("/messenger");
@@ -142,6 +134,7 @@ class ChatView extends BaseView {
     const { userId, avatar, firstName, lastName } = User;
 
     const template = require("./chatMain.hbs");
+    const isMe = userId === UserState.userId;
 
     this.mainElement.innerHTML = template({
       userId,
@@ -149,6 +142,7 @@ class ChatView extends BaseView {
       firstName,
       lastName,
       staticUrl,
+      isMe,
     });
 
     this.chatElement = document.getElementById("messages");
@@ -258,16 +252,18 @@ class ChatView extends BaseView {
 
     if (noMessages || messages.length < 20) {
       this.isAllMessages = true;
-      const lastChangedDay = document.createElement("div");
-      lastChangedDay.classList.add("changed-day");
+      if (this.lastMessageId > 0) {
+        const lastChangedDay = document.createElement("div");
+        lastChangedDay.classList.add("changed-day");
 
-      const lastChangedDaySpan = document.createElement("span");
-      lastChangedDaySpan.classList.add("changed-day__span");
-      lastChangedDaySpan.innerHTML = formatDayMonthYear(this.previousDate);
+        const lastChangedDaySpan = document.createElement("span");
+        lastChangedDaySpan.classList.add("changed-day__span");
+        lastChangedDaySpan.innerHTML = formatDayMonthYear(this.previousDate);
 
-      lastChangedDay.appendChild(lastChangedDaySpan);
+        lastChangedDay.appendChild(lastChangedDaySpan);
 
-      this.chatElement.appendChild(lastChangedDay);
+        this.chatElement.appendChild(lastChangedDay);
+      }
     }
 
     const trashes = document.querySelectorAll(".message__trash-basket-img");

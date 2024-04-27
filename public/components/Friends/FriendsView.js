@@ -101,10 +101,6 @@ class FriendsView extends BaseView {
     });
     new Main(document.body).renderForm(userId);
 
-    document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickedLogoutButton", {});
-    });
-
     this.mainElem = document.getElementById("activity");
 
     switch (path) {

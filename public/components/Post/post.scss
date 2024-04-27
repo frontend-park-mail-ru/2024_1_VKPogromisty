@@ -10,6 +10,7 @@
   @include row-flexible;
   box-sizing: border-box;
   height: 60px;
+  justify-content: space-between;
 }
 
 .news-avatar {
@@ -29,18 +30,16 @@
 }
 
 .news {
-  @include flexible;
+  @include row-flexible;
   box-sizing: border-box;
-  width: 480px;
-  flex-wrap: wrap;
   justify-content: space-between;
-  align-content: center;
+  align-items: center;
   padding-right: 10px;
+  width: 100%;
 
   &__input {
     box-sizing: border-box;
     margin-left: 20px;
-    width: 360px;
     min-width: 120px;
     font-family: inherit;
     font-size: inherit;
@@ -138,7 +137,6 @@
 .post-author {
   @include flexible;
   box-sizing: border-box;
-  height: 60px;
   padding-right: 10px;
   font-family: $ordinary-text;
   font-size: 18px;
@@ -167,7 +165,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 400px;
+    margin-bottom: 4px;
   }
 
   &__accept-img {
@@ -183,11 +181,21 @@
 .post-author-info {
   @include column-flexible;
   justify-content: space-between;
-  height: 60%;
+
+  @include mobile-style {
+    @include column-flexible;
+    justify-content: space-between;
+    padding: 5px 0px;
+  }
 }
 
 .post-author-time {
-  display: flex;
+  @include row-flexible;
+
+  &__dot-img {
+    width: 16px;
+    height: 16px;
+  }
 
   @each $type in last-time, created-at {
     &__#{$type}-span {
@@ -196,9 +204,12 @@
     }
   }
 
-  &__dot-img {
-    width: 16px;
-    height: 16px;
+  @include mobile-style {
+    @include column-flexible;
+
+    &__dot-img {
+      display: none;
+    }
   }
 }
 
@@ -320,8 +331,6 @@
   box-sizing: border-box;
   height: 60px;
   justify-content: space-between;
-  flex-wrap: wrap;
-  align-content: center;
   font-family: $ordinary-text;
   font-size: 18px;
 }
@@ -341,7 +350,6 @@
   &__input {
     box-sizing: border-box;
     min-width: 220px;
-    width: 500px;
     background-color: inherit;
   }
 }
@@ -375,13 +383,17 @@
 .no-more-posts_hidden {
   visibility: hidden;
   text-align: center;
-  margin: 40px;
+  margin: 40px auto 80px;
 }
 
 .no-more-posts_visible {
   visibility: visible;
   text-align: center;
-  margin: 40px;
+  margin: 40px auto 80px;
+
+  @include mobile-style {
+    margin-top: 10px;
+  }
 }
 
 .no-posts__span {

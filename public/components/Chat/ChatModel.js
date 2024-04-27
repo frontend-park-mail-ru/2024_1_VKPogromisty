@@ -70,7 +70,6 @@ class ChatModel extends BaseModel {
       "clickedUpdateMessage",
       this.updateMessage.bind(this),
     );
-    this.eventBus.addEventListener("clickLogoutButton", this.logout.bind(this));
 
     this.addWebSocketHandlers();
   }
@@ -174,23 +173,6 @@ class ChatModel extends BaseModel {
    */
   async deleteMessage({ messageId, receiver }) {
     this.webSocket.deleteMessage(messageId, receiver);
-  }
-
-  /**
-   * Logouts from account
-   * @return {void}
-   */
-  async logout() {
-    const result = await this.authService.logout();
-
-    switch (result.status) {
-      case 200:
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
   }
 }
 

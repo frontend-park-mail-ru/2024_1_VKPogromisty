@@ -7,9 +7,11 @@ const incomingEvents = [
   "needGetProfile",
   "receiveProfileData",
   "updateLastMessage",
+  "deleteLastMessage",
+  "needLastMessageDialog",
+  "getLastMessageSuccess",
   "readyRenderDialogs",
   "getDialogsSuccess",
-  "clickedLogoutButton",
   "serverError",
 ];
 

@@ -1,16 +1,25 @@
 <div class="conversation">
   <div class="companion">
     <div class="companion-header">
-      <a href="/profile/{{ this.userId }}"
-        ><img
+      <a href="/profile/{{ this.userId }}">
+        {{#unless isMe}}
+        <img
           class="companion__avatar-img"
           src="{{ staticUrl }}/{{ this.avatar }}"
-      /></a>
+        />
+        {{else}}
+        <img class="favorites-avatar__img" src="dist/images/folder.png" />
+        {{/unless}}
+      </a>
       <div class="companion-info">
+        {{#unless isMe}}
         <span class="companion__name-span"
           >{{ this.firstName }} {{ this.lastName }}</span
         >
         <span class="companion__status-span">Online</span>
+        {{else}}
+        <span class="companion__name-span">Избранное</span>
+        {{/unless}}
       </div>
     </div>
     <div class="go-back">

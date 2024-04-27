@@ -14,7 +14,7 @@ const staticUrl = `${API_URL}/static`;
  * @typedef {Object} Author
  * @property {string} avatar - The avatar of user
  * @property {string} createdAt - The date of creating accout
- * @property {string} detaOfBirth - The date of birth current user
+ * @property {string} dateOfBirth - The date of birth current user
  * @property {string} email - The email of current user
  * @property {string} firstName - The first name of current user
  * @property {string} lastName - The last name of current user
@@ -123,10 +123,6 @@ class ProfileView extends BaseView {
       lastName,
     });
     new Main(document.body).renderForm(userId);
-
-    document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickLogoutButton", {});
-    });
 
     this.eventBus.emit("readyRenderProfile", this.userId);
   }

@@ -28,6 +28,7 @@
 
 .friend {
   @include flexible;
+  align-items: center;
 
   &__avatar-img {
     width: 50px;
@@ -42,11 +43,15 @@
   @include row-flexible;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 20px;
-  height: 70px;
+  padding: 5px 20px;
+  min-height: 70px;
 
   &:not(:last-child) {
     border-bottom: 1px solid black;
+  }
+
+  @include mobile-style {
+    padding: 5px 10px;
   }
 }
 
@@ -54,6 +59,7 @@
   @include column-flexible;
   justify-content: space-between;
   padding-bottom: 10px;
+  margin-right: 5px;
 
   &__name-span {
     font-weight: bolder;
@@ -65,16 +71,35 @@
   font-size: 13px;
 }
 
+.right-sidebar__a_common {
+  font-size: 15px;
+
+  @include mobile-style {
+    font-size: 12px;
+  }
+}
+
+.right-sidebar__a_bigger {
+  font-size: 16px;
+
+  @include mobile-style {
+    font-size: 13px;
+  }
+}
+
 .right-sidebar-friends {
   @include row-flexible;
   justify-content: space-between;
   width: 100%;
   min-width: 200px;
-  font-size: 24;
   font-style: $page-font-family;
   box-sizing: border-box;
   margin: 15px 0px;
   padding: 0px 70px;
+
+  @include mobile-style {
+    padding: 0px 20px;
+  }
 }
 
 .friend-ables {
@@ -87,7 +112,7 @@
       background-color: #e0908d;
       color: white;
       border-radius: 7px;
-      height: 30px;
+      padding: 5px;
     }
   }
 

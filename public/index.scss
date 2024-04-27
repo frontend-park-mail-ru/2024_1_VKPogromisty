@@ -1,3 +1,5 @@
+@import "public/mixins.scss";
+
 $main-bg-color: rgba(235, 158, 158, 0.23);
 $input-color: #fceeeb;
 $button-sign-in-bg-color: #000000;
@@ -63,7 +65,7 @@ body {
 .error {
   color: red;
   text-align: left;
-  font-size: 2vh;
+  font-size: 14px;
 }
 
 .server-error-500 {
@@ -78,8 +80,8 @@ body {
   min-width: 200px;
   font-style: $page-font-family;
   box-sizing: border-box;
-  padding: 0px 20px;
   margin: 15px 0px;
+  padding: 0 20px;
 
   &-list {
     box-sizing: border-box;
@@ -112,23 +114,21 @@ body {
     font-size: 16px;
     color: $hovered-text-input;
   }
+
+  @include mobile-style {
+    font-size: 12px;
+  }
 }
 
 .show-password {
   position: absolute;
-  right: 1vh;
+  right: 2px;
   cursor: pointer;
+  top: 32px;
 
   &__button {
     width: 30px;
   }
-}
-
-.signup-show-password {
-  position: absolute;
-  margin-left: 360px;
-  margin-top: 10px;
-  cursor: pointer;
 }
 
 .form__input_correct {
@@ -136,13 +136,11 @@ body {
 }
 
 .right-sidebar__a_common {
-  font-size: 15px;
   text-decoration: none;
   color: $text-input-color;
 }
 
 .right-sidebar__a_bigger {
-  font-size: 16px;
   color: $hovered-text-input;
   text-decoration: none;
 }

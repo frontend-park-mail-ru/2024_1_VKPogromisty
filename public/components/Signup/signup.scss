@@ -3,7 +3,6 @@
 .register-form {
   @include column-flexible;
   justify-content: center;
-  width: 400px;
 }
 
 .sign-up-upload-img {
@@ -30,7 +29,6 @@ input::-webkit-inner-spin-button {
   justify-content: space-between;
 
   &__input {
-    margin: 10px 5px;
     width: 60px;
     height: 22px;
     text-align: center;
@@ -79,4 +77,42 @@ input::-webkit-inner-spin-button {
 
 .sign-up-form {
   @include column-flexible;
+}
+
+.avatar-prewatch {
+  @include row-flexible;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.signup-text {
+  color: #000000;
+
+  &__first-part {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  &__second-part {
+    font-size: 25px;
+    font-weight: 900;
+    margin-bottom: 30px;
+  }
+}
+
+.signup-input-group {
+  @include column-flexible;
+  margin-bottom: 20px;
+  justify-content: center;
+  color: $text-input-color;
+  font-size: 16px;
+  position: relative;
+
+  &__input {
+    padding: 10px 0px 10px 10px;
+    border: 1px solid rgb(0, 0, 0, 0.3);
+    font-size: 18px;
+    border-radius: 12px;
+    height: 24px;
+  }
 }

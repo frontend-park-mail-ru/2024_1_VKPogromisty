@@ -7,6 +7,15 @@ import BaseModel from "../../MVC/BaseModel.js";
 import { customAlert } from "../../modules/windows.js";
 
 /**
+ * A LastMessages structure
+ *
+ * @typedef {Object} LastMessages
+ * @property {number} companionId - The ID of current companion
+ * @property {number} lastMessageId - The ID of last message in conversation with current companion
+ * @property {number} messagesAmount - The amount of last messages
+ */
+
+/**
  * MessengerModel - класс для обработки данных, общения с бэком.
  */
 class MessengerModel extends BaseModel {
@@ -31,12 +40,12 @@ class MessengerModel extends BaseModel {
       this.getProfileData.bind(this),
     );
     this.eventBus.addEventListener(
-      "readyRenderDialogs",
-      this.getDialogs.bind(this),
+      "needLastMessageDialog",
+      this.getLastMessageDialog.bind(this),
     );
     this.eventBus.addEventListener(
-      "clickedLogoutButton",
-      this.logout.bind(this),
+      "readyRenderDialogs",
+      this.getDialogs.bind(this),
     );
 
     this.addWebSocketHandlers();
@@ -57,6 +66,7 @@ class MessengerModel extends BaseModel {
           this.eventBus.emit("updateLastMessage", data.payload);
           break;
         case "DELETE_MESSAGE":
+          this.eventBus.emit("deleteLastMessage", data.payload);
           break;
         default:
           this.eventBus.emit("serverError", {});
@@ -112,14 +122,24 @@ class MessengerModel extends BaseModel {
   }
 
   /**
-   * Logouts from account
-   * @return {void}
+   * Gets last messages in conversation with current companion
+   *
+   * @param {LastMessages} lastMessages - The last messages in conversation with current companion
    */
-  async logout() {
-    const result = await this.authService.logout();
+  async getLastMessageDialog({ companionId, lastMessageId, messagesAmount }) {
+    const result = await this.chatService.getMessages(
+      companionId,
+      lastMessageId,
+      messagesAmount,
+    );
 
     switch (result.status) {
       case 200:
+        this.eventBus.emit("getLastMessageSuccess", {
+          messages: result.body,
+          companionId,
+        });
+        break;
       case 401:
         this.router.redirect("/login");
         break;

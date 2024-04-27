@@ -1,0 +1,7 @@
+$small-width: 800px;
+
+@mixin mobile-style {
+  @media (max-width: #{$small-width - 1px}) {
+    @content;
+  }
+}

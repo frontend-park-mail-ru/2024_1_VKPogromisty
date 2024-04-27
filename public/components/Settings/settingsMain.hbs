@@ -82,24 +82,26 @@
     </div>
   </div>
   <div class="avatar-setting">
-    <span class="setting__span">Обновить фотографию</span>
-    <div class="file-input">
-      <label class="input-avatar-setting">
-        <input
-          class="input-avatar-setting__input"
-          type="file"
-          name="avatar"
-          id="avatar"
-          accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
-        />
-        <span class="input-avatar__span">Загрузить изображение </span>
-      </label>
+    <div class="setting-info">
+      <span class="setting__span">Обновить фотографию</span>
+      <div class="file-input">
+        <label class="input-avatar-setting">
+          <input
+            class="input-avatar-setting__input"
+            type="file"
+            name="avatar"
+            id="avatar"
+            accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
+          />
+          <span class="input-avatar__span">Загрузить изображение </span>
+        </label>
+      </div>
+      <img
+        class="setting-avatar-prewatch"
+        id="prewatch"
+        src="{{ this.staticUrl }}/{{ this.avatar }}"
+      />
     </div>
-    <img
-      class="setting-avatar-prewatch"
-      id="prewatch"
-      src="{{ this.staticUrl }}/{{ this.avatar }}"
-    />
     <div class="form__input_error form__input_correct" id="incorrect-avatar">
       Недопустимый тип файла
     </div>
@@ -113,6 +115,7 @@
     </button>
   </div>
 </div>
+<button class="logout-button" id="logout-button">Выйти</button>
 <button class="delete-setting__button" id="delete-setting">
   Удалить аккаунт
 </button>

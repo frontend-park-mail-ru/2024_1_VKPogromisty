@@ -1,5 +1,5 @@
 import BaseModel from "/public/MVC/BaseModel.js";
-import { AuthService, PostService } from "../../modules/services.js";
+import { PostService } from "../../modules/services.js";
 
 /**
  * FeedModel - класс для обработки данных, общения с бэком на странице профиля.
@@ -10,13 +10,11 @@ class FeedModel extends BaseModel {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Объект класса Routing
-   * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.webSocket = webSocket;
     this.postService = new PostService();
 
     this.eventBus.addEventListener(
@@ -27,7 +25,6 @@ class FeedModel extends BaseModel {
       "clickedPublishPost",
       this.publishPost.bind(this),
     );
-    this.eventBus.addEventListener("clickLogoutButton", this.logout.bind(this));
   }
 
   /**
@@ -63,25 +60,6 @@ class FeedModel extends BaseModel {
       case 201:
         this.eventBus.emit("publishedPostSuccess", result.body);
         break;
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
-  }
-
-  /**
-   * Logouts from account
-   * @return {void}
-   */
-  async logout() {
-    const authService = new AuthService();
-
-    const result = await authService.logout();
-
-    switch (result.status) {
-      case 200:
       case 401:
         this.router.redirect("/login");
         break;
