@@ -1,0 +1,66 @@
+<div class="settings">
+  <div class="setting">
+    <div class="setting-info">
+      <span class="setting__span">Имя группы</span>
+      <input
+        type="text"
+        class="setting__input"
+        placeholder="Socio - the best"
+        id="group-name"
+      />
+    </div>
+    <div
+      class="form__input_error form__input_correct"
+      id="incorrect-group-name"
+    >
+      Некорректное имя
+    </div>
+    <div class="form__input_error form__input_correct" id="doubled-group-name">
+      Такая группа уже существует
+    </div>
+  </div>
+  <div class="setting">
+    <div class="setting-info">
+      <span class="setting__span">Описание группы</span>
+      <textarea
+        class="setting__textarea"
+        id="description-group"
+        placeholder="Лучшая социальная сеть в мире"
+      ></textarea>
+    </div>
+    <div
+      class="form__input_error form__input_correct"
+      id="incorrect-description-group"
+    >
+      Описание группы необходимо
+    </div>
+  </div>
+  <div class="avatar-setting">
+    <div class="setting-info">
+      <span class="setting__span">Выбрать фотографию группы</span>
+      <div class="file-input">
+        <label class="input-avatar-setting">
+          <input
+            class="input-avatar-setting__input"
+            type="file"
+            name="avatar"
+            id="avatar"
+            accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
+          />
+          <span class="input-avatar__span">Загрузить изображение </span>
+        </label>
+      </div>
+      <img
+        class="setting-avatar-prewatch"
+        id="prewatch"
+        src="{{ this.staticUrl }}/group-avatars/default_group_avatar.png"
+      />
+    </div>
+    <div class="form__input_error form__input_correct" id="incorrect-avatar">
+      Недопустимый тип файла
+    </div>
+  </div>
+  <div class="accept-setting">
+    <button class="accept-setting__button" id="accept-setting">Создать</button>
+  </div>
+</div>

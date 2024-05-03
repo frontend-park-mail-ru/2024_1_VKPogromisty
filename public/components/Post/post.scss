@@ -45,6 +45,10 @@
     font-size: inherit;
     color: inherit;
     background-color: transparent;
+
+    @include mobile-style {
+      display: none;
+    }
   }
 
   &__file-button {
@@ -63,6 +67,10 @@
 
   &__file-input {
     display: none;
+  }
+
+  @include mobile-style {
+    justify-content: end;
   }
 }
 
@@ -124,6 +132,10 @@
   background-color: #f4e3e3;
   border: 1px solid #000000;
   margin: 15px 0px;
+
+  @include mobile-style {
+    margin: 5px 0px;
+  }
 }
 
 .post-header {

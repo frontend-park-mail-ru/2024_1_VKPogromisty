@@ -216,6 +216,26 @@ export class ProfileService {
 
     return genResponse(response.status, data.body, data.message);
   }
+
+  /**
+   * Searches profiles by current query
+   *
+   * @param {string} query - The current searching query
+   * @returns
+   */
+  async searchProfile(query) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `search?query=${query}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
 }
 
 /**
@@ -631,6 +651,239 @@ export class AdminService {
       credentials: "include",
       body: JSON.stringify({ userId: +userId }),
     });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+}
+
+/**
+ * Service for working with the group API
+ * @class
+ * @property {string} baseUrl - The base URL for the server group service
+ */
+export class GroupService {
+  baseUrl = `${API_URL}/groups/`;
+
+  async getUserSubGroups(userId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `by-sub/${userId}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Gets the profile's data from the server
+   * @param {number} groupId - The ID of current group
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getGroupData(groupId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `${groupId}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   */
+  async createGroup(name, description, avatar) {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("avatar", avatar);
+
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Updates the profile's data on the server
+   * @param {string} firstName - The first name of current user
+   * @param {string} lastName - The last name of current user
+   * @param {string} email - The email of current user
+   * @param {string} password - The password of current user
+   * @param {string} repeatPassword - The repeated password of current user
+   * @param {string} dateOfBirth - The date of birth of current user
+   * @param {File} avatar - The avatar of current user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async updateGroup(groupId, name, description, avatar) {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("avatar", avatar);
+
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl + groupId, {
+      method: "PUT",
+      body: formData,
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Delete the group from the server
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async deleteGroup(groupId) {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl + groupId, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      return genResponse(response.status, null, null);
+    }
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   *
+   * @param {number} groupId
+   * @param {number} lastPostId
+   * @returns
+   */
+  async getPosts(groupId, lastPostId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `${groupId}/posts/?lastPostId=${lastPostId}&postsAmount=0`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Searches groups by current query
+   *
+   * @param {string} query - The current searching query
+   * @returns
+   */
+  async searchGroup(query) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `search?query=${query}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Subscribes to current user by him ID
+   * @param {number} groupId - The ID of user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async postSubscription(groupId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `${groupId}/sub`,
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Unsubscribes current user by him ID
+   * @param {number} groupId - The ID of user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async deleteSubscription(groupId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `${groupId}/unsub`,
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    );
+
+    if (response.status === 204) {
+      return genResponse(response.status, null, null);
+    }
+
+    const data = response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  async isAdmin(groupId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `${groupId}/admins/check`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Publishes the posts to the server
+   * @param {string} content - The text content of post
+   * @param {File[]} attachments - The images of post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async publishPost(groupId, content, attachments) {
+    const formData = new FormData();
+
+    formData.append("content", content);
+
+    Array.from(attachments).forEach((elem) => {
+      formData.append("attachments", elem);
+    });
+
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `${groupId}/posts/`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      },
+    );
 
     const data = await response.json();
 

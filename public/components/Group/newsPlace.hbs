@@ -1,0 +1,42 @@
+<div class="create-post-header">
+  <div id="news-avatar" class="news-avatar">
+    <a href="/group/{{ this.id }}"
+      ><img
+        id="user-avatar-news"
+        class="news-avatar__img"
+        src="{{ staticUrl }}/group-avatars/{{ this.avatar }}"
+    /></a>
+  </div>
+  <div class="news">
+    <span id="user-news-content" class="news__input"
+      >Расскажите, что у вас нового</span
+    >
+    <button type="button" class="news__file-button" id="news__file-button">
+      <img
+        class="news__img"
+        src="dist/images/attach-paperclip-symbol.png"
+        id="news__img"
+      />
+    </button>
+    <input
+      type="file"
+      class="news__file-input"
+      id="news__file-input"
+      accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
+      multiple
+    />
+  </div>
+  <button class="publish-button" type="button" id="publish-post-button">
+    Опубликовать
+  </button>
+</div>
+<div class="news-content">
+  <textarea
+    class="news-content__textarea"
+    id="news-content__textarea"
+    rows="1"
+    placeholder="Что нового?"
+    maxlength="30000"
+  ></textarea>
+  <div class="news-img-content" id="news-img-content"></div>
+</div>
