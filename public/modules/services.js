@@ -643,7 +643,7 @@ export class AdminService {
    * Creates new admin
    *
    * @param {number} userId - The ID of current admin
-   * @returns
+   * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async addAdmin(userId) {
     const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
@@ -666,6 +666,12 @@ export class AdminService {
 export class GroupService {
   baseUrl = `${API_URL}/groups/`;
 
+  /**
+   * Gets group which user subscribes to
+   *
+   * @param {number} userId  - The ID of user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
   async getUserSubGroups(userId) {
     const response = await CSRFProtection.addCSRFToken(
       this.baseUrl + `by-sub/${userId}`,
@@ -681,7 +687,7 @@ export class GroupService {
   }
 
   /**
-   * Gets the profile's data from the server
+   * Gets the group's data from the server
    * @param {number} groupId - The ID of current group
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
@@ -700,6 +706,13 @@ export class GroupService {
   }
 
   /**
+   * Creates group
+   *
+   * @param {string} name - The name of group
+   * @param {string} description - The description of group
+   * @param {File} avatar - The avatar of group
+   *
+   * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async createGroup(name, description, avatar) {
     const formData = new FormData();
@@ -719,14 +732,13 @@ export class GroupService {
   }
 
   /**
-   * Updates the profile's data on the server
-   * @param {string} firstName - The first name of current user
-   * @param {string} lastName - The last name of current user
-   * @param {string} email - The email of current user
-   * @param {string} password - The password of current user
-   * @param {string} repeatPassword - The repeated password of current user
-   * @param {string} dateOfBirth - The date of birth of current user
-   * @param {File} avatar - The avatar of current user
+   * Updates group
+   *
+   * @param {number} groupId - The ID of group
+   * @param {string} name - The name of group
+   * @param {string} description - The description of group
+   * @param {File} avatar - The avatar of group
+   *
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async updateGroup(groupId, name, description, avatar) {
@@ -747,7 +759,10 @@ export class GroupService {
   }
 
   /**
-   * Delete the group from the server
+   * Deletes the group from the server
+   *
+   * @param {number} groupId - The ID of group
+   *
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async deleteGroup(groupId) {
@@ -766,10 +781,12 @@ export class GroupService {
   }
 
   /**
+   * Gets posts of group
    *
-   * @param {number} groupId
-   * @param {number} lastPostId
-   * @returns
+   * @param {number} groupId - The ID of group
+   * @param {number} lastPostId - The ID of last rendered post
+   *
+   * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async getPosts(groupId, lastPostId) {
     const response = await CSRFProtection.addCSRFToken(
@@ -789,7 +806,7 @@ export class GroupService {
    * Searches groups by current query
    *
    * @param {string} query - The current searching query
-   * @returns
+   * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async searchGroup(query) {
     const response = await CSRFProtection.addCSRFToken(
@@ -806,8 +823,10 @@ export class GroupService {
   }
 
   /**
-   * Subscribes to current user by him ID
-   * @param {number} groupId - The ID of user
+   * Subscribes to current group by her ID
+   *
+   * @param {number} groupId - The ID of group
+   *
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async postSubscription(groupId) {
@@ -825,8 +844,10 @@ export class GroupService {
   }
 
   /**
-   * Unsubscribes current user by him ID
-   * @param {number} groupId - The ID of user
+   * Unsubscribes current group by her ID
+   *
+   * @param {number} groupId - The ID of group
+   *
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async deleteSubscription(groupId) {
@@ -863,8 +884,11 @@ export class GroupService {
 
   /**
    * Publishes the posts to the server
+   *
+   * @param {number} groupId - The ID of group
    * @param {string} content - The text content of post
    * @param {File[]} attachments - The images of post
+   *
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
   async publishPost(groupId, content, attachments) {

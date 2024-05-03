@@ -73,8 +73,9 @@ class GroupModel extends BaseModel {
   }
 
   /**
-   * Gets the data of user current profile
-   * @param {number} groupId - The ID of user current profile
+   * Gets the data of user current group
+   * @param {number} groupId - The ID of group
+   * @param {boolean} isSettings - Is group data need for settings
    * @return {void}
    */
   async getGroupData({ groupId, isSettings }) {
@@ -96,6 +97,11 @@ class GroupModel extends BaseModel {
     }
   }
 
+  /**
+   * Gets groups which user subscribes to
+   *
+   * @param {number} userId - The ID of user
+   */
   async getGroups(userId) {
     const result = await this.groupService.getUserSubGroups(userId);
 
@@ -112,8 +118,8 @@ class GroupModel extends BaseModel {
   }
 
   /**
-   * Subscribes on user current profile
-   * @param {number} groupId - The ID of user current profile
+   * Subscribes user on current group
+   * @param {number} groupId - The ID of group
    * @return {void}
    */
   async subscribeToGroup(groupId) {
@@ -132,8 +138,8 @@ class GroupModel extends BaseModel {
   }
 
   /**
-   * Unsubscribes from user current profile
-   * @param {number} groupId - The ID of user current profile
+   * Unsubscribes user from current group
+   * @param {number} groupId - The ID of current group
    * @return {void}
    */
   async unsubscribeFromGroup(groupId) {
@@ -151,6 +157,12 @@ class GroupModel extends BaseModel {
     }
   }
 
+  /**
+   * Checks if user is admin of group
+   *
+   * @param {number} groupId - The ID of current group
+   * @param {boolean} isSettings - Is this data need for settings
+   */
   async checksIfAdmin({ groupId, isSettings }) {
     const result = await this.groupService.isAdmin(groupId);
 
@@ -175,6 +187,13 @@ class GroupModel extends BaseModel {
     }
   }
 
+  /**
+   * Creates a group
+   *
+   * @param {string} groupName - The name of group
+   * @param {string} description - The description of group
+   * @param {File} avatar - The avatar of group
+   */
   async createGroup({ groupName, description, avatar }) {
     const result = await this.groupService.createGroup(
       groupName,
@@ -197,6 +216,14 @@ class GroupModel extends BaseModel {
     }
   }
 
+  /**
+   * Updates a current group
+   *
+   * @param {number} groupId - The ID of group
+   * @param {string} groupName - The name of group
+   * @param {string} description - The description of group
+   * @param {File} avatar - The avatar of group
+   */
   async updateGroup({ groupId, groupName, description, avatar }) {
     const result = await this.groupService.updateGroup(
       groupId,
@@ -220,6 +247,11 @@ class GroupModel extends BaseModel {
     }
   }
 
+  /**
+   * Deletes current group
+   *
+   * @param {number} groupId - The ID of group
+   */
   async deleteGroup(groupId) {
     const result = await this.groupService.deleteGroup(groupId);
 
@@ -239,9 +271,10 @@ class GroupModel extends BaseModel {
   }
 
   /**
-   * Unsubscribes from user current profile
-   * @param {PostInfo} postInfo - The info about required posts
-   * @return {void}
+   * Gets posts of group
+   *
+   * @param {number} groupId - The ID of group
+   * @param {number} lastPostId - The ID of last rendered post
    */
   async getPosts({ groupId, lastPostId }) {
     const result = await this.groupService.getPosts(groupId, lastPostId);
@@ -259,10 +292,10 @@ class GroupModel extends BaseModel {
   }
 
   /**
-   * Publishes the post to user's profile
+   * Publishes the post to group's profile
+   * @param {number} groupId - The ID of group
    * @param {string} content - The text content of post
    * @param {File[]} attachments - The attachments
-   * @return {void}
    */
   async publishPost({ groupId, content, attachments }) {
     const result = await this.groupService.publishPost(
@@ -284,9 +317,9 @@ class GroupModel extends BaseModel {
   }
 
   /**
-   * Searches friend
+   * Searches group
    *
-   * @param {string} query - The name of friend
+   * @param {string} query - The name of group
    */
   async searchGroup(query) {
     const result = await this.groupService.searchGroup(query);
@@ -304,9 +337,9 @@ class GroupModel extends BaseModel {
   }
 
   /**
-   * Deletes current friend from session's user friends
-   * @param {number} groupId - The ID of future friend
-   * @returns {void}
+   * Deletes current group from session's user subscriptions
+   *
+   * @param {number} groupId - The ID of group
    */
   async deleteSubscribe(groupId) {
     const result = await this.groupService.deleteSubscription(groupId);

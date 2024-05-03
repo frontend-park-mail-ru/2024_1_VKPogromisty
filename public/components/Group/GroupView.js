@@ -14,15 +14,13 @@ const staticUrl = `${API_URL}/static`;
 
 /**
  * A Author structure
- * @typedef {Object} Author
+ * @typedef {Object} Group
  * @property {string} avatar - The avatar of user
  * @property {string} createdAt - The date of creating accout
- * @property {string} dateOfBirth - The date of birth current user
- * @property {string} email - The email of current user
- * @property {string} firstName - The first name of current user
- * @property {string} lastName - The last name of current user
- * @property {number} userId - The ID of current user
+ * @property {string} name - The name of group
+ * @property {number} id - The ID of current group
  * @property {string} updatedAt - The last date of updating
+ * @property {string} subscribersCount - The count of subscribers
  */
 
 /**
@@ -125,6 +123,9 @@ class GroupView extends BaseView {
     );
   }
 
+  /**
+   * Renders main part of page with groups
+   */
   renderGroups() {
     const template = require("./groupsMain.hbs");
     const { userId, avatar, firstName, lastName } = UserState;
@@ -166,6 +167,11 @@ class GroupView extends BaseView {
     this.eventBus.emit("readyRenderGroups", userId);
   }
 
+  /**
+   * Renders groups
+   *
+   * @param {Group[]} groups
+   */
   readyRenderGroups(groups) {
     const template = require("./groups.hbs");
 
@@ -186,13 +192,19 @@ class GroupView extends BaseView {
     }
   }
 
+  /**
+   * Unsubscribes from group
+   *
+   * @param {number} groupId - The ID of group
+   */
   renderUnsubscribedOneOfGroup(groupId) {
     document.getElementById(`groups-field-${groupId}`)?.remove();
   }
 
   /**
-   * Renders header and sidebar of page
-   * @param {number} group_id - The ID of session's user
+   * Renders main part of page of current group
+   *
+   * @param {number} group_id - The ID of group
    */
   renderCurrentGroup(group_id) {
     this.groupId = group_id;
@@ -229,6 +241,12 @@ class GroupView extends BaseView {
     }
   }
 
+  /**
+   * Checks if user is admin
+   *
+   * @param {boolean} result - Is user admin
+   * @param {boolean} isSettings - Is it need for the settings
+   */
   gotIsAdmin({ result, isSettings }) {
     if (isSettings && !result) {
       this.router.redirect(`/group/${this.groupId}`);
@@ -389,7 +407,7 @@ class GroupView extends BaseView {
 
   /**
    * Updates button of profile post if subscribed
-   * @param {PostInfo} postInfo - The info about user's posts
+   * @param {Post[]} posts - The info about user's posts
    * @return {void}
    */
   renderPosts(posts) {
@@ -435,7 +453,7 @@ class GroupView extends BaseView {
 
   /**
    * Pusblishes the new post on page
-   * @param {PostInfo} postInfo - The info about user's posts
+   * @param {Post} post - The info about user's post
    * @return {void}
    */
   postPublishedSuccess({ post }) {
@@ -452,6 +470,11 @@ class GroupView extends BaseView {
     });
   }
 
+  /**
+   * Renders founded of query groups
+   *
+   * @param {Group[]} groups
+   */
   renderFoundGroup(groups) {
     const template = require("./groups.hbs");
     const noGroups = groups == null;
@@ -475,6 +498,9 @@ class GroupView extends BaseView {
     }
   }
 
+  /**
+   * Renders a creates group page
+   */
   renderGroupCreate() {
     const { userId, avatar, firstName, lastName } = UserState;
 
@@ -546,6 +572,11 @@ class GroupView extends BaseView {
     });
   }
 
+  /**
+   * Renders a setting's page of group
+   *
+   * @param {number} groupId - The ID of group
+   */
   renderGroupSettings(groupId) {
     const { userId, avatar, firstName, lastName } = UserState;
 
@@ -565,6 +596,11 @@ class GroupView extends BaseView {
     });
   }
 
+  /**
+   * Filling inputs with group's info
+   *
+   * @param {Group} publicGroup - The info about group
+   */
   renderGroupSettingsMain({ publicGroup }) {
     const template = require("./groupSettings.hbs");
 
@@ -649,10 +685,16 @@ class GroupView extends BaseView {
     });
   }
 
+  /**
+   * Updates group
+   */
   updatedGroup() {
     this.router.redirect(`/group/${this.groupId}`);
   }
 
+  /**
+   * Deletes group
+   */
   deletedGroup() {
     this.router.redirect("/groups");
   }
@@ -705,10 +747,18 @@ class GroupView extends BaseView {
     return flag;
   }
 
+  /**
+   * Created group
+   *
+   * @param {number} id - The ID of group
+   */
   groupCreatedSuccess({ id }) {
     this.router.redirect(`/group/${id}`);
   }
 
+  /**
+   * Shows errors in doubled name of group
+   */
   doubledGroupName() {
     document.getElementById("doubled-group-name")?.remove(correct);
   }
