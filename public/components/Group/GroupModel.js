@@ -70,6 +70,15 @@ class GroupModel extends BaseModel {
       "clickedUpdateGroup",
       this.updateGroup.bind(this),
     );
+    this.eventBus.addEventListener(
+      "needGetAdminsList",
+      this.getAdminsList.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "needDeleteAdmin",
+      this.deleteAdmin.bind(this),
+    );
+    this.eventBus.addEventListener("needAddAdmin", this.addAdmin.bind(this));
   }
 
   /**
@@ -286,6 +295,9 @@ class GroupModel extends BaseModel {
       case 401:
         this.router.redirect("/login");
         break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
+        break;
       default:
         this.eventBus.emit("serverError", {});
     }
@@ -350,6 +362,76 @@ class GroupModel extends BaseModel {
         break;
       case 401:
         this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Gets list of admins
+   */
+  async getAdminsList(groupId) {
+    const result = await this.groupService.getAdminsList(groupId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("getAdminsSuccess", result.body);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 403:
+        this.router.redirect("/feed");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Deletes admin
+   *
+   * @param {number} adminId - The ID of deleted admin
+   */
+  async deleteAdmin({ groupId, adminId }) {
+    const result = await this.groupService.deleteAdmin(groupId, adminId);
+
+    switch (result.status) {
+      case 204:
+        this.eventBus.emit("deletesAdminSuccess", adminId);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 403:
+        this.router.redirect("/feed");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Creates new admin
+   *
+   * @param {number} userId - The ID of admined user
+   */
+  async addAdmin({ groupId, userId }) {
+    const result = await this.groupService.addAdmin(groupId, userId);
+
+    switch (result.status) {
+      case 201:
+        this.eventBus.emit("addsAdminSuccess", result.body);
+        break;
+      case 400:
+        this.eventBus.emit("gaveIncorrectUserId", result.body);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 403:
+        this.router.redirect("/feed");
         break;
       default:
         this.eventBus.emit("serverError", {});

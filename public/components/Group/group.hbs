@@ -53,6 +53,11 @@
   </div>
 </div>
 {{#if isAdmin}}
+<div class="group-admin-info">
+  <a href="/group/{{ this.id }}/admins"
+    ><span class="group-admin-info__name-span">Модераторы группы</span></a
+  >
+</div>
 <div class="create-post" id="create-post">
   <div class="create-post-header">
     <div id="news-avatar" class="news-avatar">

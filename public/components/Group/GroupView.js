@@ -121,6 +121,18 @@ class GroupView extends BaseView {
       "groupUpdatedSuccess",
       this.updatedGroup.bind(this),
     );
+    this.eventBus.addEventListener(
+      "getAdminsSuccess",
+      this.renderAdmins.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "deletesAdminSuccess",
+      this.adminDeleted.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "addsAdminSuccess",
+      this.adminAdded.bind(this),
+    );
   }
 
   /**
@@ -234,7 +246,7 @@ class GroupView extends BaseView {
       !this.isWaitPosts
     ) {
       this.eventBus.emit("readyRenderPosts", {
-        userId: this.groupId,
+        groupId: this.groupId,
         lastPostId: this.lastPostId,
       });
       this.isWaitPosts = true;
@@ -261,13 +273,10 @@ class GroupView extends BaseView {
   }
 
   /**
-   * Renders header and sidebar of page
-   * @param {UserInfo} userInfo - The info about session's user
-   */
-
-  /**
-   * Renders user's profile
-   * @param {ProfileInfo} profileInfo - The info of profile's user
+   * Renders page of group
+   *
+   * @param {Group} publicGroup - The info about group
+   * @param {boolean} isSubscribed - Is user subscribed to group
    */
   renderGroup({ publicGroup, isSubscribed }) {
     publicGroup.createdAt = formatDayMonthYear(publicGroup.createdAt);
@@ -761,6 +770,118 @@ class GroupView extends BaseView {
    */
   doubledGroupName() {
     document.getElementById("doubled-group-name")?.remove(correct);
+  }
+
+  /**
+   * Renders main part of page with list of admins
+   *
+   * @param {number} groupId - The ID of group
+   */
+  renderGroupAdminsMain(groupId) {
+    const { userId, avatar, firstName, lastName } = UserState;
+
+    new Header(document.body).renderForm({
+      userId,
+      avatar,
+      firstName,
+      lastName,
+    });
+    new Main(document.body).renderForm(userId);
+
+    this.mainElem = document.getElementById("activity");
+    this.groupId = groupId;
+
+    this.eventBus.emit("needGetAdminsList", this.groupId);
+  }
+
+  /**
+   * Renders list with all admins
+   *
+   * @param {AdminUser[]} list
+   */
+  renderAdmins(list) {
+    const template = require("./groupAdminsMain.hbs");
+    const adminTemplate = require("./admin.hbs");
+
+    this.mainElem.innerHTML = template({});
+    this.adminElem = document.getElementById("admin-list");
+
+    list.forEach((elem) => {
+      const admin = document.createElement("div");
+
+      admin.classList.add("admin");
+      admin.setAttribute("id", `admin-${elem.userId}`);
+      elem.createdAt = formatDayMonthYear(elem.createdAt);
+      admin.innerHTML = adminTemplate({ staticUrl, elem });
+
+      this.adminElem.appendChild(admin);
+    });
+
+    document.querySelectorAll(".admin__delete-button").forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.eventBus.emit("needDeleteAdmin", {
+          groupId: this.groupId,
+          adminId: elem.dataset.id,
+        });
+      });
+    });
+
+    const adminInput = document.getElementById("admin-adding__input");
+
+    document
+      .getElementById("admin-adding__button")
+      .addEventListener("click", () => {
+        document
+          .getElementById("incorrect-admin-adding")
+          ?.classList.add(correct);
+        this.eventBus.emit("needAddAdmin", {
+          groupId: this.groupId,
+          userId: adminInput.value,
+        });
+      });
+  }
+
+  /**
+   * Shows that user's ID is incorrect
+   */
+  gaveIncorrectUserId() {
+    document
+      .getElementById("incorrect-admin-adding")
+      ?.classList.remove(correct);
+  }
+
+  /**
+   * Adds admin
+   *
+   * @param {AdminUser} adminUser
+   */
+  adminAdded(adminUser) {
+    const adminTemplate = require("./admin.hbs");
+    const newAdmin = document.createElement("div");
+
+    newAdmin.classList.add("admin");
+    newAdmin.setAttribute("id", `admin-${adminUser.admin.id}`);
+    newAdmin.innerHTML = adminTemplate({ staticUrl, elem: adminUser });
+
+    this.adminElem.insertBefore(newAdmin, this.adminElem.firstElementChild);
+
+    document.querySelectorAll(".admin__delete-button").forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.eventBus.emit("needDeleteAdmin", {
+          groupId: this.groupId,
+          adminId: elem.dataset.id,
+        });
+      });
+    });
+  }
+
+  /**
+   * Deletes current admin
+   *
+   * @param {number} adminId
+   */
+  adminDeleted(adminId) {
+    document.getElementById(`admin-${adminId}`)?.remove();
   }
 
   /**

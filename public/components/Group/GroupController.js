@@ -35,6 +35,13 @@ const incomingEvents = [
   "clickedDeleteGroup",
   "groupDeletedSuccess",
   "receivedForSettings",
+  "needGetAdminsList",
+  "getAdminsSuccess",
+  "needDeleteAdmin",
+  "deletesAdminSuccess",
+  "addsAdminSuccess",
+  "gaveIncorrectUserId",
+  "needAddAdmin",
   "serverError",
 ];
 
@@ -84,6 +91,10 @@ class GroupController {
    */
   renderGroupSettings({ groupId }) {
     this.groupView.renderGroupSettings(groupId);
+  }
+
+  renderGroupAdmins({ groupId }) {
+    this.groupView.renderGroupAdminsMain(groupId);
   }
 }
 
