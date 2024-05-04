@@ -6,7 +6,7 @@
  */
 
 import BaseModel from "/public/MVC/BaseModel.js";
-import { GroupService } from "../../modules/services.js";
+import { GroupService, ProfileService } from "../../modules/services.js";
 
 /**
  * GroupModel - класс для обработки данных, общения с бэком на странице профиля.
@@ -25,6 +25,7 @@ class GroupModel extends BaseModel {
     this.router = router;
     this.webSocket = webSocket;
     this.groupService = new GroupService();
+    this.profileService = new ProfileService();
 
     this.eventBus.addEventListener(
       "readyRenderGroup",
@@ -79,6 +80,10 @@ class GroupModel extends BaseModel {
       this.deleteAdmin.bind(this),
     );
     this.eventBus.addEventListener("needAddAdmin", this.addAdmin.bind(this));
+    this.eventBus.addEventListener(
+      "needInfoAboutAdmin",
+      this.getNewAdmin.bind(this),
+    );
   }
 
   /**
@@ -422,10 +427,33 @@ class GroupModel extends BaseModel {
 
     switch (result.status) {
       case 201:
-        this.eventBus.emit("addsAdminSuccess", result.body);
+        this.eventBus.emit("addsAdminSuccess", userId);
         break;
       case 400:
         this.eventBus.emit("gaveIncorrectUserId", result.body);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 403:
+        this.router.redirect("/feed");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Gets info about new admin
+   *
+   * @param {number} userId - The ID of new admin
+   */
+  async getNewAdmin(userId) {
+    const result = await this.profileService.getOtherProfileData(userId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("gotNewAdminSuccess", result.body);
         break;
       case 401:
         this.router.redirect("/login");

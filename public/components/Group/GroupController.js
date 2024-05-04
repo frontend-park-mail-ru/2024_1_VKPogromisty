@@ -39,6 +39,8 @@ const incomingEvents = [
   "getAdminsSuccess",
   "needDeleteAdmin",
   "deletesAdminSuccess",
+  "needInfoAboutAdmin",
+  "gotNewAdminSuccess",
   "addsAdminSuccess",
   "gaveIncorrectUserId",
   "needAddAdmin",

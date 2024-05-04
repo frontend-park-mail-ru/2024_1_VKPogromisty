@@ -133,6 +133,10 @@ class GroupView extends BaseView {
       "addsAdminSuccess",
       this.adminAdded.bind(this),
     );
+    this.eventBus.addEventListener(
+      "gotNewAdminSuccess",
+      this.renderNewAdmin.bind(this),
+    );
   }
 
   /**
@@ -853,15 +857,24 @@ class GroupView extends BaseView {
   /**
    * Adds admin
    *
+   * @param {number} userId - The ID of new admin
+   */
+  adminAdded(userId) {
+    this.eventBus.emit("needInfoAboutAdmin", userId);
+  }
+
+  /**
+   * Renders new admin
+   *
    * @param {AdminUser} adminUser
    */
-  adminAdded(adminUser) {
+  renderNewAdmin(adminUser) {
     const adminTemplate = require("./admin.hbs");
     const newAdmin = document.createElement("div");
 
     newAdmin.classList.add("admin");
-    newAdmin.setAttribute("id", `admin-${adminUser.admin.id}`);
-    newAdmin.innerHTML = adminTemplate({ staticUrl, elem: adminUser });
+    newAdmin.setAttribute("id", `admin-${adminUser.User.userId}`);
+    newAdmin.innerHTML = adminTemplate({ staticUrl, elem: adminUser.User });
 
     this.adminElem.insertBefore(newAdmin, this.adminElem.firstElementChild);
 
