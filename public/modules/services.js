@@ -569,3 +569,71 @@ export class SubscriptionsService {
     return genResponse(response.status, data.body, data.message);
   }
 }
+
+/**
+ * Service for working with the admins API
+ * @class
+ * @property {string} baseUrl - The base URL for the server subscriptions service
+ * @method getAdminsList - Gets the list of admins from the server
+ * @method addAdmin - Post new admin to the server
+ * @method deleteAdmin - Deletes the current admin from the server
+ */
+export class AdminService {
+  baseUrl = `${API_URL}/admin/`;
+
+  /**
+   * Gets list of admins
+   *
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getAdminsList() {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl + "all", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Deletes current admin
+   *
+   * @param {number} adminId - The ID of current admin
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async deleteAdmin(adminId) {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
+      method: "DELETE",
+      credentials: "include",
+      body: JSON.stringify({ adminId: +adminId }),
+    });
+
+    if (response.status === 204) {
+      return genResponse(response.status, null, null);
+    }
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Creates new admin
+   *
+   * @param {number} userId - The ID of current admin
+   * @returns
+   */
+  async addAdmin(userId) {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify({ userId: +userId }),
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+}

@@ -10,7 +10,6 @@ const incomingEvents = [
   "clickedSendMessage",
   "clickedDeleteMessage",
   "clickedUpdateMessage",
-  "clickLogoutButton",
   "sendMessageSuccess",
   "updateMessageSuccess",
   "deleteMessageSuccess",

@@ -8,20 +8,18 @@
         {{#each fullSidebar}}
         <li class="sidebar-list__li">
           <a class="sidebar-list__a" href="{{ this.href }}">{{ this.text }}</a>
-          <img
-            src="dist/images/{{ this.icon }}.png"
-            class="sidebar__{{ this.icon }}-img"
-          />
+          <a class="sidebar-list__a-img" href="{{ this.href }}">
+            <img
+              src="dist/images/{{ this.icon }}.png"
+              class="sidebar__{{ this.icon }}-img"
+            />
+          </a>
         </li>
         {{/each}}
-      </ul>
-      <ul id="help-sidebar" class="sidebar-list">
-        <li class="sidebar-list__li">
-          <a class="sidebar-list__a" href="#">Помощь</a>
-        </li>
       </ul>
     </div>
 
     <div id="activity" class="activity"></div>
+    <div class="scroller" id="scroller"></div>
   </div>
 </div>

@@ -7,7 +7,6 @@
 
 import BaseModel from "/public/MVC/BaseModel.js";
 import {
-  AuthService,
   PostService,
   ProfileService,
   SubscriptionsService,
@@ -33,7 +32,6 @@ class ProfileModel extends BaseModel {
     this.postService = new PostService();
     this.subscriptionsService = new SubscriptionsService();
 
-    this.eventBus.addEventListener("clickLogoutButton", this.logout.bind(this));
     this.eventBus.addEventListener(
       "readyRenderProfile",
       this.getProfileData.bind(this),
@@ -150,25 +148,6 @@ class ProfileModel extends BaseModel {
       case 201:
         this.eventBus.emit("publishedPostSuccess", result.body);
         break;
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
-  }
-
-  /**
-   * Logouts from account
-   * @return {void}
-   */
-  async logout() {
-    const authService = new AuthService();
-
-    const result = await authService.logout();
-
-    switch (result.status) {
-      case 200:
       case 401:
         this.router.redirect("/login");
         break;

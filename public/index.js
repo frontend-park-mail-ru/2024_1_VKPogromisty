@@ -13,6 +13,7 @@ import WSocket from "./components/WebSocket.js";
 import FeedController from "./components/Feed/FeedController.js";
 import SettingsController from "./components/Settings/SettingsController.js";
 import CSRFProtection from "./components/CSRFProtection.js";
+import AdminController from "./components/Admin/AdminController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   if ("serviceWorker" in navigator) {
@@ -29,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const chatController = new ChatController(router, webSocket);
   const feedController = new FeedController(router, webSocket);
   const settingsController = new SettingsController(router, webSocket);
+  const adminController = new AdminController(router, webSocket);
 
   const config = {
     paths: [
@@ -77,6 +79,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         path: /\/chat\/(?<companionId>[0-9]+)/,
         func: chatController.renderChatView.bind(chatController),
         title: "Диалог",
+      },
+      {
+        path: /\/admins/,
+        func: adminController.renderAdminPage.bind(adminController),
+        title: "Админы",
       },
       {
         path: /\//,

@@ -4,7 +4,7 @@
   border: 1px solid black;
   border-radius: 7px;
   background-color: #f4e3e3;
-  width: 650px;
+  width: 100%;
 }
 
 .email-setting {
@@ -12,7 +12,6 @@
   width: 100%;
   padding-right: 30%;
   padding-left: 20px;
-  height: 100px;
   box-sizing: border-box;
   justify-content: end;
   padding-bottom: 5px;
@@ -24,7 +23,6 @@
   width: 100%;
   padding-right: 30%;
   padding-left: 20px;
-  height: 80px;
   box-sizing: border-box;
   justify-content: end;
   padding-bottom: 5px;
@@ -36,7 +34,6 @@
   &__span {
     font-weight: 600;
     width: 100px;
-    margin-right: 30px;
   }
 
   &__input {
@@ -49,17 +46,50 @@
   }
 }
 
+.email-setting,
+.setting {
+  padding: 10px 20px 5px 30px;
+
+  &__span {
+    margin-right: 30px;
+  }
+
+  @include mobile-style {
+    padding: 5px 20px 5px 30px;
+
+    &__span {
+      margin-bottom: 5px;
+      margin-right: 0px;
+    }
+  }
+}
+
 .setting-info {
   @include row-flexible;
   justify-content: space-between;
   align-items: center;
+
+  @include mobile-style {
+    @include column-flexible;
+  }
+}
+
+.avatar-setting {
+  @include row-flexible;
+  align-items: center;
+  border-bottom: 1px solid #e0908d;
+  padding: 10px 20px;
+
+  @include mobile-style {
+    @include column-flexible;
+  }
 }
 
 .accept-setting {
-  @include row-flexible;
-  height: 70px;
   align-items: center;
   justify-content: center;
+  @include row-flexible;
+  margin: 15px;
 
   &__button {
     background-color: black;
@@ -68,6 +98,15 @@
     width: 170px;
     height: 35px;
     margin-right: 20px;
+  }
+
+  @include mobile-style {
+    @include column-flexible;
+    padding: 10px 0px;
+
+    &__button {
+      margin: 10px auto;
+    }
   }
 }
 
@@ -78,7 +117,6 @@
   width: 200px;
   height: 35px;
   font-weight: bold;
-  margin-right: 20px;
 }
 
 .delete-setting__button {
@@ -89,16 +127,8 @@
   height: 35px;
   font-weight: bold;
   margin-top: 40px;
-  margin-bottom: 40px;
+  margin-bottom: 80px;
   float: right;
-}
-
-.avatar-setting {
-  @include row-flexible;
-  align-items: center;
-  height: 120px;
-  border-bottom: 1px solid #e0908d;
-  padding: 0px 20px;
 }
 
 .input-avatar__span {
@@ -133,8 +163,8 @@
 }
 
 @mixin avatar-prewatch {
-  width: 100px;
-  height: 100px;
+  max-height: 100px;
+  max-width: 100px;
   border-radius: 50%;
   object-fit: cover;
 }

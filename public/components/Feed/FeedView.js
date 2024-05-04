@@ -124,10 +124,6 @@ class FeedView extends BaseView {
     this.isAllPosts;
     this.isWaitPosts = true;
 
-    document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickLogoutButton", {});
-    });
-
     const newsTextarea = document.getElementById("news-content__textarea");
 
     newsTextarea.addEventListener("input", () => {

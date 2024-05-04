@@ -67,6 +67,14 @@ class MessengerView extends BaseView {
       this.updatedMessage.bind(this),
     );
     this.eventBus.addEventListener(
+      "deleteLastMessage",
+      this.deletedMessage.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "getLastMessageSuccess",
+      this.updateDeletedMessage.bind(this),
+    );
+    this.eventBus.addEventListener(
       "receiveProfileData",
       this.addDialog.bind(this),
     );
@@ -94,10 +102,6 @@ class MessengerView extends BaseView {
     });
     new Main(document.body).renderForm(userId);
 
-    document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickedLogoutButton", {});
-    });
-
     this.today = new Date();
 
     this.mainElement = document.getElementById("activity");
@@ -117,6 +121,10 @@ class MessengerView extends BaseView {
       const oldDialog = document.getElementById(`dialog-${message.receiverId}`);
 
       if (oldDialog) {
+        const messageChatter = document.querySelector(
+          `#dialog-${message.senderId} .chatter-content`,
+        );
+        messageChatter.setAttribute("id", `chatter-content-${message.id}`);
         const updatedChatter = oldDialog.firstElementChild;
         const updatedDialog = document.createElement("div");
         updatedDialog.classList.add("dialog");
@@ -128,14 +136,11 @@ class MessengerView extends BaseView {
         );
 
         oldDialog.remove();
-        updatedDialog.setAttribute("id", `dialog-${message.id}`);
+        updatedDialog.setAttribute("id", `dialog-${message.receiverId}`);
 
-        document.getElementById(
-          `chatter-info__message-span-${message.receiverId}`,
-        ).innerHTML = message.content;
-        document.getElementById(
-          `chatter-content__time-span-${message.receiverId}`,
-        ).innerHTML = formatMinutesHours(message.createdAt);
+        messageChatter.firstElementChild.innerHTML = message.content;
+        messageChatter.firstElementChild.nextElementSibling.innerHTML =
+          formatMinutesHours(message.createdAt);
       } else {
         this.promissedMessages.set(message.receiverId, {
           content: message.content,
@@ -148,17 +153,17 @@ class MessengerView extends BaseView {
       const oldDialog = document.getElementById(`dialog-${message.senderId}`);
 
       if (oldDialog) {
-        const messageContent = document.querySelector(
-          `#dialog-${message.senderId} .chatter-content__message-span`,
+        const messageChatter = document.querySelector(
+          `#dialog-${message.senderId} .chatter-content`,
         );
+        messageChatter.setAttribute("id", `chatter-content-${message.id}`);
+        const messageContent = messageChatter.firstElementChild;
         messageContent.innerHTML = message.content;
         messageContent.setAttribute(
           "id",
           `chatter-content__message-span-${message.senderId}-${message.id}`,
         );
-        const messageTime = document.querySelector(
-          `#dialog-${message.senderId} .chatter-content__time-span`,
-        );
+        const messageTime = messageContent.nextElementSibling;
         messageTime.innerHTML = formatMinutesHours(message.createdAt);
         messageTime.setAttribute(
           "id",
@@ -176,7 +181,7 @@ class MessengerView extends BaseView {
         );
 
         oldDialog.remove();
-        updatedDialog.setAttribute("id", `dialog-${message.id}`);
+        updatedDialog.setAttribute("id", `dialog-${message.senderId}`);
       } else {
         this.promissedMessages.set(message.senderId, {
           content: message.content,
@@ -186,6 +191,12 @@ class MessengerView extends BaseView {
         this.eventBus.emit("needGetProfile", message.senderId);
       }
     }
+    const chats = document.querySelectorAll(".dialog");
+    chats.forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.router.redirect(`/chat/${elem.dataset.id}`);
+      });
+    });
   }
 
   updatedMessage(message) {
@@ -201,6 +212,68 @@ class MessengerView extends BaseView {
         `chatter-content__message-span-${message.senderId}-${message.id}`,
       ).innerHTML = message.content;
     }
+  }
+
+  deletedMessage(message) {
+    if (window.location.pathname !== "/messenger") {
+      return;
+    }
+    const deletedPlace = document.getElementById(
+      `chatter-content-${message.messageId}`,
+    );
+
+    if (deletedPlace) {
+      const companionId = deletedPlace.dataset.user;
+      this.eventBus.emit("needLastMessageDialog", {
+        companionId: companionId,
+        lastMessageId: message.messageId,
+        messagesAmount: 1,
+      });
+    }
+  }
+
+  updateDeletedMessage({ messages, companionId }) {
+    const message = messages[0];
+
+    if (message) {
+      let deletedPlace = document.querySelector(
+        `#dialog-${message.senderId} .chatter-content`,
+      );
+      let currentDialog = message.senderId;
+      if (!deletedPlace) {
+        deletedPlace = document.querySelector(
+          `#dialog-${message.receiverId} .chatter-content`,
+        );
+        currentDialog = message.receiverId;
+      }
+
+      if (deletedPlace) {
+        deletedPlace.setAttribute("id", `chatter-content-${message.id}`);
+        deletedPlace.firstElementChild.innerHTML = message.content;
+        deletedPlace.firstElementChild.setAttribute(
+          "id",
+          `chatter-content__message-span-${message.receiverId}-${message.id}`,
+        );
+        deletedPlace.firstElementChild.nextElementSibling.innerHTML =
+          formatMinutesHours(message.createdAt);
+        const deletedDialog = document.getElementById(
+          `dialog-${currentDialog}`,
+        );
+
+        deletedDialog.classList.add("dialog_deleted");
+        setTimeout(() => {
+          deletedDialog.classList.remove("dialog-deleted");
+        }, 450);
+      }
+    } else {
+      document.getElementById(`dialog-${companionId}`)?.remove();
+    }
+    const chats = document.querySelectorAll(".dialog");
+    chats.forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.router.redirect(`/chat/${elem.dataset.id}`);
+      });
+    });
   }
 
   addDialog(profile) {
@@ -231,8 +304,8 @@ class MessengerView extends BaseView {
       document
         .getElementById("no-dialogs__span")
         .classList.replace(
-          "no-dialogs__span__invisible",
-          "no-dialogs__span__visible",
+          "no-dialogs__span_invisible",
+          "no-dialogs__span_visible",
         );
       return;
     }
@@ -258,7 +331,8 @@ class MessengerView extends BaseView {
         );
       }
 
-      this.dialogsElement.innerHTML += template({ staticUrl, elem });
+      const isMe = elem.user1.userId === elem.user2.userId;
+      this.dialogsElement.innerHTML += template({ staticUrl, elem, isMe });
 
       noDialogs?.remove();
     });

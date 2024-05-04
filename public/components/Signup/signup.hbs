@@ -9,8 +9,8 @@
         />
       </div>
       <div class="login-signup-text">
-        <div class="login-signup-text__first-part">Зарегистрируйтесь в</div>
-        <div class="login-signup-text__second-part">Socio</div>
+        <div class="signup-text__first-part">Зарегистрируйтесь в</div>
+        <div class="signup-text__second-part">Socio</div>
       </div>
 
       <div class="register-form">
@@ -27,7 +27,7 @@
             Почта уже используется
           </div>
           {{#each main_inputs}}
-          <div class="input-group">
+          <div class="signup-input-group">
             <span class="inscription-form">
               {{ this.inscription }}
             </span>
@@ -40,7 +40,7 @@
               required
             />
             {{#if this.isPassword}}
-            <div class="signup-show-password" id="signup-show-{{ this.id }}">
+            <div class="show-password" id="signup-show-{{ this.id }}">
               <img
                 src="dist/images/close_eye.png"
                 class="show-password__button"
@@ -79,23 +79,25 @@
           <div class="inscription-form">
             Аватарка пользователя (необязательно)
           </div>
-          <div class="file-input">
-            <label class="input-avatar">
-              <input
-                type="file"
-                name="avatar"
-                id="avatar"
-                class="input-avatar__file-input"
-                accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
-              />
-              <span class="input-avatar__span">Загрузить изображение</span>
-            </label>
+          <div class="avatar-prewatch">
+            <div class="file-input">
+              <label class="input-avatar">
+                <input
+                  type="file"
+                  name="avatar"
+                  id="avatar"
+                  class="input-avatar__file-input"
+                  accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
+                />
+                <span class="input-avatar__span">Загрузить изображение</span>
+              </label>
+            </div>
+            <img
+              class="signup-avatar-prewatch"
+              id="prewatch"
+              src="dist/images/user.png"
+            />
           </div>
-          <img
-            class="signup-avatar-prewatch"
-            id="prewatch"
-            src="dist/images/user.png"
-          />
           <div
             class="form__input_error form__input_correct"
             id="incorrect-avatar"

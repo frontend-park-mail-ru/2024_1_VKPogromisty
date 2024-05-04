@@ -6,12 +6,13 @@
   align-items: center;
   min-height: 100vh;
   min-width: fit-content;
+  padding: 0 30px;
 }
 .form {
   @include column-flexible;
   justify-content: center;
 }
-.login-signup-text {
+.login-text {
   color: #000000;
 
   &__first-part {
@@ -22,35 +23,36 @@
   &__second-part {
     font-size: 44px;
     font-weight: 900;
-    margin-bottom: 100px;
   }
 }
 
 .login-form {
   @include column-flexible;
+  margin-top: 13vh;
 }
+
 .inscription-form {
   font-size: 14px;
   color: #000;
   font-weight: 600;
   text-align: left;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .input-group {
   @include column-flexible;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   justify-content: center;
   color: $text-input-color;
   font-size: 16px;
+  position: relative;
 
   &__input {
     padding: 10px 0px 10px 10px;
     border: 1px solid rgb(0, 0, 0, 0.3);
     font-size: 18px;
-    background-color: $input-color;
     border-radius: 12px;
-    height: 22px;
+    height: 24px;
   }
 }
 
@@ -58,10 +60,9 @@
   text-align: center;
 
   &__img {
-    width: 184px;
-    height: 154px;
+    max-height: 154px;
     display: inline-block;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
   }
 }
 
@@ -69,15 +70,13 @@
   padding: 10px 20px;
   width: 100%;
   display: block;
-  margin: 0 auto;
+  margin: 0px auto 20px;
   background-color: $button-sign-in-bg-color;
   color: $button-sign-in-color;
   border: 1px solid $button-sign-in-border-color;
   border-radius: 12px;
   font-size: 20px;
   cursor: pointer;
-  margin-top: 20px;
-  margin-bottom: 10px;
 }
 
 .link-sign-up {

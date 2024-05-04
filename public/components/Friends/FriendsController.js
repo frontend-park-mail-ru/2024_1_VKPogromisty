@@ -10,7 +10,6 @@ const incomingEvents = [
   "friendsGetSuccess",
   "subscribersGetSuccess",
   "subscriptionsGetSuccess",
-  "clickedLogoutButton",
   "clickedSubscribeButton",
   "addFriendSuccess",
   "unsubscribeSuccess",

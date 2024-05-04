@@ -4,7 +4,6 @@ import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "readyRenderPosts",
-  "clickLogoutButton",
   "getPostsSuccess",
   "clickedPublishPost",
   "publishedPostSuccess",
@@ -35,8 +34,6 @@ class FeedController {
   renderFeed() {
     this.feedView.renderFeedMain();
   }
-
-  deleteScrollListener() {}
 }
 
 export default FeedController;

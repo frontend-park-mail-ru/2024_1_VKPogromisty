@@ -49,10 +49,6 @@ class FriendsModel extends BaseModel {
       "clickedUnsubscribeButton",
       this.deleteSubscribe.bind(this),
     );
-    this.eventBus.addEventListener(
-      "clickedLogoutButton",
-      this.logout.bind(this),
-    );
   }
 
   /**
@@ -147,23 +143,6 @@ class FriendsModel extends BaseModel {
       case 204:
         this.eventBus.emit("unsubscribeSuccess", userId);
         break;
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
-  }
-
-  /**
-   * Logouts from account
-   * @return {void}
-   */
-  async logout() {
-    const result = await this.authService.logout();
-
-    switch (result.status) {
-      case 200:
       case 401:
         this.router.redirect("/login");
         break;
