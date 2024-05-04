@@ -275,10 +275,19 @@
 .reactions {
   @include row-flexible;
   box-sizing: border-box;
-  align-self: center;
+  align-items: center;
   width: 100px;
   justify-content: space-between;
   padding-left: 15px;
+
+  @each $type in unliked, liked {
+    &__heart-img_#{$type} {
+      box-sizing: border-box;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+    }
+  }
 }
 
 .reactions-like {
@@ -355,15 +364,11 @@
   }
 }
 
-.reactions__heart-img,
 .show-comments__messenger-img {
   box-sizing: border-box;
   width: 25px;
   height: 25px;
   cursor: pointer;
-}
-
-.show-comments__messenger-img {
   filter: invert(20%);
 }
 

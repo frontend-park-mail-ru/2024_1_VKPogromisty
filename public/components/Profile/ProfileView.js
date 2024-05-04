@@ -248,26 +248,27 @@ class ProfileView extends BaseView {
     this.sendMessageUser = document.getElementById(
       `send-message-${this.userId}`,
     );
+    this.favoritesChat = document.getElementById("favorites-chat");
 
-    if (this.subscribeUser !== null) {
-      this.subscribeUser.addEventListener("click", () => {
-        if (
-          this.subscribeUser.classList.contains(
-            "subscribed-to-options__button-subscribe",
-          )
-        ) {
-          this.eventBus.emit("clickedSubscribe", this.userId);
-        } else {
-          this.eventBus.emit("clickedUnsubscribe", this.userId);
-        }
-      });
-    }
+    this.subscribeUser?.addEventListener("click", () => {
+      if (
+        this.subscribeUser.classList.contains(
+          "subscribed-to-options__button-subscribe",
+        )
+      ) {
+        this.eventBus.emit("clickedSubscribe", this.userId);
+      } else {
+        this.eventBus.emit("clickedUnsubscribe", this.userId);
+      }
+    });
 
-    if (this.sendMessageUser !== null) {
-      this.sendMessageUser.addEventListener("click", () => {
-        this.router.redirect(`/chat/${this.userId}`);
-      });
-    }
+    this.sendMessageUser?.addEventListener("click", () => {
+      this.router.redirect(`/chat/${this.userId}`);
+    });
+
+    this.favoritesChat?.addEventListener("click", () => {
+      this.router.redirect(`/chat/${this.userId}`);
+    });
 
     this.eventBus.emit("readyRenderPosts", {
       userId: this.userId,
@@ -331,7 +332,7 @@ class ProfileView extends BaseView {
 
     document.getElementById("posts-sceleton")?.remove();
 
-    if (posts) {
+    if (posts.length > 0) {
       posts.forEach((elem) => {
         if (elem.postId < this.lastPostId || this.lastPostId === 0) {
           this.lastPostId = elem.postId;

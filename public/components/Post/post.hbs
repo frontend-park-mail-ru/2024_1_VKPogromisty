@@ -61,8 +61,21 @@
   <div class="post-reaction">
     <div class="reactions">
       <button class="reactions-like">
-        <img class="reactions__heart-img" src="dist/images/heart.png" />
+        {{#unless this.post.isLikedByMe}}
+        <img
+          class="reactions__heart-img_unliked"
+          data-id="{{ this.post.postId }}"
+          src="dist/images/heart.png"
+        />
+        {{else}}
+        <img
+          class="reactions__heart-img_liked"
+          data-id="{{ this.post.postId }}"
+          src="dist/images/filled-heart.png"
+        />
+        {{/unless}}
       </button>
+      <span class="likes-count__span">{{ this.post.likesCount }}</span>
       <button class="show-comments">
         <img
           class="show-comments__messenger-img"
