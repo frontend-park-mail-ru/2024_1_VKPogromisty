@@ -14,6 +14,8 @@ const incomingEvents = [
   "addFriendSuccess",
   "unsubscribeSuccess",
   "clickedUnsubscribeButton",
+  "clickedSearchFriend",
+  "searchedFriendSuccess",
   "serverError",
 ];
 

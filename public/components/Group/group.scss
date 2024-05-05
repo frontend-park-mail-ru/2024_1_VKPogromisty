@@ -77,6 +77,10 @@
   &__name-span {
     font-weight: bolder;
   }
+
+  &__name-href {
+    @include none-decoration;
+  }
 }
 
 .group-content__date-of-birth-span {
@@ -251,10 +255,22 @@
 }
 
 .group-admin-info {
-  @include column-flexible;
-  width: 100%;
-  border-radius: 7px;
-  border: 1px solid black;
+  @include row-flexible;
+  align-items: center;
+  justify-content: start;
+  margin-bottom: 20px;
+
+  &__name-href {
+    @include none-decoration;
+  }
+
+  &__name-span {
+    font-size: 18px;
+    padding: 5px;
+    border-radius: 7px;
+    background-color: #ffdcdc;
+    box-shadow: 0px 0px 0px 0.1px red;
+  }
 }
 
 .group-admins {

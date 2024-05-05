@@ -93,7 +93,7 @@ class FeedView extends BaseView {
    */
   checksNewPosts() {
     if (
-      document.body.scrollHeight - window.scrollY <= 1500 &&
+      document.body.scrollHeight - window.scrollY <= 3 * window.innerHeight &&
       !this.isAllPosts &&
       !this.isWaitPosts
     ) {
@@ -108,7 +108,7 @@ class FeedView extends BaseView {
   renderFeedMain() {
     const { userId, avatar, firstName, lastName } = UserState;
     const template = require("./feedMain.hbs");
-    const userAvatar = `${staticUrl}/${avatar}`;
+    const userAvatar = `${staticUrl}/user-avatars/${avatar}`;
 
     new Header(document.body).renderForm({
       userId,

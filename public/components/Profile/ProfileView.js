@@ -132,7 +132,7 @@ class ProfileView extends BaseView {
    */
   checksNewPosts() {
     if (
-      document.body.scrollHeight - window.scrollY <= 1500 &&
+      document.body.scrollHeight - window.scrollY <= 3 * window.innerHeight &&
       !this.isAllPosts &&
       !this.isWaitPosts
     ) {

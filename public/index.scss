@@ -45,6 +45,11 @@ $hovered-left-sidebar: #443b3b;
   flex-direction: column-reverse;
 }
 
+@mixin none-decoration {
+  text-decoration: none;
+  color: inherit;
+}
+
 * {
   border: none;
 }
@@ -55,6 +60,11 @@ body {
   position: relative;
   @include column-flexible;
   min-height: 100vh;
+  max-height: 100vh;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 .incorrect-data {
@@ -70,7 +80,7 @@ body {
 }
 
 .server-error-500 {
-  visibility: hidden;
+  display: none;
   text-align: center;
 }
 

@@ -22,9 +22,37 @@ const sidebar = [
     icon: "people",
   },
   {
-    href: "/settings",
+    href: "/profile/settings",
     text: "Настройки",
     icon: "settings",
+  },
+  {
+    href: "/stickers",
+    text: "Стикеры",
+    icon: "star",
+  },
+];
+
+const toolbar = [
+  {
+    href: "/feed",
+    text: "Новости",
+    icon: "megaphone",
+  },
+  {
+    href: "/messenger",
+    text: "Мессенджер",
+    icon: "mail",
+  },
+  {
+    href: "/community/friends",
+    text: "Друзья",
+    icon: "high-five",
+  },
+  {
+    href: "/groups",
+    text: "Сообщества",
+    icon: "people",
   },
   {
     href: "/stickers",
@@ -69,7 +97,7 @@ export class Main {
         icon: "user-avatar",
       });
 
-      this.#parent.innerHTML += template({ fullSidebar });
+      this.#parent.innerHTML += template({ fullSidebar, toolbar });
     }
 
     document

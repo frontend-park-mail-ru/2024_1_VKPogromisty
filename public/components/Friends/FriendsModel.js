@@ -49,6 +49,10 @@ class FriendsModel extends BaseModel {
       "clickedUnsubscribeButton",
       this.deleteSubscribe.bind(this),
     );
+    this.eventBus.addEventListener(
+      "clickedSearchFriend",
+      this.searchFriend.bind(this),
+    );
   }
 
   /**
@@ -142,6 +146,26 @@ class FriendsModel extends BaseModel {
     switch (result.status) {
       case 204:
         this.eventBus.emit("unsubscribeSuccess", userId);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Searches friend
+   *
+   * @param {string} query - The name of friend
+   */
+  async searchFriend(query) {
+    const result = await this.profileService.searchProfile(query);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("searchedFriendSuccess", result.body);
         break;
       case 401:
         this.router.redirect("/login");

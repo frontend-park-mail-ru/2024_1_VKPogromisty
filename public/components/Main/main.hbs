@@ -7,13 +7,13 @@
       <ul class="sidebar-list">
         {{#each fullSidebar}}
         <li class="sidebar-list__li">
-          <a class="sidebar-list__a" href="{{ this.href }}">{{ this.text }}</a>
           <a class="sidebar-list__a-img" href="{{ this.href }}">
             <img
               src="dist/images/{{ this.icon }}.png"
               class="sidebar__{{ this.icon }}-img"
             />
           </a>
+          <a class="sidebar-list__a" href="{{ this.href }}">{{ this.text }}</a>
         </li>
         {{/each}}
       </ul>
@@ -21,5 +21,20 @@
 
     <div id="activity" class="activity"></div>
     <div class="scroller" id="scroller"></div>
+  </div>
+  <div class="toolbar" id="toolbar">
+    <ul class="toolbar-list">
+      {{#each toolbar}}
+      <li class="toolbar-list__li">
+        <a class="toolbar-list__a-img" href="{{ this.href }}">
+          <img
+            src="dist/images/{{ this.icon }}.png"
+            class="toolbar__{{ this.icon }}-img"
+          />
+        </a>
+        <a class="toolbar-list__a" href="{{ this.href }}">{{ this.text }}</a>
+      </li>
+      {{/each}}
+    </ul>
   </div>
 </div>

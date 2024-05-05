@@ -130,6 +130,9 @@ class ProfileModel extends BaseModel {
       case 401:
         this.router.redirect("/login");
         break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
+        break;
       default:
         this.eventBus.emit("serverError", {});
     }

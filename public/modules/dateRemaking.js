@@ -20,8 +20,16 @@ const monthes = [
  */
 export function formatDayMonthYear(dateOfBirth) {
   const date = new Date(dateOfBirth);
+  const today = new Date();
 
-  return `${date.getDate()} ${monthes[date.getMonth()]} ${date.getFullYear()}`;
+  switch (today.getDate() - date.getDate()) {
+    case 0:
+      return "Сегодня";
+    case 1:
+      return "Вчера";
+    default:
+      return `${date.getDate()} ${monthes[date.getMonth()]} ${date.getFullYear()}`;
+  }
 }
 
 /**
@@ -34,7 +42,7 @@ export function formatFullDate(createdAt) {
   const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");
 
-  return `${date.getDate()} ${monthes[date.getMonth()]} ${date.getFullYear()} в ${hours}:${minutes}`;
+  return `${formatDayMonthYear(date)} в ${hours}:${minutes}`;
 }
 
 /**

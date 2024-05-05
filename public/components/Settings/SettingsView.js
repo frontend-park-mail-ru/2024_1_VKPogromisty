@@ -136,6 +136,9 @@ class SettingsView extends BaseView {
       firstNameForm.value = firstName;
       lastNameForm.value = lastName;
       emailForm.value = email;
+      document
+        .getElementById("prewatch")
+        .setAttribute("src", `${staticUrl}/user-avatars/${avatar}`);
       incorrectEmail.classList.add(correct);
       incorrectRepeatPassword.classList.add(correct);
       incorrectPassword.classList.add(correct);
@@ -157,7 +160,7 @@ class SettingsView extends BaseView {
 
       if (!validExtensions.includes(typeFile)) {
         incorrectAvatarForm.classList.remove(correct);
-        avatar.files = null;
+        avatarForm.files = null;
       } else {
         document.getElementById("prewatch").setAttribute("src", img);
       }

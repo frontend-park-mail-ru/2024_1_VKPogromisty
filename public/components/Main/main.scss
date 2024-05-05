@@ -5,6 +5,10 @@
   justify-content: center;
   box-sizing: border-box;
   padding: 0px 10px;
+
+  @include mobile-style {
+    margin-bottom: 40px;
+  }
 }
 
 @mixin sidebar-small__img {
@@ -38,23 +42,7 @@
   }
 
   @include mobile-style {
-    position: fixed;
-    bottom: 0px;
-    @include row-flexible;
-    justify-content: space-between;
-    font-size: 24px;
-    box-sizing: border-box;
-    width: 100vw;
-    background-color: #ffcaca;
-    z-index: 10;
-
-    @each $size in megaphone, mail, people, high-five, settings, star,
-      user-avatar
-    {
-      &__#{$size}-img {
-        @include sidebar-big__img;
-      }
-    }
+    display: none;
   }
 }
 
@@ -89,34 +77,63 @@
       font-size: 18px;
       color: $hovered-left-sidebar;
     }
+
+    &-img {
+      text-decoration: none;
+      margin-right: 5px;
+    }
   }
+}
+
+.toolbar {
+  display: none;
 
   @include mobile-style {
-    box-sizing: border-box;
-    line-height: 40px;
-    list-style: none;
+    position: fixed;
+    bottom: 0px;
     @include row-flexible;
-    justify-content: space-between;
-    width: 100%;
-    padding: 10px 20px;
+    justify-content: space-around;
+    font-size: 24px;
+    box-sizing: border-box;
+    width: 100vw;
+    background-color: #ffcaca;
+    z-index: 10;
 
-    &__li {
+    @each $size in megaphone, mail, people, high-five, settings, star,
+      user-avatar
+    {
+      &__#{$size}-img {
+        @include sidebar-big__img;
+      }
+    }
+  }
+}
+
+.toolbar-list {
+  box-sizing: border-box;
+  line-height: 40px;
+  list-style: none;
+  @include row-flexible;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 20px;
+
+  &__li {
+    box-sizing: border-box;
+    list-style-type: none;
+    font-family: $ordinary-text;
+    font-size: 18px;
+    font-weight: 600;
+    ::before {
       box-sizing: border-box;
-      list-style-type: none;
-      font-family: $ordinary-text;
-      font-size: 18px;
-      font-weight: 600;
-      ::before {
-        box-sizing: border-box;
-      }
-      ::after {
-        box-sizing: border-box;
-      }
     }
+    ::after {
+      box-sizing: border-box;
+    }
+  }
 
-    &__a {
-      display: none;
-    }
+  &__a {
+    display: none;
   }
 }
 

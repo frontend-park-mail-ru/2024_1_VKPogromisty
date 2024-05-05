@@ -1,0 +1,62 @@
+<div class="friends-field" id="friends-field-{{ elem.userId }}">
+  <div class="friend" id="friend-{{ elem.userId }}">
+    <a href="/profile/{{ elem.userId }}"
+      ><img
+        class="friend__avatar-img"
+        src="{{ staticUrl }}/user-avatars/{{ elem.avatar }}"
+    /></a>
+    <div class="friend-info">
+      <a href="/profile/{{ elem.userId }}" class="friend-info__name-href">
+        <span class="friend-info__name-span"
+          >{{ elem.firstName }} {{ elem.lastName }}</span
+        >
+      </a>
+      <div class="friend-content">
+        <span class="friend-content__date-of-birth-span">{{
+          elem.dateOfBirth
+        }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="friend-ables">
+    <a href="/chat/{{ elem.userId }}">
+      <button
+        type="button"
+        class="friend-ables__send-message-button"
+        id="send-message-{{ elem.userId }}"
+      >
+        <img
+          src="dist/images/messenger.png"
+          class="friend-ables__send-message-img"
+        />
+      </button>
+    </a>
+    {{#if isFriends}}
+    <button
+      type="button"
+      class="friend-ables__delete-friend-button"
+      data-id="{{ elem.userId }}"
+    >
+      Удалить из друзей
+    </button>
+    {{/if}}
+    {{#if isSubscribers}}
+    <button
+      type="button"
+      class="friend-ables__add-friend-button"
+      data-id="{{ elem.userId }}"
+    >
+      Добавить в друзья
+    </button>
+    {{/if}}
+    {{#if isSubscriptions}}
+    <button
+      type="button"
+      class="friend-ables__unsubscribe-button"
+      data-id="{{ elem.userId }}"
+    >
+      Отписаться
+    </button>
+    {{/if}}
+  </div>
+</div>
