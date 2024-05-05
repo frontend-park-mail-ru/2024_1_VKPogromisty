@@ -95,10 +95,15 @@ class FeedView extends BaseView {
     if (
       this.feedMain.scrollHeight - this.feedMain.scrollTop <=
         3 * window.innerHeight &&
-      !this.isAllPosts &&
       !this.isWaitPosts
     ) {
-      this.eventBus.emit("readyRenderPosts", this.lastPostId);
+      if (!this.isAllMyPosts) {
+        this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
+      } else {
+        if (!this.isAllPosts) {
+          this.eventBus.emit("readyRenderAllPosts", this.lastPostAllId);
+        }
+      }
       this.isWaitPosts = true;
     }
   }
@@ -107,8 +112,9 @@ class FeedView extends BaseView {
    * Renders main part of feed
    */
   renderFeedMain() {
-    const { userId, avatar, firstName, lastName } = UserState;
+    let { userId, avatar, firstName, lastName } = UserState;
     const template = require("./feedMain.hbs");
+    avatar = avatar || "default_avatar.png";
     const userAvatar = `${staticUrl}/user-avatars/${avatar}`;
 
     new Header(document.body).renderForm({
@@ -121,8 +127,10 @@ class FeedView extends BaseView {
 
     this.mainElement = document.getElementById("activity");
     this.mainElement.innerHTML = template({ userId, userAvatar, rightSidebar });
-    this.lastPostId = 0;
-    this.isAllPosts;
+    this.lastPostMyId = 0;
+    this.lastPostAllId = 0;
+    this.isAllMyPosts = false;
+    this.isAllPosts = false;
     this.isWaitPosts = true;
     this.feedMain = document.getElementById("feed-main");
 
@@ -186,7 +194,7 @@ class FeedView extends BaseView {
     }
 
     this.postsElement = document.getElementById("posts");
-    this.eventBus.emit("readyRenderPosts", this.lastPostId);
+    this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
   }
 
   /**
@@ -194,25 +202,49 @@ class FeedView extends BaseView {
    *
    * @param {PostInfo[]} posts - The posts to feed
    */
-  renderPosts(posts) {
+  renderPosts({ posts, isMy = false }) {
     this.isWaitPosts = false;
 
     document.getElementById("posts-sceleton")?.remove();
 
     if (posts.length > 0) {
       posts.forEach((elem) => {
-        if (elem.post.postId < this.lastPostId || this.lastPostId === 0) {
-          this.lastPostId = elem.post.postId;
+        if (isMy) {
+          if (elem.post.postId < this.lastPostMyId || this.lastPostMyId === 0) {
+            this.lastPostMyId = elem.post.postId;
+          }
+        } else {
+          if (
+            elem.post.postId < this.lastPostAllId ||
+            this.lastPostAllId === 0
+          ) {
+            this.lastPostAllId = elem.post.postId;
+          }
         }
       });
       posts.forEach((elem) => {
-        this.postController.renderPostView(elem);
+        let author = elem.author;
+        if (elem.group) {
+          author = {
+            name: elem.group?.name,
+            groupId: elem.group?.id,
+            avatar: elem.group?.avatar,
+          };
+        }
+        this.postController.renderPostView({
+          isGroup: elem.group,
+          post: elem.post,
+          author,
+        });
       });
     } else {
-      this.isAllPosts = true;
-      document
-        .getElementById("no-more-posts")
-        .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
+      if (isMy) {
+        this.isAllMyPosts = true;
+      } else {
+        document
+          .getElementById("no-more-posts")
+          .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
+      }
     }
 
     if (!this.isAllPosts) {
@@ -224,6 +256,8 @@ class FeedView extends BaseView {
 
       this.postsElement.appendChild(imgSceleton);
     }
+
+    this.checksNewPosts();
   }
 
   /**

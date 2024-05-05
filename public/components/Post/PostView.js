@@ -88,7 +88,9 @@ class PostView extends BaseView {
    * @param {PostInfo} postInfo - The info about current post
    */
   renderPost({ isGroup, post, author, publish }) {
-    const { userId, avatar } = UserState;
+    let { userId, avatar } = UserState;
+    avatar = avatar || "default_avatar.png";
+    author.avatar = author.avatar || "default_avatar.png";
 
     const template = require("./post.hbs");
     const postId = post.postId;

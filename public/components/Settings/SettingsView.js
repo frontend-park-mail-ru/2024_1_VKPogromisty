@@ -49,7 +49,8 @@ class SettingsView extends BaseView {
    * Renders main part of page
    */
   renderSettingsMain() {
-    const { userId, avatar, firstName, lastName, email } = UserState;
+    let { userId, avatar, firstName, lastName, email } = UserState;
+    avatar = avatar || "default_avatar.png";
 
     new Header(document.body).renderForm({
       userId,
@@ -297,7 +298,7 @@ class SettingsView extends BaseView {
    */
   changeSuccess() {
     const img = document.getElementById("user__avatar-img");
-    img.setAttribute("src", `${staticUrl}/${UserState.avatar}`);
+    img.setAttribute("src", `${staticUrl}/user-avatars/${UserState.avatar}`);
 
     const fullHeaderName = document.getElementById("user__username-span");
     fullHeaderName.innerHTML = `${UserState.firstName} ${UserState.lastName}`;

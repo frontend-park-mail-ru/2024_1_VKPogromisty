@@ -11,6 +11,7 @@
 .form {
   @include column-flexible;
   justify-content: center;
+  align-items: center;
 }
 .login-text {
   color: #000000;

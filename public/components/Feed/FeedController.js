@@ -4,6 +4,7 @@ import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "readyRenderPosts",
+  "readyRenderAllPosts",
   "getPostsSuccess",
   "clickedPublishPost",
   "publishedPostSuccess",

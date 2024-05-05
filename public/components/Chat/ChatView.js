@@ -131,10 +131,11 @@ class ChatView extends BaseView {
    * @param {User} user - The current companion data
    */
   renderCompanion({ User }) {
-    const { userId, avatar, firstName, lastName } = User;
+    let { userId, avatar, firstName, lastName } = User;
 
     const template = require("./chatMain.hbs");
     const isMe = userId === UserState.userId;
+    avatar = avatar || "default_avatar.png";
 
     this.mainElement.innerHTML = template({
       userId,

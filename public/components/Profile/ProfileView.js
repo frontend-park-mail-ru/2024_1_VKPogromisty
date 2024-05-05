@@ -158,7 +158,8 @@ class ProfileView extends BaseView {
   renderProfile({ User, isSubscribedTo, isSubscriber }) {
     User.dateOfBirth = formatDayMonthYear(User.dateOfBirth);
 
-    const { userId, firstName, lastName, dateOfBirth, avatar } = User;
+    let { userId, firstName, lastName, dateOfBirth, avatar } = User;
+    avatar = avatar || "default_avatar.png";
     this.mainElement = document.getElementById("activity");
     this.isSubscriber = isSubscriber;
     const isMe = (this.isMe = Number(this.userId) === Number(UserState.userId));
@@ -360,6 +361,8 @@ class ProfileView extends BaseView {
 
       this.postsElement.appendChild(imgSceleton);
     }
+
+    this.checksNewPosts();
   }
 
   /**

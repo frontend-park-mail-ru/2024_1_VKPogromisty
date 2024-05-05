@@ -23,6 +23,7 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
+
 .date-birthday {
   @include row-flexible;
   align-items: center;
@@ -89,6 +90,7 @@ input::-webkit-inner-spin-button {
 
 .signup-text {
   color: #000000;
+  text-align: center;
 
   &__first-part {
     font-size: 20px;

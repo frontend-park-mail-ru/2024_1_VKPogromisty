@@ -178,6 +178,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       friends.forEach((elem) => {
+        elem.avatar = elem.avatar || "default_avatar.png";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
         this.friendElem.innerHTML += template({
           staticUrl,
@@ -229,6 +230,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       friends.forEach((elem) => {
+        elem.avatar = elem.avatar || "default_avatar.png";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
         this.friendElem.innerHTML += template({
           staticUrl,
@@ -282,6 +284,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       friends.forEach((elem) => {
+        elem.avatar = elem.avatar || "default_avatar.png";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
         this.friendElem.innerHTML += template({
           staticUrl,
@@ -323,6 +326,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       people.forEach((elem) => {
+        elem.avatar = elem.avatar || "default_avatar.png";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
         this.friendElem.innerHTML += template({
           staticUrl,

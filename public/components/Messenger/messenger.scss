@@ -22,7 +22,7 @@
     @include invisible;
   }
 
-  __span_visible {
+  &__span_visible {
     @include no-dialogs__span;
     @include visible;
   }
