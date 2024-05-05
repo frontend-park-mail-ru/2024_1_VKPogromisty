@@ -52,10 +52,6 @@ const rightSidebar = [
     href: "/feed/friends",
     text: "ДРУЗЬЯ",
   },
-  {
-    href: "/nothing",
-    text: "ФОТОГРАФИИ",
-  },
 ];
 
 /**
