@@ -1,0 +1,124 @@
+@import "public/index.scss";
+
+.main-attract {
+  @include row-flexible;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+
+  @include mobile-style {
+    @include column-flexible;
+  }
+}
+
+.landing {
+  display: flex;
+  align-items: center;
+  min-width: 100vw;
+  min-height: 100vh;
+  justify-content: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.discription {
+  @include column-flexible;
+  border: 1px solid black;
+  border-radius: 12px;
+  background-color: #f4e3e3;
+  align-items: center;
+  padding: 70px 20px;
+  margin-right: 20px;
+
+  &__ables-span {
+    font-family: "Inter", sans-serif;
+    font-size: 21px;
+    margin-bottom: 15px;
+    text-align: center;
+
+    @include mobile-style {
+      font-size: 16px;
+    }
+  }
+
+  &__login-href {
+    width: 250px;
+    margin-bottom: 20px;
+  }
+
+  &__signup-href {
+    color: #de8787;
+    text-align: center;
+  }
+
+  &__enter-button {
+    width: 100%;
+    border: 1px solid #e0908d;
+    border-radius: 50px;
+    padding: 7px;
+    font-weight: bolder;
+    background-color: #efcecd;
+    color: #d65a61;
+    font-family: Inter, sans-serif;
+    font-size: 20px;
+  }
+
+  @include mobile-style {
+    margin: 0 0 50px;
+    padding: 20px;
+    border: none;
+    background-color: inherit;
+  }
+}
+
+.socio-name {
+  @include row-flexible;
+  align-items: end;
+  margin-bottom: 17px;
+
+  &__logo-comp-img {
+    width: 180px;
+
+    @include mobile-style {
+      display: none;
+    }
+  }
+
+  &__logo-mobile-img {
+    display: none;
+    width: 180px;
+
+    @include mobile-style {
+      display: block;
+    }
+  }
+}
+
+.example-page {
+  @include column-flexible;
+  justify-content: center;
+  width: 450px;
+
+  &__comp-img {
+    width: 100%;
+    object-fit: cover;
+
+    @include mobile-style {
+      display: none;
+    }
+  }
+
+  &__mobile-img {
+    display: none;
+
+    @include mobile-style {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  @include mobile-style {
+    width: 150px;
+  }
+}

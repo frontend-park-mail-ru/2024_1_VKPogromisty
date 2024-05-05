@@ -26,10 +26,10 @@ input::-webkit-inner-spin-button {
 .date-birthday {
   @include row-flexible;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 
   &__input {
-    width: 60px;
+    width: 150px;
     height: 22px;
     text-align: center;
     padding: 10px;
@@ -37,6 +37,8 @@ input::-webkit-inner-spin-button {
     border-radius: 12px;
     font-size: 16px;
     background-color: $input-color;
+    font-family: inherit;
+    color: indianred;
   }
 }
 

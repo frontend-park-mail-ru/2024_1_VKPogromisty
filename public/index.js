@@ -13,7 +13,8 @@ import WSocket from "./components/WebSocket.js";
 import FeedController from "./components/Feed/FeedController.js";
 import SettingsController from "./components/Settings/SettingsController.js";
 import CSRFProtection from "./components/CSRFProtection.js";
-import AdminController from "./components/Admin/AdminController.js";
+import GroupController from "./components/Group/GroupController.js";
+import { renderLanding } from "./components/Landing/landing.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   if ("serviceWorker" in navigator) {
@@ -30,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const chatController = new ChatController(router, webSocket);
   const feedController = new FeedController(router, webSocket);
   const settingsController = new SettingsController(router, webSocket);
-  const adminController = new AdminController(router, webSocket);
+  const groupController = new GroupController(router, webSocket);
 
   const config = {
     paths: [
@@ -61,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Профиль",
       },
       {
-        path: /\/settings/,
+        path: /\/profile\/settings/,
         func: settingsController.renderSettingsView.bind(settingsController),
         title: "Настройки",
       },
@@ -81,15 +82,34 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Диалог",
       },
       {
-        path: /\/admins/,
-        func: adminController.renderAdminPage.bind(adminController),
-        title: "Админы",
+        path: /\/groups/,
+        func: groupController.renderGroups.bind(groupController),
+        title: "Группы",
+      },
+      {
+        path: /\/group\/(?<groupId>[0-9]+)\/settings/,
+        func: groupController.renderGroupSettings.bind(groupController),
+        title: "Изменить группу",
+      },
+      {
+        path: /\/group\/(?<groupId>[0-9]+)\/admins/,
+        func: groupController.renderGroupAdmins.bind(groupController),
+        title: "Модераторы группы",
+      },
+      {
+        path: /\/group\/(?<groupId>[0-9]+)/,
+        func: groupController.renderGroup.bind(groupController),
+        title: "Группа",
+      },
+      {
+        path: /\/group\/create/,
+        func: groupController.renderGroupCreate.bind(groupController),
+        title: "Создать группу",
       },
       {
         path: /\//,
-        func: feedController.renderFeed.bind(feedController),
-        akaPath: "feed",
-        title: "Новости",
+        func: renderLanding,
+        title: "Socio - социальная сеть",
       },
     ],
   };
@@ -99,15 +119,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const result = await CSRFProtection.updateCSRFToken();
   const currentPageUrl = window.location.pathname;
   switch (currentPageUrl) {
+    case "/":
     case "/login":
     case "/signup":
-    case "/":
-      if (result) {
-        await UserState.updateState();
-        router.redirect("/feed");
-      } else {
-        router.redirect(currentPageUrl);
-      }
+      router.redirect(currentPageUrl);
       break;
     default:
       if (result) {

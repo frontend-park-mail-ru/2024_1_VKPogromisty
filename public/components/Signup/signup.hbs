@@ -58,17 +58,14 @@
           <label for="date-birthday" class="inscription-form"
             >Дата рождения</label
           >
-
-          <div class="date-birthday" id="date-birthday">
-            {{#each part_of_date}}
+          <div class="date-birthday">
             <input
               class="date-birthday__input"
-              id="{{ this.id }}"
-              type="text"
+              id="date-birthday"
+              type="date"
+              max="2024-01-01"
               required
-              placeholder="{{ this.placeholder }}"
             />
-            {{/each}}
           </div>
           <div
             class="form__input_error form__input_correct"

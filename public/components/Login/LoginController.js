@@ -6,6 +6,7 @@ const incomingEvents = [
   "attemptLogin",
   "loginSuccess",
   "receiveLoginResult",
+  "unauthorizedResult",
   "serverError",
 ];
 
@@ -25,7 +26,7 @@ export default class LoginController {
    */
   constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.#loginModel = new LoginModel(this.eventBus, webSocket);
+    this.#loginModel = new LoginModel(this.eventBus, webSocket, router);
     this.#loginView = new LoginView(this.eventBus);
 
     this.eventBus.addEventListener(
@@ -39,6 +40,6 @@ export default class LoginController {
    * @returns {void}
    */
   renderLoginView() {
-    this.#loginView.render(document.body);
+    this.#loginModel.checkIfLogin();
   }
 }
