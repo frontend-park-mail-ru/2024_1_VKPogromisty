@@ -2,7 +2,7 @@ import "./main.scss";
 
 const sidebar = [
   {
-    href: "/feed",
+    href: "/feed/news",
     text: "Новости",
     icon: "megaphone",
   },
@@ -35,7 +35,7 @@ const sidebar = [
 
 const toolbar = [
   {
-    href: "/feed",
+    href: "/feed/news",
     text: "Новости",
     icon: "megaphone",
   },

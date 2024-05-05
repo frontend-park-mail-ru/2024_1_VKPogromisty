@@ -300,6 +300,26 @@ export class PostService {
   }
 
   /**
+   * Gets the groups' posts from the server
+   *
+   * @param {number} lastPostId - The ID of last post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getGroupsPosts(lastPostId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `groups?lastPostId=${lastPostId}&postsAmount=0`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
    * Gets the all posts from the server of groups and friends which user subscribed on
    *
    * @param {number} lastPostId - The ID of last post

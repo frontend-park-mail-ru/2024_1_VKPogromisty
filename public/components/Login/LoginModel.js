@@ -35,7 +35,7 @@ class LoginModel extends BaseModel {
     if (result) {
       await UserState.updateState();
       this.webSocket.openWebSocket();
-      this.router.redirect("/feed");
+      this.router.redirect("/feed/news");
       return;
     }
 

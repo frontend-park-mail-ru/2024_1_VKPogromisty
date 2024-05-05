@@ -41,15 +41,15 @@ const staticUrl = `${API_URL}/static`;
 
 const rightSidebar = [
   {
-    href: "/nothing",
+    href: "/feed/news",
     text: "НОВОСТИ",
   },
   {
-    href: "/nothing",
+    href: "/feed/groups",
     text: "СООБЩЕСТВА",
   },
   {
-    href: "/nothing",
+    href: "/feed/friends",
     text: "ДРУЗЬЯ",
   },
   {
@@ -76,7 +76,15 @@ class FeedView extends BaseView {
 
     this.eventBus.addEventListener(
       "getPostsSuccess",
-      this.renderPosts.bind(this),
+      this.renderNewsPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "getFriendsPostSuccess",
+      this.renderFriendsPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "getGroupsPostSuccess",
+      this.renderGroupsPosts.bind(this),
     );
     this.eventBus.addEventListener(
       "publishedPostSuccess",
@@ -98,10 +106,22 @@ class FeedView extends BaseView {
       !this.isWaitPosts
     ) {
       if (!this.isAllMyPosts) {
-        this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
+        switch (this.path) {
+          case "news":
+            this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
+            break;
+          case "friends":
+            this.eventBus.emit("readyRenderFriendsPosts", this.lastPostMyId);
+            break;
+          case "groups":
+            this.eventBus.emit("readyRenderGroupsPosts", this.lastPostMyId);
+            break;
+        }
       } else {
         if (!this.isAllPosts) {
-          this.eventBus.emit("readyRenderAllPosts", this.lastPostAllId);
+          if (this.path === "news") {
+            this.eventBus.emit("readyRenderAllPosts", this.lastPostAllId);
+          }
         }
       }
       this.isWaitPosts = true;
@@ -110,8 +130,10 @@ class FeedView extends BaseView {
 
   /**
    * Renders main part of feed
+   *
+   * @param {string} path - The next path
    */
-  renderFeedMain() {
+  renderFeedMain(path) {
     let { userId, avatar, firstName, lastName } = UserState;
     const template = require("./feedMain.hbs");
     avatar = avatar || "default_avatar.png";
@@ -193,8 +215,22 @@ class FeedView extends BaseView {
       });
     }
 
+    this.path = path.section;
+
     this.postsElement = document.getElementById("posts");
-    this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
+
+    switch (this.path) {
+      case "news":
+        this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
+        break;
+      case "friends":
+        document.getElementById("");
+        this.eventBus.emit("readyRenderFriendsPosts", this.lastPostAllId);
+        break;
+      case "groups":
+        this.eventBus.emit("readyRenderGroupsPosts", this.lastPostAllId);
+        break;
+    }
   }
 
   /**
@@ -202,7 +238,7 @@ class FeedView extends BaseView {
    *
    * @param {PostInfo[]} posts - The posts to feed
    */
-  renderPosts({ posts, isMy = false }) {
+  renderNewsPosts({ posts, isMy }) {
     this.isWaitPosts = false;
 
     document.getElementById("posts-sceleton")?.remove();
@@ -245,6 +281,97 @@ class FeedView extends BaseView {
           .getElementById("no-more-posts")
           .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
       }
+    }
+
+    if (!this.isAllPosts) {
+      const imgSceleton = document.createElement("img");
+
+      imgSceleton.classList.add("sceleton-img");
+      imgSceleton.setAttribute("id", "posts-sceleton");
+      imgSceleton.setAttribute("src", "dist/images/loading.png");
+
+      this.postsElement.appendChild(imgSceleton);
+    }
+
+    this.checksNewPosts();
+  }
+
+  /**
+   * Renders friend's posts
+   *
+   * @param {PostInfo[]} posts
+   */
+  renderFriendsPosts(posts) {
+    this.isWaitPosts = false;
+
+    document.getElementById("posts-sceleton")?.remove();
+
+    if (posts.length > 0) {
+      posts.forEach((elem) => {
+        if (elem.post.postId < this.lastPostMyId || this.lastPostMyId === 0) {
+          this.lastPostMyId = elem.post.postId;
+        }
+      });
+      posts.forEach((elem) => {
+        this.postController.renderPostView({
+          post: elem.post,
+          author: elem.author,
+        });
+      });
+    } else {
+      this.isAllMyPosts = true;
+      this.isAllPosts = true;
+      document
+        .getElementById("no-more-posts")
+        .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
+    }
+
+    if (!this.isAllMyPosts) {
+      const imgSceleton = document.createElement("img");
+
+      imgSceleton.classList.add("sceleton-img");
+      imgSceleton.setAttribute("id", "posts-sceleton");
+      imgSceleton.setAttribute("src", "dist/images/loading.png");
+
+      this.postsElement.appendChild(imgSceleton);
+    }
+
+    this.checksNewPosts();
+  }
+
+  /**
+   * Renders groups' posts
+   *
+   * @param {PostInfo[]} posts
+   */
+  renderGroupsPosts(posts) {
+    this.isWaitPosts = false;
+
+    document.getElementById("posts-sceleton")?.remove();
+
+    if (posts.length > 0) {
+      posts.forEach((elem) => {
+        if (elem.post.postId < this.lastPostMyId || this.lastPostMyId === 0) {
+          this.lastPostMyId = elem.post.postId;
+        }
+      });
+      posts.forEach((elem) => {
+        this.postController.renderPostView({
+          isGroup: true,
+          post: elem.post,
+          author: {
+            name: elem.group?.name,
+            groupId: elem.group?.id,
+            avatar: elem.group?.avatar,
+          },
+        });
+      });
+    } else {
+      this.isAllMyPosts = true;
+      this.isAllPosts = true;
+      document
+        .getElementById("no-more-posts")
+        .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
     }
 
     if (!this.isAllPosts) {

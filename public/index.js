@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Регистрация",
       },
       {
-        path: /\/feed/,
+        path: /\/feed\/(?<section>.+)/,
         func: feedController.renderFeed.bind(feedController),
         title: "Новости",
       },
