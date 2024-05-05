@@ -1,0 +1,111 @@
+<div id="group-poster" class="group-poster">
+  <div class="group-poster-view">
+    <img
+      class="group-poster__avatar-img"
+      src="{{ staticUrl }}/group-avatars/{{ this.avatar }}"
+      alt="Your avatar"
+    />
+    <div class="group-brief">
+      <span class="group-brief__name-span">{{ this.name }}</span>
+      <div class="group-brief-info">
+        <span class="group-brief-info__date-span"
+          >Создана {{ this.createdAt }}</span
+        >
+        <span
+          class="group-brief-info__subs-count-span"
+          id="subs-count-span"
+          data-count="{{ this.subscribersCount }}"
+          >Подписчики: {{ this.subscribersCount }}</span
+        >
+      </div>
+    </div>
+    <div class="subscribed-to-options">
+      {{#unless isSubscribed}}
+      <button
+        type="button"
+        class="subscribed-to-options__button-subscribe"
+        id="subscribe-{{ this.id }}"
+      >
+        Подписаться
+      </button>
+      {{else}}
+      <button
+        type="button"
+        class="subscribed-to-options__button-unsubscribe"
+        id="subscribe-{{ this.id }}"
+      >
+        Отписаться
+      </button>
+      {{/unless}}
+    </div>
+  </div>
+  <div class="group-wrapper">
+    {{#if isAdmin}}
+    <a href="/group/{{ this.id }}/settings">
+      <img
+        class="profile-wrapper__settings-img"
+        src="dist/images/setting.png"
+        alt="Settings"
+      />
+    </a>
+    {{/if}}
+    <img class="group-wrapper__back-img" src="dist/images/forest.jpg" />
+  </div>
+</div>
+{{#if isAdmin}}
+<div class="group-admin-info">
+  <a href="/group/{{ this.id }}/admins"
+    ><span class="group-admin-info__name-span">Модераторы группы</span></a
+  >
+</div>
+<div class="create-post" id="create-post">
+  <div class="create-post-header">
+    <div id="news-avatar" class="news-avatar">
+      <a href="/group/{{ this.id }}"
+        ><img
+          id="user-avatar-news"
+          class="news-avatar__img"
+          src="{{ staticUrl }}/group-avatars/{{ this.avatar }}"
+      /></a>
+    </div>
+    <div class="news">
+      <span id="user-news-content" class="news__input"
+        >Расскажите, что у вас нового</span
+      >
+      <button type="button" class="news__file-button" id="news__file-button">
+        <img
+          class="news__img"
+          src="dist/images/attach-paperclip-symbol.png"
+          id="news__img"
+        />
+      </button>
+      <input
+        type="file"
+        class="news__file-input"
+        id="news__file-input"
+        accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
+        multiple
+      />
+    </div>
+    <button class="publish-button" type="button" id="publish-post-button">
+      Опубликовать
+    </button>
+  </div>
+  <div class="news-content">
+    <textarea
+      class="news-content__textarea"
+      id="news-content__textarea"
+      rows="1"
+      placeholder="Что нового?"
+      maxlength="30000"
+    ></textarea>
+    <div class="news-img-content" id="news-img-content"></div>
+  </div>
+</div>
+{{/if}}
+<div class="posts" id="posts">
+  <img class="sceleton-img" id="posts-sceleton" src="dist/images/loading.png" />
+</div>
+<div class="no-more-posts_hidden" id="no-more-posts">
+  <span class="no-posts__span">Больше постов нет</span>
+</div>

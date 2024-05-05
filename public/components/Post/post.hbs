@@ -1,16 +1,33 @@
 <div id="post-{{ this.post.postId }}" class="post">
   <div class="post-header">
     <div class="post-author">
+      {{#if isGroup}}
+      <a href="/group/{{ this.author.groupId }}">
+        <img
+          class="post-author__user-avatar-img"
+          src="{{ this.staticUrl }}/group-avatars/{{ this.author.avatar }}"
+        />
+      </a>
+      {{else}}
       <a href="/profile/{{ this.author.userId }}">
         <img
           class="post-author__user-avatar-img"
-          src="{{ this.staticUrl }}/{{ this.author.avatar }}"
+          src="{{ this.staticUrl }}/user-avatars/{{ this.author.avatar }}"
         />
       </a>
+      {{/if}}
       <div class="post-author-info">
-        <span class="post-author__name-span"
-          >{{ this.author.firstName }} {{ this.author.lastName }}</span
-        >
+        {{#if isGroup}}
+        <a href="/group/{{ this.author.groupId }}">
+          <span class="post-author__name-span">{{ this.author.name }}</span>
+        </a>
+        {{else}}
+        <a href="/profile/{{ this.author.userId }}">
+          <span class="post-author__name-span"
+            >{{ this.author.firstName }} {{ this.author.lastName }}</span
+          >
+        </a>
+        {{/if}}
         <div
           class="post-author-time"
           id="post-author-time-{{ this.post.postId }}"
@@ -55,7 +72,10 @@
       >{{ this.post.content }}</textarea
     >
     {{#each this.post.attachments}}
-    <img class="post-content__img" src="{{ ../staticUrl }}/{{ this }}" />
+    <img
+      class="post-content__img"
+      src="{{ ../staticUrl }}/post-attachments/{{ this }}"
+    />
     {{/each}}
   </div>
   <div class="post-reaction">
@@ -89,7 +109,7 @@
     <div class="post-footer">
       <img
         class="post-author__user-avatar-img"
-        src="{{ staticUrl }}/{{ avatar }}"
+        src="{{ staticUrl }}/user-avatars/{{ avatar }}"
       />
       <input
         id="user-comment{{ this.post.postId }}"

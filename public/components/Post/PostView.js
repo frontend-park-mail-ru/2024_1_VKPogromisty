@@ -87,18 +87,13 @@ class PostView extends BaseView {
    *
    * @param {PostInfo} postInfo - The info about current post
    */
-  renderPost({ post, author, publish }) {
+  renderPost({ isGroup, post, author, publish, canDelete }) {
     const { userId, avatar } = UserState;
 
     const template = require("./post.hbs");
     const postId = post.postId;
 
-    if (post.content.trim() === "" && !post.attachments) {
-      this.eventBus.emit("clickedDeleteButton", postId);
-      return;
-    }
-
-    const isMe = Number(author.userId) === Number(userId);
+    let isMe = Number(author.userId) === Number(userId);
     const hasUpdated = post.createdAt !== post.updatedAt;
 
     post.createdAt = formatFullDate(post.createdAt);
@@ -113,10 +108,21 @@ class PostView extends BaseView {
       post.likesCount = 0;
     }
 
+    if (isGroup) {
+      isMe = canDelete;
+    }
+
     if (publish) {
       this.mainElement.innerHTML =
-        template({ post, author, avatar, staticUrl, isMe, hasUpdated }) +
-        this.mainElement.innerHTML;
+        template({
+          post,
+          author,
+          avatar,
+          staticUrl,
+          isMe,
+          hasUpdated,
+          isGroup,
+        }) + this.mainElement.innerHTML;
     } else {
       this.mainElement.innerHTML += template({
         post,
@@ -125,6 +131,7 @@ class PostView extends BaseView {
         staticUrl,
         isMe,
         hasUpdated,
+        isGroup,
       });
     }
 
