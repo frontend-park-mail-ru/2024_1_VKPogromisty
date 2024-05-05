@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         path: /\//,
         func: renderLanding,
         akaPath: "landing",
-        title: "Socio - социальная сеть",
+        title: "Социальная сеть",
       },
     ],
   };

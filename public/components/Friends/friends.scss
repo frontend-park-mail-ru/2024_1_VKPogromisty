@@ -154,6 +154,10 @@
     background-color: #e0908d;
     height: 30px;
     border-radius: 7px;
+
+    @include mobile-style {
+      display: none;
+    }
   }
 
   &__send-message-img {
