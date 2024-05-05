@@ -18,6 +18,7 @@
       </div>
     </div>
   </div>
+  {{#unless isSearch}}
   <div class="friend-ables">
     <a href="/chat/{{ elem.userId }}">
       <button
@@ -59,4 +60,5 @@
     </button>
     {{/if}}
   </div>
+  {{/unless}}
 </div>

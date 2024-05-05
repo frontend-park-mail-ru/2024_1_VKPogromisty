@@ -1,12 +1,19 @@
 @import "public/index.scss";
 
 .confirm-window {
-  position: absolute;
+  position: fixed;
+  @include row-flexible;
+  justify-content: center;
+  align-items: center;
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+.confirm {
   border: 1px solid black;
   border-radius: 7px;
   padding: 20px;
   background-color: #f5f7f9;
-  width: 400px;
 }
 
 .blured {

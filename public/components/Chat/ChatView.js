@@ -115,7 +115,7 @@ class ChatView extends BaseView {
     if (
       !this.isAllMessages &&
       !this.isWaitMessages &&
-      this.chatElement.scrollHeight + this.chatElement.scrollTop <= 550
+      this.chatElement.scrollHeight + this.chatElement.scrollTop <= 750
     ) {
       this.eventBus.emit("readyRenderMessages", {
         companionId: this.companionId,

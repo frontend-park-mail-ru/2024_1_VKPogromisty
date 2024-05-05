@@ -1,14 +1,21 @@
 @import "public/index.scss";
 
+.main {
+  @include column-flexible;
+  overflow: hidden;
+}
+
 .feed-main {
   @include row-flexible;
   justify-content: center;
   box-sizing: border-box;
   padding: 0px 10px;
+  overflow: auto;
+  flex: 1;
+}
 
-  @include mobile-style {
-    margin-bottom: 40px;
-  }
+.feed-main::-webkit-scrollbar {
+  display: none;
 }
 
 @mixin sidebar-small__img {
@@ -89,15 +96,12 @@
   display: none;
 
   @include mobile-style {
-    position: fixed;
-    bottom: 0px;
     @include row-flexible;
     justify-content: space-around;
     font-size: 24px;
     box-sizing: border-box;
     width: 100vw;
     background-color: #ffcaca;
-    z-index: 10;
 
     @each $size in megaphone, mail, people, high-five, settings, star,
       user-avatar
@@ -142,6 +146,9 @@
   width: 100%;
   max-width: 650px;
   margin-top: 5px;
+  flex-grow: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .scroller {

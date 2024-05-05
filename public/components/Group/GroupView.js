@@ -6,6 +6,7 @@ import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
 import { validateName } from "/public/modules/validators.js";
+import { customConfirm } from "../../modules/windows.js";
 import "./group.scss";
 
 const correct = "form__input_correct";
@@ -137,6 +138,10 @@ class GroupView extends BaseView {
       "gotNewAdminSuccess",
       this.renderNewAdmin.bind(this),
     );
+    this.eventBus.addEventListener(
+      "gaveIncorrectUserId",
+      this.gaveIncorrectUserId.bind(this),
+    );
   }
 
   /**
@@ -171,13 +176,20 @@ class GroupView extends BaseView {
       this.eventBus.emit("clickedSearchGroup", searchInput.value);
     });
 
+    let isWaitingSearch = true;
     searchInput.addEventListener("input", () => {
-      if (searchInput.value.trim() === "") {
-        this.eventBus.emit("readyRenderGroups", userId);
-        return;
-      }
+      if (isWaitingSearch) {
+        isWaitingSearch = false;
+        setTimeout(() => {
+          isWaitingSearch = true;
+          if (searchInput.value.trim() === "") {
+            this.eventBus.emit("readyRenderGroups", userId);
+            return;
+          }
 
-      this.eventBus.emit("clickedSearchGroup", searchInput.value);
+          this.eventBus.emit("clickedSearchGroup", searchInput.value);
+        }, 500);
+      }
     });
 
     this.eventBus.emit("readyRenderGroups", userId);
@@ -245,7 +257,8 @@ class GroupView extends BaseView {
    */
   checksNewPosts() {
     if (
-      document.body.scrollHeight - window.scrollY <= 2.5 * window.innerHeight &&
+      this.feedMain.scrollHeight - this.feedMain.scrollTop <=
+        2.5 * window.innerHeight &&
       !this.isAllPosts &&
       !this.isWaitPosts
     ) {
@@ -307,6 +320,7 @@ class GroupView extends BaseView {
     this.lastPostId = 0;
     this.isAllPosts = false;
     this.isWaitPosts = true;
+    this.feedMain = document.getElementById("feed-main");
 
     this.subscribeGroup = document.getElementById(`subscribe-${this.groupId}`);
 
@@ -316,7 +330,7 @@ class GroupView extends BaseView {
           "subscribed-to-options__button-subscribe",
         )
       ) {
-        this.eventBus.emit("clickedSubscribe", this.groupId);
+        this.eventBus.emit("clickedSubscribe", { groupId: this.groupId });
       } else {
         this.eventBus.emit("clickedUnsubscribe", this.groupId);
       }
@@ -331,7 +345,7 @@ class GroupView extends BaseView {
       newsTextarea.style.height = newsTextarea.scrollHeight - 4 + "px";
     });
 
-    document.onscroll = this.checksNewPosts.bind(this);
+    this.feedMain.onscroll = this.checksNewPosts.bind(this);
 
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
@@ -443,7 +457,6 @@ class GroupView extends BaseView {
             groupId: this.groupId,
             avatar: this.groupAvatar,
           },
-          canDelete: this.isAdmin,
         });
       });
     } else {
@@ -694,7 +707,15 @@ class GroupView extends BaseView {
     });
 
     document.getElementById("delete-setting").addEventListener("click", () => {
-      this.eventBus.emit("clickedDeleteGroup", this.groupId);
+      customConfirm(
+        (() => {
+          this.eventBus.emit("clickedDeleteGroup", this.groupId);
+        }).bind(this),
+        "Удалить группу?",
+        "Вы уверены, что хотите удалить группу?",
+        "Удалить",
+        "Отмена",
+      );
     });
   }
 
@@ -766,7 +787,7 @@ class GroupView extends BaseView {
    * @param {number} id - The ID of group
    */
   groupCreatedSuccess({ id }) {
-    this.router.redirect(`/group/${id}`);
+    this.eventBus.emit("clickedSubscribe", { groupId: id, isCreated: true });
   }
 
   /**

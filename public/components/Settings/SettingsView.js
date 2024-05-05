@@ -183,7 +183,15 @@ class SettingsView extends BaseView {
     });
 
     document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickedLogoutButton", {});
+      customConfirm(
+        (() => {
+          this.eventBus.emit("clickedLogoutButton", {});
+        }).bind(this),
+        "Выход",
+        "Вы уверены, что хотите выйти из аккаунта?",
+        "Да",
+        "Нет",
+      );
     });
   }
 

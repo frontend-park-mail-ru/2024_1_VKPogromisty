@@ -49,6 +49,10 @@
   &__signup-href {
     color: #de8787;
     text-align: center;
+
+    @include mobile-style {
+      text-decoration: none;
+    }
   }
 
   &__enter-button {

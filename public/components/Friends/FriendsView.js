@@ -4,6 +4,7 @@ import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 import { formatDayMonthYear } from "../../modules/dateRemaking.js";
 import UserState from "../UserState.js";
+import { customConfirm } from "../../modules/windows.js";
 import "./friends.scss";
 
 /**
@@ -126,22 +127,29 @@ class FriendsView extends BaseView {
       this.eventBus.emit("clickedSearchFriend", searchInput.value);
     });
 
+    let isWaitingSearch = true;
     searchInput.addEventListener("input", () => {
-      if (searchInput.value.trim() === "") {
-        switch (path) {
-          case "subscriptions":
-            this.eventBus.emit("readyRenderSubscriptions", {});
-            break;
-          case "subscribers":
-            this.eventBus.emit("readyRenderSubscribers", {});
-            break;
-          default:
-            this.eventBus.emit("readyRenderFriends", {});
-        }
-        return;
-      }
+      if (isWaitingSearch) {
+        isWaitingSearch = false;
+        setTimeout(() => {
+          isWaitingSearch = true;
+          if (searchInput.value.trim() === "") {
+            switch (path) {
+              case "subscriptions":
+                this.eventBus.emit("readyRenderSubscriptions", {});
+                break;
+              case "subscribers":
+                this.eventBus.emit("readyRenderSubscribers", {});
+                break;
+              default:
+                this.eventBus.emit("readyRenderFriends", {});
+            }
+            return;
+          }
 
-      this.eventBus.emit("clickedSearchFriend", searchInput.value);
+          this.eventBus.emit("clickedSearchFriend", searchInput.value);
+        }, 500);
+      }
     });
 
     switch (path) {
@@ -163,7 +171,6 @@ class FriendsView extends BaseView {
    */
   renderFriends(friends) {
     const template = require("./friends.hbs");
-    const isFriends = true;
     const noFriends = friends.length === 0;
 
     document.getElementById("no-something").innerHTML = "";
@@ -175,7 +182,9 @@ class FriendsView extends BaseView {
         this.friendElem.innerHTML += template({
           staticUrl,
           elem,
-          isFriends,
+          isFriends: true,
+          isSubscribers: false,
+          isSubscriptions: false,
         });
       });
     } else {
@@ -193,8 +202,16 @@ class FriendsView extends BaseView {
 
     addFriends.forEach((elem) => {
       elem.addEventListener("click", () => {
-        const friendId = elem.dataset.id;
-        this.eventBus.emit("clickedUnsubscribeButton", friendId);
+        customConfirm(
+          (() => {
+            const friendId = elem.dataset.id;
+            this.eventBus.emit("clickedUnsubscribeButton", friendId);
+          }).bind(this),
+          "Удалить друга?",
+          "Вы уверены, что хотите удалить друга?",
+          "Удалить",
+          "Отмена",
+        );
       });
     });
   }
@@ -205,7 +222,6 @@ class FriendsView extends BaseView {
    */
   renderSubscribers(friends) {
     const template = require("./friends.hbs");
-    const isSubscribers = true;
     const noFriends = friends.length === 0;
 
     document.getElementById("no-something").innerHTML = "";
@@ -217,7 +233,9 @@ class FriendsView extends BaseView {
         this.friendElem.innerHTML += template({
           staticUrl,
           elem,
-          isSubscribers,
+          isFriends: false,
+          isSubscribers: true,
+          isSubscriptions: false,
         });
       });
     } else {
@@ -257,7 +275,6 @@ class FriendsView extends BaseView {
    */
   renderSubscriptions(friends) {
     const template = require("./friends.hbs");
-    const isSubscriptions = true;
     const noFriends = friends.length === 0;
 
     document.getElementById("no-something").innerHTML = "";
@@ -269,7 +286,9 @@ class FriendsView extends BaseView {
         this.friendElem.innerHTML += template({
           staticUrl,
           elem,
-          isSubscriptions,
+          isFriends: false,
+          isSubscribers: false,
+          isSubscriptions: true,
         });
       });
     } else {
@@ -297,7 +316,7 @@ class FriendsView extends BaseView {
   renderFoundFriend(people) {
     const template = require("./friends.hbs");
     const isSubscribers = true;
-    const noFriends = people == null;
+    const noFriends = people === null;
 
     document.getElementById("no-something").innerHTML = "";
     this.friendElem.innerHTML = "";
@@ -309,6 +328,7 @@ class FriendsView extends BaseView {
           staticUrl,
           elem,
           isSubscribers,
+          isSearch: true,
         });
       });
     } else {

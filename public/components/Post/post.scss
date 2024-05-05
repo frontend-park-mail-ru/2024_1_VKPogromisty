@@ -182,6 +182,14 @@
 
   &__name-href {
     @include none-decoration;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+
+    @include mobile-style {
+      max-width: 170px;
+    }
   }
 
   &__accept-img {

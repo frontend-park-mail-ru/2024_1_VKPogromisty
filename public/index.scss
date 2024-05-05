@@ -61,10 +61,7 @@ body {
   @include column-flexible;
   min-height: 100vh;
   max-height: 100vh;
-}
-
-body::-webkit-scrollbar {
-  display: none;
+  overflow: hidden;
 }
 
 .incorrect-data {

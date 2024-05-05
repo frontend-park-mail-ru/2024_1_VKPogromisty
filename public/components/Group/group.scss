@@ -80,6 +80,14 @@
 
   &__name-href {
     @include none-decoration;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 350px;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
   }
 }
 
@@ -347,6 +355,14 @@
     font-size: 18px;
     font-weight: bold;
     margin-left: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
   }
 
   &__created-at-span {

@@ -20,6 +20,7 @@
       </div>
     </div>
     <div class="subscribed-to-options">
+      {{#unless isAdmin}}
       {{#unless isSubscribed}}
       <button
         type="button"
@@ -36,6 +37,7 @@
       >
         Отписаться
       </button>
+      {{/unless}}
       {{/unless}}
     </div>
   </div>

@@ -44,6 +44,7 @@ const incomingEvents = [
   "addsAdminSuccess",
   "gaveIncorrectUserId",
   "needAddAdmin",
+  "needToSubscribeOnGroup",
   "serverError",
 ];
 

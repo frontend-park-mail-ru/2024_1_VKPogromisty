@@ -88,6 +88,14 @@
 
   &__name-href {
     @include none-decoration;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
   }
 }
 

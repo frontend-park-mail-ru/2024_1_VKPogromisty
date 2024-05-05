@@ -22,6 +22,10 @@
   background-color: $feed-header-color;
   align-items: center;
   justify-content: space-between;
+
+  @include mobile-style {
+    padding: 15px 10px;
+  }
 }
 
 .search__input {

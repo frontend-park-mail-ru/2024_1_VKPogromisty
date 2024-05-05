@@ -93,7 +93,8 @@ class FeedView extends BaseView {
    */
   checksNewPosts() {
     if (
-      document.body.scrollHeight - window.scrollY <= 3 * window.innerHeight &&
+      this.feedMain.scrollHeight - this.feedMain.scrollTop <=
+        3 * window.innerHeight &&
       !this.isAllPosts &&
       !this.isWaitPosts
     ) {
@@ -123,6 +124,7 @@ class FeedView extends BaseView {
     this.lastPostId = 0;
     this.isAllPosts;
     this.isWaitPosts = true;
+    this.feedMain = document.getElementById("feed-main");
 
     const newsTextarea = document.getElementById("news-content__textarea");
 
@@ -131,7 +133,7 @@ class FeedView extends BaseView {
       newsTextarea.style.height = newsTextarea.scrollHeight - 4 + "px";
     });
 
-    document.onscroll = this.checksNewPosts.bind(this);
+    this.feedMain.onscroll = this.checksNewPosts.bind(this);
 
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
