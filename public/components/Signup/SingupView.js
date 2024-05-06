@@ -228,7 +228,7 @@ class SignupView extends BaseView {
 
     if (result) {
       document.body.innerHTML = "";
-      this.router.redirect("/feed");
+      this.router.redirect("/feed/news");
     } else {
       repeatEmail.classList.remove(correct);
     }

@@ -109,7 +109,7 @@ class LoginView extends BaseView {
 
     if (result) {
       document.body.innerHTML = "";
-      this.eventBus.emit("loginSuccess", "/feed");
+      this.eventBus.emit("loginSuccess", "/feed/news");
     } else {
       incorrectPassword.classList.remove(INPUT_CORRECT);
     }
