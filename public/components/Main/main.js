@@ -26,11 +26,6 @@ const sidebar = [
     text: "Настройки",
     icon: "settings",
   },
-  {
-    href: "/stickers",
-    text: "Стикеры",
-    icon: "star",
-  },
 ];
 
 const toolbar = [
@@ -55,9 +50,9 @@ const toolbar = [
     icon: "people",
   },
   {
-    href: "/stickers",
-    text: "Стикеры",
-    icon: "star",
+    href: "/profile/settings",
+    text: "Настройки",
+    icon: "settings",
   },
 ];
 

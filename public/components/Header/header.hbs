@@ -13,7 +13,9 @@
     {{/if}}
   </div>
   <div class="user">
+    {{#if haveNotifications}}
     <img class="user__notification-img" src="dist/images/text.png" />
+    {{/if}}
     <span id="user__username-span" class="user__username-span"
       >{{ firstName }} {{ lastName }}</span
     >
