@@ -18,11 +18,17 @@
       {{/if}}
       <div class="post-author-info">
         {{#if isGroup}}
-        <a href="/group/{{ this.author.groupId }}">
+        <a
+          href="/group/{{ this.author.groupId }}"
+          class="post-author__name-href"
+        >
           <span class="post-author__name-span">{{ this.author.name }}</span>
         </a>
         {{else}}
-        <a href="/profile/{{ this.author.userId }}">
+        <a
+          href="/profile/{{ this.author.userId }}"
+          class="post-author__name-href"
+        >
           <span class="post-author__name-span"
             >{{ this.author.firstName }} {{ this.author.lastName }}</span
           >

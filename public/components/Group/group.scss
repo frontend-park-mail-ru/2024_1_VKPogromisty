@@ -77,6 +77,18 @@
   &__name-span {
     font-weight: bolder;
   }
+
+  &__name-href {
+    @include none-decoration;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 350px;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
+  }
 }
 
 .group-content__date-of-birth-span {
@@ -251,10 +263,22 @@
 }
 
 .group-admin-info {
-  @include column-flexible;
-  width: 100%;
-  border-radius: 7px;
-  border: 1px solid black;
+  @include row-flexible;
+  align-items: center;
+  justify-content: start;
+  margin-bottom: 20px;
+
+  &__name-href {
+    @include none-decoration;
+  }
+
+  &__name-span {
+    font-size: 18px;
+    padding: 5px;
+    border-radius: 7px;
+    background-color: #ffdcdc;
+    border: 0.1px solid #ffafaf;
+  }
 }
 
 .group-admins {
@@ -331,6 +355,14 @@
     font-size: 18px;
     font-weight: bold;
     margin-left: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
   }
 
   &__created-at-span {

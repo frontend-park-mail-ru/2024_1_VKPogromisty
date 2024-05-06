@@ -19,7 +19,19 @@ class FeedModel extends BaseModel {
 
     this.eventBus.addEventListener(
       "readyRenderPosts",
-      this.getFriendPosts.bind(this),
+      this.getMyPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "readyRenderAllPosts",
+      this.getAllPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "readyRenderFriendsPosts",
+      this.getFriendsPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "readyRenderGroupsPosts",
+      this.getGroupsPosts.bind(this),
     );
     this.eventBus.addEventListener(
       "clickedPublishPost",
@@ -32,15 +44,90 @@ class FeedModel extends BaseModel {
    *
    * @param {number} lastPostId - The ID of last post at feed
    */
-  async getFriendPosts(lastPostId) {
+  async getMyPosts(lastPostId) {
+    const result = await this.postService.getAllPosts(lastPostId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("getPostsSuccess", {
+          posts: result.body,
+          isMy: true,
+        });
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Gets different posts
+   *
+   * @param {number} lastPostId - The last post ID
+   */
+  async getAllPosts(lastPostId) {
+    const result = await this.postService.getNewPosts(lastPostId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("getPostsSuccess", { posts: result.body });
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Gets friends' posts
+   *
+   * @param {number} lastPostId - The last post ID
+   */
+  async getFriendsPosts(lastPostId) {
     const result = await this.postService.getFriendsPosts(lastPostId);
 
     switch (result.status) {
       case 200:
-        this.eventBus.emit("getPostsSuccess", result.body);
+        this.eventBus.emit("getFriendsPostSuccess", result.body);
         break;
       case 401:
         this.router.redirect("/login");
+        break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Gets groups' posts
+   *
+   * @param {number} lastPostId - The last post ID
+   */
+  async getGroupsPosts(lastPostId) {
+    const result = await this.postService.getGroupsPosts(lastPostId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("getGroupsPostSuccess", result.body);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
         break;
       default:
         this.eventBus.emit("serverError", {});

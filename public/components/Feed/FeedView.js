@@ -41,20 +41,16 @@ const staticUrl = `${API_URL}/static`;
 
 const rightSidebar = [
   {
-    href: "/nothing",
+    href: "/feed/news",
     text: "НОВОСТИ",
   },
   {
-    href: "/nothing",
+    href: "/feed/groups",
     text: "СООБЩЕСТВА",
   },
   {
-    href: "/nothing",
+    href: "/feed/friends",
     text: "ДРУЗЬЯ",
-  },
-  {
-    href: "/nothing",
-    text: "ФОТОГРАФИИ",
   },
 ];
 
@@ -76,7 +72,15 @@ class FeedView extends BaseView {
 
     this.eventBus.addEventListener(
       "getPostsSuccess",
-      this.renderPosts.bind(this),
+      this.renderNewsPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "getFriendsPostSuccess",
+      this.renderFriendsPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "getGroupsPostSuccess",
+      this.renderGroupsPosts.bind(this),
     );
     this.eventBus.addEventListener(
       "publishedPostSuccess",
@@ -93,22 +97,43 @@ class FeedView extends BaseView {
    */
   checksNewPosts() {
     if (
-      document.body.scrollHeight - window.scrollY <= 1500 &&
-      !this.isAllPosts &&
+      this.feedMain.scrollHeight - this.feedMain.scrollTop <=
+        3 * window.innerHeight &&
       !this.isWaitPosts
     ) {
-      this.eventBus.emit("readyRenderPosts", this.lastPostId);
+      if (!this.isAllMyPosts) {
+        switch (this.path) {
+          case "news":
+            this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
+            break;
+          case "friends":
+            this.eventBus.emit("readyRenderFriendsPosts", this.lastPostMyId);
+            break;
+          case "groups":
+            this.eventBus.emit("readyRenderGroupsPosts", this.lastPostMyId);
+            break;
+        }
+      } else {
+        if (!this.isAllPosts) {
+          if (this.path === "news") {
+            this.eventBus.emit("readyRenderAllPosts", this.lastPostAllId);
+          }
+        }
+      }
       this.isWaitPosts = true;
     }
   }
 
   /**
    * Renders main part of feed
+   *
+   * @param {string} path - The next path
    */
-  renderFeedMain() {
-    const { userId, avatar, firstName, lastName } = UserState;
+  renderFeedMain(path) {
+    let { userId, avatar, firstName, lastName } = UserState;
     const template = require("./feedMain.hbs");
-    const userAvatar = `${staticUrl}/${avatar}`;
+    avatar = avatar || "default_avatar.png";
+    const userAvatar = `${staticUrl}/user-avatars/${avatar}`;
 
     new Header(document.body).renderForm({
       userId,
@@ -120,9 +145,12 @@ class FeedView extends BaseView {
 
     this.mainElement = document.getElementById("activity");
     this.mainElement.innerHTML = template({ userId, userAvatar, rightSidebar });
-    this.lastPostId = 0;
-    this.isAllPosts;
+    this.lastPostMyId = 0;
+    this.lastPostAllId = 0;
+    this.isAllMyPosts = false;
+    this.isAllPosts = false;
     this.isWaitPosts = true;
+    this.feedMain = document.getElementById("feed-main");
 
     const newsTextarea = document.getElementById("news-content__textarea");
 
@@ -131,7 +159,7 @@ class FeedView extends BaseView {
       newsTextarea.style.height = newsTextarea.scrollHeight - 4 + "px";
     });
 
-    document.onscroll = this.checksNewPosts.bind(this);
+    this.feedMain.onscroll = this.checksNewPosts.bind(this);
 
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
@@ -183,8 +211,22 @@ class FeedView extends BaseView {
       });
     }
 
+    this.path = path.section;
+
     this.postsElement = document.getElementById("posts");
-    this.eventBus.emit("readyRenderPosts", this.lastPostId);
+
+    switch (this.path) {
+      case "news":
+        this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
+        break;
+      case "friends":
+        document.getElementById("");
+        this.eventBus.emit("readyRenderFriendsPosts", this.lastPostAllId);
+        break;
+      case "groups":
+        this.eventBus.emit("readyRenderGroupsPosts", this.lastPostAllId);
+        break;
+    }
   }
 
   /**
@@ -192,21 +234,136 @@ class FeedView extends BaseView {
    *
    * @param {PostInfo[]} posts - The posts to feed
    */
-  renderPosts(posts) {
+  renderNewsPosts({ posts, isMy }) {
     this.isWaitPosts = false;
 
     document.getElementById("posts-sceleton")?.remove();
 
     if (posts.length > 0) {
       posts.forEach((elem) => {
-        if (elem.post.postId < this.lastPostId || this.lastPostId === 0) {
-          this.lastPostId = elem.post.postId;
+        if (isMy) {
+          if (elem.post.postId < this.lastPostMyId || this.lastPostMyId === 0) {
+            this.lastPostMyId = elem.post.postId;
+          }
+        } else {
+          if (
+            elem.post.postId < this.lastPostAllId ||
+            this.lastPostAllId === 0
+          ) {
+            this.lastPostAllId = elem.post.postId;
+          }
         }
       });
       posts.forEach((elem) => {
-        this.postController.renderPostView(elem);
+        let author = elem.author;
+        if (elem.group) {
+          author = {
+            name: elem.group?.name,
+            groupId: elem.group?.id,
+            avatar: elem.group?.avatar,
+          };
+        }
+        this.postController.renderPostView({
+          isGroup: elem.group,
+          post: elem.post,
+          author,
+        });
       });
     } else {
+      if (isMy) {
+        this.isAllMyPosts = true;
+      } else {
+        document
+          .getElementById("no-more-posts")
+          .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
+      }
+    }
+
+    if (!this.isAllPosts) {
+      const imgSceleton = document.createElement("img");
+
+      imgSceleton.classList.add("sceleton-img");
+      imgSceleton.setAttribute("id", "posts-sceleton");
+      imgSceleton.setAttribute("src", "dist/images/loading.png");
+
+      this.postsElement.appendChild(imgSceleton);
+    }
+
+    this.checksNewPosts();
+  }
+
+  /**
+   * Renders friend's posts
+   *
+   * @param {PostInfo[]} posts
+   */
+  renderFriendsPosts(posts) {
+    this.isWaitPosts = false;
+
+    document.getElementById("posts-sceleton")?.remove();
+
+    if (posts.length > 0) {
+      posts.forEach((elem) => {
+        if (elem.post.postId < this.lastPostMyId || this.lastPostMyId === 0) {
+          this.lastPostMyId = elem.post.postId;
+        }
+      });
+      posts.forEach((elem) => {
+        this.postController.renderPostView({
+          post: elem.post,
+          author: elem.author,
+        });
+      });
+    } else {
+      this.isAllMyPosts = true;
+      this.isAllPosts = true;
+      document
+        .getElementById("no-more-posts")
+        .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
+    }
+
+    if (!this.isAllMyPosts) {
+      const imgSceleton = document.createElement("img");
+
+      imgSceleton.classList.add("sceleton-img");
+      imgSceleton.setAttribute("id", "posts-sceleton");
+      imgSceleton.setAttribute("src", "dist/images/loading.png");
+
+      this.postsElement.appendChild(imgSceleton);
+    }
+
+    this.checksNewPosts();
+  }
+
+  /**
+   * Renders groups' posts
+   *
+   * @param {PostInfo[]} posts
+   */
+  renderGroupsPosts(posts) {
+    this.isWaitPosts = false;
+
+    document.getElementById("posts-sceleton")?.remove();
+
+    if (posts.length > 0) {
+      posts.forEach((elem) => {
+        if (elem.post.postId < this.lastPostMyId || this.lastPostMyId === 0) {
+          this.lastPostMyId = elem.post.postId;
+        }
+      });
+      posts.forEach((elem) => {
+        this.postController.renderPostView({
+          isGroup: true,
+          post: elem.post,
+          author: {
+            name: elem.group?.name,
+            groupId: elem.group?.id,
+            avatar: elem.group?.avatar,
+          },
+        });
+      });
+    } else {
+      this.isAllMyPosts = true;
       this.isAllPosts = true;
       document
         .getElementById("no-more-posts")
@@ -222,6 +379,8 @@ class FeedView extends BaseView {
 
       this.postsElement.appendChild(imgSceleton);
     }
+
+    this.checksNewPosts();
   }
 
   /**

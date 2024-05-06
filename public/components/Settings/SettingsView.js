@@ -49,7 +49,8 @@ class SettingsView extends BaseView {
    * Renders main part of page
    */
   renderSettingsMain() {
-    const { userId, avatar, firstName, lastName, email } = UserState;
+    let { userId, avatar, firstName, lastName, email } = UserState;
+    avatar = avatar || "default_avatar.png";
 
     new Header(document.body).renderForm({
       userId,
@@ -136,6 +137,9 @@ class SettingsView extends BaseView {
       firstNameForm.value = firstName;
       lastNameForm.value = lastName;
       emailForm.value = email;
+      document
+        .getElementById("prewatch")
+        .setAttribute("src", `${staticUrl}/user-avatars/${avatar}`);
       incorrectEmail.classList.add(correct);
       incorrectRepeatPassword.classList.add(correct);
       incorrectPassword.classList.add(correct);
@@ -157,7 +161,7 @@ class SettingsView extends BaseView {
 
       if (!validExtensions.includes(typeFile)) {
         incorrectAvatarForm.classList.remove(correct);
-        avatar.files = null;
+        avatarForm.files = null;
       } else {
         document.getElementById("prewatch").setAttribute("src", img);
       }
@@ -180,7 +184,15 @@ class SettingsView extends BaseView {
     });
 
     document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickedLogoutButton", {});
+      customConfirm(
+        (() => {
+          this.eventBus.emit("clickedLogoutButton", {});
+        }).bind(this),
+        "Выход",
+        "Вы уверены, что хотите выйти из аккаунта?",
+        "Да",
+        "Нет",
+      );
     });
   }
 
@@ -286,7 +298,7 @@ class SettingsView extends BaseView {
    */
   changeSuccess() {
     const img = document.getElementById("user__avatar-img");
-    img.setAttribute("src", `${staticUrl}/${UserState.avatar}`);
+    img.setAttribute("src", `${staticUrl}/user-avatars/${UserState.avatar}`);
 
     const fullHeaderName = document.getElementById("user__username-span");
     fullHeaderName.innerHTML = `${UserState.firstName} ${UserState.lastName}`;

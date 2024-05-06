@@ -4,6 +4,7 @@ import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 import { formatDayMonthYear } from "../../modules/dateRemaking.js";
 import UserState from "../UserState.js";
+import { customConfirm } from "../../modules/windows.js";
 import "./friends.scss";
 
 /**
@@ -80,6 +81,10 @@ class FriendsView extends BaseView {
       this.deleteSubscribe.bind(this),
     );
     this.eventBus.addEventListener(
+      "searchedFriendSuccess",
+      this.renderFoundFriend.bind(this),
+    );
+    this.eventBus.addEventListener(
       "serverError",
       this.serverErrored.bind(this),
     );
@@ -103,6 +108,50 @@ class FriendsView extends BaseView {
 
     this.mainElem = document.getElementById("activity");
 
+    if (!document.getElementById("friends")) {
+      this.mainElem.innerHTML = this.template({
+        rightSidebar,
+      });
+    }
+
+    this.friendElem = document.getElementById("friends");
+
+    const searchInput = document.getElementById("search-friend__input");
+    const searchButton = document.getElementById("search-friend__button");
+
+    searchButton.addEventListener("click", () => {
+      if (searchInput.value.trim() === "") {
+        return;
+      }
+
+      this.eventBus.emit("clickedSearchFriend", searchInput.value);
+    });
+
+    let isWaitingSearch = true;
+    searchInput.addEventListener("input", () => {
+      if (isWaitingSearch) {
+        isWaitingSearch = false;
+        setTimeout(() => {
+          isWaitingSearch = true;
+          if (searchInput.value.trim() === "") {
+            switch (path) {
+              case "subscriptions":
+                this.eventBus.emit("readyRenderSubscriptions", {});
+                break;
+              case "subscribers":
+                this.eventBus.emit("readyRenderSubscribers", {});
+                break;
+              default:
+                this.eventBus.emit("readyRenderFriends", {});
+            }
+            return;
+          }
+
+          this.eventBus.emit("clickedSearchFriend", searchInput.value);
+        }, 500);
+      }
+    });
+
     switch (path) {
       case "subscriptions":
         this.eventBus.emit("readyRenderSubscriptions", {});
@@ -121,22 +170,27 @@ class FriendsView extends BaseView {
    * @param {Friend[]} friends
    */
   renderFriends(friends) {
-    const isFriends = true;
-    const noFriends = friends == null;
+    const template = require("./friends.hbs");
+    const noFriends = friends.length === 0;
+
+    document.getElementById("no-something").innerHTML = "";
+    this.friendElem.innerHTML = "";
 
     if (!noFriends) {
       friends.forEach((elem) => {
+        elem.avatar = elem.avatar || "default_avatar.png";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
+        this.friendElem.innerHTML += template({
+          staticUrl,
+          elem,
+          isFriends: true,
+          isSubscribers: false,
+          isSubscriptions: false,
+        });
       });
+    } else {
+      document.getElementById("no-something").innerHTML = "У вас нет друзей";
     }
-
-    this.mainElem.innerHTML = this.template({
-      staticUrl,
-      friends,
-      rightSidebar,
-      isFriends,
-      noFriends,
-    });
 
     const friendsLabel = document.getElementById("friends-label");
 
@@ -149,8 +203,16 @@ class FriendsView extends BaseView {
 
     addFriends.forEach((elem) => {
       elem.addEventListener("click", () => {
-        const friendId = elem.dataset.id;
-        this.eventBus.emit("clickedUnsubscribeButton", friendId);
+        customConfirm(
+          (() => {
+            const friendId = elem.dataset.id;
+            this.eventBus.emit("clickedUnsubscribeButton", friendId);
+          }).bind(this),
+          "Удалить друга?",
+          "Вы уверены, что хотите удалить друга?",
+          "Удалить",
+          "Отмена",
+        );
       });
     });
   }
@@ -160,22 +222,28 @@ class FriendsView extends BaseView {
    * @param {Friend[]} friends
    */
   renderSubscribers(friends) {
-    const isSubscribers = true;
-    const noFriends = friends == null;
+    const template = require("./friends.hbs");
+    const noFriends = friends.length === 0;
+
+    document.getElementById("no-something").innerHTML = "";
+    this.friendElem.innerHTML = "";
 
     if (!noFriends) {
       friends.forEach((elem) => {
+        elem.avatar = elem.avatar || "default_avatar.png";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
+        this.friendElem.innerHTML += template({
+          staticUrl,
+          elem,
+          isFriends: false,
+          isSubscribers: true,
+          isSubscriptions: false,
+        });
       });
+    } else {
+      document.getElementById("no-something").innerHTML =
+        "У вас нет подписчиков";
     }
-
-    this.mainElem.innerHTML = this.template({
-      staticUrl,
-      friends,
-      rightSidebar,
-      isSubscribers,
-      noFriends,
-    });
 
     const subscribersLabel = document.getElementById("subscribers-label");
 
@@ -208,22 +276,28 @@ class FriendsView extends BaseView {
    * @param {Friend[]} friends
    */
   renderSubscriptions(friends) {
-    const isSubscriptions = true;
-    const noFriends = friends == null;
+    const template = require("./friends.hbs");
+    const noFriends = friends.length === 0;
+
+    document.getElementById("no-something").innerHTML = "";
+    this.friendElem.innerHTML = "";
 
     if (!noFriends) {
       friends.forEach((elem) => {
+        elem.avatar = elem.avatar || "default_avatar.png";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
+        this.friendElem.innerHTML += template({
+          staticUrl,
+          elem,
+          isFriends: false,
+          isSubscribers: false,
+          isSubscriptions: true,
+        });
       });
+    } else {
+      document.getElementById("no-something").innerHTML =
+        "Вы ни на кого не подписаны";
     }
-
-    this.mainElem.innerHTML = this.template({
-      staticUrl,
-      friends,
-      rightSidebar,
-      isSubscriptions,
-      noFriends,
-    });
 
     const subscriptionsLabel = document.getElementById("subscriptions-label");
 
@@ -240,6 +314,30 @@ class FriendsView extends BaseView {
         this.eventBus.emit("clickedUnsubscribeButton", friendId);
       });
     });
+  }
+
+  renderFoundFriend(people) {
+    const template = require("./friends.hbs");
+    const isSubscribers = true;
+    const noFriends = people === null;
+
+    document.getElementById("no-something").innerHTML = "";
+    this.friendElem.innerHTML = "";
+
+    if (!noFriends) {
+      people.forEach((elem) => {
+        elem.avatar = elem.avatar || "default_avatar.png";
+        elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
+        this.friendElem.innerHTML += template({
+          staticUrl,
+          elem,
+          isSubscribers,
+          isSearch: true,
+        });
+      });
+    } else {
+      document.getElementById("no-something").innerHTML = "Нет результатов";
+    }
   }
 
   /**

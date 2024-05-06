@@ -48,7 +48,6 @@ export function customConfirm(reason, title, brief, ok = "Да", cancel = "Не�
 
   const confirmWindow = document.createElement("div");
   confirmWindow.classList.add("confirm-window");
-  confirmWindow.style.top = window.scrollY + 200 + "px";
 
   confirmWindow.innerHTML = template({ title, brief, ok, cancel });
   document.body.appendChild(confirmWindow);

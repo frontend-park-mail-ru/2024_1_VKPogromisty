@@ -87,8 +87,10 @@ class PostView extends BaseView {
    *
    * @param {PostInfo} postInfo - The info about current post
    */
-  renderPost({ isGroup, post, author, publish, canDelete }) {
-    const { userId, avatar } = UserState;
+  renderPost({ isGroup, post, author, publish }) {
+    let { userId, avatar } = UserState;
+    avatar = avatar || "default_avatar.png";
+    author.avatar = author.avatar || "default_avatar.png";
 
     const template = require("./post.hbs");
     const postId = post.postId;
@@ -109,7 +111,7 @@ class PostView extends BaseView {
     }
 
     if (isGroup) {
-      isMe = canDelete;
+      isMe = post.authorId === userId;
     }
 
     if (publish) {

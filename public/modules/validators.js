@@ -18,34 +18,18 @@ export function validateEmail(email) {
 
 /**
  * Validates the date of birth
- * @param {string} inDay
- * @param {string} inMonth
- * @param {string} inYear
+ * @param {string} date - The whole date
  * @returns {boolean}
  */
-export function validateDateOfBirth(inDay, inMonth, inYear) {
-  const intDay = parseInt(inDay);
-  const intMonth = parseInt(inMonth);
-  const intYear = parseInt(inYear);
-
-  if (Number.isNaN(intDay) || Number.isNaN(intMonth) || Number.isNaN(intYear)) {
+export function validateDateOfBirth(date) {
+  if (date === "") {
     return false;
   }
 
-  const providedDate = new Date(intYear, intMonth - 1, intDay);
+  const year = date.split("-")[0];
   const currentDate = new Date();
 
-  if (
-    providedDate.getDate() !== intDay ||
-    providedDate.getMonth() + 1 !== intMonth ||
-    providedDate.getFullYear() !== intYear ||
-    intYear >= currentDate.getFullYear() ||
-    intYear < 1900
-  ) {
-    return false;
-  }
-
-  return true;
+  return new Date(date) <= currentDate && year >= 1900;
 }
 
 /**

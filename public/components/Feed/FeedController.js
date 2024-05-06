@@ -4,6 +4,11 @@ import EventBus from "../../MVC/EventBus.js";
 
 const incomingEvents = [
   "readyRenderPosts",
+  "readyRenderAllPosts",
+  "readyRenderFriendsPosts",
+  "readyRenderGroupsPosts",
+  "getFriendsPostSuccess",
+  "getGroupsPostSuccess",
   "getPostsSuccess",
   "clickedPublishPost",
   "publishedPostSuccess",
@@ -29,10 +34,12 @@ class FeedController {
 
   /**
    * Renders Feed
+   *
+   * @param {string} path - The next path
    * @returns {void}
    */
-  renderFeed() {
-    this.feedView.renderFeedMain();
+  renderFeed(path) {
+    this.feedView.renderFeedMain(path);
   }
 }
 

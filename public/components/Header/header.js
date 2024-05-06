@@ -42,10 +42,11 @@ export class Header {
    */
   renderForm({ userId, firstName, lastName, avatar }) {
     document.onscroll = null;
-    if (document.getElementById("header") === null) {
+    if (!document.getElementById("header")) {
       const template = require("./header.hbs");
+      avatar = avatar || "default_avatar.png";
 
-      this.#parent.innerHTML += template({
+      this.#parent.innerHTML = template({
         avatar,
         firstName,
         lastName,

@@ -2,7 +2,7 @@
   <div class="profile-poster-view">
     <img
       class="profile-poster__avatar-img"
-      src="{{ staticUrl }}/{{ this.avatar }}"
+      src="{{ staticUrl }}/user-avatars/{{ this.avatar }}"
       alt="Your avatar"
     />
     <div class="profile-brief">
@@ -73,7 +73,7 @@
   </div>
   <div class="profile-wrapper">
     {{#if isMe}}
-    <a href="/settings">
+    <a href="/profile/settings">
       <img
         class="profile-wrapper__settings-img"
         src="dist/images/setting.png"
@@ -92,7 +92,7 @@
         ><img
           id="user-avatar-news"
           class="news-avatar__img"
-          src="{{ staticUrl }}/{{ this.avatar }}"
+          src="{{ staticUrl }}/user-avatars/{{ this.avatar }}"
       /></a>
     </div>
     <div class="news">

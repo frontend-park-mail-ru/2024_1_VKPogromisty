@@ -5,6 +5,7 @@ import PostController from "../Post/PostController.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import { customConfirm } from "../../modules/windows.js";
 import "./profile.scss";
 
 const staticUrl = `${API_URL}/static`;
@@ -132,7 +133,8 @@ class ProfileView extends BaseView {
    */
   checksNewPosts() {
     if (
-      document.body.scrollHeight - window.scrollY <= 1500 &&
+      this.feedMain.scrollHeight - this.feedMain.scrollTop <=
+        3 * window.innerHeight &&
       !this.isAllPosts &&
       !this.isWaitPosts
     ) {
@@ -156,7 +158,8 @@ class ProfileView extends BaseView {
   renderProfile({ User, isSubscribedTo, isSubscriber }) {
     User.dateOfBirth = formatDayMonthYear(User.dateOfBirth);
 
-    const { userId, firstName, lastName, dateOfBirth, avatar } = User;
+    let { userId, firstName, lastName, dateOfBirth, avatar } = User;
+    avatar = avatar || "default_avatar.png";
     this.mainElement = document.getElementById("activity");
     this.isSubscriber = isSubscriber;
     const isMe = (this.isMe = Number(this.userId) === Number(UserState.userId));
@@ -178,6 +181,7 @@ class ProfileView extends BaseView {
     this.lastPostId = 0;
     this.isAllPosts = false;
     this.isWaitPosts = true;
+    this.feedMain = document.getElementById("feed-main");
 
     const newsTextarea = document.getElementById("news-content__textarea");
 
@@ -188,17 +192,15 @@ class ProfileView extends BaseView {
       });
     }
 
-    document.onscroll = this.checksNewPosts.bind(this);
+    this.feedMain.onscroll = this.checksNewPosts.bind(this);
 
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
     const fileButton = document.getElementById("news__file-button");
 
-    if (fileButton) {
-      fileButton.addEventListener("click", () => {
-        fileInput.click();
-      });
-    }
+    fileButton?.addEventListener("click", () => {
+      fileInput.click();
+    });
 
     if (fileInput) {
       fileInput.addEventListener("change", () => {
@@ -219,26 +221,24 @@ class ProfileView extends BaseView {
       });
     }
 
-    if (publishButton !== null) {
-      publishButton.addEventListener("click", () => {
-        const content = document.getElementById("news-content__textarea").value;
+    publishButton?.addEventListener("click", () => {
+      const content = document.getElementById("news-content__textarea").value;
 
-        if (content.trim() === "" && fileInput.files.length === 0) {
-          return;
-        }
+      if (content.trim() === "" && fileInput.files.length === 0) {
+        return;
+      }
 
-        this.eventBus.emit("clickedPublishPost", {
-          content: content,
-          attachments: fileInput.files,
-        });
-
-        document.getElementById("news-img-content").innerHTML = "";
-        const textarea = document.getElementById("news-content__textarea");
-        textarea.value = "";
-        textarea.style.height = "60px";
-        fileInput.value = null;
+      this.eventBus.emit("clickedPublishPost", {
+        content: content,
+        attachments: fileInput.files,
       });
-    }
+
+      document.getElementById("news-img-content").innerHTML = "";
+      const textarea = document.getElementById("news-content__textarea");
+      textarea.value = "";
+      textarea.style.height = "60px";
+      fileInput.value = null;
+    });
 
     this.subscribeUser = document.getElementById(`subscribe-${this.userId}`);
     this.sendMessageUser = document.getElementById(
@@ -254,7 +254,15 @@ class ProfileView extends BaseView {
       ) {
         this.eventBus.emit("clickedSubscribe", this.userId);
       } else {
-        this.eventBus.emit("clickedUnsubscribe", this.userId);
+        customConfirm(
+          (() => {
+            this.eventBus.emit("clickedUnsubscribe", this.userId);
+          }).bind(this),
+          "Удалить друга?",
+          "Вы уверены, что хотите удалить друга?",
+          "Удалить",
+          "Отмена",
+        );
       }
     });
 
@@ -353,6 +361,8 @@ class ProfileView extends BaseView {
 
       this.postsElement.appendChild(imgSceleton);
     }
+
+    this.checksNewPosts();
   }
 
   /**

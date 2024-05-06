@@ -136,12 +136,17 @@ class GroupModel extends BaseModel {
    * @param {number} groupId - The ID of group
    * @return {void}
    */
-  async subscribeToGroup(groupId) {
+  async subscribeToGroup({ groupId, isCreated = false }) {
     const result = await this.groupService.postSubscription(groupId);
 
     switch (result.status) {
       case 201:
-        this.eventBus.emit("subscribedSuccess", {});
+        if (isCreated) {
+          this.router.redirect(`/group/${groupId}`);
+        } else {
+          this.eventBus.emit("subscribedSuccess", {});
+        }
+
         break;
       case 401:
         this.router.redirect("/login");
@@ -429,14 +434,14 @@ class GroupModel extends BaseModel {
       case 201:
         this.eventBus.emit("addsAdminSuccess", userId);
         break;
-      case 400:
-        this.eventBus.emit("gaveIncorrectUserId", result.body);
-        break;
       case 401:
         this.router.redirect("/login");
         break;
       case 403:
         this.router.redirect("/feed");
+        break;
+      case 404:
+        this.eventBus.emit("gaveIncorrectUserId", result.body);
         break;
       default:
         this.eventBus.emit("serverError", {});

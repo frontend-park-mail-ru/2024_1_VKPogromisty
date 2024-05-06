@@ -85,17 +85,13 @@ export class Routing {
 
     const slugs = foundedUrl.path.exec(url).groups;
 
-    if (foundedUrl.akaPath === "feed" && window.location.pathname !== "/") {
+    if (foundedUrl.akaPath === "landing" && window.location.pathname !== "/") {
       document.title = "Not Found";
       if (addToHistory) {
         history.pushState({ url: url }, "", url);
       }
       renderNotFound();
       return;
-    }
-
-    if (foundedUrl.akaPath === "feed") {
-      url = "feed";
     }
 
     const state = {
@@ -109,7 +105,6 @@ export class Routing {
     }
 
     document.title = `Socio - ${foundedUrl.title}`;
-    document.onscroll = null;
     document.onkeydown = null;
 
     foundedUrl.func(slugs);

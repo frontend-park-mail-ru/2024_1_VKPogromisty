@@ -11,9 +11,11 @@
 .form {
   @include column-flexible;
   justify-content: center;
+  align-items: center;
 }
 .login-text {
   color: #000000;
+  text-align: center;
 
   &__first-part {
     font-size: 40px;

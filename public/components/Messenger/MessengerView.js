@@ -173,7 +173,7 @@ class MessengerView extends BaseView {
         const updatedChatter = oldDialog.firstElementChild;
         const updatedDialog = document.createElement("div");
         updatedDialog.classList.add("dialog");
-        updatedDialog.setAttribute("data-id", message.id);
+        updatedDialog.setAttribute("data-id", message.senderId);
         updatedDialog.appendChild(updatedChatter);
         this.dialogsElement.insertBefore(
           updatedDialog,
@@ -236,15 +236,19 @@ class MessengerView extends BaseView {
     const message = messages[0];
 
     if (message) {
+      let me = message.receiverId;
+      let friend = message.senderId;
+      if (me !== UserState.userId) {
+        [me, friend] = [friend, me];
+      }
       let deletedPlace = document.querySelector(
-        `#dialog-${message.senderId} .chatter-content`,
+        `#dialog-${friend} .chatter-content`,
       );
-      let currentDialog = message.senderId;
+      let currentDialog = friend;
+
       if (!deletedPlace) {
-        deletedPlace = document.querySelector(
-          `#dialog-${message.receiverId} .chatter-content`,
-        );
-        currentDialog = message.receiverId;
+        deletedPlace = document.querySelector(`#dialog-${me} .chatter-content`);
+        currentDialog = me;
       }
 
       if (deletedPlace) {
@@ -252,10 +256,11 @@ class MessengerView extends BaseView {
         deletedPlace.firstElementChild.innerHTML = message.content;
         deletedPlace.firstElementChild.setAttribute(
           "id",
-          `chatter-content__message-span-${message.receiverId}-${message.id}`,
+          `chatter-content__message-span-${me}-${message.id}`,
         );
         deletedPlace.firstElementChild.nextElementSibling.innerHTML =
           formatMinutesHours(message.createdAt);
+
         const deletedDialog = document.getElementById(
           `dialog-${currentDialog}`,
         );
@@ -314,6 +319,9 @@ class MessengerView extends BaseView {
     const noDialogs = document.getElementById("no-dialogs__span");
 
     dialogs.forEach((elem) => {
+      elem.user1.avatar = elem.user1.avatar || "default_avatar.png";
+      elem.user2.avatar = elem.user2.avatar || "default_avatar.png";
+
       if (elem.user1.userId === UserState.userId) {
         elem.companion = elem.user2;
       } else {

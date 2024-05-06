@@ -5,9 +5,11 @@
   height: 30px;
   align-items: center;
   padding-left: 10px;
-  width: 500px;
   min-width: 100px;
   background-color: #fceeeb;
+  box-sizing: border-box;
+  width: 100%;
+  justify-content: space-between;
 
   &__magnifier-img {
     width: 16px;
@@ -17,6 +19,25 @@
 
   &__input {
     background-color: inherit;
+  }
+
+  &__button {
+    border-radius: 7px;
+    background-color: black;
+    color: white;
+    padding: 5px 10px;
+  }
+}
+
+.search-input {
+  @include row-flexible;
+  flex: 1;
+  margin-right: 10px;
+  padding: 5px;
+  border-radius: 7px;
+
+  &:hover {
+    background-color: #f1cece;
   }
 }
 
@@ -63,6 +84,18 @@
 
   &__name-span {
     font-weight: bolder;
+  }
+
+  &__name-href {
+    @include none-decoration;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
   }
 }
 
@@ -121,6 +154,10 @@
     background-color: #e0908d;
     height: 30px;
     border-radius: 7px;
+
+    @include mobile-style {
+      display: none;
+    }
   }
 
   &__send-message-img {
@@ -133,10 +170,8 @@
 .no-friends {
   text-align: center;
   margin-top: 40px;
-}
 
-@each $type in subscribers, subscriptions, friends {
-  .no-#{$type}__span {
+  &__span {
     @include no-anything;
   }
 }

@@ -99,7 +99,7 @@
       <img
         class="setting-avatar-prewatch"
         id="prewatch"
-        src="{{ this.staticUrl }}/{{ this.avatar }}"
+        src="{{ this.staticUrl }}/user-avatars/{{ this.avatar }}"
       />
     </div>
     <div class="form__input_error form__input_correct" id="incorrect-avatar">
@@ -115,7 +115,9 @@
     </button>
   </div>
 </div>
-<button class="logout-button" id="logout-button">Выйти</button>
-<button class="delete-setting__button" id="delete-setting">
-  Удалить аккаунт
-</button>
+<div class="bad-actions">
+  <button class="delete-setting__button" id="delete-setting">
+    Удалить аккаунт
+  </button>
+  <button class="logout-button" id="logout-button">Выйти</button>
+</div>
