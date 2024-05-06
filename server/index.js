@@ -14,6 +14,10 @@ app.use(
   express.static(path.resolve(__dirname, "..", "handlebars")),
 );
 
+app.get("/sw.js", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "..", "dist", "sw.js"));
+});
+
 app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "..", "dist", "index.html"));
 });

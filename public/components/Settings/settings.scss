@@ -1,0 +1,207 @@
+@import "public/index.scss";
+
+.settings {
+  border: 1px solid black;
+  border-radius: 7px;
+  background-color: #f4e3e3;
+  width: 100%;
+}
+
+.email-setting {
+  @include column-flexible;
+  width: 100%;
+  padding-right: 30%;
+  padding-left: 20px;
+  box-sizing: border-box;
+  justify-content: end;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e0908d;
+}
+
+.setting {
+  @include column-flexible;
+  width: 100%;
+  padding-right: 30%;
+  padding-left: 20px;
+  box-sizing: border-box;
+  justify-content: end;
+  padding-bottom: 5px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #e0908d;
+  }
+
+  &__span {
+    font-weight: 600;
+    width: 100px;
+    font-family: Inter, sans-serif;
+  }
+
+  &__input {
+    padding: 10px 0px 10px 10px;
+    border: 1px solid rgb(0, 0, 0, 0.3);
+    font-size: 16px;
+    background-color: $input-color;
+    border-radius: 12px;
+    height: 22px;
+    font-family: Inter, sans-serif;
+  }
+
+  &__textarea {
+    resize: none;
+    padding: 10px 0px 10px 10px;
+    border: 1px solid rgb(0, 0, 0, 0.3);
+    font-size: 16px;
+    background-color: $input-color;
+    border-radius: 12px;
+    height: 100px;
+    font-family: Inter, sans-serif;
+    width: 195px;
+  }
+}
+
+.email-setting,
+.setting {
+  padding: 10px 20px 5px 30px;
+
+  &__span {
+    margin-right: 30px;
+  }
+
+  @include mobile-style {
+    padding: 5px 20px 5px 30px;
+
+    &__span {
+      margin-bottom: 5px;
+      margin-right: 0px;
+    }
+  }
+}
+
+.setting-info {
+  @include row-flexible;
+  justify-content: space-between;
+  align-items: center;
+
+  @include mobile-style {
+    @include column-flexible;
+  }
+}
+
+.avatar-setting {
+  @include row-flexible;
+  align-items: center;
+  border-bottom: 1px solid #e0908d;
+  padding: 10px 20px;
+
+  @include mobile-style {
+    @include column-flexible;
+  }
+}
+
+.accept-setting {
+  align-items: center;
+  justify-content: center;
+  @include row-flexible;
+  margin: 15px;
+
+  &__button {
+    background-color: black;
+    color: white;
+    border-radius: 7px;
+    width: 170px;
+    height: 35px;
+    margin-right: 20px;
+  }
+
+  @include mobile-style {
+    @include column-flexible;
+    padding: 10px 0px;
+
+    &__button {
+      margin: 10px auto;
+    }
+  }
+}
+
+.cancel-setting__button {
+  background-color: inherit;
+  color: black;
+  border-radius: 7px;
+  width: 200px;
+  height: 35px;
+  font-weight: bold;
+}
+
+.delete-setting__button {
+  background-color: red;
+  color: white;
+  border-radius: 7px;
+  padding: 7px 10px;
+  font-weight: bold;
+}
+
+.logout-button {
+  background-color: black;
+  border-radius: 7px;
+  color: #fff;
+  font-weight: 700;
+  padding: 3px 10px;
+}
+
+.input-avatar__span {
+  padding: 5px 10px;
+  display: block;
+  background-color: $background-input-color;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  width: 150px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.input-avatar-setting {
+  position: relative;
+  display: inline-block;
+  transition-duration: $tramsform-duration;
+  min-height: fit-content;
+  width: 100%;
+
+  &__input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    display: block;
+    width: 0;
+    height: 0;
+  }
+}
+
+@mixin avatar-prewatch {
+  max-height: 100px;
+  max-width: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
+.setting-avatar-prewatch {
+  @include avatar-prewatch;
+  margin-left: 30px;
+  margin-right: 10px;
+}
+
+.signup-avatar-prewatch {
+  @include avatar-prewatch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bad-actions {
+  @include row-reverse-flexible;
+  justify-content: space-between;
+  margin: 30px 0 40px;
+}

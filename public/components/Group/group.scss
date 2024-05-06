@@ -1,0 +1,393 @@
+@import "public/index.scss";
+
+.search-group {
+  @include row-flexible;
+  height: 30px;
+  align-items: center;
+  padding-left: 10px;
+  min-width: 100px;
+  background-color: #fceeeb;
+  box-sizing: border-box;
+  width: 100%;
+  justify-content: space-between;
+
+  &__magnifier-img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+  }
+
+  &__input {
+    background-color: inherit;
+  }
+
+  &__button {
+    border-radius: 7px;
+    background-color: black;
+    color: white;
+    padding: 5px 10px;
+  }
+}
+
+.search-input {
+  @include row-flexible;
+}
+
+.groups {
+  width: 100%;
+  border-radius: 7px;
+  border: 1px solid black;
+}
+
+.group {
+  @include flexible;
+  align-items: center;
+
+  &__avatar-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+  }
+}
+
+.groups-field {
+  @include row-flexible;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 20px;
+  min-height: 70px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid black;
+  }
+
+  @include mobile-style {
+    padding: 5px 10px;
+  }
+}
+
+.group-info {
+  @include column-flexible;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-right: 5px;
+
+  &__name-span {
+    font-weight: bolder;
+  }
+
+  &__name-href {
+    @include none-decoration;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 350px;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
+  }
+}
+
+.group-content__date-of-birth-span {
+  color: $button-feed;
+  font-size: 13px;
+}
+
+.group-ables {
+  @include row-flexible;
+  align-items: center;
+  justify-content: space-between;
+
+  &__subs-count-span {
+    color: #928888;
+  }
+}
+
+.no-groups {
+  text-align: center;
+  margin-top: 40px;
+
+  &__span {
+    @include no-anything;
+  }
+}
+
+.group-poster {
+  width: 100%;
+  border: 1px solid black;
+  border-radius: 7px;
+  margin-bottom: 20px;
+  position: relative;
+  min-height: 300pxs;
+
+  &__avatar-img {
+    position: absolute;
+    border-radius: 50%;
+    width: 110px;
+    height: 110px;
+    border: 2px solid #f4e3e3;
+    margin-right: 20px;
+    top: -55px;
+    object-fit: cover;
+  }
+}
+
+.group-wrapper {
+  width: 100%;
+  height: 100%;
+  border-bottom: 1px solid black;
+  border-radius: inherit;
+
+  &__settings-img {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 30px;
+    cursor: pointer;
+
+    &:hover {
+      filter: invert(100%);
+    }
+  }
+}
+
+.group-poster-view {
+  @include row-flexible;
+  box-sizing: border-box;
+  position: absolute;
+  width: 100%;
+  min-height: 90px;
+  z-index: 1;
+  background-color: #f4e3e3;
+  border-radius: 7px;
+  padding-left: 20px;
+  bottom: 0px;
+  justify-content: space-between;
+  padding-right: 30px;
+
+  @include mobile-style {
+    @include column-flexible;
+  }
+}
+
+.group-wrapper__back-img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.group-brief {
+  @include column-flexible;
+  justify-content: space-around;
+  padding: 10px 0px 20px;
+  margin-left: 130px;
+
+  &__name-span {
+    font-weight: bolder;
+    font-size: 21px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
+  }
+
+  @include mobile-style {
+    padding: 10px 0;
+  }
+}
+
+.group-brief-info {
+  color: $button-feed;
+  font-size: small;
+
+  &__date-span {
+    margin-right: 5px;
+  }
+}
+
+.create-group {
+  width: 100%;
+  margin-bottom: 20px;
+
+  &__button {
+    padding: 7px 10px;
+    border-radius: 7px;
+    background-color: #ff9e7f;
+    color: white;
+  }
+}
+
+.subscribed-to-options {
+  @include row-flexible;
+  align-items: center;
+  justify-content: end;
+  padding: 10px 0px;
+
+  @each $type in subscribe, unsubscribe {
+    &__button-#{$type} {
+      color: white;
+      border-radius: 7px;
+      height: 40px;
+    }
+  }
+
+  &__button-unsubscribe {
+    background-color: #877777;
+
+    &-message {
+      margin-left: 15px;
+      background-color: #877777;
+      height: 40px;
+      border-radius: 7px;
+    }
+  }
+
+  &__button-subscribe {
+    background-color: #e0908d;
+
+    &-message {
+      margin-left: 15px;
+      background-color: #e0908d;
+      height: 40px;
+      border-radius: 7px;
+    }
+  }
+
+  &__img {
+    height: 30px;
+    width: 30px;
+    filter: invert(100%);
+  }
+}
+
+.group-admin-info {
+  @include row-flexible;
+  align-items: center;
+  justify-content: start;
+  margin-bottom: 20px;
+
+  &__name-href {
+    @include none-decoration;
+  }
+
+  &__name-span {
+    font-size: 18px;
+    padding: 5px;
+    border-radius: 7px;
+    background-color: #ffdcdc;
+    border: 0.1px solid #ffafaf;
+  }
+}
+
+.group-admins {
+  @include row-flexible;
+  margin: 5px;
+  width: 100%;
+}
+
+.admin-main {
+  @include column-flexible;
+  padding: 10px;
+  align-items: start;
+
+  &__discription-span {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+
+  &__incorrect-input {
+    margin-top: 5px;
+  }
+}
+
+.admin-adding {
+  @include row-flexible;
+  align-items: center;
+  justify-content: space-between;
+
+  border-radius: 7px;
+  border: 1px solid black;
+  padding: 10px;
+  background-color: #fddcdc;
+  width: 100%;
+  box-sizing: border-box;
+
+  &__input {
+    color: black;
+    font-size: 16px;
+    background-color: inherit;
+  }
+
+  &__button {
+    background-color: black;
+    color: white;
+    padding: 7px;
+    border-radius: 7px;
+  }
+}
+
+.admin-list {
+  @include column-flexible;
+  border: 1px solid black;
+  margin-top: 20px;
+  background-color: inherit;
+  width: 100%;
+  border-radius: 12px;
+  box-sizing: border-box;
+  padding: 20px 15px;
+}
+
+.admin {
+  @include row-flexible;
+  justify-content: space-between;
+  align-items: center;
+
+  &__avatar-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  &__name-span {
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
+  }
+
+  &__created-at-span {
+    font-size: 16px;
+    margin-left: 10px;
+
+    @include mobile-style {
+      display: none;
+    }
+  }
+
+  &__delete-button {
+    background-color: #ff6767;
+    color: white;
+    padding: 7px;
+    border-radius: 7px;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 20px;
+  }
+}
+
+.admin-info {
+  @include row-flexible;
+  align-items: center;
+  margin-right: 10px;
+}

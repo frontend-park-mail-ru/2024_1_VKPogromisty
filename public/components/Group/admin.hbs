@@ -1,0 +1,10 @@
+<div class="admin-info">
+  <img
+    src="{{ staticUrl }}/user-avatars/{{ elem.avatar }}"
+    class="admin__avatar-img"
+  />
+  <span class="admin__name-span">{{ elem.firstName }} {{ elem.lastName }}</span>
+</div>
+<button type="button" data-id="{{ elem.userId }}" class="admin__delete-button">
+  Снять права
+</button>

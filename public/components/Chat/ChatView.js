@@ -1,9 +1,14 @@
 import BaseView from "../../MVC/BaseView.js";
-import { formatMinutesHours } from "../../modules/dateRemaking.js";
+import {
+  formatDayMonthYear,
+  formatMinutesHours,
+} from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import "./message.scss";
+import { customConfirm } from "../../modules/windows.js";
 
 /**
  * A User structure
@@ -30,6 +35,7 @@ import UserState from "../UserState.js";
  */
 
 const staticUrl = `${API_URL}/static`;
+const maxMessageLength = 500;
 
 /**
  * ChatView - класс для работы с визуалом на странице.
@@ -48,10 +54,6 @@ class ChatView extends BaseView {
     this.eventBus.addEventListener(
       "receiveCompanionData",
       this.renderCompanion.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "updatedWebSocket",
-      this.updatedWebSocket.bind(this),
     );
     this.eventBus.addEventListener(
       "getMessagesSuccess",
@@ -97,14 +99,6 @@ class ChatView extends BaseView {
     this.lastMessageId = 0;
     this.isAllMessages = false;
 
-    document.getElementById("logout-button").addEventListener("click", () => {
-      this.chatElement.removeEventListener(
-        "scroll",
-        this.checksNewMessages.bind(this),
-      );
-      this.eventBus.emit("clickLogoutButton", {});
-    });
-
     document.onkeydown = (event) => {
       if (event.key === "Escape") {
         this.router.redirect("/messenger");
@@ -121,7 +115,7 @@ class ChatView extends BaseView {
     if (
       !this.isAllMessages &&
       !this.isWaitMessages &&
-      this.chatElement.scrollHeight + this.chatElement.scrollTop <= 550
+      this.chatElement.scrollHeight + this.chatElement.scrollTop <= 750
     ) {
       this.eventBus.emit("readyRenderMessages", {
         companionId: this.companionId,
@@ -137,9 +131,11 @@ class ChatView extends BaseView {
    * @param {User} user - The current companion data
    */
   renderCompanion({ User }) {
-    const { userId, avatar, firstName, lastName } = User;
+    let { userId, avatar, firstName, lastName } = User;
 
     const template = require("./chatMain.hbs");
+    const isMe = userId === UserState.userId;
+    avatar = avatar || "default_avatar.png";
 
     this.mainElement.innerHTML = template({
       userId,
@@ -147,24 +143,38 @@ class ChatView extends BaseView {
       firstName,
       lastName,
       staticUrl,
+      isMe,
     });
 
     this.chatElement = document.getElementById("messages");
+    this.previousDate = null;
 
     const input = document.getElementById("print-message__text-input");
     const sendButton = document.getElementById("message-menu__send-button");
 
     sendButton.addEventListener("click", () => {
-      if (input.value === "") {
+      let textMessage = input.value;
+      if (textMessage.trim() === "") {
         return;
       }
 
       this.chatElement.scrollTop = 0;
 
-      this.eventBus.emit("clickedSendMessage", {
-        companionId: this.companionId,
-        textContent: input.value,
-      });
+      while (textMessage.length > maxMessageLength) {
+        this.eventBus.emit("clickedSendMessage", {
+          companionId: this.companionId,
+          textContent: textMessage.substring(0, maxMessageLength),
+        });
+
+        textMessage = textMessage.substring(maxMessageLength);
+      }
+
+      if (textMessage.length > 0) {
+        this.eventBus.emit("clickedSendMessage", {
+          companionId: this.companionId,
+          textContent: textMessage,
+        });
+      }
 
       input.value = "";
       input.focus();
@@ -194,13 +204,6 @@ class ChatView extends BaseView {
       this.checksNewMessages.bind(this),
     );
 
-    this.eventBus.emit("needUpdateWebSocket", this.companionId);
-  }
-
-  /**
-   * Preparing to render messages
-   */
-  updatedWebSocket() {
     this.eventBus.emit("readyRenderMessages", {
       companionId: this.companionId,
       lastMessageId: 0,
@@ -213,15 +216,23 @@ class ChatView extends BaseView {
    * @param {Message[]} messages - The messages of conversation with current companion
    */
   renderMessages(messages) {
+    document.getElementById("messages-sceleton")?.remove();
+
     this.isWaitMessages = false;
     const template = require("./message.hbs");
     const noMessages = messages.length === 0;
 
-    if (noMessages) {
-      this.isAllMessages = true;
-    }
-
     messages.forEach((elem) => {
+      const messageDate = new Date(elem.createdAt);
+      this.previousDate = this.previousDate || messageDate;
+
+      if (
+        formatDayMonthYear(messageDate) !==
+        formatDayMonthYear(this.previousDate)
+      ) {
+        elem.changedDay = formatDayMonthYear(this.previousDate);
+        this.previousDate = messageDate;
+      }
       if (elem.content.trim() === "" && !elem.attachments) {
         this.eventBus.emit("clickedDeleteMessage", {
           messageId: elem.id,
@@ -230,6 +241,7 @@ class ChatView extends BaseView {
       } else {
         elem.isMe = elem.senderId === UserState.userId;
         elem.isUpdated = elem.createdAt !== elem.updatedAt;
+        elem.fullCreatedAt = formatDayMonthYear(elem.createdAt);
         elem.createdAt = formatMinutesHours(elem.createdAt);
         if (elem.id < this.lastMessageId || this.lastMessageId === 0) {
           this.lastMessageId = elem.id;
@@ -239,21 +251,55 @@ class ChatView extends BaseView {
 
     this.chatElement.innerHTML += template({ messages, noMessages });
 
+    if (noMessages || messages.length < 20) {
+      this.isAllMessages = true;
+      if (this.lastMessageId > 0) {
+        const lastChangedDay = document.createElement("div");
+        lastChangedDay.classList.add("changed-day");
+
+        const lastChangedDaySpan = document.createElement("span");
+        lastChangedDaySpan.classList.add("changed-day__span");
+        lastChangedDaySpan.innerHTML = formatDayMonthYear(this.previousDate);
+
+        lastChangedDay.appendChild(lastChangedDaySpan);
+
+        this.chatElement.appendChild(lastChangedDay);
+      }
+    }
+
     const trashes = document.querySelectorAll(".message__trash-basket-img");
     const edits = document.querySelectorAll(".message__edit-img");
 
     trashes.forEach((elem) => {
       elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeleteMessage", {
-          messageId: elem.dataset.id,
-          receiver: this.companionId,
-        });
+        customConfirm(
+          (() => {
+            this.eventBus.emit("clickedDeleteMessage", {
+              messageId: elem.dataset.id,
+              receiver: this.companionId,
+            });
+          }).bind(this),
+          "Удалить сообщение?",
+          "Вы уверены, что хотите удалить сообщение?",
+          "Удалить",
+          "Отмена",
+        );
       });
     });
 
     edits.forEach((elem) => {
       this.acceptUpdateListener(elem);
     });
+
+    if (!this.isAllMessages) {
+      const imgSceleton = document.createElement("img");
+
+      imgSceleton.classList.add("sceleton-img");
+      imgSceleton.setAttribute("id", "messages-sceleton");
+      imgSceleton.setAttribute("src", "dist/images/loading.png");
+
+      this.chatElement.appendChild(imgSceleton);
+    }
   }
 
   /**
@@ -272,10 +318,34 @@ class ChatView extends BaseView {
       return;
     }
 
+    const mayNewDay = this.chatElement.firstElementChild;
+    const formatToday = formatDayMonthYear(new Date());
+
+    if (
+      mayNewDay &&
+      mayNewDay.classList.contains("message-ables") &&
+      mayNewDay.dataset.timecreated !== formatToday
+    ) {
+      const lastChangedDay = document.createElement("div");
+      lastChangedDay.classList.add("changed-day");
+
+      const lastChangedDaySpan = document.createElement("span");
+      lastChangedDaySpan.classList.add("changed-day__span");
+      lastChangedDaySpan.innerHTML = formatToday;
+
+      lastChangedDay.appendChild(lastChangedDaySpan);
+
+      this.chatElement.insertBefore(
+        lastChangedDay,
+        this.chatElement.firstElementChild,
+      );
+    }
+
     const template = require("./message.hbs");
     const messages = [message];
 
     message.isMe = message.senderId === UserState.userId;
+    message.fullCreatedAt = formatDayMonthYear(message.createdAt);
     message.createdAt = formatMinutesHours(message.createdAt);
 
     this.chatElement.innerHTML =
@@ -294,10 +364,18 @@ class ChatView extends BaseView {
 
     trashes.forEach((elem) => {
       elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedDeleteMessage", {
-          messageId: elem.dataset.id,
-          receiver: this.companionId,
-        });
+        customConfirm(
+          (() => {
+            this.eventBus.emit("clickedDeleteMessage", {
+              messageId: elem.dataset.id,
+              receiver: this.companionId,
+            });
+          }).bind(this),
+          "Удалить сообщение?",
+          "Вы уверены, что хотите удалить сообщение?",
+          "Удалить",
+          "Отмена",
+        );
       });
     });
 
@@ -413,6 +491,14 @@ class ChatView extends BaseView {
 
     if (messageAtPage) {
       messageAtPage.parentElement.remove();
+    }
+
+    const undeletedChangedDay = this.chatElement.firstElementChild;
+    if (
+      undeletedChangedDay &&
+      undeletedChangedDay.classList.contains("changed-day")
+    ) {
+      undeletedChangedDay.remove();
     }
   }
 

@@ -1,5 +1,6 @@
-import "./index.css";
+import "./reset.css";
 import { Routing } from "./routes.js";
+import runtime from "serviceworker-webpack5-plugin/lib/runtime.js";
 import SignupController from "./components/Signup/SignupController.js";
 import ProfileController from "./components/Profile/ProfileController.js";
 import LoginController from "./components/Login/LoginController.js";
@@ -12,8 +13,14 @@ import WSocket from "./components/WebSocket.js";
 import FeedController from "./components/Feed/FeedController.js";
 import SettingsController from "./components/Settings/SettingsController.js";
 import CSRFProtection from "./components/CSRFProtection.js";
+import GroupController from "./components/Group/GroupController.js";
+import { renderLanding } from "./components/Landing/landing.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  if ("serviceWorker" in navigator) {
+    runtime.register();
+  }
+
   const webSocket = new WSocket(WEBSOCKET_URL);
   const router = new Routing();
   const signupController = new SignupController(router, webSocket);
@@ -24,6 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const chatController = new ChatController(router, webSocket);
   const feedController = new FeedController(router, webSocket);
   const settingsController = new SettingsController(router, webSocket);
+  const groupController = new GroupController(router, webSocket);
 
   const config = {
     paths: [
@@ -44,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Регистрация",
       },
       {
-        path: /\/feed/,
+        path: /\/feed\/(?<section>.+)/,
         func: feedController.renderFeed.bind(feedController),
         title: "Новости",
       },
@@ -54,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Профиль",
       },
       {
-        path: /\/settings/,
+        path: /\/profile\/settings/,
         func: settingsController.renderSettingsView.bind(settingsController),
         title: "Настройки",
       },
@@ -74,10 +82,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Диалог",
       },
       {
+        path: /\/groups/,
+        func: groupController.renderGroups.bind(groupController),
+        title: "Группы",
+      },
+      {
+        path: /\/group\/(?<groupId>[0-9]+)\/settings/,
+        func: groupController.renderGroupSettings.bind(groupController),
+        title: "Изменить группу",
+      },
+      {
+        path: /\/group\/(?<groupId>[0-9]+)\/admins/,
+        func: groupController.renderGroupAdmins.bind(groupController),
+        title: "Модераторы группы",
+      },
+      {
+        path: /\/group\/(?<groupId>[0-9]+)/,
+        func: groupController.renderGroup.bind(groupController),
+        title: "Группа",
+      },
+      {
+        path: /\/group\/create/,
+        func: groupController.renderGroupCreate.bind(groupController),
+        title: "Создать группу",
+      },
+      {
         path: /\//,
-        func: feedController.renderFeed.bind(feedController),
-        akaPath: "feed",
-        title: "Новости",
+        func: renderLanding,
+        akaPath: "landing",
+        title: "Социальная сеть",
       },
     ],
   };
@@ -85,18 +118,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   router.setConfig(config);
 
   const result = await CSRFProtection.updateCSRFToken();
-
   const currentPageUrl = window.location.pathname;
   switch (currentPageUrl) {
+    case "/":
     case "/login":
     case "/signup":
-    case "/":
-      if (result) {
-        await UserState.updateState();
-        router.redirect("/feed");
-      } else {
-        router.redirect(currentPageUrl, false);
-      }
+      router.redirect(currentPageUrl);
       break;
     default:
       if (result) {
@@ -104,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         webSocket.openWebSocket();
         router.redirect(currentPageUrl);
       } else {
-        router.redirect("/login", false);
+        router.redirect("/login");
       }
   }
 });

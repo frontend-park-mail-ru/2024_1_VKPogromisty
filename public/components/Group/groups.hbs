@@ -1,0 +1,24 @@
+<div class="groups-field" id="groups-field-{{ elem.id }}">
+  <div class="group" id="group-{{ elem.id }}">
+    <a href="/group/{{ elem.id }}"
+      ><img
+        class="group__avatar-img"
+        src="{{ staticUrl }}/group-avatars/{{ elem.avatar }}"
+    /></a>
+    <div class="group-info">
+      <a href="/group/{{ elem.id }}" class="group-info__name-href">
+        <span class="group-info__name-span">{{ elem.name }}</span>
+      </a>
+      <div class="group-content">
+        <span class="group-content__date-of-birth-span"
+          >Создана {{ elem.createdAt }}</span
+        >
+      </div>
+    </div>
+  </div>
+  <div class="group-ables">
+    <span class="group-ables__subs-count-span"
+      >Подписчики: {{ elem.subscribersCount }}</span
+    >
+  </div>
+</div>

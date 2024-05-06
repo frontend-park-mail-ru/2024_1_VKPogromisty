@@ -1,9 +1,13 @@
 import BaseView from "../../MVC/BaseView.js";
-import { formatMinutesHours } from "../../modules/dateRemaking.js";
+import {
+  formatDayMonthYear,
+  formatMinutesHours,
+} from "../../modules/dateRemaking.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import "./messenger.scss";
 
 /**
  * A User structure
@@ -55,16 +59,20 @@ class MessengerView extends BaseView {
     this.promissedMessages = new Map();
 
     this.eventBus.addEventListener(
-      "updatedWebSocket",
-      this.updatedWebSocket.bind(this),
-    );
-    this.eventBus.addEventListener(
       "sendMessageSuccess",
       this.sendedMessage.bind(this),
     );
     this.eventBus.addEventListener(
       "updateLastMessage",
       this.updatedMessage.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "deleteLastMessage",
+      this.deletedMessage.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "getLastMessageSuccess",
+      this.updateDeletedMessage.bind(this),
     );
     this.eventBus.addEventListener(
       "receiveProfileData",
@@ -94,9 +102,7 @@ class MessengerView extends BaseView {
     });
     new Main(document.body).renderForm(userId);
 
-    document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickedLogoutButton", {});
-    });
+    this.today = new Date();
 
     this.mainElement = document.getElementById("activity");
     this.mainElement.innerHTML = require("./messengerMain.hbs")({
@@ -104,10 +110,6 @@ class MessengerView extends BaseView {
     });
     this.dialogsElement = document.getElementById("dialogs");
 
-    this.eventBus.emit("needUpgradeWebSocket", {});
-  }
-
-  updatedWebSocket() {
     this.eventBus.emit("readyRenderDialogs", {});
   }
 
@@ -116,13 +118,29 @@ class MessengerView extends BaseView {
       return;
     }
     if (message.senderId === UserState.userId) {
-      if (document.getElementById(`dialog-${message.receiverId}`)) {
-        document.getElementById(
-          `chatter-info__message-span-${message.receiverId}`,
-        ).innerHTML = message.content;
-        document.getElementById(
-          `chatter-content__time-span-${message.receiverId}`,
-        ).innerHTML = formatMinutesHours(message.createdAt);
+      const oldDialog = document.getElementById(`dialog-${message.receiverId}`);
+
+      if (oldDialog) {
+        const messageChatter = document.querySelector(
+          `#dialog-${message.senderId} .chatter-content`,
+        );
+        messageChatter.setAttribute("id", `chatter-content-${message.id}`);
+        const updatedChatter = oldDialog.firstElementChild;
+        const updatedDialog = document.createElement("div");
+        updatedDialog.classList.add("dialog");
+        updatedDialog.setAttribute("data-id", message.id);
+        updatedDialog.appendChild(updatedChatter);
+        this.dialogsElement.insertBefore(
+          updatedDialog,
+          this.dialogsElement.firstElementChild,
+        );
+
+        oldDialog.remove();
+        updatedDialog.setAttribute("id", `dialog-${message.receiverId}`);
+
+        messageChatter.firstElementChild.innerHTML = message.content;
+        messageChatter.firstElementChild.nextElementSibling.innerHTML =
+          formatMinutesHours(message.createdAt);
       } else {
         this.promissedMessages.set(message.receiverId, {
           content: message.content,
@@ -132,23 +150,38 @@ class MessengerView extends BaseView {
         this.eventBus.emit("needGetProfile", message.receiverId);
       }
     } else {
-      if (document.getElementById(`dialog-${message.senderId}`)) {
-        const messageContent = document.querySelector(
-          `#dialog-${message.senderId} .chatter-content__message-span`,
+      const oldDialog = document.getElementById(`dialog-${message.senderId}`);
+
+      if (oldDialog) {
+        const messageChatter = document.querySelector(
+          `#dialog-${message.senderId} .chatter-content`,
         );
+        messageChatter.setAttribute("id", `chatter-content-${message.id}`);
+        const messageContent = messageChatter.firstElementChild;
         messageContent.innerHTML = message.content;
         messageContent.setAttribute(
           "id",
           `chatter-content__message-span-${message.senderId}-${message.id}`,
         );
-        const messageTime = document.querySelector(
-          `#dialog-${message.senderId} .chatter-content__time-span`,
-        );
+        const messageTime = messageContent.nextElementSibling;
         messageTime.innerHTML = formatMinutesHours(message.createdAt);
         messageTime.setAttribute(
           "id",
           `chatter-content__time-span-${message.senderId}-${message.id}`,
         );
+
+        const updatedChatter = oldDialog.firstElementChild;
+        const updatedDialog = document.createElement("div");
+        updatedDialog.classList.add("dialog");
+        updatedDialog.setAttribute("data-id", message.senderId);
+        updatedDialog.appendChild(updatedChatter);
+        this.dialogsElement.insertBefore(
+          updatedDialog,
+          this.dialogsElement.firstElementChild,
+        );
+
+        oldDialog.remove();
+        updatedDialog.setAttribute("id", `dialog-${message.senderId}`);
       } else {
         this.promissedMessages.set(message.senderId, {
           content: message.content,
@@ -158,6 +191,12 @@ class MessengerView extends BaseView {
         this.eventBus.emit("needGetProfile", message.senderId);
       }
     }
+    const chats = document.querySelectorAll(".dialog");
+    chats.forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.router.redirect(`/chat/${elem.dataset.id}`);
+      });
+    });
   }
 
   updatedMessage(message) {
@@ -165,27 +204,91 @@ class MessengerView extends BaseView {
       return;
     }
     if (message.senderId === UserState.userId) {
-      if (document.getElementById(`dialog-${message.receiverId}`)) {
-        document.getElementById(
-          `chatter-info__message-span-${message.receiverId}`,
-        ).innerHTML = message.content;
+      document.getElementById(
+        `chatter-info__message-span-${message.receiverId}`,
+      ).innerHTML = message.content;
+    } else {
+      document.getElementById(
+        `chatter-content__message-span-${message.senderId}-${message.id}`,
+      ).innerHTML = message.content;
+    }
+  }
+
+  deletedMessage(message) {
+    if (window.location.pathname !== "/messenger") {
+      return;
+    }
+    const deletedPlace = document.getElementById(
+      `chatter-content-${message.messageId}`,
+    );
+
+    if (deletedPlace) {
+      const companionId = deletedPlace.dataset.user;
+      this.eventBus.emit("needLastMessageDialog", {
+        companionId: companionId,
+        lastMessageId: message.messageId,
+        messagesAmount: 1,
+      });
+    }
+  }
+
+  updateDeletedMessage({ messages, companionId }) {
+    const message = messages[0];
+
+    if (message) {
+      let me = message.receiverId;
+      let friend = message.senderId;
+      if (me !== UserState.userId) {
+        [me, friend] = [friend, me];
+      }
+      let deletedPlace = document.querySelector(
+        `#dialog-${friend} .chatter-content`,
+      );
+      let currentDialog = friend;
+
+      if (!deletedPlace) {
+        deletedPlace = document.querySelector(`#dialog-${me} .chatter-content`);
+        currentDialog = me;
+      }
+
+      if (deletedPlace) {
+        deletedPlace.setAttribute("id", `chatter-content-${message.id}`);
+        deletedPlace.firstElementChild.innerHTML = message.content;
+        deletedPlace.firstElementChild.setAttribute(
+          "id",
+          `chatter-content__message-span-${me}-${message.id}`,
+        );
+        deletedPlace.firstElementChild.nextElementSibling.innerHTML =
+          formatMinutesHours(message.createdAt);
+
+        const deletedDialog = document.getElementById(
+          `dialog-${currentDialog}`,
+        );
+
+        deletedDialog.classList.add("dialog_deleted");
+        setTimeout(() => {
+          deletedDialog.classList.remove("dialog-deleted");
+        }, 450);
       }
     } else {
-      if (document.getElementById(`dialog-${message.senderId}`)) {
-        document.getElementById(
-          `chatter-content__message-span-${message.senderId}-${message.id}`,
-        ).innerHTML = message.content;
-      }
+      document.getElementById(`dialog-${companionId}`)?.remove();
     }
+    const chats = document.querySelectorAll(".dialog");
+    chats.forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.router.redirect(`/chat/${elem.dataset.id}`);
+      });
+    });
   }
 
   addDialog(profile) {
     const lastMessage = this.promissedMessages.get(profile.User.userId);
     this.promissedMessages.delete(profile.User.userId);
-    this.dialogsElement.innerHTML += require("./messenge.hbs")({
-      staticUrl,
-      elem: { companion: profile.User, lastMessage },
-    });
+    this.dialogsElement.innerHTML =
+      require("./messenge.hbs")({
+        staticUrl,
+        elem: { companion: profile.User, lastMessage },
+      }) + this.dialogsElement.innerHTML;
     const chats = document.querySelectorAll(".dialog");
     chats.forEach((elem) => {
       elem.addEventListener("click", () => {
@@ -200,21 +303,44 @@ class MessengerView extends BaseView {
    * @param {Dialog[]} dialogs
    */
   renderDialogs(dialogs) {
+    document.getElementById("dialogs-sceleton")?.remove();
+
+    if (dialogs.length === 0) {
+      document
+        .getElementById("no-dialogs__span")
+        .classList.replace(
+          "no-dialogs__span_invisible",
+          "no-dialogs__span_visible",
+        );
+      return;
+    }
+
     const template = require("./messenge.hbs");
     const noDialogs = document.getElementById("no-dialogs__span");
 
     dialogs.forEach((elem) => {
+      elem.user1.avatar = elem.user1.avatar || "default_avatar.png";
+      elem.user2.avatar = elem.user2.avatar || "default_avatar.png";
+
       if (elem.user1.userId === UserState.userId) {
         elem.companion = elem.user2;
       } else {
         elem.companion = elem.user1;
       }
 
-      elem.lastMessage.createdAt = formatMinutesHours(
-        elem.lastMessage.createdAt,
-      );
+      const messageDate = new Date(elem.lastMessage.createdAt);
+      if (formatDayMonthYear(this.today) === formatDayMonthYear(messageDate)) {
+        elem.lastMessage.createdAt = formatMinutesHours(
+          elem.lastMessage.createdAt,
+        );
+      } else {
+        elem.lastMessage.createdAt = formatDayMonthYear(
+          elem.lastMessage.createdAt,
+        );
+      }
 
-      this.dialogsElement.innerHTML += template({ staticUrl, elem });
+      const isMe = elem.user1.userId === elem.user2.userId;
+      this.dialogsElement.innerHTML += template({ staticUrl, elem, isMe });
 
       noDialogs?.remove();
     });

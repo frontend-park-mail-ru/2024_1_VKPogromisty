@@ -2,6 +2,8 @@ import BaseView from "../../MVC/BaseView.js";
 import { formatFullDate } from "../../modules/dateRemaking.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import "./post.scss";
+import { customConfirm } from "../../modules/windows.js";
 
 /**
  * @typedef {Object} UpdateInfo
@@ -67,6 +69,14 @@ class PostView extends BaseView {
       this.canceledUpdatePost.bind(this),
     );
     this.eventBus.addEventListener(
+      "postLikedSuccess",
+      this.likedPost.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "postUnlikedSuccess",
+      this.unlikedPost.bind(this),
+    );
+    this.eventBus.addEventListener(
       "serverError",
       this.serverErrored.bind(this),
     );
@@ -77,18 +87,15 @@ class PostView extends BaseView {
    *
    * @param {PostInfo} postInfo - The info about current post
    */
-  renderPost({ post, author, publish }) {
-    const { userId, avatar } = UserState;
+  renderPost({ isGroup, post, author, publish }) {
+    let { userId, avatar } = UserState;
+    avatar = avatar || "default_avatar.png";
+    author.avatar = author.avatar || "default_avatar.png";
 
     const template = require("./post.hbs");
     const postId = post.postId;
 
-    if (post.content.trim() === "" && !post.attachments) {
-      this.eventBus.emit("clickedDeleteButton", postId);
-      return;
-    }
-
-    const isMe = Number(author.userId) === Number(userId);
+    let isMe = Number(author.userId) === Number(userId);
     const hasUpdated = post.createdAt !== post.updatedAt;
 
     post.createdAt = formatFullDate(post.createdAt);
@@ -96,10 +103,28 @@ class PostView extends BaseView {
 
     this.mainElement = document.getElementById("posts");
 
+    if (post.likedBy) {
+      post.likesCount = post.likedBy.length;
+      post.isLikedByMe = post.likedBy.includes(UserState.userId);
+    } else {
+      post.likesCount = 0;
+    }
+
+    if (isGroup) {
+      isMe = post.authorId === userId;
+    }
+
     if (publish) {
       this.mainElement.innerHTML =
-        template({ post, author, avatar, staticUrl, isMe, hasUpdated }) +
-        this.mainElement.innerHTML;
+        template({
+          post,
+          author,
+          avatar,
+          staticUrl,
+          isMe,
+          hasUpdated,
+          isGroup,
+        }) + this.mainElement.innerHTML;
     } else {
       this.mainElement.innerHTML += template({
         post,
@@ -108,11 +133,12 @@ class PostView extends BaseView {
         staticUrl,
         isMe,
         hasUpdated,
+        isGroup,
       });
     }
 
     const textarea = document.getElementById(`textarea-${postId}`);
-    textarea.style.height = textarea.scrollHeight - 4 + "px";
+    textarea.style.height = textarea.scrollHeight + "px";
 
     const content = document.getElementById(`post-content-${postId}`);
     const contentScrHeight = content.scrollHeight;
@@ -127,16 +153,37 @@ class PostView extends BaseView {
       content.appendChild(showMore);
     }
 
-    document.querySelectorAll(".reactions__heart-img").forEach((elem) => {
-      elem.addEventListener("mouseover", () => {
-        elem.setAttribute("src", "dist/images/filled-heart.png");
+    document
+      .querySelectorAll(".reactions__heart-img_unliked")
+      .forEach((elem) => {
+        elem.addEventListener("mouseenter", () => {
+          elem.setAttribute("src", "dist/images/filled-heart.png");
+          elem.style.width = "28px";
+          elem.style.height = "28px";
+        });
+        elem.addEventListener("mouseleave", () => {
+          elem.setAttribute("src", "dist/images/heart.png");
+          elem.style.width = "25px";
+          elem.style.height = "25px";
+        });
+        elem.addEventListener("click", () => {
+          this.eventBus.emit("clickedLikePost", +elem.dataset.id);
+        });
+      });
+
+    document.querySelectorAll(".reactions__heart-img_liked").forEach((elem) => {
+      elem.addEventListener("mouseenter", () => {
+        elem.setAttribute("src", "dist/images/broken-heart.png");
         elem.style.width = "28px";
         elem.style.height = "28px";
       });
-      elem.addEventListener("mouseout", () => {
-        elem.setAttribute("src", "dist/images/heart.png");
+      elem.addEventListener("mouseleave", () => {
+        elem.setAttribute("src", "dist/images/filled-heart.png");
         elem.style.width = "25px";
         elem.style.height = "25px";
+      });
+      elem.addEventListener("click", () => {
+        this.eventBus.emit("clickedUnlikePost", +elem.dataset.id);
       });
     });
 
@@ -150,7 +197,6 @@ class PostView extends BaseView {
         textarea.removeAttribute("readonly");
         textarea.addEventListener("input", () => {
           textarea.style.height = "auto";
-          textarea.style.height = textarea.scrollHeight - 4 + "px";
         });
         textarea.focus();
 
@@ -189,7 +235,15 @@ class PostView extends BaseView {
       .querySelectorAll(".post-author__trash-basket-img")
       .forEach((elem) => {
         elem.addEventListener("click", () => {
-          this.eventBus.emit("clickedDeleteButton", elem.dataset.id);
+          customConfirm(
+            (() => {
+              this.eventBus.emit("clickedDeleteButton", elem.dataset.id);
+            }).bind(this),
+            "Удалить пост?",
+            "Вы уверены, что хотите удалить пост?",
+            "Удалить",
+            "Отмена",
+          );
         });
       });
 
@@ -204,6 +258,77 @@ class PostView extends BaseView {
           elem.remove();
         });
       });
+  }
+
+  /**
+   * Set post liked
+   *
+   * @param {number} postId - The ID of current post
+   */
+  likedPost(postId) {
+    const likedPostParent = document.querySelector(
+      `#post-${postId} .reactions__heart-img_unliked`,
+    ).parentElement;
+    const likedPost = document.createElement("img");
+    likedPost.setAttribute("src", "dist/images/filled-heart.png");
+    likedPost.dataset.id = postId;
+    likedPost.classList.add("reactions__heart-img_liked");
+    const likesCount = document.querySelector(
+      `#post-${postId} .likes-count__span`,
+    );
+    likesCount.innerHTML = +likesCount.innerHTML + 1;
+    likedPostParent.replaceChild(likedPost, likedPostParent.firstElementChild);
+
+    likedPost.addEventListener("mouseenter", () => {
+      likedPost.setAttribute("src", "dist/images/broken-heart.png");
+      likedPost.style.width = "28px";
+      likedPost.style.height = "28px";
+    });
+    likedPost.addEventListener("mouseleave", () => {
+      likedPost.setAttribute("src", "dist/images/filled-heart.png");
+      likedPost.style.width = "25px";
+      likedPost.style.height = "25px";
+    });
+    likedPost.addEventListener("click", () => {
+      this.eventBus.emit("clickedUnlikePost", likedPost.dataset.id);
+    });
+  }
+
+  /**
+   * Set post unliked
+   *
+   * @param {number} postId - The ID of current post
+   */
+  unlikedPost(postId) {
+    const unlikedPostParent = document.querySelector(
+      `#post-${postId} .reactions__heart-img_liked`,
+    ).parentElement;
+    const unlikedPost = document.createElement("img");
+    unlikedPost.dataset.id = postId;
+    unlikedPost.setAttribute("src", "dist/images/heart.png");
+    unlikedPost.classList.add("reactions__heart-img_unliked");
+    const likesCount = document.querySelector(
+      `#post-${postId} .likes-count__span`,
+    );
+    likesCount.innerHTML = +likesCount.innerHTML - 1;
+    unlikedPostParent.replaceChild(
+      unlikedPost,
+      unlikedPostParent.firstElementChild,
+    );
+
+    unlikedPost.addEventListener("mouseenter", () => {
+      unlikedPost.setAttribute("src", "dist/images/filled-heart.png");
+      unlikedPost.style.width = "28px";
+      unlikedPost.style.height = "28px";
+    });
+    unlikedPost.addEventListener("mouseleave", () => {
+      unlikedPost.setAttribute("src", "dist/images/heart.png");
+      unlikedPost.style.width = "25px";
+      unlikedPost.style.height = "25px";
+    });
+    unlikedPost.addEventListener("click", () => {
+      this.eventBus.emit("clickedLikePost", unlikedPost.dataset.id);
+    });
   }
 
   /**

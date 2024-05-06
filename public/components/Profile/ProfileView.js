@@ -5,6 +5,8 @@ import PostController from "../Post/PostController.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import { customConfirm } from "../../modules/windows.js";
+import "./profile.scss";
 
 const staticUrl = `${API_URL}/static`;
 
@@ -13,7 +15,7 @@ const staticUrl = `${API_URL}/static`;
  * @typedef {Object} Author
  * @property {string} avatar - The avatar of user
  * @property {string} createdAt - The date of creating accout
- * @property {string} detaOfBirth - The date of birth current user
+ * @property {string} dateOfBirth - The date of birth current user
  * @property {string} email - The email of current user
  * @property {string} firstName - The first name of current user
  * @property {string} lastName - The last name of current user
@@ -123,10 +125,6 @@ class ProfileView extends BaseView {
     });
     new Main(document.body).renderForm(userId);
 
-    document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickLogoutButton", {});
-    });
-
     this.eventBus.emit("readyRenderProfile", this.userId);
   }
 
@@ -135,7 +133,8 @@ class ProfileView extends BaseView {
    */
   checksNewPosts() {
     if (
-      document.body.scrollHeight - window.scrollY <= 1500 &&
+      this.feedMain.scrollHeight - this.feedMain.scrollTop <=
+        3 * window.innerHeight &&
       !this.isAllPosts &&
       !this.isWaitPosts
     ) {
@@ -159,7 +158,8 @@ class ProfileView extends BaseView {
   renderProfile({ User, isSubscribedTo, isSubscriber }) {
     User.dateOfBirth = formatDayMonthYear(User.dateOfBirth);
 
-    const { userId, firstName, lastName, dateOfBirth, avatar } = User;
+    let { userId, firstName, lastName, dateOfBirth, avatar } = User;
+    avatar = avatar || "default_avatar.png";
     this.mainElement = document.getElementById("activity");
     this.isSubscriber = isSubscriber;
     const isMe = (this.isMe = Number(this.userId) === Number(UserState.userId));
@@ -181,6 +181,7 @@ class ProfileView extends BaseView {
     this.lastPostId = 0;
     this.isAllPosts = false;
     this.isWaitPosts = true;
+    this.feedMain = document.getElementById("feed-main");
 
     const newsTextarea = document.getElementById("news-content__textarea");
 
@@ -191,17 +192,15 @@ class ProfileView extends BaseView {
       });
     }
 
-    document.onscroll = this.checksNewPosts.bind(this);
+    this.feedMain.onscroll = this.checksNewPosts.bind(this);
 
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
     const fileButton = document.getElementById("news__file-button");
 
-    if (fileButton) {
-      fileButton.addEventListener("click", () => {
-        fileInput.click();
-      });
-    }
+    fileButton?.addEventListener("click", () => {
+      fileInput.click();
+    });
 
     if (fileInput) {
       fileInput.addEventListener("change", () => {
@@ -215,58 +214,65 @@ class ProfileView extends BaseView {
 
           const img = document.createElement("img");
           img.setAttribute("src", src);
-          img.classList.add("news-img-content__img");
+          img.classList.add("news-img-content__img", "post-content__img");
 
           imgContent.appendChild(img);
         });
       });
     }
 
-    if (publishButton !== null) {
-      publishButton.addEventListener("click", () => {
-        const content = document.getElementById("news-content__textarea").value;
+    publishButton?.addEventListener("click", () => {
+      const content = document.getElementById("news-content__textarea").value;
 
-        if (content.trim() === "" && fileInput.files.length === 0) {
-          return;
-        }
+      if (content.trim() === "" && fileInput.files.length === 0) {
+        return;
+      }
 
-        this.eventBus.emit("clickedPublishPost", {
-          content: content,
-          attachments: fileInput.files,
-        });
-
-        document.getElementById("news-img-content").innerHTML = "";
-        const textarea = document.getElementById("news-content__textarea");
-        textarea.value = "";
-        textarea.style.height = "60px";
-        fileInput.value = null;
+      this.eventBus.emit("clickedPublishPost", {
+        content: content,
+        attachments: fileInput.files,
       });
-    }
+
+      document.getElementById("news-img-content").innerHTML = "";
+      const textarea = document.getElementById("news-content__textarea");
+      textarea.value = "";
+      textarea.style.height = "60px";
+      fileInput.value = null;
+    });
 
     this.subscribeUser = document.getElementById(`subscribe-${this.userId}`);
     this.sendMessageUser = document.getElementById(
       `send-message-${this.userId}`,
     );
+    this.favoritesChat = document.getElementById("favorites-chat");
 
-    if (this.subscribeUser !== null) {
-      this.subscribeUser.addEventListener("click", () => {
-        if (
-          this.subscribeUser.classList.contains(
-            "subscribed-to-options__button-subscribe",
-          )
-        ) {
-          this.eventBus.emit("clickedSubscribe", this.userId);
-        } else {
-          this.eventBus.emit("clickedUnsubscribe", this.userId);
-        }
-      });
-    }
+    this.subscribeUser?.addEventListener("click", () => {
+      if (
+        this.subscribeUser.classList.contains(
+          "subscribed-to-options__button-subscribe",
+        )
+      ) {
+        this.eventBus.emit("clickedSubscribe", this.userId);
+      } else {
+        customConfirm(
+          (() => {
+            this.eventBus.emit("clickedUnsubscribe", this.userId);
+          }).bind(this),
+          "Удалить друга?",
+          "Вы уверены, что хотите удалить друга?",
+          "Удалить",
+          "Отмена",
+        );
+      }
+    });
 
-    if (this.sendMessageUser !== null) {
-      this.sendMessageUser.addEventListener("click", () => {
-        this.router.redirect(`/chat/${this.userId}`);
-      });
-    }
+    this.sendMessageUser?.addEventListener("click", () => {
+      this.router.redirect(`/chat/${this.userId}`);
+    });
+
+    this.favoritesChat?.addEventListener("click", () => {
+      this.router.redirect(`/chat/${this.userId}`);
+    });
 
     this.eventBus.emit("readyRenderPosts", {
       userId: this.userId,
@@ -328,7 +334,9 @@ class ProfileView extends BaseView {
   renderPosts({ author, posts }) {
     this.isWaitPosts = false;
 
-    if (posts) {
+    document.getElementById("posts-sceleton")?.remove();
+
+    if (posts.length > 0) {
       posts.forEach((elem) => {
         if (elem.postId < this.lastPostId || this.lastPostId === 0) {
           this.lastPostId = elem.postId;
@@ -341,8 +349,20 @@ class ProfileView extends BaseView {
       this.isAllPosts = true;
       document
         .getElementById("no-more-posts")
-        .classList.replace("no-more-posts__hidden", "no-more-posts__visible");
+        .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
     }
+
+    if (!this.isAllPosts) {
+      const imgSceleton = document.createElement("img");
+
+      imgSceleton.classList.add("sceleton-img");
+      imgSceleton.setAttribute("id", "posts-sceleton");
+      imgSceleton.setAttribute("src", "dist/images/loading.png");
+
+      this.postsElement.appendChild(imgSceleton);
+    }
+
+    this.checksNewPosts();
   }
 
   /**

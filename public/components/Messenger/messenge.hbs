@@ -4,15 +4,27 @@
   id="dialog-{{ elem.companion.userId }}"
 >
   <div class="chatter">
+    {{#unless isMe}}
     <img
       class="chatter__avatar-img"
-      src="{{ staticUrl }}/{{ elem.companion.avatar }}"
+      src="{{ staticUrl }}/user-avatars/{{ elem.companion.avatar }}"
     />
+    {{else}}
+    <img class="favorites-avatar__img" src="dist/images/folder.png" />
+    {{/unless}}
     <div class="chatter-info">
+      {{#unless isMe}}
       <span class="chatter-info__name-span"
         >{{ elem.companion.firstName }} {{ elem.companion.lastName }}</span
       >
-      <div class="chatter-content">
+      {{else}}
+      <span class="chatter-info__name-span">Избранное</span>
+      {{/unless}}
+      <div
+        class="chatter-content"
+        id="chatter-content-{{ elem.lastMessage.id }}"
+        data-user="{{ elem.companion.userId }}"
+      >
         <span
           class="chatter-content__message-span"
           id="chatter-content__message-span-{{ elem.companion.userId }}-{{

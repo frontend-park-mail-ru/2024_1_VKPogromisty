@@ -6,6 +6,7 @@ const incomingEvents = [
   "attemptSignup",
   "signupSuccess",
   "receiveSignupResult",
+  "unauthorizedResult",
   "serverError",
 ];
 
@@ -25,7 +26,7 @@ export default class SignupController {
    */
   constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
-    this.#signupModel = new SignupModel(this.eventBus, webSocket);
+    this.#signupModel = new SignupModel(this.eventBus, webSocket, router);
     this.#signupView = new SignupView(this.eventBus, router);
   }
 
@@ -34,6 +35,6 @@ export default class SignupController {
    * @returns {void}
    */
   renderSignupView() {
-    this.#signupView.render(document.body);
+    this.#signupModel.checkIfLogin();
   }
 }

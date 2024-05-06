@@ -1,4 +1,5 @@
 const path = require("path");
+const ServiceWorkerWebpackPlugin = require("serviceworker-webpack5-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
@@ -36,6 +37,9 @@ module.exports = {
   },
 
   plugins: [
+    new ServiceWorkerWebpackPlugin({
+      entry: path.join(__dirname, "public/sw.js"),
+    }),
     new MiniCssExtractPlugin({
       filename: "index.css",
     }),

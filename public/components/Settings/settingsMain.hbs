@@ -9,10 +9,7 @@
         id="last-name"
       />
     </div>
-    <div
-      class="form__input__error form__input__correct"
-      id="incorrect-last-name"
-    >
+    <div class="form__input_error form__input_correct" id="incorrect-last-name">
       Некорректное имя
     </div>
   </div>
@@ -27,7 +24,7 @@
       />
     </div>
     <div
-      class="form__input__error form__input__correct"
+      class="form__input_error form__input_correct"
       id="incorrect-first-name"
     >
       Некорректное имя
@@ -43,10 +40,10 @@
         id="email"
       />
     </div>
-    <div class="form__input__error form__input__correct" id="incorrect-email">
+    <div class="form__input_error form__input_correct" id="incorrect-email">
       Некорректная почта
     </div>
-    <div class="form__input__error form__input__correct" id="repeat-email">
+    <div class="form__input_error form__input_correct" id="repeat-email">
       Почта уже существует
     </div>
   </div>
@@ -62,10 +59,7 @@
         autocomplete="off"
       />
     </div>
-    <div
-      class="form__input__error form__input__correct"
-      id="incorrect-password"
-    >
+    <div class="form__input_error form__input_correct" id="incorrect-password">
       Пароль должен иметь длину не менее 6 символов
     </div>
   </div>
@@ -81,32 +75,34 @@
       />
     </div>
     <div
-      class="form__input__error form__input__correct"
+      class="form__input_error form__input_correct"
       id="incorrect-repeat-password"
     >
       Пароли должны совпадать
     </div>
   </div>
   <div class="avatar-setting">
-    <span class="setting__span">Обновить фотографию</span>
-    <div class="file-input">
-      <label class="input-avatar-setting">
-        <input
-          class="input-avatar-setting__input"
-          type="file"
-          name="avatar"
-          id="avatar"
-          accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
-        />
-        <span class="input-avatar__span">Загрузить изображение </span>
-      </label>
+    <div class="setting-info">
+      <span class="setting__span">Обновить фотографию</span>
+      <div class="file-input">
+        <label class="input-avatar-setting">
+          <input
+            class="input-avatar-setting__input"
+            type="file"
+            name="avatar"
+            id="avatar"
+            accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
+          />
+          <span class="input-avatar__span">Загрузить изображение </span>
+        </label>
+      </div>
+      <img
+        class="setting-avatar-prewatch"
+        id="prewatch"
+        src="{{ this.staticUrl }}/user-avatars/{{ this.avatar }}"
+      />
     </div>
-    <img
-      class="setting-avatar-prewatch"
-      id="prewatch"
-      src="{{ this.staticUrl }}/{{ this.avatar }}"
-    />
-    <div class="form__input__error form__input__correct" id="incorrect-avatar">
+    <div class="form__input_error form__input_correct" id="incorrect-avatar">
       Недопустимый тип файла
     </div>
   </div>
@@ -119,6 +115,9 @@
     </button>
   </div>
 </div>
-<button class="delete-setting__button" id="delete-setting">
-  Удалить аккаунт
-</button>
+<div class="bad-actions">
+  <button class="delete-setting__button" id="delete-setting">
+    Удалить аккаунт
+  </button>
+  <button class="logout-button" id="logout-button">Выйти</button>
+</div>

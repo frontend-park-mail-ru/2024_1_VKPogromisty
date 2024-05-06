@@ -6,7 +6,6 @@ const incomingEvents = [
   "receiveProfileData",
   "receiveProfilePosts",
   "receiveOwnProfileData",
-  "clickLogoutButton",
   "readyRenderProfile",
   "clickedSubscribe",
   "clickedUnsubscribe",

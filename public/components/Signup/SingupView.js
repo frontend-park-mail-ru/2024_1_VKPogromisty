@@ -6,8 +6,9 @@ import {
 } from "/public/modules/validators.js";
 import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
+import "./signup.scss";
 
-const correct = "form__input__correct";
+const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const main_inputs = [
   {
@@ -62,21 +63,6 @@ const main_inputs = [
   },
 ];
 
-const part_of_date = [
-  {
-    id: "day",
-    placeholder: "ДД",
-  },
-  {
-    id: "month",
-    placeholder: "ММ",
-  },
-  {
-    id: "year",
-    placeholder: "ГГГГ",
-  },
-];
-
 /**
  * SignupView - класс для работы с визуалом на странице.
  * @property {EventBus} eventBus - EventBus - класс управления event и обработчиков.
@@ -100,27 +86,27 @@ class SignupView extends BaseView {
       "serverError",
       this.handleServerError.bind(this),
     );
+    this.eventBus.addEventListener(
+      "unauthorizedResult",
+      this.render.bind(this),
+    );
   }
 
   /**
-   * Рендер внутри переданного HTML элемента.
-   * Переопределение в наследниках.
+   * Renders sign up form
    *
-   * @param {HTMLElement} element- HTML элемен, в который будет рендериться.
    * @return {void}
    */
-  render(element) {
+  render() {
     const template = require("./signup.hbs");
-    element.innerHTML = template({ main_inputs, part_of_date });
+    document.body.innerHTML = template({ main_inputs });
 
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     const repeatPassword = document.getElementById("repeat-password");
     const firstName = document.getElementById("first-name");
     const lastName = document.getElementById("last-name");
-    const day = document.getElementById("day");
-    const month = document.getElementById("month");
-    const year = document.getElementById("year");
+    const dateOfBirth = document.getElementById("date-birthday");
     const avatar = document.getElementById("avatar");
     const incorrectAvatar = document.getElementById("incorrect-avatar");
     const signupShowPassword = document.getElementById("signup-show-password");
@@ -183,26 +169,10 @@ class SignupView extends BaseView {
       }
     });
 
-    day.addEventListener("focusout", () => {
+    dateOfBirth.addEventListener("focusout", () => {
       incorrectDateOfBirthday.classList.add(correct);
 
-      if (!validateDateOfBirth(day.value, month.value, year.value)) {
-        incorrectDateOfBirthday.classList.remove(correct);
-      }
-    });
-
-    month.addEventListener("focusout", () => {
-      incorrectDateOfBirthday.classList.add(correct);
-
-      if (!validateDateOfBirth(day.value, month.value, year.value)) {
-        incorrectDateOfBirthday.classList.remove(correct);
-      }
-    });
-
-    year.addEventListener("focusout", () => {
-      incorrectDateOfBirthday.classList.add(correct);
-
-      if (!validateDateOfBirth(day.value, month.value, year.value)) {
+      if (!validateDateOfBirth(dateOfBirth.value)) {
         incorrectDateOfBirthday.classList.remove(correct);
       }
     });
@@ -258,7 +228,7 @@ class SignupView extends BaseView {
 
     if (result) {
       document.body.innerHTML = "";
-      this.router.redirect("/feed");
+      this.router.redirect("/feed/news");
     } else {
       repeatEmail.classList.remove(correct);
     }
@@ -284,9 +254,7 @@ class SignupView extends BaseView {
     const repeatPassword = document.getElementById("repeat-password");
     const firstName = document.getElementById("first-name");
     const lastName = document.getElementById("last-name");
-    const day = document.getElementById("day");
-    const month = document.getElementById("month");
-    const year = document.getElementById("year");
+    const dateOfBirth = document.getElementById("date-birthday");
     const avatar = document.getElementById("avatar");
     const incorrectAvatar = document.getElementById("incorrect-avatar");
     const incorrectEmail = document.getElementById("incorrect-email");
@@ -336,7 +304,7 @@ class SignupView extends BaseView {
       flag = false;
     }
 
-    if (!validateDateOfBirth(day.value, month.value, year.value)) {
+    if (!validateDateOfBirth(dateOfBirth.value)) {
       incorrectDateOfBirthday.classList.remove(correct);
       flag = false;
     }
@@ -359,8 +327,6 @@ class SignupView extends BaseView {
       return false;
     }
 
-    const dateOfBirth = `${year.value}-${month.value.padStart(2, "0")}-${day.value.padStart(2, "0")}`;
-
     repeatEmail.classList.add("correct");
 
     const data = {
@@ -369,7 +335,7 @@ class SignupView extends BaseView {
       email: email.value,
       password: password.value,
       repeatPassword: repeatPassword.value,
-      dateOfBirth: dateOfBirth,
+      dateOfBirth: dateOfBirth.value,
       avatar: avatar.files[0],
     };
 

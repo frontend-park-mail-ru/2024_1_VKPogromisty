@@ -13,14 +13,33 @@ class LoginModel extends BaseModel {
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {WScoket} webSocket - Текущий сокет
    */
-  constructor(eventBus, webSocket) {
+  constructor(eventBus, webSocket, router) {
     super(eventBus);
     this.webSocket = webSocket;
+    this.router = router;
 
     this.eventBus.addEventListener(
       "attemptLogin",
       this.checkAndSubmitForm.bind(this),
     );
+  }
+
+  /**
+   * Checks if user logined
+   *
+   * @returns {Promise<void>}
+   */
+  async checkIfLogin() {
+    const result = await CSRFProtection.updateCSRFToken();
+
+    if (result) {
+      await UserState.updateState();
+      this.webSocket.openWebSocket();
+      this.router.redirect("/feed/news");
+      return;
+    }
+
+    this.eventBus.emit("unauthorizedResult", {});
   }
 
   /**

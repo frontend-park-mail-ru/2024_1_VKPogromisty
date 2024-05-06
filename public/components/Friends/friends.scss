@@ -1,0 +1,177 @@
+@import "public/index.scss";
+
+.search-friend {
+  @include row-flexible;
+  height: 30px;
+  align-items: center;
+  padding-left: 10px;
+  min-width: 100px;
+  background-color: #fceeeb;
+  box-sizing: border-box;
+  width: 100%;
+  justify-content: space-between;
+
+  &__magnifier-img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+  }
+
+  &__input {
+    background-color: inherit;
+  }
+
+  &__button {
+    border-radius: 7px;
+    background-color: black;
+    color: white;
+    padding: 5px 10px;
+  }
+}
+
+.search-input {
+  @include row-flexible;
+  flex: 1;
+  margin-right: 10px;
+  padding: 5px;
+  border-radius: 7px;
+
+  &:hover {
+    background-color: #f1cece;
+  }
+}
+
+.friends {
+  width: 100%;
+  border-radius: 7px;
+  border: 1px solid black;
+}
+
+.friend {
+  @include flexible;
+  align-items: center;
+
+  &__avatar-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+  }
+}
+
+.friends-field {
+  @include row-flexible;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 20px;
+  min-height: 70px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid black;
+  }
+
+  @include mobile-style {
+    padding: 5px 10px;
+  }
+}
+
+.friend-info {
+  @include column-flexible;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-right: 5px;
+
+  &__name-span {
+    font-weight: bolder;
+  }
+
+  &__name-href {
+    @include none-decoration;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
+  }
+}
+
+.friend-content__date-of-birth-span {
+  color: $button-feed;
+  font-size: 13px;
+}
+
+.right-sidebar__a_common {
+  font-size: 15px;
+
+  @include mobile-style {
+    font-size: 12px;
+  }
+}
+
+.right-sidebar__a_bigger {
+  font-size: 16px;
+
+  @include mobile-style {
+    font-size: 13px;
+  }
+}
+
+.right-sidebar-friends {
+  @include row-flexible;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 200px;
+  font-style: $page-font-family;
+  box-sizing: border-box;
+  margin: 15px 0px;
+  padding: 0px 70px;
+
+  @include mobile-style {
+    padding: 0px 20px;
+  }
+}
+
+.friend-ables {
+  @include row-flexible;
+  align-items: center;
+  justify-content: space-between;
+
+  @each $type in add-friend, unsubscribe, delete-friend {
+    &__#{$type}-button {
+      background-color: #e0908d;
+      color: white;
+      border-radius: 7px;
+      padding: 5px;
+    }
+  }
+
+  &__send-message-button {
+    margin-right: 10px;
+    background-color: #e0908d;
+    height: 30px;
+    border-radius: 7px;
+
+    @include mobile-style {
+      display: none;
+    }
+  }
+
+  &__send-message-img {
+    height: 22px;
+    width: 22px;
+    filter: invert(100%);
+  }
+}
+
+.no-friends {
+  text-align: center;
+  margin-top: 40px;
+
+  &__span {
+    @include no-anything;
+  }
+}

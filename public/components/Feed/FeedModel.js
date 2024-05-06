@@ -1,5 +1,5 @@
 import BaseModel from "/public/MVC/BaseModel.js";
-import { AuthService, PostService } from "../../modules/services.js";
+import { PostService } from "../../modules/services.js";
 
 /**
  * FeedModel - класс для обработки данных, общения с бэком на странице профиля.
@@ -10,24 +10,33 @@ class FeedModel extends BaseModel {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Объект класса Routing
-   * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.webSocket = webSocket;
     this.postService = new PostService();
 
     this.eventBus.addEventListener(
       "readyRenderPosts",
-      this.getFriendPosts.bind(this),
+      this.getMyPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "readyRenderAllPosts",
+      this.getAllPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "readyRenderFriendsPosts",
+      this.getFriendsPosts.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "readyRenderGroupsPosts",
+      this.getGroupsPosts.bind(this),
     );
     this.eventBus.addEventListener(
       "clickedPublishPost",
       this.publishPost.bind(this),
     );
-    this.eventBus.addEventListener("clickLogoutButton", this.logout.bind(this));
   }
 
   /**
@@ -35,15 +44,90 @@ class FeedModel extends BaseModel {
    *
    * @param {number} lastPostId - The ID of last post at feed
    */
-  async getFriendPosts(lastPostId) {
+  async getMyPosts(lastPostId) {
+    const result = await this.postService.getAllPosts(lastPostId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("getPostsSuccess", {
+          posts: result.body,
+          isMy: true,
+        });
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Gets different posts
+   *
+   * @param {number} lastPostId - The last post ID
+   */
+  async getAllPosts(lastPostId) {
+    const result = await this.postService.getNewPosts(lastPostId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("getPostsSuccess", { posts: result.body });
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Gets friends' posts
+   *
+   * @param {number} lastPostId - The last post ID
+   */
+  async getFriendsPosts(lastPostId) {
     const result = await this.postService.getFriendsPosts(lastPostId);
 
     switch (result.status) {
       case 200:
-        this.eventBus.emit("getPostsSuccess", result.body);
+        this.eventBus.emit("getFriendsPostSuccess", result.body);
         break;
       case 401:
         this.router.redirect("/login");
+        break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Gets groups' posts
+   *
+   * @param {number} lastPostId - The last post ID
+   */
+  async getGroupsPosts(lastPostId) {
+    const result = await this.postService.getGroupsPosts(lastPostId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("getGroupsPostSuccess", result.body);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      case 404:
+        this.eventBus.emit("getPostsSuccess", []);
         break;
       default:
         this.eventBus.emit("serverError", {});
@@ -63,25 +147,6 @@ class FeedModel extends BaseModel {
       case 201:
         this.eventBus.emit("publishedPostSuccess", result.body);
         break;
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
-  }
-
-  /**
-   * Logouts from account
-   * @return {void}
-   */
-  async logout() {
-    const authService = new AuthService();
-
-    const result = await authService.logout();
-
-    switch (result.status) {
-      case 200:
       case 401:
         this.router.redirect("/login");
         break;

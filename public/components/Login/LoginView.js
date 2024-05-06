@@ -1,8 +1,9 @@
 import { validateEmail, validatePassword } from "/public/modules/validators.js";
 import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
+import "./login.scss";
 
-const INPUT_CORRECT = "form__input__correct";
+const INPUT_CORRECT = "form__input_correct";
 
 const inputs = [
   {
@@ -43,23 +44,24 @@ class LoginView extends BaseView {
       "receiveLoginResult",
       this.handleLoginResult.bind(this),
     );
-
     this.eventBus.addEventListener(
       "serverError",
       this.handleServerError.bind(this),
     );
+    this.eventBus.addEventListener(
+      "unauthorizedResult",
+      this.render.bind(this),
+    );
   }
 
   /**
-   * Рендер внутри переданного HTML элемента.
-   * Переопределение в наследниках.
+   * Renders login form
    *
-   * @param {HTMLElement} element- HTML элемен, в который будет рендериться.
    * @return {void}
    */
-  render(element) {
+  render() {
     const template = require("./login.hbs");
-    element.innerHTML = template({ inputs });
+    document.body.innerHTML = template({ inputs });
 
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -107,7 +109,7 @@ class LoginView extends BaseView {
 
     if (result) {
       document.body.innerHTML = "";
-      this.eventBus.emit("loginSuccess", "/feed");
+      this.eventBus.emit("loginSuccess", "/feed/news");
     } else {
       incorrectPassword.classList.remove(INPUT_CORRECT);
     }

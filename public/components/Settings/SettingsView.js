@@ -8,8 +8,10 @@ import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
 import UserState from "../UserState.js";
+import "./settings.scss";
+import { customConfirm } from "../../modules/windows.js";
 
-const correct = "form__input__correct";
+const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const staticUrl = `${API_URL}/static`;
 
@@ -47,7 +49,8 @@ class SettingsView extends BaseView {
    * Renders main part of page
    */
   renderSettingsMain() {
-    const { userId, avatar, firstName, lastName, email } = UserState;
+    let { userId, avatar, firstName, lastName, email } = UserState;
+    avatar = avatar || "default_avatar.png";
 
     new Header(document.body).renderForm({
       userId,
@@ -134,6 +137,9 @@ class SettingsView extends BaseView {
       firstNameForm.value = firstName;
       lastNameForm.value = lastName;
       emailForm.value = email;
+      document
+        .getElementById("prewatch")
+        .setAttribute("src", `${staticUrl}/user-avatars/${avatar}`);
       incorrectEmail.classList.add(correct);
       incorrectRepeatPassword.classList.add(correct);
       incorrectPassword.classList.add(correct);
@@ -155,7 +161,7 @@ class SettingsView extends BaseView {
 
       if (!validExtensions.includes(typeFile)) {
         incorrectAvatarForm.classList.remove(correct);
-        avatar.files = null;
+        avatarForm.files = null;
       } else {
         document.getElementById("prewatch").setAttribute("src", img);
       }
@@ -166,11 +172,27 @@ class SettingsView extends BaseView {
     });
 
     document.getElementById("delete-setting").addEventListener("click", () => {
-      this.eventBus.emit("clickedDeleteProfile", {});
+      customConfirm(
+        (() => {
+          this.eventBus.emit("clickedDeleteProfile", {});
+        }).bind(this),
+        "Удалить аккаунт?",
+        "Вы уверены, что хотите удалить аккаунт?",
+        "Удалить",
+        "Отмена",
+      );
     });
 
     document.getElementById("logout-button").addEventListener("click", () => {
-      this.eventBus.emit("clickedLogoutButton", {});
+      customConfirm(
+        (() => {
+          this.eventBus.emit("clickedLogoutButton", {});
+        }).bind(this),
+        "Выход",
+        "Вы уверены, что хотите выйти из аккаунта?",
+        "Да",
+        "Нет",
+      );
     });
   }
 
@@ -276,7 +298,7 @@ class SettingsView extends BaseView {
    */
   changeSuccess() {
     const img = document.getElementById("user__avatar-img");
-    img.setAttribute("src", `${staticUrl}/${UserState.avatar}`);
+    img.setAttribute("src", `${staticUrl}/user-avatars/${UserState.avatar}`);
 
     const fullHeaderName = document.getElementById("user__username-span");
     fullHeaderName.innerHTML = `${UserState.firstName} ${UserState.lastName}`;

@@ -1,16 +1,39 @@
 <div id="post-{{ this.post.postId }}" class="post">
   <div class="post-header">
     <div class="post-author">
+      {{#if isGroup}}
+      <a href="/group/{{ this.author.groupId }}">
+        <img
+          class="post-author__user-avatar-img"
+          src="{{ this.staticUrl }}/group-avatars/{{ this.author.avatar }}"
+        />
+      </a>
+      {{else}}
       <a href="/profile/{{ this.author.userId }}">
         <img
           class="post-author__user-avatar-img"
-          src="{{ this.staticUrl }}/{{ this.author.avatar }}"
+          src="{{ this.staticUrl }}/user-avatars/{{ this.author.avatar }}"
         />
       </a>
+      {{/if}}
       <div class="post-author-info">
-        <span class="post-author__name-span"
-          >{{ this.author.firstName }} {{ this.author.lastName }}</span
+        {{#if isGroup}}
+        <a
+          href="/group/{{ this.author.groupId }}"
+          class="post-author__name-href"
         >
+          <span class="post-author__name-span">{{ this.author.name }}</span>
+        </a>
+        {{else}}
+        <a
+          href="/profile/{{ this.author.userId }}"
+          class="post-author__name-href"
+        >
+          <span class="post-author__name-span"
+            >{{ this.author.firstName }} {{ this.author.lastName }}</span
+          >
+        </a>
+        {{/if}}
         <div
           class="post-author-time"
           id="post-author-time-{{ this.post.postId }}"
@@ -18,7 +41,7 @@
           <span class="post-author-time__created-at-span">
             {{ this.post.createdAt }}
           </span>
-          {{#if this.post.hasUpdated}}
+          {{#if this.hasUpdated}}
           <img class="post-author-time__dot-img" src="dist/images/dot.png" />
           <span
             class="post-author-time__last-time-span"
@@ -55,14 +78,30 @@
       >{{ this.post.content }}</textarea
     >
     {{#each this.post.attachments}}
-    <img class="post-content__img" src="{{ ../staticUrl }}/{{ this }}" />
+    <img
+      class="post-content__img"
+      src="{{ ../staticUrl }}/post-attachments/{{ this }}"
+    />
     {{/each}}
   </div>
   <div class="post-reaction">
     <div class="reactions">
       <button class="reactions-like">
-        <img class="reactions__heart-img" src="dist/images/heart.png" />
+        {{#unless this.post.isLikedByMe}}
+        <img
+          class="reactions__heart-img_unliked"
+          data-id="{{ this.post.postId }}"
+          src="dist/images/heart.png"
+        />
+        {{else}}
+        <img
+          class="reactions__heart-img_liked"
+          data-id="{{ this.post.postId }}"
+          src="dist/images/filled-heart.png"
+        />
+        {{/unless}}
       </button>
+      <span class="likes-count__span">{{ this.post.likesCount }}</span>
       <button class="show-comments">
         <img
           class="show-comments__messenger-img"
@@ -76,7 +115,7 @@
     <div class="post-footer">
       <img
         class="post-author__user-avatar-img"
-        src="{{ staticUrl }}/{{ avatar }}"
+        src="{{ staticUrl }}/user-avatars/{{ avatar }}"
       />
       <input
         id="user-comment{{ this.post.postId }}"

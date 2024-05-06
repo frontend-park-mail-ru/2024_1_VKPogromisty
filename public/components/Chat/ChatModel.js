@@ -55,10 +55,6 @@ class ChatModel extends BaseModel {
       this.getCompanion.bind(this),
     );
     this.eventBus.addEventListener(
-      "needUpdateWebSocket",
-      this.updateWebSocket.bind(this),
-    );
-    this.eventBus.addEventListener(
       "readyRenderMessages",
       this.getMessages.bind(this),
     );
@@ -74,7 +70,8 @@ class ChatModel extends BaseModel {
       "clickedUpdateMessage",
       this.updateMessage.bind(this),
     );
-    this.eventBus.addEventListener("clickLogoutButton", this.logout.bind(this));
+
+    this.addWebSocketHandlers();
   }
 
   /**
@@ -100,7 +97,7 @@ class ChatModel extends BaseModel {
   /**
    * Add events to WebSocket
    */
-  updateWebSocket() {
+  addWebSocketHandlers() {
     this.webSocket.addEventOnMessage("dialogMessage", (event) => {
       const data = JSON.parse(event.data);
 
@@ -126,8 +123,6 @@ class ChatModel extends BaseModel {
     this.webSocket.addEventOnClose("messageClose", () => {
       this.eventBus.emit("serverError", {});
     });
-
-    this.eventBus.emit("updatedWebSocket", {});
   }
 
   /**
@@ -178,23 +173,6 @@ class ChatModel extends BaseModel {
    */
   async deleteMessage({ messageId, receiver }) {
     this.webSocket.deleteMessage(messageId, receiver);
-  }
-
-  /**
-   * Logouts from account
-   * @return {void}
-   */
-  async logout() {
-    const result = await this.authService.logout();
-
-    switch (result.status) {
-      case 200:
-      case 401:
-        this.router.redirect("/login");
-        break;
-      default:
-        this.eventBus.emit("serverError", {});
-    }
   }
 }
 

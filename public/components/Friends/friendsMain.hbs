@@ -1,22 +1,32 @@
 <div class="search-place">
   <div class="search-friend">
-    <img
-      class="search-friend__magnifier-img"
-      src="dist/images/magnifying-glass.png"
-    />
-    <input
-      class="search-friend__input"
-      type="text"
-      placeholder="Поиск"
-      readonly
-    />
+    <div class="search-input">
+      <img
+        class="search-friend__magnifier-img"
+        src="dist/images/magnifying-glass.png"
+      />
+      <input
+        class="search-friend__input"
+        id="search-friend__input"
+        type="text"
+        placeholder="Найти друга"
+        autocomplete="off"
+      />
+    </div>
+    <button
+      type="button"
+      class="search-friend__button"
+      id="search-friend__button"
+    >
+      Найти
+    </button>
   </div>
 </div>
 <div class="right-sidebar-friends">
   {{#each rightSidebar}}
   <span>
     <a
-      class="right-sidebar__a-common"
+      class="right-sidebar__a_common"
       id="{{ this.id }}"
       href="/community{{ this.href }}"
       >{{ this.text }}</a
@@ -24,80 +34,7 @@
   </span>
   {{/each}}
 </div>
-<div class="friends">
-  {{#each friends}}
-  <div class="friends-field" id="friends-field-{{ this.userId }}">
-    <div class="friend" id="friend-{{ this.userId }}">
-      <a href="/profile/{{ this.userId }}"
-        ><img
-          class="friend__avatar-img"
-          src="{{ ../staticUrl }}/{{ this.avatar }}"
-      /></a>
-      <div class="friend-info">
-        <span class="friend-info__name-span"
-          >{{ this.firstName }} {{ this.lastName }}</span
-        >
-        <div class="friend-content">
-          <span class="friend-content__date-of-birth-span">{{
-            this.dateOfBirth
-          }}</span>
-        </div>
-      </div>
-    </div>
-    <div class="friend-ables">
-      <a href="/chat/{{ this.userId }}">
-        <button
-          type="button"
-          class="friend-ables__send-message-button"
-          id="send-message-{{ this.userId }}"
-        >
-          <img
-            src="dist/images/messenger.png"
-            class="friend-ables__send-message-img"
-          />
-        </button>
-      </a>
-      {{#if ../isFriends}}
-      <button
-        type="button"
-        class="friend-ables__delete-friend-button"
-        data-id="{{ this.userId }}"
-      >
-        Удалить из друзей
-      </button>
-      {{/if}}
-      {{#if ../isSubscribers}}
-      <button
-        type="button"
-        class="friend-ables__add-friend-button"
-        data-id="{{ this.userId }}"
-      >
-        Добавить в друзья
-      </button>
-      {{/if}}
-      {{#if ../isSubscriptions}}
-      <button
-        type="button"
-        class="friend-ables__unsubscribe-button"
-        data-id="{{ this.userId }}"
-      >
-        Отписаться
-      </button>
-      {{/if}}
-    </div>
-  </div>
-  {{/each}}
-</div>
+<div class="friends" id="friends"></div>
 <div class="no-friends">
-  {{#if noFriends}}
-  {{#if isFriends}}
-  <span class="no-friends__span">У вас нет друзей</span>
-  {{/if}}
-  {{#if isSubscribers}}
-  <span class="no-subscribers__span">У вас нет подписчиков</span>
-  {{/if}}
-  {{#if isSubscriptions}}
-  <span class="no-subscriptions__span">Вы ни на кого не подписаны</span>
-  {{/if}}
-  {{/if}}
+  <span class="invisible no-friends__span" id="no-something"></span>
 </div>

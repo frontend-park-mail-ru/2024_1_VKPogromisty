@@ -1,17 +1,19 @@
 <div class="header" id="header">
   <div class="left-side">
-    <a href="/feed"
+    <a href="/feed/news"
       ><img
         id="left-side__img"
         class="left-side__img"
         src="dist/images/Logo.png"
     /></a>
+    {{#if needSearch}}
     <div class="search">
       <input class="search__input" type="text" placeholder="Поиск" readonly />
     </div>
+    {{/if}}
   </div>
   <div class="user">
-    <img class="user__notification-img" src="dist/images/notification.png" />
+    <img class="user__notification-img" src="dist/images/text.png" />
     <span id="user__username-span" class="user__username-span"
       >{{ firstName }} {{ lastName }}</span
     >
@@ -19,10 +21,7 @@
       ><img
         id="user__avatar-img"
         class="user__avatar-img"
-        src="{{ staticUrl }}/{{ avatar }}"
+        src="{{ staticUrl }}/user-avatars/{{ avatar }}"
     /></a>
-    <button type="button" id="logout-button" class="user__logout-button">
-      Выйти
-    </button>
   </div>
 </div>

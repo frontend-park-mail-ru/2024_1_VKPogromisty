@@ -50,8 +50,8 @@ class FriendsModel extends BaseModel {
       this.deleteSubscribe.bind(this),
     );
     this.eventBus.addEventListener(
-      "clickedLogoutButton",
-      this.logout.bind(this),
+      "clickedSearchFriend",
+      this.searchFriend.bind(this),
     );
   }
 
@@ -156,14 +156,17 @@ class FriendsModel extends BaseModel {
   }
 
   /**
-   * Logouts from account
-   * @return {void}
+   * Searches friend
+   *
+   * @param {string} query - The name of friend
    */
-  async logout() {
-    const result = await this.authService.logout();
+  async searchFriend(query) {
+    const result = await this.profileService.searchProfile(query);
 
     switch (result.status) {
       case 200:
+        this.eventBus.emit("searchedFriendSuccess", result.body);
+        break;
       case 401:
         this.router.redirect("/login");
         break;
