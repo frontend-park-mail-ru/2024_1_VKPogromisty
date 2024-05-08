@@ -113,6 +113,12 @@ class FriendsView extends BaseView {
         rightSidebar,
       });
     }
+    document.querySelectorAll(".right-sidebar-friends a").forEach((elem) => {
+      elem.classList.replace(
+        "right-sidebar__a_bigger",
+        "right-sidebar__a_common",
+      );
+    });
 
     this.friendElem = document.getElementById("friends");
 
