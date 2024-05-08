@@ -43,14 +43,17 @@ const rightSidebar = [
   {
     href: "/feed/news",
     text: "НОВОСТИ",
+    id: "news",
   },
   {
     href: "/feed/groups",
     text: "СООБЩЕСТВА",
+    id: "groups",
   },
   {
     href: "/feed/friends",
     text: "ДРУЗЬЯ",
+    id: "friends",
   },
 ];
 
@@ -145,6 +148,7 @@ class FeedView extends BaseView {
 
     this.mainElement = document.getElementById("activity");
     this.mainElement.innerHTML = template({ userId, userAvatar, rightSidebar });
+
     this.lastPostMyId = 0;
     this.lastPostAllId = 0;
     this.isAllMyPosts = false;
@@ -217,13 +221,30 @@ class FeedView extends BaseView {
 
     switch (this.path) {
       case "news":
+        document
+          .getElementById("a-news")
+          .classList.replace(
+            "right-sidebar__a_common",
+            "right-sidebar__a_bigger",
+          );
         this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
         break;
       case "friends":
-        document.getElementById("");
+        document
+          .getElementById("a-friends")
+          .classList.replace(
+            "right-sidebar__a_common",
+            "right-sidebar__a_bigger",
+          );
         this.eventBus.emit("readyRenderFriendsPosts", this.lastPostAllId);
         break;
       case "groups":
+        document
+          .getElementById("a-groups")
+          .classList.replace(
+            "right-sidebar__a_common",
+            "right-sidebar__a_bigger",
+          );
         this.eventBus.emit("readyRenderGroupsPosts", this.lastPostAllId);
         break;
     }

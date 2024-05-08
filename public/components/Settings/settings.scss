@@ -33,8 +33,17 @@
 
   &__span {
     font-weight: 600;
-    width: 100px;
     font-family: Inter, sans-serif;
+  }
+
+  &__max-length-span {
+    font-size: 13px;
+    margin-top: 7px;
+    color: #928888;
+
+    @include mobile-style {
+      margin: 0 0 12px;
+    }
   }
 
   &__input {
@@ -49,7 +58,7 @@
 
   &__textarea {
     resize: none;
-    padding: 10px 0px 10px 10px;
+    padding: 10px;
     border: 1px solid rgb(0, 0, 0, 0.3);
     font-size: 16px;
     background-color: $input-color;
@@ -57,6 +66,18 @@
     height: 100px;
     font-family: Inter, sans-serif;
     width: 195px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.setting-description-info {
+  @include column-flexible;
+
+  @include mobile-style {
+    align-items: center;
   }
 }
 

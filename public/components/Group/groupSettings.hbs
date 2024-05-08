@@ -21,11 +21,17 @@
   </div>
   <div class="setting">
     <div class="setting-info">
-      <span class="setting__span">Описание группы</span>
+      <div class="setting-description-info">
+        <span class="setting__span">Описание группы</span>
+        <span class="setting__max-length-span"
+          >Максимально количество символов: 100</span
+        >
+      </div>
       <textarea
         class="setting__textarea"
         id="description-group"
         value="{{ description }}"
+        maxlength="100"
         >{{ description }}</textarea
       >
     </div>

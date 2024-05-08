@@ -45,7 +45,12 @@
 <div class="right-sidebar">
   {{#each rightSidebar}}
   <span>
-    <a class="right-sidebar__a" href="{{ this.href }}">{{ this.text }}</a>
+    <a
+      class="right-sidebar__a_common"
+      href="{{ this.href }}"
+      id="a-{{ this.id }}"
+      >{{ this.text }}</a
+    >
   </span>
   {{/each}}
 </div>

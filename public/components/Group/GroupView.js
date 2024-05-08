@@ -300,7 +300,8 @@ class GroupView extends BaseView {
   renderGroup({ publicGroup, isSubscribed }) {
     publicGroup.createdAt = formatDayMonthYear(publicGroup.createdAt);
 
-    let { id, name, createdAt, avatar, subscribersCount } = publicGroup;
+    let { id, name, createdAt, avatar, subscribersCount, description } =
+      publicGroup;
     avatar = avatar || "default_avatar.png";
     this.mainElement = document.getElementById("activity");
     this.groupId = id;
@@ -315,6 +316,7 @@ class GroupView extends BaseView {
       createdAt,
       isSubscribed,
       subscribersCount,
+      description,
       id,
       isAdmin: this.isAdmin,
     });
