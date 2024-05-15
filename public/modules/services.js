@@ -473,6 +473,117 @@ export class PostService {
 
     return genResponse(response.status, data.body, data.message);
   }
+
+  /**
+   * Gets the all comments of post from the server
+   *
+   * @param {number} postId - The ID of post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getPostComments(postId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `/${postId}/comments`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Adds new comment of post to the server
+   *
+   * @param {number} postId - The ID of post
+   * @param {string} content - The content of new comment
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async addPostComments(postId, content) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments",
+      {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ content, postId }),
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Deletes the comment of post from the server
+   * @param {number} commentId - The ID of post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async deleteComment(commentId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments",
+      {
+        method: "DELETE",
+        credentials: "include",
+        body: JSON.stringify({ commentID: +commentId }),
+      },
+    );
+
+    if (response.status === 204) {
+      return genResponse(response.status, null, null);
+    }
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Likes current comment
+   *
+   * @param {number} commentId - The ID of current comment
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async likeComment(commentId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments/like",
+      {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ commentId: +commentId }),
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Unlikes current comment
+   *
+   * @param {number} commentId - The ID of current comment
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async unlikeComment(commentId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments/unlike",
+      {
+        method: "DELETE",
+        credentials: "include",
+        body: JSON.stringify({ commentId: +commentId }),
+      },
+    );
+
+    if (response.status === 204) {
+      return genResponse(response.status, null, null);
+    }
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
 }
 
 /**

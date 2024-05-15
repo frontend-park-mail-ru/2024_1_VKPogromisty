@@ -2,8 +2,15 @@ import BaseView from "../../MVC/BaseView.js";
 import { formatFullDate } from "../../modules/dateRemaking.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import { Header } from "../Header/header.js";
+import { Main } from "../Main/main.js";
 import "./post.scss";
 import { customConfirm } from "../../modules/windows.js";
+import {
+  buildComponent,
+  appendChildren,
+  modifyComponent,
+} from "../createComponent.js";
 
 /**
  * @typedef {Object} UpdateInfo
@@ -42,7 +49,12 @@ import { customConfirm } from "../../modules/windows.js";
  * @property {boolean} publish - Is published now?
  */
 
+const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
 const staticUrl = `${API_URL}/static`;
+const typeFile = (file) => {
+  const parts = file.split(".");
+  return parts[parts.length - 1];
+};
 
 /**
  * PostView - класс для работы с визуалом на странице.
@@ -53,8 +65,9 @@ class PostView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus) {
+  constructor(eventBus, router) {
     super(eventBus);
+    this.router = router;
 
     this.eventBus.addEventListener(
       "postDeleteSuccess",
@@ -80,22 +93,72 @@ class PostView extends BaseView {
       "serverError",
       this.serverErrored.bind(this),
     );
+    this.eventBus.addEventListener(
+      "postLoadedSuccess",
+      this.renderFriendPost.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "commentsGotSuccess",
+      this.renderComments.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "commentDeletedSuccess",
+      this.deleteComment.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "commentAddedSuccess",
+      this.addComment.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "commentLikedSuccess",
+      this.likedComment.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "commentUnlikedSuccess",
+      this.unlikedComment.bind(this),
+    );
   }
 
   /**
-   * Renders current post on page
+   * Renders the page with current post
+   *
+   * @param {number} postId - The ID of post
+   */
+  renderPostMain(postId) {
+    const template = require("./postMain.hbs");
+    const { userId, avatar, firstName, lastName } = UserState;
+
+    new Header(document.body).renderForm({
+      userId,
+      avatar,
+      firstName,
+      lastName,
+    });
+    new Main(document.body).renderForm(userId);
+
+    this.mainElement = document.getElementById("activity");
+
+    this.mainElement.innerHTML = template({});
+
+    this.commentsElement = document.getElementById("comments");
+    this.postId = postId;
+
+    this.eventBus.emit("readyRenderPost", { postId: this.postId });
+    this.eventBus.emit("readyRenderComments", this.postId);
+  }
+
+  /**
+   * Renders a friend post
    *
    * @param {PostInfo} postInfo - The info about current post
    */
-  renderPost({ isGroup, post, author, publish }) {
+  renderFriendPost({ post, author, publish }) {
     let { userId, avatar } = UserState;
     avatar = avatar || "default_avatar.png";
     author.avatar = author.avatar || "default_avatar.png";
 
-    const template = require("./post.hbs");
-    const postId = post.postId;
-
     let isMe = Number(author.userId) === Number(userId);
+    const isPostPage = window.location.pathname.startsWith("/post");
     const hasUpdated = post.createdAt !== post.updatedAt;
 
     post.createdAt = formatFullDate(post.createdAt);
@@ -110,154 +173,743 @@ class PostView extends BaseView {
       post.likesCount = 0;
     }
 
-    if (isGroup) {
-      isMe = post.authorId === userId;
-    }
+    const newPost = this.makePost(
+      null,
+      post,
+      author,
+      avatar,
+      isMe,
+      hasUpdated,
+      isPostPage,
+    );
 
     if (publish) {
-      this.mainElement.innerHTML =
-        template({
-          post,
-          author,
-          avatar,
-          staticUrl,
-          isMe,
-          hasUpdated,
-          isGroup,
-        }) + this.mainElement.innerHTML;
+      this.mainElement.insertBefore(
+        newPost,
+        this.mainElement.firstElementChild,
+      );
     } else {
-      this.mainElement.innerHTML += template({
-        post,
-        author,
-        avatar,
-        staticUrl,
-        isMe,
-        hasUpdated,
-        isGroup,
-      });
+      this.mainElement.appendChild(newPost);
     }
 
-    const textarea = document.getElementById(`textarea-${postId}`);
-    textarea.style.height = textarea.scrollHeight + "px";
+    const postContent = newPost.firstElementChild.nextElementSibling;
+    const postTextarea = postContent.firstElementChild;
 
-    const content = document.getElementById(`post-content-${postId}`);
-    const contentScrHeight = content.scrollHeight;
-    if (contentScrHeight > 1000) {
-      content.style.height = "1000px";
+    postTextarea.toggleAttribute("readonly");
+
+    const postTextareaScrollHeight = postTextarea.scrollHeight;
+    if (postTextareaScrollHeight > 300) {
+      postTextarea.style.height = "300px";
 
       const showMore = document.createElement("button");
       showMore.classList.add("post-content__show-more-button");
-      showMore.setAttribute("data-id", postId);
+      showMore.setAttribute("data-id", post.postId);
       showMore.innerHTML = "Показать ещё";
 
-      content.appendChild(showMore);
+      postContent.appendChild(showMore);
+
+      showMore.addEventListener("click", () => {
+        postTextarea.style.height = postTextarea.scrollHeight + "px";
+        showMore.remove();
+      });
+    } else {
+      if (postTextarea.innerHTML.trim() !== "") {
+        postTextarea.style.height = postTextarea.scrollHeight + "px";
+      } else {
+        postTextarea.style.height = 0;
+      }
+    }
+  }
+
+  /**
+   * Renders a group post
+   *
+   * @param {*} param0
+   */
+  renderGroupPost({ post, publish, group }) {
+    let { userId, avatar } = UserState;
+    avatar = avatar || "default_avatar.png";
+    group.avatar = group.avatar || "default_avatar.png";
+
+    let isMe = Number(post.authorId) === Number(userId);
+    const isPostPage = window.location.pathname.startsWith("/post");
+    const hasUpdated = post.createdAt !== post.updatedAt;
+
+    post.createdAt = formatFullDate(post.createdAt);
+    post.updatedAt = `обновлено ${formatFullDate(post.updatedAt)}`;
+
+    this.mainElement = document.getElementById("posts");
+
+    if (post.likedBy) {
+      post.likesCount = post.likedBy.length;
+      post.isLikedByMe = post.likedBy.includes(UserState.userId);
+    } else {
+      post.likesCount = 0;
     }
 
-    document
-      .querySelectorAll(".reactions__heart-img_unliked")
-      .forEach((elem) => {
-        elem.addEventListener("mouseenter", () => {
-          elem.setAttribute("src", "dist/images/filled-heart.png");
-          elem.style.width = "28px";
-          elem.style.height = "28px";
-        });
-        elem.addEventListener("mouseleave", () => {
-          elem.setAttribute("src", "dist/images/heart.png");
-          elem.style.width = "25px";
-          elem.style.height = "25px";
-        });
-        elem.addEventListener("click", () => {
-          this.eventBus.emit("clickedLikePost", +elem.dataset.id);
-        });
-      });
+    const newPost = this.makePost(
+      group,
+      post,
+      null,
+      avatar,
+      isMe,
+      hasUpdated,
+      isPostPage,
+    );
 
-    document.querySelectorAll(".reactions__heart-img_liked").forEach((elem) => {
-      elem.addEventListener("mouseenter", () => {
-        elem.setAttribute("src", "dist/images/broken-heart.png");
-        elem.style.width = "28px";
-        elem.style.height = "28px";
+    if (publish) {
+      this.mainElement.insertBefore(
+        newPost,
+        this.mainElement.firstElementChild,
+      );
+    } else {
+      this.mainElement.appendChild(newPost);
+    }
+
+    const postContent = newPost.firstElementChild.nextElementSibling;
+    const postTextarea = postContent.firstElementChild;
+
+    postTextarea.toggleAttribute("readonly");
+
+    const postTextareaScrollHeight = postTextarea.scrollHeight;
+    if (postTextareaScrollHeight > 300) {
+      postTextarea.style.height = "300px";
+
+      const showMore = document.createElement("button");
+      showMore.classList.add("post-content__show-more-button");
+      showMore.setAttribute("data-id", post.postId);
+      showMore.innerHTML = "Показать ещё";
+
+      postContent.appendChild(showMore);
+
+      showMore.addEventListener("click", () => {
+        postTextarea.style.height = postTextarea.scrollHeight + "px";
+        showMore.remove();
       });
-      elem.addEventListener("mouseleave", () => {
-        elem.setAttribute("src", "dist/images/filled-heart.png");
-        elem.style.width = "25px";
-        elem.style.height = "25px";
-      });
-      elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedUnlikePost", +elem.dataset.id);
-      });
+    } else {
+      if (postTextarea.innerHTML.trim() !== "") {
+        postTextarea.style.height = postTextarea.scrollHeight + "px";
+      } else {
+        postTextarea.style.height = 0;
+      }
+    }
+  }
+
+  /**
+   * Makes a new post
+   *
+   * @param {*} isGroup
+   * @param {*} post
+   * @param {*} author
+   * @param {*} avatar
+   * @param {*} isMe
+   * @param {*} hasUpdated
+   * @returns
+   */
+  makePost(group, post, author, avatar, isMe, hasUpdated, isPostPage) {
+    const isGroup = group !== null;
+    const postAuthor = buildComponent("div", [], ["post-author"]);
+    const postAuthorHref = isGroup
+      ? `/group/${group.id}`
+      : `/profile/${author.authorId}`;
+    const postAuthorImage = isGroup
+      ? `${staticUrl}/group-avatars/${group.avatar}`
+      : `${staticUrl}/user-avatars/${author.avatar}`;
+
+    appendChildren(postAuthor, [
+      appendChildren(buildComponent("a", [["href", postAuthorHref]]), [
+        buildComponent(
+          "img",
+          [["src", postAuthorImage]],
+          ["post-author__user-avatar-img"],
+        ),
+      ]),
+    ]);
+    const postAuthorTime = appendChildren(
+      buildComponent(
+        "div",
+        [["id", `post-author-time-${post.postId}`]],
+        ["post-author-time"],
+      ),
+      [
+        buildComponent(
+          "span",
+          [],
+          ["post-author-time__created-at-span"],
+          post.createdAt,
+        ),
+      ],
+    );
+
+    if (hasUpdated) {
+      appendChildren(postAuthorTime, [
+        buildComponent(
+          "img",
+          [["src", "dist/images/dot.png"]],
+          ["post-author-time__dot-img"],
+        ),
+        buildComponent(
+          "span",
+          [["id", `edited-${post.postId}`]],
+          ["post-author-time__last-time-span"],
+          post.updatedAt,
+        ),
+      ]);
+    }
+
+    const postAuthorNameSpan = isGroup
+      ? group.name
+      : `${author.firstName} ${author.lastName}`;
+
+    appendChildren(postAuthor, [
+      appendChildren(buildComponent("div", [], ["post-author-info"]), [
+        appendChildren(
+          buildComponent(
+            "a",
+            [["href", postAuthorHref]],
+            ["post-author__name-href"],
+          ),
+          [
+            buildComponent(
+              "span",
+              [],
+              ["post-author__name-span"],
+              postAuthorNameSpan,
+            ),
+          ],
+        ),
+        postAuthorTime,
+      ]),
+    ]);
+
+    const postContent = appendChildren(
+      buildComponent(
+        "div",
+        [["id", `post-content-${post.postId}`]],
+        ["post-content"],
+      ),
+      [
+        buildComponent(
+          "textarea",
+          [["id", `textarea-${post.postId}`]],
+          ["post-content__text-span"],
+          post.content,
+        ),
+      ],
+    );
+
+    post.attachments?.forEach((elem) => {
+      if (imageTypes.includes(typeFile(elem))) {
+        appendChildren(postContent, [
+          buildComponent(
+            "img",
+            [["src", `${staticUrl}/post-attachments/${elem}`]],
+            ["post-content__img"],
+          ),
+        ]);
+      } else {
+        appendChildren(postContent, [
+          appendChildren(buildComponent("div", [], ["post-file-content"]), [
+            appendChildren(
+              buildComponent(
+                "a",
+                [
+                  ["target", "_blank"],
+                  ["rel", "noopener"],
+                  ["href", `/${elem}`],
+                  ["download", elem],
+                ],
+                ["news-file-content__a"],
+              ),
+              [
+                buildComponent(
+                  "img",
+                  [["src", "dist/images/document.png"]],
+                  ["news-file-content__img"],
+                ),
+              ],
+            ),
+          ]),
+        ]);
+      }
     });
 
-    document.querySelectorAll(".post-author__edit-img").forEach((elem) => {
-      elem.addEventListener("click", () => {
-        const parent = elem.parentNode;
-        const nextElem = elem.nextElementSibling;
-        const id = elem.dataset.id;
-        const textarea = document.getElementById(`textarea-${id}`);
+    const classIsLiked = post.isLikedByMe
+      ? "reactions__heart-img_liked"
+      : "reactions__heart-img_unliked";
+    const sourceIsLiked = post.isLikedByMe
+      ? "dist/images/filled-heart.png"
+      : "dist/images/heart.png";
+    const imgIsLiked = buildComponent(
+      "img",
+      [
+        ["data-id", post.postId],
+        ["src", sourceIsLiked],
+      ],
+      [classIsLiked],
+    );
+    const showCommentsButton = appendChildren(
+      buildComponent("button", [], ["show-comments"]),
+      [
+        buildComponent(
+          "img",
+          [["src", "dist/images/messenger.png"]],
+          ["show-comments__messenger-img"],
+        ),
+      ],
+    );
 
-        textarea.removeAttribute("readonly");
-        textarea.addEventListener("input", () => {
-          textarea.style.height = "auto";
+    showCommentsButton.addEventListener("click", () => {
+      this.router.redirect(`/post/${post.postId}`);
+    });
+
+    if (post.isLikedByMe) {
+      imgIsLiked.addEventListener("mouseenter", () => {
+        imgIsLiked.setAttribute("src", "dist/images/broken-heart.png");
+        imgIsLiked.style.width = "28px";
+        imgIsLiked.style.height = "28px";
+      });
+      imgIsLiked.addEventListener("mouseleave", () => {
+        imgIsLiked.setAttribute("src", "dist/images/filled-heart.png");
+        imgIsLiked.style.width = "25px";
+        imgIsLiked.style.height = "25px";
+      });
+      imgIsLiked.addEventListener("click", () => {
+        this.eventBus.emit("clickedUnlikePost", +imgIsLiked.dataset.id);
+      });
+    } else {
+      imgIsLiked.addEventListener("mouseenter", () => {
+        imgIsLiked.setAttribute("src", "dist/images/filled-heart.png");
+        imgIsLiked.style.width = "28px";
+        imgIsLiked.style.height = "28px";
+      });
+      imgIsLiked.addEventListener("mouseleave", () => {
+        imgIsLiked.setAttribute("src", "dist/images/heart.png");
+        imgIsLiked.style.width = "25px";
+        imgIsLiked.style.height = "25px";
+      });
+      imgIsLiked.addEventListener("click", () => {
+        this.eventBus.emit("clickedLikePost", +imgIsLiked.dataset.id);
+      });
+    }
+
+    const editImg = buildComponent(
+      "img",
+      [
+        ["id", `edit-img-${post.postId}`],
+        ["data-id", post.postId],
+        ["src", "dist/images/edit.png"],
+      ],
+      ["post-author__edit-img"],
+    );
+    const trashCan = buildComponent(
+      "img",
+      [
+        ["id", `trash-basket-${post.postId}`],
+        ["data-id", post.postId],
+        ["src", "dist/images/trash-can.png"],
+      ],
+      ["post-author__trash-basket-img"],
+    );
+
+    editImg.addEventListener("click", () => {
+      const parent = editImg.parentNode;
+      const nextElem = editImg.nextElementSibling;
+      const id = editImg.dataset.id;
+      const textarea = document.getElementById(`textarea-${id}`);
+
+      textarea.removeAttribute("readonly");
+      textarea.addEventListener("input", () => {
+        textarea.style.height = "auto";
+      });
+      textarea.focus();
+
+      const ok = document.createElement("img");
+      ok.classList.add("post-author__accept-img");
+      ok.setAttribute("data-id", id);
+      ok.setAttribute("src", "dist/images/check.png");
+      ok.addEventListener("click", () => {
+        if (textarea.value.trim() === "") {
+          return;
+        }
+
+        this.eventBus.emit("clickedUpdatePost", {
+          content: textarea.value,
+          attachments: null,
+          postId: id,
         });
-        textarea.focus();
+      });
 
-        const ok = document.createElement("img");
-        ok.classList.add("post-author__accept-img");
-        ok.setAttribute("data-id", id);
-        ok.setAttribute("src", "dist/images/check.png");
-        ok.addEventListener("click", () => {
-          if (textarea.value.trim() === "") {
-            return;
-          }
+      const cancel = document.createElement("img");
+      cancel.classList.add("post-author__cancel-img");
+      cancel.setAttribute("data-id", id);
+      cancel.setAttribute("src", "dist/images/cancel.png");
+      cancel.addEventListener("click", () => {
+        this.eventBus.emit("canceledUpdatePost", {
+          postId: id,
+          isCanceled: true,
+        });
+      });
 
-          this.eventBus.emit("clickedUpdatePost", {
-            content: textarea.value,
-            attachments: null,
-            postId: id,
+      parent.appendChild(ok);
+      parent.appendChild(cancel);
+      editImg.style["display"] = "none";
+      nextElem.style["display"] = "none";
+    });
+
+    trashCan.addEventListener("click", () => {
+      customConfirm(
+        (() => {
+          this.eventBus.emit("clickedDeleteButton", trashCan.dataset.id);
+        }).bind(this),
+        "Удалить пост?",
+        "Вы уверены, что хотите удалить пост?",
+        "Удалить",
+        "Отмена",
+      );
+    });
+
+    const postGiveComment = buildComponent("div");
+    if (isPostPage) {
+      modifyComponent(postGiveComment, [], ["post-give-comment"]);
+      const commentInput = buildComponent(
+        "input",
+        [
+          ["id", `user-comment-${post.postId}`],
+          ["type", "text"],
+          ["placeholder", "Оставить комментарий"],
+        ],
+        ["post-footer__input"],
+      );
+
+      const postComment = buildComponent(
+        "img",
+        [
+          ["src", "dist/images/send.png"],
+          ["data-id", post.postId],
+        ],
+        ["post-comment-img"],
+      );
+      postComment.addEventListener("click", () => {
+        if (commentInput.value.trim() !== "") {
+          this.eventBus.emit("postCommentAdded", {
+            postId: post.postId,
+            content: commentInput.value,
           });
-        });
-
-        const cancel = document.createElement("img");
-        cancel.classList.add("post-author__cancel-img");
-        cancel.setAttribute("data-id", id);
-        cancel.setAttribute("src", "dist/images/cancel.png");
-        cancel.addEventListener("click", () => {
-          this.eventBus.emit("canceledUpdatePost", id);
-        });
-
-        parent.appendChild(ok);
-        parent.appendChild(cancel);
-        elem.style["display"] = "none";
-        nextElem.style["display"] = "none";
-      });
-    });
-
-    document
-      .querySelectorAll(".post-author__trash-basket-img")
-      .forEach((elem) => {
-        elem.addEventListener("click", () => {
-          customConfirm(
-            (() => {
-              this.eventBus.emit("clickedDeleteButton", elem.dataset.id);
-            }).bind(this),
-            "Удалить пост?",
-            "Вы уверены, что хотите удалить пост?",
-            "Удалить",
-            "Отмена",
-          );
-        });
+          commentInput.value = "";
+        }
       });
 
-    document
-      .querySelectorAll(".post-content__show-more-button")
-      .forEach((elem) => {
-        elem.addEventListener("click", () => {
-          const postContent = document.getElementById(
-            `post-content-${elem.dataset.id}`,
-          );
-          postContent.style.height = postContent.scrollHeight - 4 + "px";
-          elem.remove();
-        });
+      appendChildren(postGiveComment, [
+        appendChildren(buildComponent("div", [], ["post-footer"]), [
+          buildComponent(
+            "img",
+            [["src", `${staticUrl}/user-avatars/${avatar}`]],
+            ["post-author__user-avatar-img"],
+          ),
+          commentInput,
+        ]),
+        appendChildren(buildComponent("div", [], ["comment-buttons"]), [
+          buildComponent(
+            "img",
+            [["src", "dist/images/attach-paperclip-symbol.png"]],
+            ["comment-buttons__paper-clip-img"],
+          ),
+          postComment,
+        ]),
+      ]);
+    }
+
+    return appendChildren(
+      buildComponent("div", [["id", `post-${post.postId}`]], ["post"]),
+      [
+        appendChildren(buildComponent("div", [], ["post-header"]), [
+          postAuthor,
+          appendChildren(
+            buildComponent(
+              "div",
+              [["id", `post-menu-${post.postId}`]],
+              ["post-menu"],
+            ),
+            isMe ? [editImg, trashCan] : null,
+          ),
+        ]),
+        postContent,
+        appendChildren(buildComponent("div", [], ["post-reaction"]), [
+          appendChildren(buildComponent("div", [], ["reactions"]), [
+            appendChildren(buildComponent("button", [], ["reactions-like"]), [
+              imgIsLiked,
+            ]),
+            buildComponent("span", [], ["likes-count__span"], post.likesCount),
+            showCommentsButton,
+            buildComponent("span", [], ["show-comments-label__span"]),
+          ]),
+        ]),
+        postGiveComment,
+      ],
+    );
+  }
+
+  /**
+   * Renders comments of post on the page
+   *
+   * @param {*} comments
+   */
+  renderComments(comments) {
+    if (comments.length > 0) {
+      document
+        .getElementById("no-comments")
+        .classList.remove("no-comments_visible");
+      comments.forEach(({ comment, author }) => {
+        const isMe = author.userId === UserState.userId;
+        const hasUpdated = comment.createdAt !== comment.updatedAt;
+
+        comment.isLikedByMe = comment.likedBy?.includes(UserState.userId);
+        comment.likesCount = 0;
+        if (comment.likedBy) {
+          comment.likesCount = comment.likedBy.length;
+        }
+        comment.createdAt = formatFullDate(comment.createdAt);
+        comment.updatedAt = formatFullDate(comment.updatedAt);
+
+        this.commentsElement.appendChild(
+          this.makeComment(comment, hasUpdated, isMe, author),
+        );
       });
+    } else {
+      document
+        .getElementById("no-comments")
+        .classList.add("no-comments_visible");
+    }
+  }
+
+  /**
+   * Adds new comment to the page
+   *
+   * @param {*} param0
+   */
+  addComment({ comment }) {
+    const isMe = true;
+    const hasUpdated = comment.createdAt !== comment.updatedAt;
+    comment.createdAt = formatFullDate(comment.createdAt);
+    comment.updatedAt = formatFullDate(comment.updatedAt);
+    comment.likesCount = 0;
+    comment.isLikedByMe = false;
+    this.commentsElement.insertBefore(
+      this.makeComment(comment, hasUpdated, isMe, UserState),
+      this.commentsElement.firstElementChild,
+    );
+  }
+
+  /**
+   * Creates the comment
+   *
+   * @param {*} comment
+   * @param {*} hasUpdated
+   * @param {*} isMe
+   * @param {*} author
+   * @returns
+   */
+  makeComment(comment, hasUpdated, isMe, author) {
+    const commentAuthorTime = appendChildren(
+      buildComponent(
+        "div",
+        [["id", `comment-author-time-${comment.id}`]],
+        ["comment-author-time"],
+      ),
+      [
+        buildComponent(
+          "span",
+          [],
+          ["comment-author-time__created-at-span"],
+          comment.createdAt,
+        ),
+      ],
+    );
+    if (hasUpdated) {
+      appendChildren(commentAuthorTime, [
+        buildComponent(
+          "img",
+          [["src", "dist/images/dot.png"]],
+          ["comment-author-time__dot-img"],
+        ),
+        buildComponent(
+          "span",
+          [["id", `edited-${comment.id}`]],
+          ["comment-author-time__last-time-span"],
+          comment.updatedAt,
+        ),
+      ]);
+    }
+
+    const reactionsHeart = comment.isLikedByMe
+      ? buildComponent(
+          "img",
+          [
+            ["src", "dist/images/filled-heart.png"],
+            ["data-id", comment.id],
+          ],
+          ["reactions__heart-img_liked"],
+        )
+      : buildComponent(
+          "img",
+          [
+            ["src", "dist/images/heart.png"],
+            ["data-id", comment.id],
+          ],
+          ["reactions__heart-img_unliked"],
+        );
+    const commentRedact = buildComponent(
+      "div",
+      [["id", `comment-redact-${comment.id}`]],
+      ["comment-redact"],
+    );
+
+    if (isMe) {
+      const trashCanImg = buildComponent(
+        "img",
+        [
+          ["src", "dist/images/trash-can.png"],
+          ["data-id", comment.id],
+          ["id", `trash-basket-${comment.id}`],
+        ],
+        ["comment-author__trash-basket-img"],
+      );
+
+      appendChildren(commentRedact, [
+        buildComponent(
+          "img",
+          [
+            ["src", "dist/images/edit.png"],
+            ["data-id", comment.id],
+            ["id", `edit-img-${comment.id}`],
+          ],
+          ["comment-author__edit-img"],
+        ),
+        trashCanImg,
+      ]);
+
+      trashCanImg.addEventListener("click", () => {
+        customConfirm(
+          (() => {
+            this.eventBus.emit("clickedDeleteComment", {
+              commentId: trashCanImg.dataset.id,
+            });
+          }).bind(this),
+          "Удалить комментарий?",
+          "Вы уверены, что хотите удалить комментарий?",
+          "Удалить",
+          "Отмена",
+        );
+      });
+    }
+
+    if (comment.isLikedByMe) {
+      reactionsHeart.addEventListener("mouseenter", () => {
+        reactionsHeart.setAttribute("src", "dist/images/broken-heart.png");
+        reactionsHeart.style.width = "28px";
+        reactionsHeart.style.height = "28px";
+      });
+      reactionsHeart.addEventListener("mouseleave", () => {
+        reactionsHeart.setAttribute("src", "dist/images/filled-heart.png");
+        reactionsHeart.style.width = "25px";
+        reactionsHeart.style.height = "25px";
+      });
+      reactionsHeart.addEventListener("click", () => {
+        this.eventBus.emit("clickedUnlikeComment", +reactionsHeart.dataset.id);
+      });
+    } else {
+      reactionsHeart.addEventListener("mouseenter", () => {
+        reactionsHeart.setAttribute("src", "dist/images/filled-heart.png");
+        reactionsHeart.style.width = "28px";
+        reactionsHeart.style.height = "28px";
+      });
+      reactionsHeart.addEventListener("mouseleave", () => {
+        reactionsHeart.setAttribute("src", "dist/images/heart.png");
+        reactionsHeart.style.width = "25px";
+        reactionsHeart.style.height = "25px";
+      });
+      reactionsHeart.addEventListener("click", () => {
+        this.eventBus.emit("clickedLikeComment", +reactionsHeart.dataset.id);
+      });
+    }
+
+    return appendChildren(
+      buildComponent("div", [["id", `comment-${comment.id}`]], ["comment"]),
+      [
+        appendChildren(buildComponent("div", [], ["comment-content"]), [
+          appendChildren(buildComponent("div", [], ["comment-author"]), [
+            appendChildren(
+              buildComponent("a", [["href", `/profile/${author.userId}`]], []),
+              [
+                buildComponent(
+                  "img",
+                  [["src", `${staticUrl}/user-avatars/${author.avatar}`]],
+                  ["comment-author__user-avatar-img"],
+                ),
+              ],
+            ),
+            appendChildren(buildComponent("div", [], ["comment-author-info"]), [
+              appendChildren(
+                buildComponent(
+                  "a",
+                  [["href", `/profile/${author.userId}`]],
+                  ["comment-author__name-href"],
+                ),
+                [
+                  buildComponent(
+                    "span",
+                    [],
+                    ["comment-author__name-span"],
+                    `${author.firstName} ${author.lastName}`,
+                  ),
+                ],
+              ),
+              appendChildren(buildComponent("div", [], ["comment-info"]), [
+                commentAuthorTime,
+                buildComponent(
+                  "span",
+                  [["id", `textarea-${comment.id}`]],
+                  ["comment-content__text-span"],
+                  comment.content,
+                ),
+              ]),
+            ]),
+          ]),
+          appendChildren(
+            buildComponent(
+              "div",
+              [["id", `comment-menu-${comment.id}`]],
+              ["comment-menu"],
+            ),
+            [
+              appendChildren(buildComponent("div", [], ["comment-reactions"]), [
+                appendChildren(
+                  buildComponent("button", [], ["reactions-like"]),
+                  [reactionsHeart],
+                ),
+                buildComponent(
+                  "span",
+                  [],
+                  ["comment__likes-count-span"],
+                  `${comment.likesCount}`,
+                ),
+              ]),
+              commentRedact,
+            ],
+          ),
+        ]),
+      ],
+    );
+  }
+
+  /**
+   * Deletes the comment
+   *
+   * @param {number} commentId - The number of comment
+   */
+  deleteComment(commentId) {
+    document.getElementById(`comment-${commentId}`)?.remove();
   }
 
   /**
@@ -332,11 +984,85 @@ class PostView extends BaseView {
   }
 
   /**
+   * Set comment liked
+   *
+   * @param {number} commentId - The ID of current comment
+   */
+  likedComment(commentId) {
+    const likedCommentParent = document.querySelector(
+      `#comment-${commentId} .reactions__heart-img_unliked`,
+    ).parentElement;
+    const likedComment = document.createElement("img");
+    likedComment.setAttribute("src", "dist/images/filled-heart.png");
+    likedComment.dataset.id = commentId;
+    likedComment.classList.add("reactions__heart-img_liked");
+    const likesCount = document.querySelector(
+      `#comment-${commentId} .comment__likes-count-span`,
+    );
+    likesCount.innerHTML = +likesCount.innerHTML + 1;
+    likedCommentParent.replaceChild(
+      likedComment,
+      likedCommentParent.firstElementChild,
+    );
+
+    likedComment.addEventListener("mouseenter", () => {
+      likedComment.setAttribute("src", "dist/images/broken-heart.png");
+      likedComment.style.width = "28px";
+      likedComment.style.height = "28px";
+    });
+    likedComment.addEventListener("mouseleave", () => {
+      likedComment.setAttribute("src", "dist/images/filled-heart.png");
+      likedComment.style.width = "25px";
+      likedComment.style.height = "25px";
+    });
+    likedComment.addEventListener("click", () => {
+      this.eventBus.emit("clickedUnlikeComment", likedComment.dataset.id);
+    });
+  }
+
+  /**
+   * Set comment unliked
+   *
+   * @param {number} commentId - The ID of current comment
+   */
+  unlikedComment(commentId) {
+    const unlikedCommentParent = document.querySelector(
+      `#comment-${commentId} .reactions__heart-img_liked`,
+    ).parentElement;
+    const unlikedComment = document.createElement("img");
+    unlikedComment.dataset.id = commentId;
+    unlikedComment.setAttribute("src", "dist/images/heart.png");
+    unlikedComment.classList.add("reactions__heart-img_unliked");
+    const likesCount = document.querySelector(
+      `#comment-${commentId} .comment__likes-count-span`,
+    );
+    likesCount.innerHTML = +likesCount.innerHTML - 1;
+    unlikedCommentParent.replaceChild(
+      unlikedComment,
+      unlikedCommentParent.firstElementChild,
+    );
+
+    unlikedComment.addEventListener("mouseenter", () => {
+      unlikedComment.setAttribute("src", "dist/images/filled-heart.png");
+      unlikedComment.style.width = "28px";
+      unlikedComment.style.height = "28px";
+    });
+    unlikedComment.addEventListener("mouseleave", () => {
+      unlikedComment.setAttribute("src", "dist/images/heart.png");
+      unlikedComment.style.width = "25px";
+      unlikedComment.style.height = "25px";
+    });
+    unlikedComment.addEventListener("click", () => {
+      this.eventBus.emit("clickedLikeComment", unlikedComment.dataset.id);
+    });
+  }
+
+  /**
    * Updates current post on page
    *
    * @param {UpdateInfo} udpateInfo - The info about updated post
    */
-  updatePost({ postId, updatedAt }) {
+  updatePost({ post: { postId, updatedAt } }) {
     const postMenu = document.getElementById(`post-menu-${postId}`);
     const textarea = document.getElementById(`textarea-${postId}`);
     const edited = document.getElementById(`edited-${postId}`);
@@ -391,9 +1117,7 @@ class PostView extends BaseView {
    * @param {number} postId - The ID of current post
    */
   deletePost(postId) {
-    const post = document.getElementById(`post-${postId}`);
-
-    post?.remove();
+    document.getElementById(`post-${postId}`)?.remove();
   }
 
   /**

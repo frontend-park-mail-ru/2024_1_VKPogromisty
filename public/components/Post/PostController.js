@@ -17,6 +17,7 @@ const incomingEvents = [
   "clickedUpdatePost",
   "canceledUpdatePost",
   "postCanceledSuccess",
+  "postLoadedSuccess",
   "clickedDeleteButton",
   "clickedLikePost",
   "postLikedSuccess",
@@ -24,6 +25,17 @@ const incomingEvents = [
   "postUnlikedSuccess",
   "postUpdateSuccess",
   "postDeleteSuccess",
+  "readyRenderPost",
+  "readyRenderComments",
+  "commentsGotSuccess",
+  "postCommentAdded",
+  "commentAddedSuccess",
+  "clickedDeleteComment",
+  "commentDeletedSuccess",
+  "clickedUnlikeComment",
+  "clickedLikeComment",
+  "commentLikedSuccess",
+  "commentUnlikedSuccess",
   "serverError",
 ];
 
@@ -41,15 +53,34 @@ class PostController {
   constructor(router) {
     this.eventBus = new EventBus(incomingEvents);
     this.postModel = new PostModel(this.eventBus, router);
-    this.postView = new PostView(this.eventBus);
+    this.postView = new PostView(this.eventBus, router);
+  }
+
+  /**
+   * Renders a page with current post
+   *
+   * @param {number} postId - The ID of post
+   */
+  renderPostPage({ postId }) {
+    this.postView.renderPostMain(postId);
   }
 
   /**
    * Renders PostView
+   *
    * @param {Post} post - The current post
    */
-  renderPostView(post) {
-    this.postView.renderPost(post);
+  renderFriendPostView(post) {
+    this.postView.renderFriendPost(post);
+  }
+
+  /**
+   * Renders PostView
+   *
+   * @param {Post} post - The current post
+   */
+  renderGroupPostView(post) {
+    this.postView.renderGroupPost(post);
   }
 }
 

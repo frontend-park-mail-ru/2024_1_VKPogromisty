@@ -42,19 +42,48 @@ class PostModel extends BaseModel {
       "clickedDeleteButton",
       this.deletePost.bind(this),
     );
+    this.eventBus.addEventListener(
+      "readyRenderPost",
+      this.getCurrentPost.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "readyRenderComments",
+      this.getPostComments.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "postCommentAdded",
+      this.addPostComment.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "clickedDeleteComment",
+      this.deleteComment.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "clickedLikeComment",
+      this.likeComment.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "clickedUnlikeComment",
+      this.unlikeComment.bind(this),
+    );
   }
 
   /**
    * Gets current post
    *
    * @param {number} postId - The ID of current post
+   * @param {boolean} isCanceled - Was post necessary for updating
    */
-  async getCurrentPost(postId) {
+  async getCurrentPost({ postId, isCanceled }) {
     const result = await this.postService.getCurrentPost(postId);
 
     switch (result.status) {
       case 200:
-        this.eventBus.emit("postCanceledSuccess", result.body);
+        if (isCanceled) {
+          this.eventBus.emit("postCanceledSuccess", result.body);
+        } else {
+          this.eventBus.emit("postLoadedSuccess", result.body);
+        }
         break;
       case 401:
         this.router.redirect("/login");
@@ -135,6 +164,107 @@ class PostModel extends BaseModel {
     switch (result.status) {
       case 204:
         this.eventBus.emit("postDeleteSuccess", postId);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Gets all comments of post
+   *
+   * @param {number} postId - The ID of post
+   */
+  async getPostComments(postId) {
+    const result = await this.postService.getPostComments(postId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("commentsGotSuccess", result.body);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Adds new comment of current post
+   *
+   * @param {number} postId - The ID of post
+   * @param {string} content - The content of new comment
+   */
+  async addPostComment({ postId, content }) {
+    const result = await this.postService.addPostComments(postId, content);
+
+    switch (result.status) {
+      case 201:
+        this.eventBus.emit("commentAddedSuccess", result.body);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Deletes current comment of post
+   *
+   * @param {number} commentId - The ID of current post
+   */
+  async deleteComment({ commentId }) {
+    const result = await this.postService.deleteComment(commentId);
+
+    switch (result.status) {
+      case 204:
+        this.eventBus.emit("commentDeletedSuccess", commentId);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Likes current comment
+   *
+   * @param {number} commentId - The ID of current comment
+   */
+  async likeComment(commentId) {
+    const result = await this.postService.likeComment(commentId);
+
+    switch (result.status) {
+      case 201:
+        this.eventBus.emit("commentLikedSuccess", commentId);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Unlikes current comment of post
+   *
+   * @param {number} commentId - The ID of current post
+   */
+  async unlikeComment(commentId) {
+    const result = await this.postService.unlikeComment(commentId);
+
+    switch (result.status) {
+      case 204:
+        this.eventBus.emit("commentUnlikedSuccess", commentId);
         break;
       case 401:
         this.router.redirect("/login");
