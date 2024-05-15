@@ -8,6 +8,7 @@ import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
 import "./signup.scss";
 
+const MBToByte = 1024 * 1024;
 const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const main_inputs = [
@@ -204,7 +205,7 @@ class SignupView extends BaseView {
         return parts[parts.length - 1];
       })();
 
-      if (!validExtensions.includes(typeFile)) {
+      if (!validExtensions.includes(typeFile) || file.size / MBToByte > 5) {
         incorrectAvatar.classList.remove(correct);
         avatar.files = null;
       } else {
@@ -317,7 +318,7 @@ class SignupView extends BaseView {
         return parts[parts.length - 1];
       })();
 
-      if (!validExtensions.includes(typeFile)) {
+      if (!validExtensions.includes(typeFile) || file.size / MBToByte > 5) {
         incorrectAvatar.classList.remove(correct);
         flag = false;
       }
