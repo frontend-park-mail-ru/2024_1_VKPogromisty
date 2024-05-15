@@ -95,6 +95,9 @@ export class Main {
       this.#parent.innerHTML += template({ fullSidebar, toolbar });
     }
 
+    document.getElementById("feed-main").scrollTop = 0;
+    document.getElementById("feed-main").onscroll = null;
+
     document
       .getElementById("server-error-500")
       .classList.add("server-error-500");
