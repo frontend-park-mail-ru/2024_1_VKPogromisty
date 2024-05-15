@@ -12,6 +12,7 @@ import "./group.scss";
 const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const staticUrl = `${API_URL}/static`;
+const MBToByte = 1024 * 1024;
 
 /**
  * A Author structure
@@ -454,12 +455,11 @@ class GroupView extends BaseView {
         }
       });
       posts.forEach((elem) => {
-        this.postController.renderPostView({
-          isGroup: true,
+        this.postController.renderGroupPostView({
           post: elem,
-          author: {
+          group: {
             name: this.groupName,
-            groupId: this.groupId,
+            id: this.groupId,
             avatar: this.groupAvatar,
           },
         });
@@ -490,11 +490,11 @@ class GroupView extends BaseView {
    * @return {void}
    */
   postPublishedSuccess({ post }) {
-    this.postController.renderPostView({
+    this.postController.renderGroupPostView({
       post: post,
-      author: {
+      group: {
         name: this.groupName,
-        groupId: this.groupId,
+        id: this.groupId,
         avatar: this.groupAvatar,
       },
       canDelete: this.isAdmin,
@@ -689,7 +689,7 @@ class GroupView extends BaseView {
         return parts[parts.length - 1];
       })();
 
-      if (!validExtensions.includes(typeFile)) {
+      if (!validExtensions.includes(typeFile) || file.size / MBToByte > 5) {
         incorrectAvatarForm.classList.remove(correct);
         avatarForm.files = null;
       } else {
@@ -782,7 +782,7 @@ class GroupView extends BaseView {
         return parts[parts.length - 1];
       })();
 
-      if (!validExtensions.includes(typeFile)) {
+      if (!validExtensions.includes(typeFile) || file.size / MBToByte > 5) {
         incorrectAvatarForm.classList.remove(correct);
         flag = false;
       }

@@ -66,6 +66,11 @@
   @include mobile-style {
     padding: 5px 10px;
   }
+
+  &__href {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
 .group-info {
