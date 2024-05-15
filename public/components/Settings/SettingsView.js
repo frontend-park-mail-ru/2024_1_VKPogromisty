@@ -14,6 +14,7 @@ import { customConfirm } from "../../modules/windows.js";
 const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const staticUrl = `${API_URL}/static`;
+const MBToByte = 1024 * 1024;
 
 /**
  * SettingsView - класс для работы с визуалом на странице.
@@ -64,6 +65,7 @@ class SettingsView extends BaseView {
     this.mainElement = document.getElementById("activity");
 
     this.mainElement.innerHTML = template({
+      userId,
       lastName,
       firstName,
       avatar,
@@ -159,7 +161,7 @@ class SettingsView extends BaseView {
         return parts[parts.length - 1];
       })();
 
-      if (!validExtensions.includes(typeFile)) {
+      if (!validExtensions.includes(typeFile) || file.size / MBToByte > 5) {
         incorrectAvatarForm.classList.remove(correct);
         avatarForm.files = null;
       } else {
@@ -271,7 +273,7 @@ class SettingsView extends BaseView {
         return parts[parts.length - 1];
       })();
 
-      if (!validExtensions.includes(typeFile)) {
+      if (!validExtensions.includes(typeFile) || file.size / MBToByte > 5) {
         incorrectAvatarForm.classList.remove(correct);
         flag = false;
       }

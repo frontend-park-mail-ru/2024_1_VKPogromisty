@@ -226,3 +226,24 @@
   justify-content: space-between;
   margin: 30px 0 40px;
 }
+
+.go-to-profile {
+  @include row-flexible;
+  width: 100%;
+  justify-content: start;
+  align-items: center;
+  margin: 10px 0;
+
+  &__img {
+    width: 20px;
+  }
+
+  &__href {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &__span {
+    color: #5d5151;
+  }
+}
