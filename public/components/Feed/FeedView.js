@@ -4,6 +4,7 @@ import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
 import PostController from "../Post/PostController.js";
 import UserState from "../UserState.js";
+import { buildComponent, appendChildren } from "../createComponent.js";
 import "./feed.scss";
 
 /**
@@ -37,7 +38,12 @@ import "./feed.scss";
  * @property {Author} author - The author of post
  */
 
+const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
 const staticUrl = `${API_URL}/static`;
+const typeFile = (file) => {
+  const parts = file.name.split(".");
+  return parts[parts.length - 1];
+};
 
 const rightSidebar = [
   {
@@ -179,17 +185,46 @@ class FeedView extends BaseView {
       fileInput.addEventListener("change", () => {
         const files = fileInput.files;
         const imgContent = document.getElementById("news-img-content");
+        const fileContent = document.getElementById("news-file-content");
 
         imgContent.innerHTML = "";
+        fileContent.innerHTML = "";
 
         Array.from(files).forEach((elem) => {
           const src = URL.createObjectURL(elem);
+          const fileName = elem.name;
 
-          const img = document.createElement("img");
-          img.setAttribute("src", src);
-          img.classList.add("news-img-content__img", "post-content__img");
-
-          imgContent.appendChild(img);
+          if (imageTypes.includes(typeFile(elem))) {
+            imgContent.appendChild(
+              buildComponent(
+                "img",
+                [["src", src]],
+                ["news-img-content__img", "post-content__img"],
+              ),
+            );
+          } else {
+            fileContent.appendChild(
+              appendChildren(
+                buildComponent(
+                  "a",
+                  [
+                    ["target", "_blank"],
+                    ["rel", "noopener"],
+                    ["href", src],
+                    ["download", fileName],
+                  ],
+                  ["news-file-content__a"],
+                ),
+                [
+                  buildComponent(
+                    "img",
+                    [["src", "dist/images/document.png"]],
+                    ["news-file-content__img"],
+                  ),
+                ],
+              ),
+            );
+          }
         });
       });
     }
@@ -208,6 +243,7 @@ class FeedView extends BaseView {
         });
 
         document.getElementById("news-img-content").innerHTML = "";
+        document.getElementById("news-file-content").innerHTML = "";
         const textarea = document.getElementById("news-content__textarea");
         textarea.value = "";
         textarea.style.height = "60px";
@@ -276,24 +312,24 @@ class FeedView extends BaseView {
         }
       });
       posts.forEach((elem) => {
-        let author = elem.author;
         if (elem.group) {
-          author = {
-            name: elem.group?.name,
-            groupId: elem.group?.id,
-            avatar: elem.group?.avatar,
-          };
+          elem.group.authorId = elem.author.authorId;
+          this.postController.renderGroupPostView({
+            post: elem.post,
+            group: elem.group,
+          });
+        } else {
+          this.postController.renderFriendPostView({
+            post: elem.post,
+            author: elem.author,
+          });
         }
-        this.postController.renderPostView({
-          isGroup: elem.group,
-          post: elem.post,
-          author,
-        });
       });
     } else {
       if (isMy) {
         this.isAllMyPosts = true;
       } else {
+        this.isAllPosts = true;
         document
           .getElementById("no-more-posts")
           .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
