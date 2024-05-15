@@ -51,9 +51,10 @@ class FriendsView extends BaseView {
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {UserState} userState - Текущее состояние юзера
    */
-  constructor(eventBus) {
+  constructor(eventBus, router) {
     super(eventBus);
 
+    this.router = router;
     this.template = require("./friendsMain.hbs");
 
     this.eventBus.addEventListener(
@@ -234,6 +235,8 @@ class FriendsView extends BaseView {
         );
       });
     });
+
+    this.addHrefing();
   }
 
   /**
@@ -274,6 +277,8 @@ class FriendsView extends BaseView {
         this.eventBus.emit("clickedSubscribeButton", friendId);
       });
     });
+
+    this.addHrefing();
   }
 
   /**
@@ -323,6 +328,8 @@ class FriendsView extends BaseView {
         this.eventBus.emit("clickedUnsubscribeButton", friendId);
       });
     });
+
+    this.addHrefing();
   }
 
   renderFoundFriend(people) {
@@ -347,6 +354,22 @@ class FriendsView extends BaseView {
     } else {
       document.getElementById("no-something").innerHTML = "Нет результатов";
     }
+
+    this.addHrefing();
+  }
+
+  addHrefing() {
+    document.querySelectorAll(".friends-field").forEach((elem) => {
+      elem.addEventListener("click", (event) => {
+        if (
+          event.target.classList.contains("friend-ables__send-message-img") ||
+          event.target.classList.contains("friend-ables__send-message-button")
+        ) {
+          return;
+        }
+        this.router.redirect(`/profile/${elem.dataset.id}`);
+      });
+    });
   }
 
   /**

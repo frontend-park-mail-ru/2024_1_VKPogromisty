@@ -33,7 +33,7 @@ class FriendsController {
   constructor(router, webSocket) {
     this.eventBus = new EventBus(incomingEvents);
     this.friendsModel = new FriendsModel(this.eventBus, router, webSocket);
-    this.friendsView = new FriendsView(this.eventBus);
+    this.friendsView = new FriendsView(this.eventBus, router);
   }
 
   /**
