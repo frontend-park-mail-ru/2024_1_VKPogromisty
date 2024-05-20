@@ -2,7 +2,7 @@
  * Creates a new component
  *
  * @param {string} tagName - The tag name of component
- * @param {string[]} attrs - Attributes of component
+ * @param {Object} attrs - Attributes of component
  * @param {string[]} classes - Classes of component
  * @param {string} innerHTML - The inner HTML of component
  * @returns {HTMLElement}
@@ -10,9 +10,9 @@
 export function buildComponent(tagName, attrs, classes, innerHTML) {
   const newComponent = document.createElement(tagName);
 
-  attrs?.forEach(([attr, value]) => {
+  for (const [attr, value] of Object.entries(attrs)) {
     newComponent.setAttribute(attr, value);
-  });
+  }
 
   classes?.forEach((ownClass) => {
     newComponent.classList.add(ownClass);
@@ -61,15 +61,15 @@ export function replaceChildren(parent, newChildren) {
  * Modifies a existed component
  *
  * @param {HTMLElement} currentNode - The current component
- * @param {string[]} attrs - Attributes of component
+ * @param {Object} attrs - Attributes of component
  * @param {string[]} classes - Classes of component
  * @param {string} innerHTML - The inner HTML of component
  * @returns {HTMLElement}
  */
 export function modifyComponent(currentNode, attrs, classes, innerHTML) {
-  attrs?.forEach(([attr, value]) => {
+  for (const [attr, value] of Object.entries(attrs) || {}) {
     currentNode.setAttribute(attr, value);
-  });
+  }
 
   classes?.forEach((ownClass) => {
     currentNode.classList.toggle(ownClass);
