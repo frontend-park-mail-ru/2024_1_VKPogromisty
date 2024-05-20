@@ -82,6 +82,7 @@ class CommentView extends BaseView {
     document
       .getElementById("no-comments")
       ?.classList.remove("no-comments_visible");
+    document.getElementById(`comment-${comment.id}`)?.scrollIntoView();
   }
 
   /**

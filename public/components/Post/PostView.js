@@ -126,8 +126,7 @@ class PostView extends BaseView {
     document.getElementById("go-to-feed__img").addEventListener("click", () => {
       postMainElement.classList.add("post-main_invisible");
       activityElement.classList.remove("activity_invisible");
-      document.getElementById("feed-main").scrollTop =
-        this.feedMainScrollTop || 0;
+      document.getElementById(`post-${postId}`)?.scrollIntoView();
     });
 
     this.eventBus.emit("readyRenderPost", { postId: this.postId });
