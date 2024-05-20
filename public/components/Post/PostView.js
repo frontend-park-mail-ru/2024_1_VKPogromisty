@@ -1,16 +1,11 @@
 import BaseView from "../../MVC/BaseView.js";
 import { formatFullDate } from "../../modules/dateRemaking.js";
-import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
 import { Header } from "../Header/header.js";
 import { Main } from "../Main/main.js";
 import "./post.scss";
-import { customConfirm } from "../../modules/windows.js";
-import {
-  buildComponent,
-  appendChildren,
-  modifyComponent,
-} from "../createComponent.js";
+import { makePost } from "../../modules/makeComponents.js";
+import CommentController from "../Comment/CommentController.js";
 
 /**
  * @typedef {Object} UpdateInfo
@@ -49,13 +44,6 @@ import {
  * @property {boolean} publish - Is published now?
  */
 
-const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
-const staticUrl = `${API_URL}/static`;
-const typeFile = (file) => {
-  const parts = file.split(".");
-  return parts[parts.length - 1];
-};
-
 /**
  * PostView - класс для работы с визуалом на странице.
  */
@@ -68,6 +56,7 @@ class PostView extends BaseView {
   constructor(eventBus, router) {
     super(eventBus);
     this.router = router;
+    this.commentsController = new CommentController(router);
 
     this.eventBus.addEventListener(
       "postDeleteSuccess",
@@ -95,27 +84,15 @@ class PostView extends BaseView {
     );
     this.eventBus.addEventListener(
       "postLoadedSuccess",
-      this.renderFriendPost.bind(this),
+      this.defineWhatPost.bind(this),
     );
     this.eventBus.addEventListener(
-      "commentsGotSuccess",
-      this.renderComments.bind(this),
+      "needRenderPostMain",
+      this.renderPostMain.bind(this),
     );
     this.eventBus.addEventListener(
-      "commentDeletedSuccess",
-      this.deleteComment.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "commentAddedSuccess",
-      this.addComment.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "commentLikedSuccess",
-      this.likedComment.bind(this),
-    );
-    this.eventBus.addEventListener(
-      "commentUnlikedSuccess",
-      this.unlikedComment.bind(this),
+      "postCommentAdded",
+      this.commentsController.addComment.bind(this.commentsController),
     );
   }
 
@@ -136,15 +113,38 @@ class PostView extends BaseView {
     });
     new Main(document.body).renderForm(userId);
 
-    this.mainElement = document.getElementById("activity");
+    const postMainElement = document.getElementById("post-main");
+    this.mainElement = postMainElement;
+    this.isPostPage = true;
 
     this.mainElement.innerHTML = template({});
+    const activityElement = document.getElementById("activity");
+    activityElement.classList.add("activity_invisible");
 
-    this.commentsElement = document.getElementById("comments");
     this.postId = postId;
 
+    document.getElementById("go-to-feed__img").addEventListener("click", () => {
+      postMainElement.classList.add("post-main_invisible");
+      activityElement.classList.remove("activity_invisible");
+      document.getElementById("feed-main").scrollTop =
+        this.feedMainScrollTop || 0;
+    });
+
     this.eventBus.emit("readyRenderPost", { postId: this.postId });
-    this.eventBus.emit("readyRenderComments", this.postId);
+    this.commentsController.renderComments(this.postId);
+  }
+
+  /**
+   * Defines which post: group's or friend's
+   *
+   * @param {PostInfo} result - The received post
+   */
+  defineWhatPost(result) {
+    if (!result.group) {
+      this.renderFriendPost(result);
+    } else {
+      this.renderGroupPost(result);
+    }
   }
 
   /**
@@ -158,13 +158,11 @@ class PostView extends BaseView {
     author.avatar = author.avatar || "default_avatar.png";
 
     let isMe = Number(author.userId) === Number(userId);
-    const isPostPage = window.location.pathname.startsWith("/post");
+    const isPostPage = this.isPostPage;
     const hasUpdated = post.createdAt !== post.updatedAt;
 
     post.createdAt = formatFullDate(post.createdAt);
     post.updatedAt = `обновлено ${formatFullDate(post.updatedAt)}`;
-
-    this.mainElement = document.getElementById("posts");
 
     if (post.likedBy) {
       post.likesCount = post.likedBy.length;
@@ -173,7 +171,7 @@ class PostView extends BaseView {
       post.likesCount = 0;
     }
 
-    const newPost = this.makePost(
+    const newPost = makePost(
       null,
       post,
       author,
@@ -181,15 +179,25 @@ class PostView extends BaseView {
       isMe,
       hasUpdated,
       isPostPage,
+      this.eventBus,
     );
 
+    let currentMainElement = isPostPage
+      ? document.getElementById("single-post")
+      : document.getElementById("posts");
     if (publish) {
-      this.mainElement.insertBefore(
+      currentMainElement.insertBefore(
         newPost,
-        this.mainElement.firstElementChild,
+        currentMainElement.firstElementChild,
       );
     } else {
-      this.mainElement.appendChild(newPost);
+      currentMainElement.appendChild(newPost);
+    }
+
+    if (isPostPage) {
+      document
+        .getElementById("post-main")
+        .classList.remove("post-main_invisible");
     }
 
     const postContent = newPost.firstElementChild.nextElementSibling;
@@ -219,6 +227,7 @@ class PostView extends BaseView {
         postTextarea.style.height = 0;
       }
     }
+    this.isPostPage = false;
   }
 
   /**
@@ -232,13 +241,11 @@ class PostView extends BaseView {
     group.avatar = group.avatar || "default_avatar.png";
 
     let isMe = Number(post.authorId) === Number(userId);
-    const isPostPage = window.location.pathname.startsWith("/post");
+    const isPostPage = this.isPostPage;
     const hasUpdated = post.createdAt !== post.updatedAt;
 
     post.createdAt = formatFullDate(post.createdAt);
     post.updatedAt = `обновлено ${formatFullDate(post.updatedAt)}`;
-
-    this.mainElement = document.getElementById("posts");
 
     if (post.likedBy) {
       post.likesCount = post.likedBy.length;
@@ -247,7 +254,7 @@ class PostView extends BaseView {
       post.likesCount = 0;
     }
 
-    const newPost = this.makePost(
+    const newPost = makePost(
       group,
       post,
       null,
@@ -255,15 +262,25 @@ class PostView extends BaseView {
       isMe,
       hasUpdated,
       isPostPage,
+      this.eventBus,
     );
 
+    let currentMainElement = isPostPage
+      ? document.getElementById("single-post")
+      : document.getElementById("posts");
     if (publish) {
-      this.mainElement.insertBefore(
+      currentMainElement.insertBefore(
         newPost,
-        this.mainElement.firstElementChild,
+        currentMainElement.firstElementChild,
       );
     } else {
-      this.mainElement.appendChild(newPost);
+      currentMainElement.appendChild(newPost);
+    }
+
+    if (isPostPage) {
+      document
+        .getElementById("post-main")
+        .classList.remove("post-main_invisible");
     }
 
     const postContent = newPost.firstElementChild.nextElementSibling;
@@ -293,623 +310,7 @@ class PostView extends BaseView {
         postTextarea.style.height = 0;
       }
     }
-  }
-
-  /**
-   * Makes a new post
-   *
-   * @param {*} isGroup
-   * @param {*} post
-   * @param {*} author
-   * @param {*} avatar
-   * @param {*} isMe
-   * @param {*} hasUpdated
-   * @returns
-   */
-  makePost(group, post, author, avatar, isMe, hasUpdated, isPostPage) {
-    const isGroup = group !== null;
-    const postAuthor = buildComponent("div", [], ["post-author"]);
-    const postAuthorHref = isGroup
-      ? `/group/${group.id}`
-      : `/profile/${author.authorId}`;
-    const postAuthorImage = isGroup
-      ? `${staticUrl}/group-avatars/${group.avatar}`
-      : `${staticUrl}/user-avatars/${author.avatar}`;
-
-    appendChildren(postAuthor, [
-      appendChildren(buildComponent("a", [["href", postAuthorHref]]), [
-        buildComponent(
-          "img",
-          [["src", postAuthorImage]],
-          ["post-author__user-avatar-img"],
-        ),
-      ]),
-    ]);
-    const postAuthorTime = appendChildren(
-      buildComponent(
-        "div",
-        [["id", `post-author-time-${post.postId}`]],
-        ["post-author-time"],
-      ),
-      [
-        buildComponent(
-          "span",
-          [],
-          ["post-author-time__created-at-span"],
-          post.createdAt,
-        ),
-      ],
-    );
-
-    if (hasUpdated) {
-      appendChildren(postAuthorTime, [
-        buildComponent(
-          "img",
-          [["src", "dist/images/dot.png"]],
-          ["post-author-time__dot-img"],
-        ),
-        buildComponent(
-          "span",
-          [["id", `edited-${post.postId}`]],
-          ["post-author-time__last-time-span"],
-          post.updatedAt,
-        ),
-      ]);
-    }
-
-    const postAuthorNameSpan = isGroup
-      ? group.name
-      : `${author.firstName} ${author.lastName}`;
-
-    appendChildren(postAuthor, [
-      appendChildren(buildComponent("div", [], ["post-author-info"]), [
-        appendChildren(
-          buildComponent(
-            "a",
-            [["href", postAuthorHref]],
-            ["post-author__name-href"],
-          ),
-          [
-            buildComponent(
-              "span",
-              [],
-              ["post-author__name-span"],
-              postAuthorNameSpan,
-            ),
-          ],
-        ),
-        postAuthorTime,
-      ]),
-    ]);
-
-    const postContent = appendChildren(
-      buildComponent(
-        "div",
-        [["id", `post-content-${post.postId}`]],
-        ["post-content"],
-      ),
-      [
-        buildComponent(
-          "textarea",
-          [["id", `textarea-${post.postId}`]],
-          ["post-content__text-span"],
-          post.content,
-        ),
-      ],
-    );
-
-    post.attachments?.forEach((elem) => {
-      if (imageTypes.includes(typeFile(elem))) {
-        appendChildren(postContent, [
-          buildComponent(
-            "img",
-            [["src", `${staticUrl}/post-attachments/${elem}`]],
-            ["post-content__img"],
-          ),
-        ]);
-      } else {
-        appendChildren(postContent, [
-          appendChildren(buildComponent("div", [], ["post-file-content"]), [
-            appendChildren(
-              buildComponent(
-                "a",
-                [
-                  ["target", "_blank"],
-                  ["rel", "noopener"],
-                  ["href", `/${elem}`],
-                  ["download", elem],
-                ],
-                ["news-file-content__a"],
-              ),
-              [
-                buildComponent(
-                  "img",
-                  [["src", "dist/images/document.png"]],
-                  ["news-file-content__img"],
-                ),
-              ],
-            ),
-          ]),
-        ]);
-      }
-    });
-
-    const classIsLiked = post.isLikedByMe
-      ? "reactions__heart-img_liked"
-      : "reactions__heart-img_unliked";
-    const sourceIsLiked = post.isLikedByMe
-      ? "dist/images/filled-heart.png"
-      : "dist/images/heart.png";
-    const imgIsLiked = buildComponent(
-      "img",
-      [
-        ["data-id", post.postId],
-        ["src", sourceIsLiked],
-      ],
-      [classIsLiked],
-    );
-    const showCommentsButton = appendChildren(
-      buildComponent("button", [], ["show-comments"]),
-      [
-        buildComponent(
-          "img",
-          [["src", "dist/images/messenger.png"]],
-          ["show-comments__messenger-img"],
-        ),
-      ],
-    );
-
-    showCommentsButton.addEventListener("click", () => {
-      this.router.redirect(`/post/${post.postId}`);
-    });
-
-    if (post.isLikedByMe) {
-      imgIsLiked.addEventListener("mouseenter", () => {
-        imgIsLiked.setAttribute("src", "dist/images/broken-heart.png");
-        imgIsLiked.style.width = "28px";
-        imgIsLiked.style.height = "28px";
-      });
-      imgIsLiked.addEventListener("mouseleave", () => {
-        imgIsLiked.setAttribute("src", "dist/images/filled-heart.png");
-        imgIsLiked.style.width = "25px";
-        imgIsLiked.style.height = "25px";
-      });
-      imgIsLiked.addEventListener("click", () => {
-        this.eventBus.emit("clickedUnlikePost", +imgIsLiked.dataset.id);
-      });
-    } else {
-      imgIsLiked.addEventListener("mouseenter", () => {
-        imgIsLiked.setAttribute("src", "dist/images/filled-heart.png");
-        imgIsLiked.style.width = "28px";
-        imgIsLiked.style.height = "28px";
-      });
-      imgIsLiked.addEventListener("mouseleave", () => {
-        imgIsLiked.setAttribute("src", "dist/images/heart.png");
-        imgIsLiked.style.width = "25px";
-        imgIsLiked.style.height = "25px";
-      });
-      imgIsLiked.addEventListener("click", () => {
-        this.eventBus.emit("clickedLikePost", +imgIsLiked.dataset.id);
-      });
-    }
-
-    const editImg = buildComponent(
-      "img",
-      [
-        ["id", `edit-img-${post.postId}`],
-        ["data-id", post.postId],
-        ["src", "dist/images/edit.png"],
-      ],
-      ["post-author__edit-img"],
-    );
-    const trashCan = buildComponent(
-      "img",
-      [
-        ["id", `trash-basket-${post.postId}`],
-        ["data-id", post.postId],
-        ["src", "dist/images/trash-can.png"],
-      ],
-      ["post-author__trash-basket-img"],
-    );
-
-    editImg.addEventListener("click", () => {
-      const parent = editImg.parentNode;
-      const nextElem = editImg.nextElementSibling;
-      const id = editImg.dataset.id;
-      const textarea = document.getElementById(`textarea-${id}`);
-
-      textarea.removeAttribute("readonly");
-      textarea.addEventListener("input", () => {
-        textarea.style.height = "auto";
-      });
-      textarea.focus();
-
-      const ok = document.createElement("img");
-      ok.classList.add("post-author__accept-img");
-      ok.setAttribute("data-id", id);
-      ok.setAttribute("src", "dist/images/check.png");
-      ok.addEventListener("click", () => {
-        if (textarea.value.trim() === "") {
-          return;
-        }
-
-        this.eventBus.emit("clickedUpdatePost", {
-          content: textarea.value,
-          attachments: null,
-          postId: id,
-        });
-      });
-
-      const cancel = document.createElement("img");
-      cancel.classList.add("post-author__cancel-img");
-      cancel.setAttribute("data-id", id);
-      cancel.setAttribute("src", "dist/images/cancel.png");
-      cancel.addEventListener("click", () => {
-        this.eventBus.emit("canceledUpdatePost", {
-          postId: id,
-          isCanceled: true,
-        });
-      });
-
-      parent.appendChild(ok);
-      parent.appendChild(cancel);
-      editImg.style["display"] = "none";
-      nextElem.style["display"] = "none";
-    });
-
-    trashCan.addEventListener("click", () => {
-      customConfirm(
-        (() => {
-          this.eventBus.emit("clickedDeleteButton", trashCan.dataset.id);
-        }).bind(this),
-        "Удалить пост?",
-        "Вы уверены, что хотите удалить пост?",
-        "Удалить",
-        "Отмена",
-      );
-    });
-
-    const postGiveComment = buildComponent("div");
-    if (isPostPage) {
-      modifyComponent(postGiveComment, [], ["post-give-comment"]);
-      const commentInput = buildComponent(
-        "input",
-        [
-          ["id", `user-comment-${post.postId}`],
-          ["type", "text"],
-          ["placeholder", "Оставить комментарий"],
-        ],
-        ["post-footer__input"],
-      );
-
-      const postComment = buildComponent(
-        "img",
-        [
-          ["src", "dist/images/send.png"],
-          ["data-id", post.postId],
-        ],
-        ["post-comment-img"],
-      );
-      postComment.addEventListener("click", () => {
-        if (commentInput.value.trim() !== "") {
-          this.eventBus.emit("postCommentAdded", {
-            postId: post.postId,
-            content: commentInput.value,
-          });
-          commentInput.value = "";
-        }
-      });
-
-      appendChildren(postGiveComment, [
-        appendChildren(buildComponent("div", [], ["post-footer"]), [
-          buildComponent(
-            "img",
-            [["src", `${staticUrl}/user-avatars/${avatar}`]],
-            ["post-author__user-avatar-img"],
-          ),
-          commentInput,
-        ]),
-        appendChildren(buildComponent("div", [], ["comment-buttons"]), [
-          buildComponent(
-            "img",
-            [["src", "dist/images/attach-paperclip-symbol.png"]],
-            ["comment-buttons__paper-clip-img"],
-          ),
-          postComment,
-        ]),
-      ]);
-    }
-
-    return appendChildren(
-      buildComponent("div", [["id", `post-${post.postId}`]], ["post"]),
-      [
-        appendChildren(buildComponent("div", [], ["post-header"]), [
-          postAuthor,
-          appendChildren(
-            buildComponent(
-              "div",
-              [["id", `post-menu-${post.postId}`]],
-              ["post-menu"],
-            ),
-            isMe ? [editImg, trashCan] : null,
-          ),
-        ]),
-        postContent,
-        appendChildren(buildComponent("div", [], ["post-reaction"]), [
-          appendChildren(buildComponent("div", [], ["reactions"]), [
-            appendChildren(buildComponent("button", [], ["reactions-like"]), [
-              imgIsLiked,
-            ]),
-            buildComponent("span", [], ["likes-count__span"], post.likesCount),
-            showCommentsButton,
-            buildComponent("span", [], ["show-comments-label__span"]),
-          ]),
-        ]),
-        postGiveComment,
-      ],
-    );
-  }
-
-  /**
-   * Renders comments of post on the page
-   *
-   * @param {*} comments
-   */
-  renderComments(comments) {
-    if (comments.length > 0) {
-      document
-        .getElementById("no-comments")
-        .classList.remove("no-comments_visible");
-      comments.forEach(({ comment, author }) => {
-        const isMe = author.userId === UserState.userId;
-        const hasUpdated = comment.createdAt !== comment.updatedAt;
-
-        comment.isLikedByMe = comment.likedBy?.includes(UserState.userId);
-        comment.likesCount = 0;
-        if (comment.likedBy) {
-          comment.likesCount = comment.likedBy.length;
-        }
-        comment.createdAt = formatFullDate(comment.createdAt);
-        comment.updatedAt = formatFullDate(comment.updatedAt);
-
-        this.commentsElement.appendChild(
-          this.makeComment(comment, hasUpdated, isMe, author),
-        );
-      });
-    } else {
-      document
-        .getElementById("no-comments")
-        .classList.add("no-comments_visible");
-    }
-  }
-
-  /**
-   * Adds new comment to the page
-   *
-   * @param {*} param0
-   */
-  addComment({ comment }) {
-    const isMe = true;
-    const hasUpdated = comment.createdAt !== comment.updatedAt;
-    comment.createdAt = formatFullDate(comment.createdAt);
-    comment.updatedAt = formatFullDate(comment.updatedAt);
-    comment.likesCount = 0;
-    comment.isLikedByMe = false;
-    this.commentsElement.insertBefore(
-      this.makeComment(comment, hasUpdated, isMe, UserState),
-      this.commentsElement.firstElementChild,
-    );
-  }
-
-  /**
-   * Creates the comment
-   *
-   * @param {*} comment
-   * @param {*} hasUpdated
-   * @param {*} isMe
-   * @param {*} author
-   * @returns
-   */
-  makeComment(comment, hasUpdated, isMe, author) {
-    const commentAuthorTime = appendChildren(
-      buildComponent(
-        "div",
-        [["id", `comment-author-time-${comment.id}`]],
-        ["comment-author-time"],
-      ),
-      [
-        buildComponent(
-          "span",
-          [],
-          ["comment-author-time__created-at-span"],
-          comment.createdAt,
-        ),
-      ],
-    );
-    if (hasUpdated) {
-      appendChildren(commentAuthorTime, [
-        buildComponent(
-          "img",
-          [["src", "dist/images/dot.png"]],
-          ["comment-author-time__dot-img"],
-        ),
-        buildComponent(
-          "span",
-          [["id", `edited-${comment.id}`]],
-          ["comment-author-time__last-time-span"],
-          comment.updatedAt,
-        ),
-      ]);
-    }
-
-    const reactionsHeart = comment.isLikedByMe
-      ? buildComponent(
-          "img",
-          [
-            ["src", "dist/images/filled-heart.png"],
-            ["data-id", comment.id],
-          ],
-          ["reactions__heart-img_liked"],
-        )
-      : buildComponent(
-          "img",
-          [
-            ["src", "dist/images/heart.png"],
-            ["data-id", comment.id],
-          ],
-          ["reactions__heart-img_unliked"],
-        );
-    const commentRedact = buildComponent(
-      "div",
-      [["id", `comment-redact-${comment.id}`]],
-      ["comment-redact"],
-    );
-
-    if (isMe) {
-      const trashCanImg = buildComponent(
-        "img",
-        [
-          ["src", "dist/images/trash-can.png"],
-          ["data-id", comment.id],
-          ["id", `trash-basket-${comment.id}`],
-        ],
-        ["comment-author__trash-basket-img"],
-      );
-
-      appendChildren(commentRedact, [
-        buildComponent(
-          "img",
-          [
-            ["src", "dist/images/edit.png"],
-            ["data-id", comment.id],
-            ["id", `edit-img-${comment.id}`],
-          ],
-          ["comment-author__edit-img"],
-        ),
-        trashCanImg,
-      ]);
-
-      trashCanImg.addEventListener("click", () => {
-        customConfirm(
-          (() => {
-            this.eventBus.emit("clickedDeleteComment", {
-              commentId: trashCanImg.dataset.id,
-            });
-          }).bind(this),
-          "Удалить комментарий?",
-          "Вы уверены, что хотите удалить комментарий?",
-          "Удалить",
-          "Отмена",
-        );
-      });
-    }
-
-    if (comment.isLikedByMe) {
-      reactionsHeart.addEventListener("mouseenter", () => {
-        reactionsHeart.setAttribute("src", "dist/images/broken-heart.png");
-        reactionsHeart.style.width = "28px";
-        reactionsHeart.style.height = "28px";
-      });
-      reactionsHeart.addEventListener("mouseleave", () => {
-        reactionsHeart.setAttribute("src", "dist/images/filled-heart.png");
-        reactionsHeart.style.width = "25px";
-        reactionsHeart.style.height = "25px";
-      });
-      reactionsHeart.addEventListener("click", () => {
-        this.eventBus.emit("clickedUnlikeComment", +reactionsHeart.dataset.id);
-      });
-    } else {
-      reactionsHeart.addEventListener("mouseenter", () => {
-        reactionsHeart.setAttribute("src", "dist/images/filled-heart.png");
-        reactionsHeart.style.width = "28px";
-        reactionsHeart.style.height = "28px";
-      });
-      reactionsHeart.addEventListener("mouseleave", () => {
-        reactionsHeart.setAttribute("src", "dist/images/heart.png");
-        reactionsHeart.style.width = "25px";
-        reactionsHeart.style.height = "25px";
-      });
-      reactionsHeart.addEventListener("click", () => {
-        this.eventBus.emit("clickedLikeComment", +reactionsHeart.dataset.id);
-      });
-    }
-
-    return appendChildren(
-      buildComponent("div", [["id", `comment-${comment.id}`]], ["comment"]),
-      [
-        appendChildren(buildComponent("div", [], ["comment-content"]), [
-          appendChildren(buildComponent("div", [], ["comment-author"]), [
-            appendChildren(
-              buildComponent("a", [["href", `/profile/${author.userId}`]], []),
-              [
-                buildComponent(
-                  "img",
-                  [["src", `${staticUrl}/user-avatars/${author.avatar}`]],
-                  ["comment-author__user-avatar-img"],
-                ),
-              ],
-            ),
-            appendChildren(buildComponent("div", [], ["comment-author-info"]), [
-              appendChildren(
-                buildComponent(
-                  "a",
-                  [["href", `/profile/${author.userId}`]],
-                  ["comment-author__name-href"],
-                ),
-                [
-                  buildComponent(
-                    "span",
-                    [],
-                    ["comment-author__name-span"],
-                    `${author.firstName} ${author.lastName}`,
-                  ),
-                ],
-              ),
-              appendChildren(buildComponent("div", [], ["comment-info"]), [
-                commentAuthorTime,
-                buildComponent(
-                  "span",
-                  [["id", `textarea-${comment.id}`]],
-                  ["comment-content__text-span"],
-                  comment.content,
-                ),
-              ]),
-            ]),
-          ]),
-          appendChildren(
-            buildComponent(
-              "div",
-              [["id", `comment-menu-${comment.id}`]],
-              ["comment-menu"],
-            ),
-            [
-              appendChildren(buildComponent("div", [], ["comment-reactions"]), [
-                appendChildren(
-                  buildComponent("button", [], ["reactions-like"]),
-                  [reactionsHeart],
-                ),
-                buildComponent(
-                  "span",
-                  [],
-                  ["comment__likes-count-span"],
-                  `${comment.likesCount}`,
-                ),
-              ]),
-              commentRedact,
-            ],
-          ),
-        ]),
-      ],
-    );
-  }
-
-  /**
-   * Deletes the comment
-   *
-   * @param {number} commentId - The number of comment
-   */
-  deleteComment(commentId) {
-    document.getElementById(`comment-${commentId}`)?.remove();
+    this.isPostPage = false;
   }
 
   /**
@@ -918,16 +319,23 @@ class PostView extends BaseView {
    * @param {number} postId - The ID of current post
    */
   likedPost(postId) {
-    const likedPostParent = document.querySelector(
-      `#post-${postId} .reactions__heart-img_unliked`,
-    ).parentElement;
+    let likedPostParent = document.querySelector(
+      `#single-post-${postId} .reactions__heart-img_unliked`,
+    )?.parentElement;
+    let likesCount = document.querySelector(
+      `#single-post-${postId} .likes-count__span`,
+    );
+    if (!likedPostParent) {
+      likedPostParent = document.querySelector(
+        `#post-${postId} .reactions__heart-img_unliked`,
+      ).parentElement;
+      likesCount = document.querySelector(`#post-${postId} .likes-count__span`);
+    }
+
     const likedPost = document.createElement("img");
     likedPost.setAttribute("src", "dist/images/filled-heart.png");
     likedPost.dataset.id = postId;
     likedPost.classList.add("reactions__heart-img_liked");
-    const likesCount = document.querySelector(
-      `#post-${postId} .likes-count__span`,
-    );
     likesCount.innerHTML = +likesCount.innerHTML + 1;
     likedPostParent.replaceChild(likedPost, likedPostParent.firstElementChild);
 
@@ -952,16 +360,22 @@ class PostView extends BaseView {
    * @param {number} postId - The ID of current post
    */
   unlikedPost(postId) {
-    const unlikedPostParent = document.querySelector(
-      `#post-${postId} .reactions__heart-img_liked`,
-    ).parentElement;
+    let unlikedPostParent = document.querySelector(
+      `#single-post-${postId} .reactions__heart-img_liked`,
+    )?.parentElement;
+    let likesCount = document.querySelector(
+      `#single-post-${postId} .likes-count__span`,
+    );
+    if (!unlikedPostParent) {
+      unlikedPostParent = document.querySelector(
+        `#post-${postId} .reactions__heart-img_liked`,
+      ).parentElement;
+      likesCount = document.querySelector(`#post-${postId} .likes-count__span`);
+    }
     const unlikedPost = document.createElement("img");
     unlikedPost.dataset.id = postId;
     unlikedPost.setAttribute("src", "dist/images/heart.png");
     unlikedPost.classList.add("reactions__heart-img_unliked");
-    const likesCount = document.querySelector(
-      `#post-${postId} .likes-count__span`,
-    );
     likesCount.innerHTML = +likesCount.innerHTML - 1;
     unlikedPostParent.replaceChild(
       unlikedPost,
@@ -980,80 +394,6 @@ class PostView extends BaseView {
     });
     unlikedPost.addEventListener("click", () => {
       this.eventBus.emit("clickedLikePost", unlikedPost.dataset.id);
-    });
-  }
-
-  /**
-   * Set comment liked
-   *
-   * @param {number} commentId - The ID of current comment
-   */
-  likedComment(commentId) {
-    const likedCommentParent = document.querySelector(
-      `#comment-${commentId} .reactions__heart-img_unliked`,
-    ).parentElement;
-    const likedComment = document.createElement("img");
-    likedComment.setAttribute("src", "dist/images/filled-heart.png");
-    likedComment.dataset.id = commentId;
-    likedComment.classList.add("reactions__heart-img_liked");
-    const likesCount = document.querySelector(
-      `#comment-${commentId} .comment__likes-count-span`,
-    );
-    likesCount.innerHTML = +likesCount.innerHTML + 1;
-    likedCommentParent.replaceChild(
-      likedComment,
-      likedCommentParent.firstElementChild,
-    );
-
-    likedComment.addEventListener("mouseenter", () => {
-      likedComment.setAttribute("src", "dist/images/broken-heart.png");
-      likedComment.style.width = "28px";
-      likedComment.style.height = "28px";
-    });
-    likedComment.addEventListener("mouseleave", () => {
-      likedComment.setAttribute("src", "dist/images/filled-heart.png");
-      likedComment.style.width = "25px";
-      likedComment.style.height = "25px";
-    });
-    likedComment.addEventListener("click", () => {
-      this.eventBus.emit("clickedUnlikeComment", likedComment.dataset.id);
-    });
-  }
-
-  /**
-   * Set comment unliked
-   *
-   * @param {number} commentId - The ID of current comment
-   */
-  unlikedComment(commentId) {
-    const unlikedCommentParent = document.querySelector(
-      `#comment-${commentId} .reactions__heart-img_liked`,
-    ).parentElement;
-    const unlikedComment = document.createElement("img");
-    unlikedComment.dataset.id = commentId;
-    unlikedComment.setAttribute("src", "dist/images/heart.png");
-    unlikedComment.classList.add("reactions__heart-img_unliked");
-    const likesCount = document.querySelector(
-      `#comment-${commentId} .comment__likes-count-span`,
-    );
-    likesCount.innerHTML = +likesCount.innerHTML - 1;
-    unlikedCommentParent.replaceChild(
-      unlikedComment,
-      unlikedCommentParent.firstElementChild,
-    );
-
-    unlikedComment.addEventListener("mouseenter", () => {
-      unlikedComment.setAttribute("src", "dist/images/filled-heart.png");
-      unlikedComment.style.width = "28px";
-      unlikedComment.style.height = "28px";
-    });
-    unlikedComment.addEventListener("mouseleave", () => {
-      unlikedComment.setAttribute("src", "dist/images/heart.png");
-      unlikedComment.style.width = "25px";
-      unlikedComment.style.height = "25px";
-    });
-    unlikedComment.addEventListener("click", () => {
-      this.eventBus.emit("clickedLikeComment", unlikedComment.dataset.id);
     });
   }
 

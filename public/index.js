@@ -15,7 +15,6 @@ import SettingsController from "./components/Settings/SettingsController.js";
 import CSRFProtection from "./components/CSRFProtection.js";
 import GroupController from "./components/Group/GroupController.js";
 import { renderLanding } from "./components/Landing/landing.js";
-import PostController from "./components/Post/PostController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   if ("serviceWorker" in navigator) {
@@ -33,7 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const feedController = new FeedController(router, webSocket);
   const settingsController = new SettingsController(router, webSocket);
   const groupController = new GroupController(router, webSocket);
-  const postController = new PostController(router);
 
   const config = {
     paths: [
@@ -107,11 +105,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         path: /\/group\/create/,
         func: groupController.renderGroupCreate.bind(groupController),
         title: "Создать группу",
-      },
-      {
-        path: /\/post\/(?<postId>[0-9]+)/,
-        func: postController.renderPostPage.bind(postController),
-        title: "Пост",
       },
       {
         path: /\//,

@@ -26,16 +26,8 @@ const incomingEvents = [
   "postUpdateSuccess",
   "postDeleteSuccess",
   "readyRenderPost",
-  "readyRenderComments",
-  "commentsGotSuccess",
   "postCommentAdded",
-  "commentAddedSuccess",
-  "clickedDeleteComment",
-  "commentDeletedSuccess",
-  "clickedUnlikeComment",
-  "clickedLikeComment",
-  "commentLikedSuccess",
-  "commentUnlikedSuccess",
+  "needRenderPostMain",
   "serverError",
 ];
 

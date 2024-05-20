@@ -365,7 +365,6 @@
   box-sizing: border-box;
   align-items: center;
   width: 100px;
-  justify-content: space-between;
   padding-left: 15px;
 
   @each $type in unliked, liked {
@@ -422,13 +421,14 @@
 }
 
 .post-footer {
-  @include flexible;
+  @include row-flexible;
   box-sizing: border-box;
+  flex: 1;
 
   &__input {
     box-sizing: border-box;
-    min-width: 220px;
     background-color: inherit;
+    flex-grow: 1;
   }
 }
 
@@ -702,4 +702,40 @@
 
 .comment-info {
   @include column-flexible;
+}
+
+.post-main {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0;
+  margin-top: 5px;
+  max-width: 650px;
+  width: 100%;
+
+  &_invisible {
+    @include invisible;
+  }
+
+  &_visible {
+    @include visible;
+  }
+}
+
+.go-to-feed {
+  @include row-flexible;
+  width: 100%;
+  justify-content: start;
+  align-items: center;
+  margin: 10px 0;
+
+  &__img {
+    width: 20px;
+    cursor: pointer;
+  }
+
+  &__span {
+    color: #5d5151;
+    cursor: pointer;
+  }
 }
