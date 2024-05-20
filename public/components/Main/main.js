@@ -95,8 +95,13 @@ export class Main {
       this.#parent.innerHTML += template({ fullSidebar, toolbar });
     }
 
-    document.getElementById("feed-main").scrollTop = 0;
-    document.getElementById("feed-main").onscroll = null;
+    const feedMain = document.getElementById("feed-main");
+    const postMain = document.getElementById("post-main");
+    feedMain.scrollTop = 0;
+    feedMain.onscroll = null;
+    document.getElementById("activity").classList.remove("activity_invisible");
+    document.getElementById("post-main").classList.add("post-main_invisible");
+    postMain.innerHTML = "";
 
     document
       .getElementById("server-error-500")

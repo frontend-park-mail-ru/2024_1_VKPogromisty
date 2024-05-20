@@ -196,31 +196,28 @@ class FeedView extends BaseView {
 
           if (imageTypes.includes(typeFile(elem))) {
             imgContent.appendChild(
-              buildComponent(
-                "img",
-                [["src", src]],
-                ["news-img-content__img", "post-content__img"],
-              ),
+              buildComponent("img", { src: src }, [
+                "news-img-content__img",
+                "post-content__img",
+              ]),
             );
           } else {
             fileContent.appendChild(
               appendChildren(
                 buildComponent(
                   "a",
-                  [
-                    ["target", "_blank"],
-                    ["rel", "noopener"],
-                    ["href", src],
-                    ["download", fileName],
-                  ],
+                  {
+                    target: "_blank",
+                    rel: "noopener",
+                    href: src,
+                    download: fileName,
+                  },
                   ["news-file-content__a"],
                 ),
                 [
-                  buildComponent(
-                    "img",
-                    [["src", "dist/images/document.png"]],
-                    ["news-file-content__img"],
-                  ),
+                  buildComponent("img", { src: "dist/images/document.png" }, [
+                    "news-file-content__img",
+                  ]),
                 ],
               ),
             );
@@ -366,7 +363,7 @@ class FeedView extends BaseView {
         }
       });
       posts.forEach((elem) => {
-        this.postController.renderPostView({
+        this.postController.renderFriendPostView({
           post: elem.post,
           author: elem.author,
         });
@@ -409,14 +406,11 @@ class FeedView extends BaseView {
         }
       });
       posts.forEach((elem) => {
-        this.postController.renderPostView({
+        elem.group.authorId = elem.author.authorId;
+        this.postController.renderGroupPostView({
           isGroup: true,
           post: elem.post,
-          author: {
-            name: elem.group?.name,
-            groupId: elem.group?.id,
-            avatar: elem.group?.avatar,
-          },
+          group: elem.group,
         });
       });
     } else {

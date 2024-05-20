@@ -223,31 +223,28 @@ class ProfileView extends BaseView {
 
           if (imageTypes.includes(typeFile(elem))) {
             imgContent.appendChild(
-              buildComponent(
-                "img",
-                [["src", src]],
-                ["news-img-content__img", "post-content__img"],
-              ),
+              buildComponent("img", { src: src }, [
+                "news-img-content__img",
+                "post-content__img",
+              ]),
             );
           } else {
             fileContent.appendChild(
               appendChildren(
                 buildComponent(
                   "a",
-                  [
-                    ["target", "_blank"],
-                    ["rel", "noopener"],
-                    ["href", src],
-                    ["download", fileName],
-                  ],
+                  {
+                    target: "_blank",
+                    rel: "noopener",
+                    href: src,
+                    download: fileName,
+                  },
                   ["news-file-content__a"],
                 ),
                 [
-                  buildComponent(
-                    "img",
-                    [["src", "dist/images/document.png"]],
-                    ["news-file-content__img"],
-                  ),
+                  buildComponent("img", { src: "dist/images/document.png" }, [
+                    "news-file-content__img",
+                  ]),
                 ],
               ),
             );

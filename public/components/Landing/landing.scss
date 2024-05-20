@@ -43,7 +43,7 @@
 
   &__login-href {
     width: 250px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   &__signup-href {
@@ -53,6 +53,10 @@
     @include mobile-style {
       text-decoration: none;
     }
+  }
+
+  &__signup-span {
+    font-size: 14px;
   }
 
   &__enter-button {
