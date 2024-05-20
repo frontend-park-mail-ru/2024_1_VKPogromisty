@@ -424,3 +424,24 @@
   align-items: center;
   margin-right: 10px;
 }
+
+.go-to-group {
+  @include row-flexible;
+  width: 100%;
+  justify-content: start;
+  align-items: center;
+  margin: 10px 0;
+
+  &__img {
+    width: 20px;
+  }
+
+  &__href {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &__span {
+    color: #5d5151;
+  }
+}
