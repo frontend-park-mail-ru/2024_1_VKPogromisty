@@ -2,6 +2,7 @@ import {
   buildComponent,
   appendChildren,
   modifyComponent,
+  replaceChildren,
 } from "../components/createComponent.js";
 import { customConfirm } from "/public/modules/windows.js";
 import { API_URL } from "/public/modules/consts.js";
@@ -362,7 +363,7 @@ export function makePost(
           buildComponent("div", { id: `post-menu-${post.postId}` }, [
             "post-menu",
           ]),
-          isMe ? [editImg, trashCan] : null,
+          isMe && !isPostPage ? [editImg, trashCan] : null,
         ),
       ]),
       postContent,
@@ -435,36 +436,87 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
         },
         ["reactions__heart-img_unliked"],
       );
-  const commentRedact = buildComponent(
-    "div",
-    { id: `comment-redact-${comment.id}` },
-    ["comment-redact"],
+
+  const editImg = buildComponent(
+    "img",
+    {
+      src: "dist/images/edit.png",
+      "data-id": comment.id,
+      id: `edit-img-${comment.id}`,
+    },
+    ["comment-author__edit-img"],
+  );
+  editImg.addEventListener("click", () => {
+    const parent = editImg.parentNode;
+    const nextElem = editImg.nextElementSibling;
+    const id = editImg.dataset.id;
+
+    let textarea = document.getElementById(`comment-textarea-${id}`);
+
+    const textareaParent = textarea.parentNode;
+    const commentText = textarea.innerHTML;
+    textarea = buildComponent(
+      "textarea",
+      {
+        value: commentText,
+        rows: 1,
+        maxLength: "300",
+        id: `comment-textarea-${id}`,
+      },
+      ["comment-content__text-span"],
+    );
+
+    textarea.addEventListener("input", () => {
+      textarea.style.height = "auto";
+    });
+
+    replaceChildren(textareaParent, [textarea]);
+
+    textarea.focus();
+
+    const ok = document.createElement("img");
+    ok.classList.add("comment-author__accept-img");
+    ok.setAttribute("data-id", id);
+    ok.setAttribute("src", "dist/images/check.png");
+    ok.addEventListener("click", () => {
+      if (textarea.value.trim() === "") {
+        return;
+      }
+
+      eventBus.emit("clickedUpdateComment", {
+        content: textarea.value,
+        comment: id,
+      });
+    });
+
+    const cancel = document.createElement("img");
+    cancel.classList.add("comment-author__cancel-img");
+    cancel.setAttribute("data-id", id);
+    cancel.setAttribute("src", "dist/images/cancel.png");
+    cancel.addEventListener("click", () => {
+      eventBus.emit("canceledUpdateComment", {
+        comentId: id,
+        isCanceled: true,
+      });
+    });
+
+    parent.appendChild(ok);
+    parent.appendChild(cancel);
+    editImg.style["display"] = "none";
+    nextElem.style["display"] = "none";
+  });
+
+  const trashCanImg = buildComponent(
+    "img",
+    {
+      src: "dist/images/trash-can.png",
+      "data-id": comment.id,
+      id: `trash-basket-${comment.id}`,
+    },
+    ["comment-author__trash-basket-img"],
   );
 
   if (isMe) {
-    const trashCanImg = buildComponent(
-      "img",
-      {
-        src: "dist/images/trash-can.png",
-        "data-id": comment.id,
-        id: `trash-basket-${comment.id}`,
-      },
-      ["comment-author__trash-basket-img"],
-    );
-
-    appendChildren(commentRedact, [
-      buildComponent(
-        "img",
-        {
-          src: "dist/images/edit.png",
-          "data-id": comment.id,
-          id: `edit-img-${comment.id}`,
-        },
-        ["comment-author__edit-img"],
-      ),
-      trashCanImg,
-    ]);
-
     trashCanImg.addEventListener("click", () => {
       customConfirm(
         (() => {
@@ -548,7 +600,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
             appendChildren(buildComponent("div", {}, ["comment-info"]), [
               buildComponent(
                 "span",
-                { id: `textarea-${comment.id}` },
+                { id: `comment-textarea-${comment.id}` },
                 ["comment-content__text-span"],
                 comment.content,
               ),
@@ -571,7 +623,12 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
                 `${comment.likesCount}`,
               ),
             ]),
-            commentRedact,
+            appendChildren(
+              buildComponent("div", { id: `comment-redact-${comment.id}` }, [
+                "comment-redact",
+              ]),
+              [trashCanImg], //add edit image
+            ),
           ],
         ),
       ]),
