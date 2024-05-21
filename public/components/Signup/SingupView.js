@@ -8,8 +8,12 @@ import { errors } from "/public/modules/errors.js";
 import BaseView from "../../MVC/BaseView.js";
 import "./signup.scss";
 
+const MBToByte = 1024 * 1024;
+const maxMB = 5;
 const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
+const incorrectType = "Недопустимый тип файла";
+const exceededSize = `Максимальный размер файла ${maxMB}Мб`;
 const main_inputs = [
   {
     inscription: "Фамилия",
@@ -205,10 +209,23 @@ class SignupView extends BaseView {
       })();
 
       if (!validExtensions.includes(typeFile)) {
+        incorrectAvatar.innerHTML = incorrectType;
         incorrectAvatar.classList.remove(correct);
         avatar.files = null;
+        document
+          .getElementById("prewatch")
+          .setAttribute("src", "dist/images/user.png");
       } else {
-        document.getElementById("prewatch").setAttribute("src", img);
+        if (file.size / MBToByte > maxMB) {
+          incorrectAvatar.innerHTML = exceededSize;
+          incorrectAvatar.classList.remove(correct);
+          avatar.files = null;
+          document
+            .getElementById("prewatch")
+            .setAttribute("src", "dist/images/user.png");
+        } else {
+          document.getElementById("prewatch").setAttribute("src", img);
+        }
       }
     });
 
@@ -318,6 +335,13 @@ class SignupView extends BaseView {
       })();
 
       if (!validExtensions.includes(typeFile)) {
+        incorrectAvatar.innerHTML = incorrectType;
+        incorrectAvatar.classList.remove(correct);
+        flag = false;
+      }
+
+      if (file.size / MBToByte > maxMB) {
+        incorrectAvatar.innerHTML = exceededSize;
         incorrectAvatar.classList.remove(correct);
         flag = false;
       }

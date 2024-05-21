@@ -42,19 +42,28 @@ class PostModel extends BaseModel {
       "clickedDeleteButton",
       this.deletePost.bind(this),
     );
+    this.eventBus.addEventListener(
+      "readyRenderPost",
+      this.getCurrentPost.bind(this),
+    );
   }
 
   /**
    * Gets current post
    *
    * @param {number} postId - The ID of current post
+   * @param {boolean} isCanceled - Was post necessary for updating
    */
-  async getCurrentPost(postId) {
+  async getCurrentPost({ postId, isCanceled }) {
     const result = await this.postService.getCurrentPost(postId);
 
     switch (result.status) {
       case 200:
-        this.eventBus.emit("postCanceledSuccess", result.body);
+        if (isCanceled) {
+          this.eventBus.emit("postCanceledSuccess", result.body);
+        } else {
+          this.eventBus.emit("postLoadedSuccess", result.body);
+        }
         break;
       case 401:
         this.router.redirect("/login");

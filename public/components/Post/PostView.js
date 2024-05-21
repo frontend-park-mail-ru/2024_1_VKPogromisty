@@ -1,9 +1,11 @@
 import BaseView from "../../MVC/BaseView.js";
 import { formatFullDate } from "../../modules/dateRemaking.js";
-import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
+import { Header } from "../Header/header.js";
+import { Main } from "../Main/main.js";
 import "./post.scss";
-import { customConfirm } from "../../modules/windows.js";
+import { makePost } from "../../modules/makeComponents.js";
+import CommentController from "../Comment/CommentController.js";
 
 /**
  * @typedef {Object} UpdateInfo
@@ -42,8 +44,6 @@ import { customConfirm } from "../../modules/windows.js";
  * @property {boolean} publish - Is published now?
  */
 
-const staticUrl = `${API_URL}/static`;
-
 /**
  * PostView - класс для работы с визуалом на странице.
  */
@@ -53,8 +53,10 @@ class PostView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus) {
+  constructor(eventBus, router) {
     super(eventBus);
+    this.router = router;
+    this.commentsController = new CommentController(router);
 
     this.eventBus.addEventListener(
       "postDeleteSuccess",
@@ -80,28 +82,86 @@ class PostView extends BaseView {
       "serverError",
       this.serverErrored.bind(this),
     );
+    this.eventBus.addEventListener(
+      "postLoadedSuccess",
+      this.defineWhatPost.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "needRenderPostMain",
+      this.renderPostMain.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "postCommentAdded",
+      this.commentsController.addComment.bind(this.commentsController),
+    );
   }
 
   /**
-   * Renders current post on page
+   * Renders the page with current post
+   *
+   * @param {number} postId - The ID of post
+   */
+  renderPostMain(postId) {
+    const template = require("./postMain.hbs");
+    const { userId, avatar, firstName, lastName } = UserState;
+
+    new Header(document.body).renderForm({
+      userId,
+      avatar,
+      firstName,
+      lastName,
+    });
+    new Main(document.body).renderForm(userId);
+
+    const postMainElement = document.getElementById("post-main");
+    this.mainElement = postMainElement;
+    this.isPostPage = true;
+
+    this.mainElement.innerHTML = template({});
+    const activityElement = document.getElementById("activity");
+    activityElement.classList.add("activity_invisible");
+
+    this.postId = postId;
+
+    document.getElementById("go-to-feed__img").addEventListener("click", () => {
+      postMainElement.classList.add("post-main_invisible");
+      activityElement.classList.remove("activity_invisible");
+      document.getElementById(`post-${postId}`)?.scrollIntoView();
+    });
+
+    this.eventBus.emit("readyRenderPost", { postId: this.postId });
+    this.commentsController.renderComments(this.postId);
+  }
+
+  /**
+   * Defines which post: group's or friend's
+   *
+   * @param {PostInfo} result - The received post
+   */
+  defineWhatPost(result) {
+    if (!result.group) {
+      this.renderFriendPost(result);
+    } else {
+      this.renderGroupPost(result);
+    }
+  }
+
+  /**
+   * Renders a friend post
    *
    * @param {PostInfo} postInfo - The info about current post
    */
-  renderPost({ isGroup, post, author, publish }) {
+  renderFriendPost({ post, author, publish }) {
     let { userId, avatar } = UserState;
     avatar = avatar || "default_avatar.png";
     author.avatar = author.avatar || "default_avatar.png";
 
-    const template = require("./post.hbs");
-    const postId = post.postId;
-
     let isMe = Number(author.userId) === Number(userId);
+    const isPostPage = this.isPostPage;
     const hasUpdated = post.createdAt !== post.updatedAt;
 
     post.createdAt = formatFullDate(post.createdAt);
     post.updatedAt = `обновлено ${formatFullDate(post.updatedAt)}`;
-
-    this.mainElement = document.getElementById("posts");
 
     if (post.likedBy) {
       post.likesCount = post.likedBy.length;
@@ -110,154 +170,146 @@ class PostView extends BaseView {
       post.likesCount = 0;
     }
 
-    if (isGroup) {
-      isMe = post.authorId === userId;
-    }
+    const newPost = makePost(
+      null,
+      post,
+      author,
+      avatar,
+      isMe,
+      hasUpdated,
+      isPostPage,
+      this.eventBus,
+    );
 
+    let currentMainElement = isPostPage
+      ? document.getElementById("single-post")
+      : document.getElementById("posts");
     if (publish) {
-      this.mainElement.innerHTML =
-        template({
-          post,
-          author,
-          avatar,
-          staticUrl,
-          isMe,
-          hasUpdated,
-          isGroup,
-        }) + this.mainElement.innerHTML;
+      currentMainElement.insertBefore(
+        newPost,
+        currentMainElement.firstElementChild,
+      );
     } else {
-      this.mainElement.innerHTML += template({
-        post,
-        author,
-        avatar,
-        staticUrl,
-        isMe,
-        hasUpdated,
-        isGroup,
-      });
+      currentMainElement.appendChild(newPost);
     }
 
-    const textarea = document.getElementById(`textarea-${postId}`);
-    textarea.style.height = textarea.scrollHeight + "px";
+    if (isPostPage) {
+      document
+        .getElementById("post-main")
+        .classList.remove("post-main_invisible");
+    }
 
-    const content = document.getElementById(`post-content-${postId}`);
-    const contentScrHeight = content.scrollHeight;
-    if (contentScrHeight > 1000) {
-      content.style.height = "1000px";
+    const postContent = newPost.firstElementChild.nextElementSibling;
+    const postTextarea = postContent.firstElementChild;
+
+    postTextarea.toggleAttribute("readonly");
+
+    const postTextareaScrollHeight = postTextarea.scrollHeight;
+    if (postTextareaScrollHeight > 300) {
+      postTextarea.style.height = "300px";
 
       const showMore = document.createElement("button");
       showMore.classList.add("post-content__show-more-button");
-      showMore.setAttribute("data-id", postId);
+      showMore.setAttribute("data-id", post.postId);
       showMore.innerHTML = "Показать ещё";
 
-      content.appendChild(showMore);
+      postContent.appendChild(showMore);
+
+      showMore.addEventListener("click", () => {
+        postTextarea.style.height = postTextarea.scrollHeight + "px";
+        showMore.remove();
+      });
+    } else {
+      if (postTextarea.innerHTML.trim() !== "") {
+        postTextarea.style.height = postTextarea.scrollHeight + "px";
+      } else {
+        postTextarea.style.height = 0;
+      }
+    }
+    this.isPostPage = false;
+  }
+
+  /**
+   * Renders a group post
+   *
+   * @param {*} param0
+   */
+  renderGroupPost({ post, publish, group }) {
+    let { userId, avatar } = UserState;
+    avatar = avatar || "default_avatar.png";
+    group.avatar = group.avatar || "default_avatar.png";
+
+    let isMe = Number(post.authorId) === Number(userId);
+    const isPostPage = this.isPostPage;
+    const hasUpdated = post.createdAt !== post.updatedAt;
+
+    post.createdAt = formatFullDate(post.createdAt);
+    post.updatedAt = `обновлено ${formatFullDate(post.updatedAt)}`;
+
+    if (post.likedBy) {
+      post.likesCount = post.likedBy.length;
+      post.isLikedByMe = post.likedBy.includes(UserState.userId);
+    } else {
+      post.likesCount = 0;
     }
 
-    document
-      .querySelectorAll(".reactions__heart-img_unliked")
-      .forEach((elem) => {
-        elem.addEventListener("mouseenter", () => {
-          elem.setAttribute("src", "dist/images/filled-heart.png");
-          elem.style.width = "28px";
-          elem.style.height = "28px";
-        });
-        elem.addEventListener("mouseleave", () => {
-          elem.setAttribute("src", "dist/images/heart.png");
-          elem.style.width = "25px";
-          elem.style.height = "25px";
-        });
-        elem.addEventListener("click", () => {
-          this.eventBus.emit("clickedLikePost", +elem.dataset.id);
-        });
+    const newPost = makePost(
+      group,
+      post,
+      null,
+      avatar,
+      isMe,
+      hasUpdated,
+      isPostPage,
+      this.eventBus,
+    );
+
+    let currentMainElement = isPostPage
+      ? document.getElementById("single-post")
+      : document.getElementById("posts");
+    if (publish) {
+      currentMainElement.insertBefore(
+        newPost,
+        currentMainElement.firstElementChild,
+      );
+    } else {
+      currentMainElement.appendChild(newPost);
+    }
+
+    if (isPostPage) {
+      document
+        .getElementById("post-main")
+        .classList.remove("post-main_invisible");
+    }
+
+    const postContent = newPost.firstElementChild.nextElementSibling;
+    const postTextarea = postContent.firstElementChild;
+
+    postTextarea.toggleAttribute("readonly");
+
+    const postTextareaScrollHeight = postTextarea.scrollHeight;
+    if (postTextareaScrollHeight > 300) {
+      postTextarea.style.height = "300px";
+
+      const showMore = document.createElement("button");
+      showMore.classList.add("post-content__show-more-button");
+      showMore.setAttribute("data-id", post.postId);
+      showMore.innerHTML = "Показать ещё";
+
+      postContent.appendChild(showMore);
+
+      showMore.addEventListener("click", () => {
+        postTextarea.style.height = postTextarea.scrollHeight + "px";
+        showMore.remove();
       });
-
-    document.querySelectorAll(".reactions__heart-img_liked").forEach((elem) => {
-      elem.addEventListener("mouseenter", () => {
-        elem.setAttribute("src", "dist/images/broken-heart.png");
-        elem.style.width = "28px";
-        elem.style.height = "28px";
-      });
-      elem.addEventListener("mouseleave", () => {
-        elem.setAttribute("src", "dist/images/filled-heart.png");
-        elem.style.width = "25px";
-        elem.style.height = "25px";
-      });
-      elem.addEventListener("click", () => {
-        this.eventBus.emit("clickedUnlikePost", +elem.dataset.id);
-      });
-    });
-
-    document.querySelectorAll(".post-author__edit-img").forEach((elem) => {
-      elem.addEventListener("click", () => {
-        const parent = elem.parentNode;
-        const nextElem = elem.nextElementSibling;
-        const id = elem.dataset.id;
-        const textarea = document.getElementById(`textarea-${id}`);
-
-        textarea.removeAttribute("readonly");
-        textarea.addEventListener("input", () => {
-          textarea.style.height = "auto";
-        });
-        textarea.focus();
-
-        const ok = document.createElement("img");
-        ok.classList.add("post-author__accept-img");
-        ok.setAttribute("data-id", id);
-        ok.setAttribute("src", "dist/images/check.png");
-        ok.addEventListener("click", () => {
-          if (textarea.value.trim() === "") {
-            return;
-          }
-
-          this.eventBus.emit("clickedUpdatePost", {
-            content: textarea.value,
-            attachments: null,
-            postId: id,
-          });
-        });
-
-        const cancel = document.createElement("img");
-        cancel.classList.add("post-author__cancel-img");
-        cancel.setAttribute("data-id", id);
-        cancel.setAttribute("src", "dist/images/cancel.png");
-        cancel.addEventListener("click", () => {
-          this.eventBus.emit("canceledUpdatePost", id);
-        });
-
-        parent.appendChild(ok);
-        parent.appendChild(cancel);
-        elem.style["display"] = "none";
-        nextElem.style["display"] = "none";
-      });
-    });
-
-    document
-      .querySelectorAll(".post-author__trash-basket-img")
-      .forEach((elem) => {
-        elem.addEventListener("click", () => {
-          customConfirm(
-            (() => {
-              this.eventBus.emit("clickedDeleteButton", elem.dataset.id);
-            }).bind(this),
-            "Удалить пост?",
-            "Вы уверены, что хотите удалить пост?",
-            "Удалить",
-            "Отмена",
-          );
-        });
-      });
-
-    document
-      .querySelectorAll(".post-content__show-more-button")
-      .forEach((elem) => {
-        elem.addEventListener("click", () => {
-          const postContent = document.getElementById(
-            `post-content-${elem.dataset.id}`,
-          );
-          postContent.style.height = postContent.scrollHeight - 4 + "px";
-          elem.remove();
-        });
-      });
+    } else {
+      if (postTextarea.innerHTML.trim() !== "") {
+        postTextarea.style.height = postTextarea.scrollHeight + "px";
+      } else {
+        postTextarea.style.height = 0;
+      }
+    }
+    this.isPostPage = false;
   }
 
   /**
@@ -266,16 +318,23 @@ class PostView extends BaseView {
    * @param {number} postId - The ID of current post
    */
   likedPost(postId) {
-    const likedPostParent = document.querySelector(
-      `#post-${postId} .reactions__heart-img_unliked`,
-    ).parentElement;
+    let likedPostParent = document.querySelector(
+      `#single-post-${postId} .reactions__heart-img_unliked`,
+    )?.parentElement;
+    let likesCount = document.querySelector(
+      `#single-post-${postId} .likes-count__span`,
+    );
+    if (!likedPostParent) {
+      likedPostParent = document.querySelector(
+        `#post-${postId} .reactions__heart-img_unliked`,
+      ).parentElement;
+      likesCount = document.querySelector(`#post-${postId} .likes-count__span`);
+    }
+
     const likedPost = document.createElement("img");
     likedPost.setAttribute("src", "dist/images/filled-heart.png");
     likedPost.dataset.id = postId;
     likedPost.classList.add("reactions__heart-img_liked");
-    const likesCount = document.querySelector(
-      `#post-${postId} .likes-count__span`,
-    );
     likesCount.innerHTML = +likesCount.innerHTML + 1;
     likedPostParent.replaceChild(likedPost, likedPostParent.firstElementChild);
 
@@ -300,16 +359,22 @@ class PostView extends BaseView {
    * @param {number} postId - The ID of current post
    */
   unlikedPost(postId) {
-    const unlikedPostParent = document.querySelector(
-      `#post-${postId} .reactions__heart-img_liked`,
-    ).parentElement;
+    let unlikedPostParent = document.querySelector(
+      `#single-post-${postId} .reactions__heart-img_liked`,
+    )?.parentElement;
+    let likesCount = document.querySelector(
+      `#single-post-${postId} .likes-count__span`,
+    );
+    if (!unlikedPostParent) {
+      unlikedPostParent = document.querySelector(
+        `#post-${postId} .reactions__heart-img_liked`,
+      ).parentElement;
+      likesCount = document.querySelector(`#post-${postId} .likes-count__span`);
+    }
     const unlikedPost = document.createElement("img");
     unlikedPost.dataset.id = postId;
     unlikedPost.setAttribute("src", "dist/images/heart.png");
     unlikedPost.classList.add("reactions__heart-img_unliked");
-    const likesCount = document.querySelector(
-      `#post-${postId} .likes-count__span`,
-    );
     likesCount.innerHTML = +likesCount.innerHTML - 1;
     unlikedPostParent.replaceChild(
       unlikedPost,
@@ -336,7 +401,7 @@ class PostView extends BaseView {
    *
    * @param {UpdateInfo} udpateInfo - The info about updated post
    */
-  updatePost({ postId, updatedAt }) {
+  updatePost({ post: { postId, updatedAt } }) {
     const postMenu = document.getElementById(`post-menu-${postId}`);
     const textarea = document.getElementById(`textarea-${postId}`);
     const edited = document.getElementById(`edited-${postId}`);
@@ -391,9 +456,7 @@ class PostView extends BaseView {
    * @param {number} postId - The ID of current post
    */
   deletePost(postId) {
-    const post = document.getElementById(`post-${postId}`);
-
-    post?.remove();
+    document.getElementById(`post-${postId}`)?.remove();
   }
 
   /**

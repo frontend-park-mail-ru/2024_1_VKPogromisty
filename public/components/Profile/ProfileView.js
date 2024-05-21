@@ -6,9 +6,15 @@ import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
 import { customConfirm } from "../../modules/windows.js";
+import { buildComponent, appendChildren } from "../createComponent.js";
 import "./profile.scss";
 
+const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
 const staticUrl = `${API_URL}/static`;
+const typeFile = (file) => {
+  const parts = file.name.split(".");
+  return parts[parts.length - 1];
+};
 
 /**
  * A Author structure
@@ -169,7 +175,7 @@ class ProfileView extends BaseView {
       avatar,
       firstName,
       lastName,
-      dateOfBirth,
+      dateOfBirth: dateOfBirth.toLowerCase(),
       userId,
       staticUrl,
       isMe,
@@ -206,17 +212,43 @@ class ProfileView extends BaseView {
       fileInput.addEventListener("change", () => {
         const files = fileInput.files;
         const imgContent = document.getElementById("news-img-content");
+        const fileContent = document.getElementById("news-file-content");
 
         imgContent.innerHTML = "";
+        fileContent.innerHTML = "";
 
         Array.from(files).forEach((elem) => {
           const src = URL.createObjectURL(elem);
+          const fileName = elem.name;
 
-          const img = document.createElement("img");
-          img.setAttribute("src", src);
-          img.classList.add("news-img-content__img", "post-content__img");
-
-          imgContent.appendChild(img);
+          if (imageTypes.includes(typeFile(elem))) {
+            imgContent.appendChild(
+              buildComponent("img", { src: src }, [
+                "news-img-content__img",
+                "post-content__img",
+              ]),
+            );
+          } else {
+            fileContent.appendChild(
+              appendChildren(
+                buildComponent(
+                  "a",
+                  {
+                    target: "_blank",
+                    rel: "noopener",
+                    href: src,
+                    download: fileName,
+                  },
+                  ["news-file-content__a"],
+                ),
+                [
+                  buildComponent("img", { src: "dist/images/document.png" }, [
+                    "news-file-content__img",
+                  ]),
+                ],
+              ),
+            );
+          }
         });
       });
     }
@@ -234,6 +266,7 @@ class ProfileView extends BaseView {
       });
 
       document.getElementById("news-img-content").innerHTML = "";
+      document.getElementById("news-file-content").innerHTML = "";
       const textarea = document.getElementById("news-content__textarea");
       textarea.value = "";
       textarea.style.height = "60px";
@@ -343,7 +376,10 @@ class ProfileView extends BaseView {
         }
       });
       posts.forEach((elem) => {
-        this.postController.renderPostView({ post: elem, author: author });
+        this.postController.renderFriendPostView({
+          post: elem,
+          author: author,
+        });
       });
     } else {
       this.isAllPosts = true;
@@ -371,7 +407,7 @@ class ProfileView extends BaseView {
    * @return {void}
    */
   postPublishedSuccess({ post, author }) {
-    this.postController.renderPostView({
+    this.postController.renderFriendPostView({
       post: post,
       author: author,
       publish: true,

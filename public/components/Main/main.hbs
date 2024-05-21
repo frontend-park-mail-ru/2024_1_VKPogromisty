@@ -6,20 +6,21 @@
     <div class="sidebar" id="sidebar">
       <ul class="sidebar-list">
         {{#each fullSidebar}}
-        <li class="sidebar-list__li">
-          <a class="sidebar-list__a-img" href="{{ this.href }}">
+        <a class="sidebar-list__a" href="{{ this.href }}">
+          <li class="sidebar-list__li">
             <img
               src="dist/images/{{ this.icon }}.png"
               class="sidebar__{{ this.icon }}-img"
             />
-          </a>
-          <a class="sidebar-list__a" href="{{ this.href }}">{{ this.text }}</a>
-        </li>
+            <span class="sidebar-list__item-span">{{ this.text }}</span>
+          </li>
+        </a>
         {{/each}}
       </ul>
     </div>
 
     <div id="activity" class="activity"></div>
+    <div class="post-main post-main_invisible" id="post-main"></div>
     <div class="scroller" id="scroller"></div>
   </div>
   <div class="toolbar" id="toolbar">

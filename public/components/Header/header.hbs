@@ -13,10 +13,14 @@
     {{/if}}
   </div>
   <div class="user">
+    {{#if haveNotifications}}
     <img class="user__notification-img" src="dist/images/text.png" />
-    <span id="user__username-span" class="user__username-span"
-      >{{ firstName }} {{ lastName }}</span
-    >
+    {{/if}}
+    <a href="/profile/{{ this.userId }}" class="user__username-href">
+      <span id="user__username-span" class="user__username-span">
+        {{ firstName }} {{ lastName }}
+      </span>
+    </a>
     <a href="/profile/{{ this.userId }}"
       ><img
         id="user__avatar-img"

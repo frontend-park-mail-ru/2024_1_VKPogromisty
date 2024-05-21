@@ -26,11 +26,6 @@ const sidebar = [
     text: "Настройки",
     icon: "settings",
   },
-  {
-    href: "/stickers",
-    text: "Стикеры",
-    icon: "star",
-  },
 ];
 
 const toolbar = [
@@ -55,9 +50,9 @@ const toolbar = [
     icon: "people",
   },
   {
-    href: "/stickers",
-    text: "Стикеры",
-    icon: "star",
+    href: "/profile/settings",
+    text: "Настройки",
+    icon: "settings",
   },
 ];
 
@@ -99,6 +94,14 @@ export class Main {
 
       this.#parent.innerHTML += template({ fullSidebar, toolbar });
     }
+
+    const feedMain = document.getElementById("feed-main");
+    const postMain = document.getElementById("post-main");
+    feedMain.scrollTop = 0;
+    feedMain.onscroll = null;
+    document.getElementById("activity").classList.remove("activity_invisible");
+    document.getElementById("post-main").classList.add("post-main_invisible");
+    postMain.innerHTML = "";
 
     document
       .getElementById("server-error-500")

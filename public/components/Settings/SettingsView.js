@@ -14,6 +14,10 @@ import { customConfirm } from "../../modules/windows.js";
 const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const staticUrl = `${API_URL}/static`;
+const MBToByte = 1024 * 1024;
+const maxMB = 5;
+const incorrectType = "Недопустимый тип файла";
+const exceededSize = `Максимальный размер файла ${maxMB}Мб`;
 
 /**
  * SettingsView - класс для работы с визуалом на странице.
@@ -64,6 +68,7 @@ class SettingsView extends BaseView {
     this.mainElement = document.getElementById("activity");
 
     this.mainElement.innerHTML = template({
+      userId,
       lastName,
       firstName,
       avatar,
@@ -160,10 +165,23 @@ class SettingsView extends BaseView {
       })();
 
       if (!validExtensions.includes(typeFile)) {
+        incorrectAvatarForm.innerHTML = incorrectType;
         incorrectAvatarForm.classList.remove(correct);
         avatarForm.files = null;
+        document
+          .getElementById("prewatch")
+          .setAttribute("src", `${staticUrl}/user-avatars/${avatar}`);
       } else {
-        document.getElementById("prewatch").setAttribute("src", img);
+        if (file.size / MBToByte > maxMB) {
+          incorrectAvatarForm.innerHTML = exceededSize;
+          incorrectAvatarForm.classList.remove(correct);
+          avatarForm.files = null;
+          document
+            .getElementById("prewatch")
+            .setAttribute("src", `${staticUrl}/user-avatars/${avatar}`);
+        } else {
+          document.getElementById("prewatch").setAttribute("src", img);
+        }
       }
     });
 
@@ -272,6 +290,13 @@ class SettingsView extends BaseView {
       })();
 
       if (!validExtensions.includes(typeFile)) {
+        incorrectAvatarForm.innerHTML = incorrectType;
+        incorrectAvatarForm.classList.remove(correct);
+        flag = false;
+      }
+
+      if (file.size / MBToByte > maxMB) {
+        incorrectAvatarForm.innerHTML = exceededSize;
         incorrectAvatarForm.classList.remove(correct);
         flag = false;
       }

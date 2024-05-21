@@ -1,16 +1,17 @@
-<div class="friends-field" id="friends-field-{{ elem.userId }}">
+<div
+  class="friends-field"
+  id="friends-field-{{ elem.userId }}"
+  data-id="{{ elem.userId }}"
+>
   <div class="friend" id="friend-{{ elem.userId }}">
-    <a href="/profile/{{ elem.userId }}"
-      ><img
-        class="friend__avatar-img"
-        src="{{ staticUrl }}/user-avatars/{{ elem.avatar }}"
-    /></a>
+    <img
+      class="friend__avatar-img"
+      src="{{ staticUrl }}/user-avatars/{{ elem.avatar }}"
+    />
     <div class="friend-info">
-      <a href="/profile/{{ elem.userId }}" class="friend-info__name-href">
-        <span class="friend-info__name-span"
-          >{{ elem.firstName }} {{ elem.lastName }}</span
-        >
-      </a>
+      <span class="friend-info__name-span"
+        >{{ elem.firstName }} {{ elem.lastName }}</span
+      >
       <div class="friend-content">
         <span class="friend-content__date-of-birth-span">{{
           elem.dateOfBirth

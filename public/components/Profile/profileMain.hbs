@@ -10,9 +10,9 @@
         >{{ this.firstName }} {{ this.lastName }}</span
       >
       <div class="profile-brief-info">
-        <span class="profile-brief-info__date-span">{{
-          this.dateOfBirth
-        }}</span>
+        <span class="profile-brief-info__date-span"
+          >День рождения {{ this.dateOfBirth }}</span
+        >
       </div>
     </div>
     {{#unless isMe}}
@@ -81,7 +81,7 @@
       />
     </a>
     {{/if}}
-    <img class="profile-wrapper__back-img" src="dist/images/forest.jpg" />
+    <img class="profile-wrapper__back-img" src="dist/images/beach3.jpg" />
   </div>
 </div>
 {{#if isMe}}
@@ -110,7 +110,6 @@
         type="file"
         class="news__file-input"
         id="news__file-input"
-        accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
         multiple
       />
     </div>
@@ -127,6 +126,7 @@
       maxlength="30000"
     ></textarea>
     <div class="news-img-content" id="news-img-content"></div>
+    <div class="news-file-content" id="news-file-content"></div>
   </div>
 </div>
 {{/if}}

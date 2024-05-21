@@ -1,4 +1,11 @@
 <div id="group-poster" class="group-poster">
+  <img class="group-poster__background-image" src="dist/images/forest.jpg" />
+  <div class="group-description">
+    <span class="group-description__title-span">Описание</span>
+    <span class="group-description__content-span" id="description-content">{{
+      this.description
+    }}</span>
+  </div>
   <div class="group-poster-view">
     <img
       class="group-poster__avatar-img"
@@ -51,7 +58,6 @@
       />
     </a>
     {{/if}}
-    <img class="group-wrapper__back-img" src="dist/images/forest.jpg" />
   </div>
 </div>
 {{#if isAdmin}}

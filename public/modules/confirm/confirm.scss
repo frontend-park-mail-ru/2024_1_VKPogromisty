@@ -7,13 +7,15 @@
   align-items: center;
   min-width: 100vw;
   min-height: 100vh;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .confirm {
   border: 1px solid black;
   border-radius: 7px;
   padding: 20px;
-  background-color: #f5f7f9;
+  background-color: #fff1f1;
 }
 
 .blured {
@@ -40,14 +42,14 @@
     padding: 7px 10px;
 
     &:hover {
-      background-color: #dbe8f5;
+      background-color: #d59f9f;
     }
   }
 
   &__button-cancel {
     border-radius: 15px;
     padding: 7px 15px;
-    background: #81d0ea;
+    background: #dfafaf;
     color: white;
 
     &:hover {

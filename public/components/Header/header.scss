@@ -7,7 +7,7 @@
 
   &__img {
     box-sizing: border-box;
-    width: 50px;
+    width: 35px;
     max-width: 100%;
     cursor: pointer;
     filter: invert(100%);
@@ -17,7 +17,7 @@
 .header {
   @include flexible;
   box-sizing: border-box;
-  padding: 15px 40px 15px 50px;
+  padding: 8px 40px;
   width: 100%;
   background-color: $feed-header-color;
   align-items: center;
@@ -54,7 +54,7 @@
 
   &__username-span {
     color: #fff;
-    font-size: large;
+    font-size: 16px;
     margin-right: 10px;
     white-space: nowrap;
     overflow: hidden;
@@ -66,11 +66,15 @@
     }
   }
 
+  &__username-href {
+    text-decoration: none;
+  }
+
   &__avatar-img {
     box-sizing: border-box;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     cursor: pointer;
     object-fit: cover;
   }

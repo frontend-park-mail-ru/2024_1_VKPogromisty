@@ -37,7 +37,8 @@
   border-radius: 7px;
 
   &:hover {
-    background-color: #f1cece;
+    background-color: #fef2f2;
+    border: 1px solid #f9d7d7;
   }
 }
 
@@ -73,6 +74,11 @@
 
   @include mobile-style {
     padding: 5px 10px;
+  }
+
+  &__href {
+    text-decoration: none;
+    color: inherit;
   }
 }
 
