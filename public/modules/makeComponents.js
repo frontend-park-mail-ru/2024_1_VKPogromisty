@@ -233,7 +233,6 @@ export function makePost(
     const nextElem = editImg.nextElementSibling;
     const id = editImg.dataset.id;
     const textarea = document.getElementById(`textarea-${id}`);
-
     textarea.removeAttribute("readonly");
     textarea.addEventListener("input", () => {
       textarea.style.height = "auto";
@@ -512,20 +511,25 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
           ),
           appendChildren(buildComponent("div", {}, ["comment-author-info"]), [
             appendChildren(
-              buildComponent("a", { href: `/profile/${author.userId}` }, [
-                "comment-author__name-href",
-              ]),
+              buildComponent("div", {}, ["comment-author-info-header"]),
               [
-                buildComponent(
-                  "span",
-                  {},
-                  ["comment-author__name-span"],
-                  `${author.firstName} ${author.lastName}`,
+                appendChildren(
+                  buildComponent("a", { href: `/profile/${author.userId}` }, [
+                    "comment-author__name-href",
+                  ]),
+                  [
+                    buildComponent(
+                      "span",
+                      {},
+                      ["comment-author__name-span"],
+                      `${author.firstName} ${author.lastName}`,
+                    ),
+                  ],
                 ),
+                commentAuthorTime,
               ],
             ),
             appendChildren(buildComponent("div", {}, ["comment-info"]), [
-              commentAuthorTime,
               buildComponent(
                 "span",
                 { id: `textarea-${comment.id}` },

@@ -129,6 +129,14 @@ class PostView extends BaseView {
       document.getElementById(`post-${postId}`)?.scrollIntoView();
     });
 
+    document
+      .getElementById("go-to-feed__span")
+      .addEventListener("click", () => {
+        postMainElement.classList.add("post-main_invisible");
+        activityElement.classList.remove("activity_invisible");
+        document.getElementById(`post-${postId}`)?.scrollIntoView();
+      });
+
     this.eventBus.emit("readyRenderPost", { postId: this.postId });
     this.commentsController.renderComments(this.postId);
   }
@@ -438,7 +446,7 @@ class PostView extends BaseView {
    *
    * @param {Post} post - The current post
    */
-  canceledUpdatePost(post) {
+  canceledUpdatePost({ post }) {
     const postMenu = document.getElementById(`post-menu-${post.postId}`);
     const textarea = document.getElementById(`textarea-${post.postId}`);
 

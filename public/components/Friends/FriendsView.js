@@ -178,7 +178,7 @@ class FriendsView extends BaseView {
           );
         this.eventBus.emit("readyRenderSubscribers", {});
         break;
-      default:
+      case "friends":
         document
           .getElementById("friends-label")
           .classList.replace(
@@ -186,6 +186,9 @@ class FriendsView extends BaseView {
             "right-sidebar__a_bigger",
           );
         this.eventBus.emit("readyRenderFriends", {});
+        break;
+      default:
+        this.router.redirect("/community/friends");
     }
   }
 
