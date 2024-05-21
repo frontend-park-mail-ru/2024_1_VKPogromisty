@@ -288,6 +288,12 @@ class ProfileView extends BaseView {
                   ),
                   [
                     buildComponent(
+                      "span",
+                      {},
+                      ["news-file-content__name-span"],
+                      fileName,
+                    ),
+                    buildComponent(
                       "img",
                       {
                         src: "dist/images/document.png",

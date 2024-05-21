@@ -205,6 +205,7 @@ class PostView extends BaseView {
       document
         .getElementById("post-main")
         .classList.remove("post-main_invisible");
+      document.getElementById("post-create-comment");
     }
 
     const postContent = newPost.firstElementChild.nextElementSibling;

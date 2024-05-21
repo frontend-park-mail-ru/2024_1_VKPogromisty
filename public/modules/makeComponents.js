@@ -138,6 +138,12 @@ export function makePost(
               ["news-file-content__a"],
             ),
             [
+              buildComponent(
+                "span",
+                {},
+                ["news-file-content__name-span"],
+                elem,
+              ),
               buildComponent("img", { src: "dist/images/document.png" }, [
                 "news-file-content__img",
               ]),
@@ -290,12 +296,22 @@ export function makePost(
     const commentInput = buildComponent(
       "input",
       {
-        id: `user-comment-${post.postId}`,
+        id: `post-create-comment`,
         type: "text",
         placeholder: "Оставить комментарий",
       },
       ["post-footer__input"],
     );
+
+    commentInput.addEventListener("keydown", (event) => {
+      if (event.code === "Enter" && commentInput.value.trim() !== "") {
+        eventBus.emit("postCommentAdded", {
+          postId: post.postId,
+          content: commentInput.value,
+        });
+        commentInput.value = "";
+      }
+    });
 
     const postComment = buildComponent(
       "img",
