@@ -6,6 +6,7 @@ import PostController from "../Post/PostController.js";
 import UserState from "../UserState.js";
 import { buildComponent, appendChildren } from "../createComponent.js";
 import "./feed.scss";
+import { customAlert } from "../../modules/windows.js";
 
 /**
  * A Author structure
@@ -189,6 +190,13 @@ class FeedView extends BaseView {
         const fileContent = document.getElementById("news-file-content");
 
         Array.from(files).forEach((file) => {
+          if (dt.items.length === 10) {
+            customAlert(
+              "error",
+              "Максимальное количество прикрепляемых файлов - 10",
+            );
+            return;
+          }
           dt.items.add(file);
         });
 
@@ -257,6 +265,12 @@ class FeedView extends BaseView {
                     ["news-file-content__a"],
                   ),
                   [
+                    buildComponent(
+                      "span",
+                      {},
+                      ["news-file-content__name-span"],
+                      fileName,
+                    ),
                     buildComponent(
                       "img",
                       {

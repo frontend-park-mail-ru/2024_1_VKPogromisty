@@ -5,7 +5,7 @@ import PostController from "../Post/PostController.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
-import { customConfirm } from "../../modules/windows.js";
+import { customAlert, customConfirm } from "../../modules/windows.js";
 import { buildComponent, appendChildren } from "../createComponent.js";
 import "./profile.scss";
 
@@ -214,6 +214,13 @@ class ProfileView extends BaseView {
         const files = fileInput.files;
 
         Array.from(files).forEach((file) => {
+          if (dt.items.length === 10) {
+            customAlert(
+              "error",
+              "Максимальное количество прикрепляемых файлов - 10",
+            );
+            return;
+          }
           dt.items.add(file);
         });
 
