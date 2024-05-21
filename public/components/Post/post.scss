@@ -523,7 +523,7 @@
   font-size: 18px;
   color: #858080;
   display: none;
-  margin-top: 10px;
+  margin-bottom: 40px;
 
   &_visible {
     @include visible;
@@ -540,6 +540,7 @@
   border: 1px solid #000;
   border-radius: 7px;
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
 .comment {

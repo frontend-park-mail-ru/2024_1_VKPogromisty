@@ -174,6 +174,7 @@ class FeedView extends BaseView {
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
     const fileButton = document.getElementById("news__file-button");
+    const dt = new DataTransfer();
 
     if (fileButton) {
       fileButton.addEventListener("click", () => {
@@ -187,40 +188,88 @@ class FeedView extends BaseView {
         const imgContent = document.getElementById("news-img-content");
         const fileContent = document.getElementById("news-file-content");
 
+        Array.from(files).forEach((file) => {
+          dt.items.add(file);
+        });
+
+        fileInput.value = "";
         imgContent.innerHTML = "";
         fileContent.innerHTML = "";
 
-        Array.from(files).forEach((elem) => {
+        Array.from(dt.files).forEach((elem) => {
           const src = URL.createObjectURL(elem);
           const fileName = elem.name;
+          const isImage = imageTypes.includes(typeFile(elem));
 
-          if (imageTypes.includes(typeFile(elem))) {
-            imgContent.appendChild(
-              buildComponent("img", { src: src }, [
-                "news-img-content__img",
-                "post-content__img",
-              ]),
+          const cancelImg = buildComponent(
+            "img",
+            { src: "dist/images/cancel.png", "data-id": fileName },
+            [`news-${isImage ? "img" : "file"}-content__cancel-img`],
+          );
+
+          cancelImg.addEventListener("click", () => {
+            document
+              .getElementById(
+                `news-${isImage ? "img" : "file"}-content-block-${fileName}`,
+              )
+              ?.remove();
+
+            Array.from(dt.files).forEach((file, index) => {
+              if (file.name === fileName) {
+                dt.items.remove(index);
+                return;
+              }
+            });
+          });
+          if (isImage) {
+            const imgBlock = buildComponent(
+              "div",
+              { id: `news-img-content-block-${fileName}` },
+              ["news-img-content-block"],
             );
-          } else {
-            fileContent.appendChild(
-              appendChildren(
+            appendChildren(imgContent, [
+              appendChildren(imgBlock, [
                 buildComponent(
-                  "a",
-                  {
-                    target: "_blank",
-                    rel: "noopener",
-                    href: src,
-                    download: fileName,
-                  },
-                  ["news-file-content__a"],
+                  "img",
+                  { src: src, "data-id": `news-file-content-${fileName}` },
+                  ["news-img-content__img", "post-content__img"],
                 ),
-                [
-                  buildComponent("img", { src: "dist/images/document.png" }, [
-                    "news-file-content__img",
-                  ]),
-                ],
-              ),
+                cancelImg,
+              ]),
+            ]);
+          } else {
+            const fileBlock = buildComponent(
+              "div",
+              { id: `news-file-content-block-${fileName}` },
+              ["news-file-content-block"],
             );
+            appendChildren(fileContent, [
+              appendChildren(fileBlock, [
+                appendChildren(
+                  buildComponent(
+                    "a",
+                    {
+                      target: "_blank",
+                      rel: "noopener",
+                      href: src,
+                      download: fileName,
+                    },
+                    ["news-file-content__a"],
+                  ),
+                  [
+                    buildComponent(
+                      "img",
+                      {
+                        src: "dist/images/document.png",
+                        id: `news-file-content-${fileName}`,
+                      },
+                      ["news-file-content__img"],
+                    ),
+                  ],
+                ),
+                cancelImg,
+              ]),
+            ]);
           }
         });
       });
@@ -230,15 +279,16 @@ class FeedView extends BaseView {
       publishButton.addEventListener("click", () => {
         const content = document.getElementById("news-content__textarea").value;
 
-        if (content === "" && fileInput.files.length === 0) {
+        if (content.trim() === "" && dt.files.length === 0) {
           return;
         }
 
         this.eventBus.emit("clickedPublishPost", {
           content: content,
-          attachments: fileInput.files,
+          attachments: dt.files,
         });
 
+        dt.items.clear();
         document.getElementById("news-img-content").innerHTML = "";
         document.getElementById("news-file-content").innerHTML = "";
         const textarea = document.getElementById("news-content__textarea");
@@ -441,7 +491,7 @@ class FeedView extends BaseView {
    */
   renderPublishedSuccess(postInfo) {
     const { post, author } = postInfo;
-    this.postController.renderPostView({
+    this.postController.renderFriendPostView({
       post: post,
       author: author,
       publish: true,
