@@ -1082,3 +1082,95 @@ export class GroupService {
     return genResponse(response.status, data.body, data.message);
   }
 }
+
+/**
+ * Service for working with the sticker's API
+ * @class
+ * @property {string} baseUrl - The base URL for the server sticker service
+ */
+export class StickerService {
+  baseUrl = `${API_URL}/chat/stickers/`;
+
+  /**
+   * Gets all stickers from the server
+   *
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getAllStickers() {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Gets all stickers of current user
+   *
+   * @param {number} authorId - The ID of current user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getUserStickers(authorId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + authorId,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Creates a new sticker
+   *
+   * @param {string} name - The name of new sticker
+   * @param {File} image - The image of new sticker
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async createSticker(name, image) {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("image", image);
+
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Deletes current sticker
+   *
+   * @param {number} stickerId - The ID of sticker
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async deleteSticker(stickerId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + stickerId,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
+
+    if (response.status === 204) {
+      return genResponse(response.status, null, null);
+    }
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+}

@@ -39,6 +39,8 @@ import { customAlert } from "../../modules/windows.js";
  * @property {Author} author - The author of post
  */
 
+const MB = 1024 * 1024;
+const maxPostMemory = 50;
 const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
 const staticUrl = `${API_URL}/static`;
 const typeFile = (file) => {
@@ -176,6 +178,7 @@ class FeedView extends BaseView {
     const fileInput = document.getElementById("news__file-input");
     const fileButton = document.getElementById("news__file-button");
     const dt = new DataTransfer();
+    let dtMemory = 0;
 
     if (fileButton) {
       fileButton.addEventListener("click", () => {
@@ -190,6 +193,11 @@ class FeedView extends BaseView {
         const fileContent = document.getElementById("news-file-content");
 
         Array.from(files).forEach((file) => {
+          if (dtMemory + file.size > maxPostMemory * MB) {
+            customAlert("error", "Максимальный размер поста - 50Мб");
+            return;
+          }
+
           if (dt.items.length === 10) {
             customAlert(
               "error",
@@ -197,17 +205,13 @@ class FeedView extends BaseView {
             );
             return;
           }
+
           dt.items.add(file);
-        });
+          dtMemory += file.size;
 
-        fileInput.value = "";
-        imgContent.innerHTML = "";
-        fileContent.innerHTML = "";
-
-        Array.from(dt.files).forEach((elem) => {
-          const src = URL.createObjectURL(elem);
-          const fileName = elem.name;
-          const isImage = imageTypes.includes(typeFile(elem));
+          const src = URL.createObjectURL(file);
+          const fileName = file.name;
+          const isImage = imageTypes.includes(typeFile(file));
 
           const cancelImg = buildComponent(
             "img",
@@ -224,6 +228,7 @@ class FeedView extends BaseView {
 
             Array.from(dt.files).forEach((file, index) => {
               if (file.name === fileName) {
+                dtMemory -= file.size;
                 dt.items.remove(index);
                 return;
               }
@@ -286,6 +291,8 @@ class FeedView extends BaseView {
             ]);
           }
         });
+
+        fileInput.value = "";
       });
     }
 
@@ -303,6 +310,7 @@ class FeedView extends BaseView {
         });
 
         dt.items.clear();
+        dtMemory = 0;
         document.getElementById("news-img-content").innerHTML = "";
         document.getElementById("news-file-content").innerHTML = "";
         const textarea = document.getElementById("news-content__textarea");

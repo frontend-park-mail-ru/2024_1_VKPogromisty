@@ -64,6 +64,10 @@ body {
   overflow: hidden;
 }
 
+acronym {
+  text-decoration: none;
+}
+
 .incorrect-data {
   font-size: 30px;
   color: $input-color;

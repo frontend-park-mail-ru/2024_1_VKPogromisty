@@ -40,7 +40,8 @@
   font-size: 24px;
   margin-top: 10px;
 
-  @each $size in megaphone, mail, people, high-five, settings, star, user-avatar
+  @each $size in megaphone, mail, people, high-five, settings, stickers,
+    user-avatar
   {
     &__#{$size}-img {
       @include sidebar-small__img;
@@ -99,7 +100,7 @@
     width: 100vw;
     background-color: #ffcaca;
 
-    @each $size in megaphone, mail, people, high-five, settings, star,
+    @each $size in megaphone, mail, people, high-five, settings, star, stickers,
       user-avatar
     {
       &__#{$size}-img {

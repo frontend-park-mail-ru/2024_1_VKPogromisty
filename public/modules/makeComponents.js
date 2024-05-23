@@ -635,3 +635,69 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
     ],
   );
 }
+
+export function makeSticker({ name, fileName, id, staticUrl, eventBus, isMe }) {
+  const deleteBlock = appendChildren(
+    buildComponent("div", { "data-id": id }, ["sticker__delete-block"]),
+    [
+      buildComponent("img", { src: "dist/images/remove.png" }, [
+        "sticker__delete-img",
+      ]),
+    ],
+  );
+
+  deleteBlock.addEventListener("click", () => {
+    customConfirm(
+      () => {
+        eventBus.emit("clickedDeleteSticker", id);
+      },
+      "Удалить стикер?",
+      "Вы уверены, что хотите удалить стикер?",
+      "Удалить",
+      "Отмена",
+    );
+  });
+
+  const stickerItem = appendChildren(
+    buildComponent("div", {}, ["sticker__item"]),
+    [
+      buildComponent("img", { src: `${staticUrl}/stickers/${fileName}` }, [
+        "sticker__img",
+      ]),
+    ],
+  );
+
+  if (isMe) {
+    appendChildren(stickerItem, [deleteBlock]);
+  }
+
+  return appendChildren(
+    buildComponent("div", { id: `sticker-${id}` }, ["sticker-block"]),
+    [
+      buildComponent("acronym", { title: name }, ["sticker__name"], name),
+      stickerItem,
+    ],
+  );
+}
+
+export function makeSmallSticker({
+  companionId,
+  id,
+  staticUrl,
+  fileName,
+  eventBus,
+}) {
+  const smallSticker = buildComponent("div", { id: `sticker-${id}` }, [
+    "sticker__item_small",
+  ]);
+
+  smallSticker.addEventListener("click", () => {
+    eventBus.emit("clickedSendSticker", { companionId, stickerId: id });
+  });
+
+  return appendChildren(smallSticker, [
+    buildComponent("img", { src: `${staticUrl}/stickers/${fileName}` }, [
+      "sticker__img",
+    ]),
+  ]);
+}

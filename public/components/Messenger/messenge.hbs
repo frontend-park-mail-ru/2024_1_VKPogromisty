@@ -30,8 +30,13 @@
           id="chatter-content__message-span-{{ elem.companion.userId }}-{{
             elem.lastMessage.id
           }}"
-          >{{ elem.lastMessage.content }}</span
         >
+          {{#unless elem.lastMessage.sticker}}
+          {{ elem.lastMessage.content }}
+          {{else}}
+          Стикер
+          {{/unless}}
+        </span>
         <span
           class="chatter-content__time-span"
           id="chatter-content__time-span-{{ elem.companion.userId }}"

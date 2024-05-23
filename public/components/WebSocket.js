@@ -123,6 +123,20 @@ class WSocket {
   }
 
   /**
+   * Sends sticker message to current companion
+   *
+   * @param {number} stickerId - The ID of current sticker
+   * @param {number} receiverId - The ID of current receiver
+   */
+  sendStickerMessage(stickerId, receiverId) {
+    CSRFProtection.addCSRFTokenWebSocket(this.ws, {
+      type: "SEND_STICKER_MESSAGE",
+      receiver: +receiverId,
+      payload: { stickerId: +stickerId },
+    });
+  }
+
+  /**
    * Adds event on receiving message
    *
    * @param {string} eventName - The name of event

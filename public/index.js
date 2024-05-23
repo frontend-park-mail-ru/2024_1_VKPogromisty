@@ -15,6 +15,7 @@ import SettingsController from "./components/Settings/SettingsController.js";
 import CSRFProtection from "./components/CSRFProtection.js";
 import GroupController from "./components/Group/GroupController.js";
 import { renderLanding } from "./components/Landing/landing.js";
+import StickerController from "./components/Stickers/StickerController.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   if ("serviceWorker" in navigator) {
@@ -27,8 +28,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const profileController = new ProfileController(router, webSocket);
   const loginController = new LoginController(router, webSocket);
   const friendsController = new FriendsController(router, webSocket);
+  const stickerController = new StickerController(router, webSocket);
   const messengerController = new MessengerController(router, webSocket);
-  const chatController = new ChatController(router, webSocket);
+  const chatController = new ChatController(
+    router,
+    webSocket,
+    stickerController,
+  );
   const feedController = new FeedController(router, webSocket);
   const settingsController = new SettingsController(router, webSocket);
   const groupController = new GroupController(router, webSocket);
@@ -105,6 +111,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         path: /\/group\/create/,
         func: groupController.renderGroupCreate.bind(groupController),
         title: "Создать группу",
+      },
+      {
+        path: /\/stickers\/(?<section>.+)/,
+        func: stickerController.renderStickerPage.bind(stickerController),
+        title: "Стикеры",
       },
       {
         path: /\//,

@@ -138,7 +138,8 @@ class MessengerView extends BaseView {
         oldDialog.remove();
         updatedDialog.setAttribute("id", `dialog-${message.receiverId}`);
 
-        messageChatter.firstElementChild.innerHTML = message.content;
+        messageChatter.firstElementChild.innerHTML =
+          message.content || (message.sticker ? "Стикер" : "Фотография");
         messageChatter.firstElementChild.nextElementSibling.innerHTML =
           formatMinutesHours(message.createdAt);
       } else {
@@ -146,6 +147,7 @@ class MessengerView extends BaseView {
           content: message.content,
           createdAt: formatMinutesHours(message.createdAt),
           id: message.id,
+          sticker: message.sticker,
         });
         this.eventBus.emit("needGetProfile", message.receiverId);
       }
@@ -158,7 +160,8 @@ class MessengerView extends BaseView {
         );
         messageChatter.setAttribute("id", `chatter-content-${message.id}`);
         const messageContent = messageChatter.firstElementChild;
-        messageContent.innerHTML = message.content;
+        messageContent.innerHTML =
+          message.content || (message.sticker ? "Стикер" : "Фотография");
         messageContent.setAttribute(
           "id",
           `chatter-content__message-span-${message.senderId}-${message.id}`,
@@ -187,6 +190,7 @@ class MessengerView extends BaseView {
           content: message.content,
           createdAt: formatMinutesHours(message.createdAt),
           id: message.id,
+          sticker: message.sticker,
         });
         this.eventBus.emit("needGetProfile", message.senderId);
       }
@@ -206,11 +210,13 @@ class MessengerView extends BaseView {
     if (message.senderId === UserState.userId) {
       document.getElementById(
         `chatter-info__message-span-${message.receiverId}`,
-      ).innerHTML = message.content;
+      ).innerHTML =
+        message.content || (message.sticker ? "Стикер" : "Фотография");
     } else {
       document.getElementById(
         `chatter-content__message-span-${message.senderId}-${message.id}`,
-      ).innerHTML = message.content;
+      ).innerHTML =
+        message.content || (message.sticker ? "Стикер" : "Фотография");
     }
   }
 
@@ -253,7 +259,8 @@ class MessengerView extends BaseView {
 
       if (deletedPlace) {
         deletedPlace.setAttribute("id", `chatter-content-${message.id}`);
-        deletedPlace.firstElementChild.innerHTML = message.content;
+        deletedPlace.firstElementChild.innerHTML =
+          message.content || (message.sticker ? "Стикер" : "Фотография");
         deletedPlace.firstElementChild.setAttribute(
           "id",
           `chatter-content__message-span-${me}-${message.id}`,

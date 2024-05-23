@@ -13,6 +13,7 @@ const incomingEvents = [
   "sendMessageSuccess",
   "updateMessageSuccess",
   "deleteMessageSuccess",
+  "clickedSendSticker",
   "serverError",
 ];
 
@@ -28,10 +29,10 @@ class ChatController {
    * @param {Routing} router - The router
    * @param {WSocket} webSocket - The working WebSocket that receive and send messages
    */
-  constructor(router, webSocket) {
+  constructor(router, webSocket, stickerController) {
     this.eventBus = new EventBus(incomingEvents);
     this.chatModel = new ChatModel(this.eventBus, router, webSocket);
-    this.chatView = new ChatView(this.eventBus, router);
+    this.chatView = new ChatView(this.eventBus, router, stickerController);
   }
 
   /**

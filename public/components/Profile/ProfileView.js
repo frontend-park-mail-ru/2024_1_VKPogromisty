@@ -9,6 +9,8 @@ import { customAlert, customConfirm } from "../../modules/windows.js";
 import { buildComponent, appendChildren } from "../createComponent.js";
 import "./profile.scss";
 
+const MB = 1024 * 1024;
+const maxPostMemory = 50;
 const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
 const staticUrl = `${API_URL}/static`;
 const typeFile = (file) => {
@@ -204,16 +206,24 @@ class ProfileView extends BaseView {
     const fileInput = document.getElementById("news__file-input");
     const fileButton = document.getElementById("news__file-button");
     const dt = new DataTransfer();
+    let dtMemory = 0;
 
     fileButton?.addEventListener("click", () => {
       fileInput.click();
     });
+
+    const imgContent = document.getElementById("news-img-content");
+    const fileContent = document.getElementById("news-file-content");
 
     if (fileInput) {
       fileInput.addEventListener("change", () => {
         const files = fileInput.files;
 
         Array.from(files).forEach((file) => {
+          if (dtMemory + file.size > MB * maxPostMemory) {
+            customAlert("error", "Максимальный размер файлов - 10");
+            return;
+          }
           if (dt.items.length === 10) {
             customAlert(
               "error",
@@ -222,20 +232,10 @@ class ProfileView extends BaseView {
             return;
           }
           dt.items.add(file);
-        });
 
-        fileInput.value = "";
-
-        const imgContent = document.getElementById("news-img-content");
-        const fileContent = document.getElementById("news-file-content");
-
-        imgContent.innerHTML = "";
-        fileContent.innerHTML = "";
-
-        Array.from(dt.files).forEach((elem) => {
-          const src = URL.createObjectURL(elem);
-          const fileName = elem.name;
-          const isImage = imageTypes.includes(typeFile(elem));
+          const src = URL.createObjectURL(file);
+          const fileName = file.name;
+          const isImage = imageTypes.includes(typeFile(file));
 
           const cancelImg = buildComponent(
             "img",
@@ -252,6 +252,7 @@ class ProfileView extends BaseView {
 
             Array.from(dt.files).forEach((file, index) => {
               if (file.name === fileName) {
+                dtMemory -= file.size;
                 dt.items.remove(index);
                 return;
               }
@@ -315,6 +316,8 @@ class ProfileView extends BaseView {
             ]);
           }
         });
+
+        fileInput.value = "";
       });
     }
 
@@ -330,6 +333,7 @@ class ProfileView extends BaseView {
         attachments: dt.files,
       });
 
+      dtMemory = 0;
       dt.items.clear();
       document.getElementById("news-img-content").innerHTML = "";
       document.getElementById("news-file-content").innerHTML = "";

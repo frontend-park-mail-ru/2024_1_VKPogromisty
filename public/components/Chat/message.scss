@@ -34,6 +34,7 @@
   box-sizing: border-box;
   overflow: auto;
   flex: 1;
+  min-height: 350px;
 
   &__start-dialog-span {
     margin-left: auto;
@@ -59,11 +60,18 @@
 
     &-div {
       margin-bottom: 5px;
+      @include column-flexible;
+    }
+
+    &__img {
+      width: 100%;
+      border-radius: 7px;
+      box-shadow: 0 0 5px 1px #918f8f4f;
     }
   }
 
   &-time-edited {
-    @include row-flexible;
+    @include row-reverse-flexible;
     justify-content: space-between;
     padding-right: 10px;
 
@@ -148,12 +156,6 @@
   }
 }
 
-.message-menu__accept-img {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
 .message-ables {
   @include row-reverse-flexible;
   margin-top: 15px;
@@ -170,6 +172,7 @@
 }
 
 .add-message {
+  position: relative;
   border-top: 1px solid #de8181;
   height: 70px;
   background-color: #f8dada;
@@ -205,16 +208,142 @@
   }
 }
 
-.message-menu__send-img {
-  width: 20px;
-  height: 20px;
-}
+.message-menu {
+  @include row-flexible;
 
-.message-menu__send-button {
-  background-color: inherit;
+  &__send-sticker-img {
+    width: 20px;
+    height: 20px;
+  }
+
+  &__send-sticker-button {
+    background-color: inherit;
+  }
+
+  &__send-img {
+    width: 20px;
+    height: 20px;
+  }
+
+  &__send-button {
+    background-color: inherit;
+  }
+
+  &__accept-img {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
 }
 
 .changed-day {
   margin: 20px auto 10px;
   color: gray;
+}
+
+.news-chat__file-input {
+  display: none;
+}
+
+.captured-images {
+  @include row-flexible;
+  flex-wrap: wrap;
+  border-radius: 7px;
+  background-color: #f8dada;
+  justify-content: space-around;
+}
+
+.captured-files {
+  @include row-flexible;
+  flex-wrap: wrap;
+  background-color: #f8dada;
+}
+
+.news-message-img-content {
+  @include column-flexible;
+  min-height: 20px;
+  align-items: center;
+  position: relative;
+  width: 70px;
+  padding: 0 10px 10px;
+  box-sizing: border-box;
+
+  &__img {
+    width: 100%;
+    border-radius: 7px;
+  }
+
+  &__cancel-img {
+    width: 22px;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background-color: white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &-block {
+    @include row-flexible;
+    width: 70px;
+    border-radius: 7px;
+    box-sizing: border-box;
+    position: relative;
+    margin: 5px;
+  }
+}
+
+.news-message-file-content {
+  @include column-flexible;
+  min-height: 20px;
+  align-items: start;
+  position: relative;
+  width: 100%;
+  padding: 0 10px 10px;
+  box-sizing: border-box;
+
+  &__a {
+    @include row-flexible;
+    position: relative;
+    width: 50px;
+    height: 50px;
+
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__img {
+    width: 100%;
+    border-radius: 7px;
+    box-sizing: border-box;
+    padding: 5px;
+  }
+
+  &__name-span {
+    position: absolute;
+    left: 45px;
+    top: 5px;
+    text-decoration: underline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+
+  &-block {
+    @include row-flexible;
+    border-radius: 7px;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  &__cancel-img {
+    width: 25px;
+    position: absolute;
+    top: 0;
+    background-color: white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
 }

@@ -61,6 +61,9 @@ class ChatView extends BaseView {
     this.stickerController = stickerController;
     this.isAddedListener = false;
     this.rememberMessageWithAttachments = {};
+    this.stickerController = stickerController;
+    this.isAddedListener = false;
+    this.rememberMessageWithAttachments = {};
 
     this.eventBus.addEventListener(
       "receiveCompanionData",
@@ -332,6 +335,44 @@ class ChatView extends BaseView {
       printMessage.style.height = "auto";
       printMessage.style.height = printMessage.scrollHeight - 4 + "px";
     });
+
+    document
+      .getElementById("all-message-sticker")
+      .addEventListener("click", () => {
+        this.stickerController.renderMessageAllStickers(this.companionId);
+      });
+
+    document
+      .getElementById("my-message-sticker")
+      .addEventListener("click", () => {
+        this.stickerController.renderMessageUserStickers(
+          this.companionId,
+          UserState.userId,
+        );
+      });
+
+    document
+      .getElementById("message-menu__send-sticker-button")
+      .addEventListener("click", () => {
+        const stickerMessagePlace = document.getElementById(
+          "sticker-message-place",
+        );
+
+        this.stickerController.renderMessageAllStickers(this.companionId);
+
+        stickerMessagePlace.classList.toggle("sticker-message-place_invisible");
+
+        if (!this.isAddedListener) {
+          this.isAddedListener = true;
+          document.addEventListener("click", (event) => {
+            if (!this.clickedOnStickerMessagePlace(event)) {
+              stickerMessagePlace.classList.add(
+                "sticker-message-place_invisible",
+              );
+            }
+          });
+        }
+      });
 
     document
       .getElementById("all-message-sticker")

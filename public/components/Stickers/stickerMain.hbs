@@ -1,0 +1,62 @@
+<div class="create-sticker">
+  <span class="create-sticker__span">Создать стикер</span>
+  <div class="new-sticker-fields">
+    <div class="new-sticker-image-field">
+      <span class="new-sticker-image-field__span">Выберите картинку</span>
+      <div class="prewatch-block">
+        <img
+          src="dist/images/nothing.png"
+          class="new-sticker-image-field__img"
+          id="prewatch"
+        />
+        <div class="sticker-add-block" id="sticker-add-block">
+          <img src="dist/images/plus.png" class="sticker__add-img" />
+        </div>
+      </div>
+      <input
+        type="file"
+        id="new-sticker-image__input"
+        class="new-sticker-image-field__input"
+        accept="image/png, image/gif, image/jpeg, image/jpg, image/webp"
+      />
+      <div class="form__input_error form__input_correct" id="incorrect-avatar">
+        Недопустимый тип файла
+      </div>
+    </div>
+    <div class="new-sticker-name-field">
+      <div class="new-sticker-name-choose-field">
+        <span class="new-sticker-name-field__span">Укажите имя</span>
+        <input
+          type="text"
+          class="new-sticker-name-field__input"
+          id="new-sticker-name-field__input"
+          placeholder="Имя"
+          autocomplete="off"
+        />
+      </div>
+      <div class="form__input_error form__input_correct" id="incorrect-name">
+        Некорректное имя
+      </div>
+    </div>
+  </div>
+  <div class="add-new-sticker">
+    <button class="add-new-sticker__button" id="add-new-sticker">
+      Добавить стикер
+    </button>
+  </div>
+</div>
+<div class="sticker-page-header">
+  <span class="sticker-page-header__span">Стикеры</span>
+</div>
+<div class="choose-sticker-section">
+  <a class="choose-sticker-section__a" href="/stickers/all">
+    <span class="choose-sticker-section__span">ВСЕ</span>
+  </a>
+  <a class="choose-sticker-section__a" href="/stickers/own">
+    <span class="choose-sticker-section__span">МОИ</span>
+  </a>
+</div>
+<div class="sticker-catalog" id="sticker-catalog"></div>
+<div class="no-stickers-page no-stickers-page_invisible" id="no-stickers-page">
+  <span class="no-stickers-page__span">Стикеров нет</span>
+</div>
