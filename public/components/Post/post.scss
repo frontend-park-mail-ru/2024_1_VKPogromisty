@@ -548,7 +548,7 @@
 }
 
 .comments {
-  @include column-flexible;
+  @include column-reverse-flexible;
   background-color: #f4e3e3;
   border: 1px solid #000;
   border-radius: 7px;

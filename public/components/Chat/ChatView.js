@@ -8,7 +8,8 @@ import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
 import "./message.scss";
-import { customConfirm } from "../../modules/windows.js";
+import { customAlert, customConfirm } from "../../modules/windows.js";
+import { buildComponent, appendChildren } from "../createComponent.js";
 
 /**
  * A User structure
@@ -34,8 +35,15 @@ import { customConfirm } from "../../modules/windows.js";
  * @property {string} updatedAt - The last date of updating
  */
 
+const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
+const MB = 1024 * 1024;
+const maxMessageMemory = 20;
 const staticUrl = `${API_URL}/static`;
 const maxMessageLength = 500;
+const typeFile = (file) => {
+  const parts = file.name.split(".");
+  return parts[parts.length - 1];
+};
 
 /**
  * ChatView - класс для работы с визуалом на странице.
@@ -46,10 +54,13 @@ class ChatView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    */
-  constructor(eventBus, router) {
+  constructor(eventBus, router, stickerController) {
     super(eventBus);
 
     this.router = router;
+    this.stickerController = stickerController;
+    this.isAddedListener = false;
+    this.rememberMessageWithAttachments = {};
 
     this.eventBus.addEventListener(
       "receiveCompanionData",
@@ -149,16 +160,139 @@ class ChatView extends BaseView {
     this.chatElement = document.getElementById("messages");
     this.previousDate = null;
 
+    const dt = new DataTransfer();
+    let dtMemory = 0;
     const input = document.getElementById("print-message__text-input");
     const sendButton = document.getElementById("message-menu__send-button");
+    const addFiles = document.getElementById("news__file-place");
+    const chatFileInput = document.getElementById("news-chat__file-input");
+    const imgContent = document.getElementById("captured-images");
+    const fileContent = document.getElementById("captured-files");
+
+    addFiles.addEventListener("click", () => {
+      chatFileInput.click();
+    });
+
+    chatFileInput.addEventListener("change", () => {
+      const files = chatFileInput.files;
+
+      Array.from(files).forEach((file) => {
+        if (dtMemory + file.size > maxMessageMemory * MB) {
+          customAlert("error", "Максимальноый размер сообщения - 15мб");
+          return;
+        }
+        if (dt.items.length === 5) {
+          customAlert(
+            "error",
+            "Максимальное количество прикрепляемых файлов - 5",
+          );
+          return;
+        }
+
+        dtMemory += file.size;
+        dt.items.add(file);
+
+        const src = URL.createObjectURL(file);
+        const fileName = file.name;
+        const isImage = imageTypes.includes(typeFile(file));
+
+        const cancelImg = buildComponent(
+          "img",
+          { src: "dist/images/cancel.png", "data-id": fileName },
+          [`news-message-${isImage ? "img" : "file"}-content__cancel-img`],
+        );
+
+        cancelImg.addEventListener("click", () => {
+          document
+            .getElementById(
+              `news-message-${isImage ? "img" : "file"}-content-block-${fileName}`,
+            )
+            ?.remove();
+
+          Array.from(dt.files).forEach((file, index) => {
+            if (file.name === fileName) {
+              dtMemory -= file.size;
+              dt.items.remove(index);
+              return;
+            }
+          });
+        });
+        if (isImage) {
+          const imgBlock = buildComponent(
+            "div",
+            { id: `news-message-img-content-block-${fileName}` },
+            ["news-message-img-content-block"],
+          );
+
+          appendChildren(imgContent, [
+            appendChildren(imgBlock, [
+              buildComponent(
+                "img",
+                { src: src, "data-id": `news-file-content-${fileName}` },
+                ["news-message-img-content__img"],
+              ),
+              cancelImg,
+            ]),
+          ]);
+        } else {
+          const fileBlock = buildComponent(
+            "div",
+            { id: `news-message-file-content-block-${fileName}` },
+            ["news-message-file-content-block"],
+          );
+          appendChildren(fileContent, [
+            appendChildren(fileBlock, [
+              appendChildren(
+                buildComponent(
+                  "a",
+                  {
+                    target: "_blank",
+                    rel: "noopener",
+                    href: src,
+                    download: fileName,
+                  },
+                  ["news-message-file-content__a"],
+                ),
+                [
+                  buildComponent(
+                    "span",
+                    {},
+                    ["news-message-file-content__name-span"],
+                    fileName,
+                  ),
+                  buildComponent(
+                    "img",
+                    {
+                      src: "dist/images/document.png",
+                      id: `news-message-file-content-${fileName}`,
+                    },
+                    ["news-message-file-content__img"],
+                  ),
+                ],
+              ),
+              cancelImg,
+            ]),
+          ]);
+        }
+      });
+    });
 
     sendButton.addEventListener("click", () => {
       let textMessage = input.value;
-      if (textMessage.trim() === "") {
+
+      if (textMessage.trim() === "" && dt.items.length === 0) {
         return;
       }
 
       this.chatElement.scrollTop = 0;
+
+      if (dt.items.length > 0) {
+        this.eventBus.emit("needPresentAttachments", dt.files);
+        this.rememberMessageWithAttachments;
+
+        dt.files = null;
+        return;
+      }
 
       while (textMessage.length > maxMessageLength) {
         this.eventBus.emit("clickedSendMessage", {
@@ -199,6 +333,44 @@ class ChatView extends BaseView {
       printMessage.style.height = printMessage.scrollHeight - 4 + "px";
     });
 
+    document
+      .getElementById("all-message-sticker")
+      .addEventListener("click", () => {
+        this.stickerController.renderMessageAllStickers(this.companionId);
+      });
+
+    document
+      .getElementById("my-message-sticker")
+      .addEventListener("click", () => {
+        this.stickerController.renderMessageUserStickers(
+          this.companionId,
+          UserState.userId,
+        );
+      });
+
+    document
+      .getElementById("message-menu__send-sticker-button")
+      .addEventListener("click", () => {
+        const stickerMessagePlace = document.getElementById(
+          "sticker-message-place",
+        );
+
+        this.stickerController.renderMessageAllStickers(this.companionId);
+
+        stickerMessagePlace.classList.toggle("sticker-message-place_invisible");
+
+        if (!this.isAddedListener) {
+          this.isAddedListener = true;
+          document.addEventListener("click", (event) => {
+            if (!this.clickedOnStickerMessagePlace(event)) {
+              stickerMessagePlace.classList.add(
+                "sticker-message-place_invisible",
+              );
+            }
+          });
+        }
+      });
+
     this.chatElement.addEventListener(
       "scroll",
       this.checksNewMessages.bind(this),
@@ -208,6 +380,31 @@ class ChatView extends BaseView {
       companionId: this.companionId,
       lastMessageId: 0,
     });
+  }
+
+  /**
+   * Checks if clicked in sticker place
+   *
+   * @param {Event} event - Current event
+   * @returns
+   */
+  clickedOnStickerMessagePlace(event) {
+    let target = event.target;
+    while (target !== document.body) {
+      if (!target) {
+        return false;
+      }
+
+      if (
+        target.classList.contains("sticker-message-place") ||
+        target.classList.contains("message-menu__send-sticker-button")
+      ) {
+        return true;
+      }
+
+      target = target.parentNode;
+    }
+    return false;
   }
 
   /**
@@ -233,23 +430,16 @@ class ChatView extends BaseView {
         elem.changedDay = formatDayMonthYear(this.previousDate);
         this.previousDate = messageDate;
       }
-      if (elem.content.trim() === "" && !elem.attachments) {
-        this.eventBus.emit("clickedDeleteMessage", {
-          messageId: elem.id,
-          receiver: this.companionId,
-        });
-      } else {
-        elem.isMe = elem.senderId === UserState.userId;
-        elem.isUpdated = elem.createdAt !== elem.updatedAt;
-        elem.fullCreatedAt = formatDayMonthYear(elem.createdAt);
-        elem.createdAt = formatMinutesHours(elem.createdAt);
-        if (elem.id < this.lastMessageId || this.lastMessageId === 0) {
-          this.lastMessageId = elem.id;
-        }
+      elem.isMe = elem.senderId === UserState.userId;
+      elem.isUpdated = elem.createdAt !== elem.updatedAt;
+      elem.fullCreatedAt = formatDayMonthYear(elem.createdAt);
+      elem.createdAt = formatMinutesHours(elem.createdAt);
+      if (elem.id < this.lastMessageId || this.lastMessageId === 0) {
+        this.lastMessageId = elem.id;
       }
     });
 
-    this.chatElement.innerHTML += template({ messages, noMessages });
+    this.chatElement.innerHTML += template({ messages, noMessages, staticUrl });
 
     if (noMessages || messages.length < 20) {
       this.isAllMessages = true;
@@ -349,7 +539,7 @@ class ChatView extends BaseView {
     message.createdAt = formatMinutesHours(message.createdAt);
 
     this.chatElement.innerHTML =
-      template({ messages }) + this.chatElement.innerHTML;
+      template({ messages, staticUrl }) + this.chatElement.innerHTML;
 
     const noMessagesSpan = document.getElementById(
       "messages__start-dialog-span",
