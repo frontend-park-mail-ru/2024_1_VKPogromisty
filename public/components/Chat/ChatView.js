@@ -398,8 +398,6 @@ class ChatView extends BaseView {
 
         this.stickerController.renderMessageAllStickers(this.companionId);
 
-        stickerMessagePlace.classList.toggle("sticker-message-place_invisible");
-
         if (!this.isAddedListener) {
           this.isAddedListener = true;
           document.addEventListener("click", (event) => {
