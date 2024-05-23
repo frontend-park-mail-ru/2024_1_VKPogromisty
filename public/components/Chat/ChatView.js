@@ -112,6 +112,7 @@ class ChatView extends BaseView {
     this.mainElement = document.getElementById("activity");
     this.lastMessageId = 0;
     this.isAllMessages = false;
+    this.isAddedListener = false;
 
     document.onkeydown = (event) => {
       if (event.key === "Escape") {

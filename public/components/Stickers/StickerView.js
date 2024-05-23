@@ -79,6 +79,12 @@ class StickerView extends BaseView {
       "sticker-message-place-content",
     );
     stickerMessagePlace.innerHTML = "";
+    document
+      .getElementById("all-message-sticker")
+      .classList.remove("sticker-message-place-header__span_small");
+    document
+      .getElementById("my-message-sticker")
+      .classList.add("sticker-message-place-header__span_small");
 
     if (!stickers) {
       document
@@ -105,6 +111,13 @@ class StickerView extends BaseView {
       "sticker-message-place-content",
     );
     stickerMessagePlace.innerHTML = "";
+
+    document
+      .getElementById("my-message-sticker")
+      .classList.remove("sticker-message-place-header__span_small");
+    document
+      .getElementById("all-message-sticker")
+      .classList.add("sticker-message-place-header__span_small");
 
     if (!stickers) {
       document
