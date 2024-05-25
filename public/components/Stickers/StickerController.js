@@ -37,6 +37,8 @@ class StickerController {
   /**
    * Renders StickerView
    *
+   * @param {string} path - The current path of sticker's page
+   *
    * @returns {void}
    */
   renderStickerPage(path) {
@@ -44,21 +46,40 @@ class StickerController {
   }
 
   /**
-   * Renders stickers at chat page
+   * Updates user's sticker from the server
+   *
+   * @param {number} userId - The ID of current user
    */
-  renderMessageAllStickers(companionId) {
-    this.stickerView.setCompanion(companionId);
+  updateStickers(userId) {
     this.stickerModel.getAllStickers({ isMessage: true });
+    this.stickerModel.getUserStickers({ isMessage: true, userId });
   }
 
   /**
    * Renders stickers at chat page
    *
-   * @param {number} userId - The ID of current user
+   * @param {number} companionId - The ID of current companion
    */
-  renderMessageUserStickers(companionId, userId) {
+  renderMessageAllStickers(companionId) {
     this.stickerView.setCompanion(companionId);
-    this.stickerModel.getUserStickers({ isMessage: true, userId });
+    this.stickerView.renderMessageAllStickers();
+  }
+
+  /**
+   * Renders stickers at chat page
+   *
+   * @param {number} companionId - The ID of current companion
+   */
+  renderMessageUserStickers(companionId) {
+    this.stickerView.setCompanion(companionId);
+    this.stickerView.renderMessageMyStickers();
+  }
+
+  /**
+   * Renders message emoji
+   */
+  renderMessageEmoji() {
+    this.stickerView.renderMessageEmoji();
   }
 }
 

@@ -55,9 +55,9 @@ class WSocket {
       };
       this.ws.onclose = (event) => {
         if (event.code !== 1000) {
-          this.intervalId = setInterval(() => {
+          this.intervalId = setTimeout(() => {
             this.openWebSocket();
-          }, 5000);
+          }, 2000);
         }
       };
     }
@@ -82,11 +82,11 @@ class WSocket {
    * @param {number} companionId - The ID of current companion
    * @param {string} textContent - The text content of message
    */
-  sendMessage(companionId, textContent) {
+  sendMessage(companionId, textContent, attachments) {
     CSRFProtection.addCSRFTokenWebSocket(this.ws, {
       type: "SEND_MESSAGE",
       receiver: +companionId,
-      payload: { content: textContent },
+      payload: { content: textContent, attachments },
     });
   }
 

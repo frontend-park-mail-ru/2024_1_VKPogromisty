@@ -6,6 +6,19 @@ import UserState from "../UserState.js";
 import { validateName } from "/public/modules/validators.js";
 import "./sticker.scss";
 import { makeSmallSticker, makeSticker } from "../../modules/makeComponents.js";
+import { buildComponent } from "../createComponent.js";
+
+/**
+ * A Sticker structure
+ *
+ * @typedef {Object} Sticker
+ * @property {number} authorId - The ID of author
+ * @property {string} createdAt - The date when was created
+ * @property {string} fileName - The name of file which interprets a sticker
+ * @property {number} id - The ID of sticker
+ * @property {string} name - The name of sticker
+ * @property {string} updatedAt - The date when was updated
+ */
 
 const MBToByte = 1024 * 1024;
 const maxMB = 5;
@@ -28,12 +41,17 @@ class StickerView extends BaseView {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Объект класса Routing
-   * @param {UserState} userState - Объект класса UserState
    */
   constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
+
+    this.emojis = [];
+
+    for (let i = 11; i < 45; ++i) {
+      this.emojis.push(`${(i - (i % 10)) / 10}f${i % 10}`);
+    }
 
     this.eventBus.addEventListener(
       "gotAllStickersSuccess",
@@ -53,16 +71,34 @@ class StickerView extends BaseView {
     );
     this.eventBus.addEventListener(
       "golAllMessageStickersSuccess",
-      this.renderMessageAllStickers.bind(this),
+      this.updateAllStickers.bind(this),
     );
     this.eventBus.addEventListener(
       "gotUserMessageStickersSuccess",
-      this.renderMessageMyStickers.bind(this),
+      this.updateMyStickers.bind(this),
     );
     this.eventBus.addEventListener(
       "serverError",
       this.serverErrored.bind(this),
     );
+  }
+
+  /**
+   * Updates all sticker from the server
+   *
+   * @param {Sticker[]} stickers
+   */
+  updateAllStickers(stickers) {
+    this.allStickers = stickers;
+  }
+
+  /**
+   * Updates stickers of current user
+   *
+   * @param {Sticker[]} stickers
+   */
+  updateMyStickers(stickers) {
+    this.myStickers = stickers;
   }
 
   /**
@@ -74,11 +110,20 @@ class StickerView extends BaseView {
     this.companionId = companionId;
   }
 
-  renderMessageAllStickers(stickers) {
+  /**
+   * Renders all stickers on the chat page
+   */
+  renderMessageAllStickers() {
+    const stickers = this.allStickers;
+
     const stickerMessagePlace = document.getElementById(
       "sticker-message-place-content",
     );
     stickerMessagePlace.innerHTML = "";
+
+    document
+      .getElementById("sticker-message-place-header")
+      .classList.remove("sticker-message-place-header_invisible");
     document
       .getElementById("all-message-sticker")
       .classList.remove("sticker-message-place-header__span_small");
@@ -106,12 +151,20 @@ class StickerView extends BaseView {
     });
   }
 
-  renderMessageMyStickers(stickers) {
+  /**
+   * Renders user's stickers on the chat page
+   */
+  renderMessageMyStickers() {
+    const stickers = this.myStickers;
+
     const stickerMessagePlace = document.getElementById(
       "sticker-message-place-content",
     );
     stickerMessagePlace.innerHTML = "";
 
+    document
+      .getElementById("sticker-message-place-header")
+      .classList.remove("sticker-message-place-header_invisible");
     document
       .getElementById("my-message-sticker")
       .classList.remove("sticker-message-place-header__span_small");
@@ -136,6 +189,35 @@ class StickerView extends BaseView {
           companionId: this.companionId,
         }),
       );
+    });
+  }
+
+  /**
+   * Renders message emojies on the chat page
+   */
+  renderMessageEmoji() {
+    const stickerMessagePlace = document.getElementById(
+      "sticker-message-place-content",
+    );
+    stickerMessagePlace.innerHTML = "";
+
+    document
+      .getElementById("sticker-message-place-header")
+      ?.classList.add("sticker-message-place-header_invisible");
+
+    this.emojis.forEach((emoji) => {
+      const messageEmoji = buildComponent(
+        "img",
+        { src: `dist/images/aE/${emoji}.png` },
+        ["sticker-message-place-content__emoji-img"],
+      );
+
+      stickerMessagePlace.appendChild(messageEmoji);
+
+      messageEmoji.addEventListener("click", () => {
+        document.getElementById("print-message__text-input").innerHTML +=
+          `<img src="dist/images/aE/${emoji}.png" class="sticker-message-place-content__emoji-img" />`;
+      });
     });
   }
 
@@ -289,6 +371,12 @@ class StickerView extends BaseView {
       .setAttribute("src", "dist/images/nothing.png");
   }
 
+  /**
+   * Render all stickers at the sticker page
+   *
+   * @param {Sticker[]} stickers
+   * @returns
+   */
   renderAllStickersPage(stickers) {
     const mainElement = document.getElementById("sticker-catalog");
 
@@ -312,6 +400,12 @@ class StickerView extends BaseView {
     });
   }
 
+  /**
+   * Render user's sticker at the stickers page
+   *
+   * @param {Sticker[]} stickers
+   * @returns
+   */
   renderUserStickersPage(stickers) {
     const mainElement = document.getElementById("sticker-catalog");
 
@@ -336,6 +430,11 @@ class StickerView extends BaseView {
     });
   }
 
+  /**
+   * Adds sticker to the page
+   *
+   * @param {Sticker} sticker
+   */
   renderCreatedSticker(sticker) {
     const mainElement = document.getElementById("sticker-catalog");
     const newSticker = makeSticker({
