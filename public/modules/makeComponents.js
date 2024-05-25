@@ -2,7 +2,6 @@ import {
   buildComponent,
   appendChildren,
   modifyComponent,
-  replaceChildren,
 } from "../components/createComponent.js";
 import { customConfirm } from "/public/modules/windows.js";
 import { API_URL } from "/public/modules/consts.js";
@@ -38,7 +37,7 @@ export function makePost(
   const postAuthor = buildComponent("div", {}, ["post-author"]);
   const postAuthorHref = isGroup
     ? `/group/${group.id}`
-    : `/profile/${author.authorId}`;
+    : `/profile/${author.userId}`;
   const postAuthorImage = isGroup
     ? `${staticUrl}/group-avatars/${group.avatar}`
     : `${staticUrl}/user-avatars/${author.avatar}`;
@@ -101,6 +100,17 @@ export function makePost(
     ]),
   ]);
 
+  const postImageContent = buildComponent(
+    "div",
+    { id: `post-image-content-${post.postId}` },
+    ["post-image-content"],
+  );
+  const postFileContent = buildComponent(
+    "div",
+    { id: `post-file-content-${post.postId}` },
+    ["post-file-content"],
+  );
+
   const postContent = appendChildren(
     buildComponent("div", { id: `post-content-${post.postId}` }, [
       "post-content",
@@ -112,45 +122,65 @@ export function makePost(
         ["post-content__text-span"],
         post.content,
       ),
+      postImageContent,
+      postFileContent,
     ],
   );
 
   post.attachments?.forEach((elem) => {
     if (imageTypes.includes(typeFile(elem))) {
-      appendChildren(postContent, [
-        buildComponent(
-          "img",
-          { src: `${staticUrl}/post-attachments/${elem}` },
-          ["post-content__img"],
+      appendChildren(postImageContent, [
+        appendChildren(
+          buildComponent(
+            "div",
+            { id: `post-image-block-${post.postId}`, "data-filename": elem },
+            ["post-image-block"],
+          ),
+          [
+            buildComponent(
+              "img",
+              { src: `${staticUrl}/post-attachments/${elem}` },
+              ["post-content__img"],
+            ),
+          ],
         ),
       ]);
     } else {
-      appendChildren(postContent, [
-        appendChildren(buildComponent("div", {}, ["post-file-content"]), [
-          appendChildren(
-            buildComponent(
-              "a",
-              {
-                target: "_blank",
-                rel: "noopener",
-                href: `${staticUrl}/post-attachments/${elem}`,
-                download: elem,
-              },
-              ["news-file-content__a"],
-            ),
-            [
-              buildComponent(
-                "span",
-                {},
-                ["news-file-content__name-span"],
-                elem,
-              ),
-              buildComponent("img", { src: "dist/images/document.png" }, [
-                "news-file-content__img",
-              ]),
-            ],
+      appendChildren(postFileContent, [
+        appendChildren(
+          buildComponent(
+            "div",
+            { id: `post-file-block-${post.postId}`, "data-filename": elem },
+            ["post-file-block"],
           ),
-        ]),
+          [
+            appendChildren(buildComponent("div", {}, ["post-file-content"]), [
+              appendChildren(
+                buildComponent(
+                  "a",
+                  {
+                    target: "_blank",
+                    rel: "noopener",
+                    href: `${staticUrl}/post-attachments/${elem}`,
+                    download: elem,
+                  },
+                  ["news-file-content__a"],
+                ),
+                [
+                  buildComponent(
+                    "span",
+                    {},
+                    ["news-file-content__name-span"],
+                    elem,
+                  ),
+                  buildComponent("img", { src: "dist/images/document.png" }, [
+                    "news-file-content__img",
+                  ]),
+                ],
+              ),
+            ]),
+          ],
+        ),
       ]);
     }
   });
@@ -236,6 +266,7 @@ export function makePost(
   );
 
   editImg.addEventListener("click", () => {
+    const deletedFiles = [];
     const parent = editImg.parentNode;
     const nextElem = editImg.nextElementSibling;
     const id = editImg.dataset.id;
@@ -251,13 +282,18 @@ export function makePost(
     ok.setAttribute("data-id", id);
     ok.setAttribute("src", "dist/images/check.png");
     ok.addEventListener("click", () => {
-      if (textarea.value.trim() === "") {
+      if (
+        textarea.value.trim() === "" &&
+        document.querySelectorAll(".post-image-block").length === 0 &&
+        document.querySelectorAll(".post-file-block").length === 0
+      ) {
+        cancel.click();
         return;
       }
 
       eventBus.emit("clickedUpdatePost", {
         content: textarea.value,
-        attachments: null,
+        attachmentsToDelete: deletedFiles,
         postId: id,
       });
     });
@@ -267,6 +303,11 @@ export function makePost(
     cancel.setAttribute("data-id", id);
     cancel.setAttribute("src", "dist/images/cancel.png");
     cancel.addEventListener("click", () => {
+      document
+        .querySelectorAll(".post-image-content .news-img-content__cancel-img")
+        .forEach((cancelElem) => {
+          cancelElem?.remove();
+        });
       eventBus.emit("canceledUpdatePost", {
         postId: id,
         isCanceled: true,
@@ -277,6 +318,40 @@ export function makePost(
     parent.appendChild(cancel);
     editImg.style["display"] = "none";
     nextElem.style["display"] = "none";
+
+    document
+      .querySelectorAll(`#post-content-${post.postId} .post-image-block`)
+      .forEach((block) => {
+        const deleteFileImg = buildComponent(
+          "img",
+          { src: "dist/images/cancel.png" },
+          [`news-img-content__cancel-img`],
+        );
+
+        appendChildren(block, [deleteFileImg]);
+
+        deleteFileImg.addEventListener("click", () => {
+          deletedFiles.push(block.dataset.filename);
+          block?.remove();
+        });
+      });
+
+    document
+      .querySelectorAll(`#post-content-${post.postId} .post-file-block`)
+      .forEach((block) => {
+        const deleteFileImg = buildComponent(
+          "img",
+          { src: "dist/images/cancel.png" },
+          [`news-file-content__cancel-img`],
+        );
+
+        appendChildren(block, [deleteFileImg]);
+
+        deleteFileImg.addEventListener("click", () => {
+          deletedFiles.push(block.dataset.filename);
+          block?.remove();
+        });
+      });
   });
 
   trashCan.addEventListener("click", () => {
@@ -446,65 +521,6 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
     },
     ["comment-author__edit-img"],
   );
-  editImg.addEventListener("click", () => {
-    const parent = editImg.parentNode;
-    const nextElem = editImg.nextElementSibling;
-    const id = editImg.dataset.id;
-
-    let textarea = document.getElementById(`comment-textarea-${id}`);
-
-    const textareaParent = textarea.parentNode;
-    const commentText = textarea.innerHTML;
-    textarea = buildComponent(
-      "textarea",
-      {
-        value: commentText,
-        rows: 1,
-        maxLength: "300",
-        id: `comment-textarea-${id}`,
-      },
-      ["comment-content__text-span"],
-    );
-
-    textarea.addEventListener("input", () => {
-      textarea.style.height = "auto";
-    });
-
-    replaceChildren(textareaParent, [textarea]);
-
-    textarea.focus();
-
-    const ok = document.createElement("img");
-    ok.classList.add("comment-author__accept-img");
-    ok.setAttribute("data-id", id);
-    ok.setAttribute("src", "dist/images/check.png");
-    ok.addEventListener("click", () => {
-      if (textarea.value.trim() === "") {
-        return;
-      }
-
-      eventBus.emit("clickedUpdateComment", {
-        content: textarea.value,
-        comment: id,
-      });
-    });
-
-    const cancel = document.createElement("img");
-    cancel.classList.add("comment-author__cancel-img");
-    cancel.setAttribute("data-id", id);
-    cancel.setAttribute("src", "dist/images/cancel.png");
-    cancel.addEventListener("click", () => {
-      eventBus.emit("canceledUpdateComment", {
-        comentId: id,
-        isCanceled: true,
-      });
-    });
-
-    parent.appendChild(ok);
-    parent.appendChild(cancel);
-    editImg.style["display"] = "none";
-    nextElem.style["display"] = "none";
-  });
 
   const trashCanImg = buildComponent(
     "img",
@@ -515,6 +531,55 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
     },
     ["comment-author__trash-basket-img"],
   );
+
+  const textareaComment = buildComponent(
+    "textarea",
+    { id: `comment-textarea-${comment.id}`, readonly: true },
+    ["comment-content__text-span"],
+    comment.content,
+  );
+
+  editImg.addEventListener("click", () => {
+    const parent = editImg.parentNode;
+    const id = editImg.dataset.id;
+
+    modifyComponent(textareaComment, { readonly: null });
+    textareaComment.focus();
+
+    const ok = document.createElement("img");
+    ok.classList.add("comment-author__accept-img");
+    ok.setAttribute("data-id", id);
+    ok.setAttribute("src", "dist/images/check.png");
+    ok.addEventListener("click", () => {
+      if (textareaComment.value.trim() === "") {
+        cancel.click();
+        return;
+      }
+
+      eventBus.emit("clickedUpdateComment", {
+        content: textareaComment.value,
+        commentId: comment.id,
+      });
+    });
+
+    const cancel = document.createElement("img");
+    cancel.classList.add("comment-author__cancel-img");
+    cancel.setAttribute("data-id", id);
+    cancel.setAttribute("src", "dist/images/cancel.png");
+    cancel.addEventListener("click", () => {
+      textareaComment.value = comment.content;
+
+      ok.remove();
+      cancel.remove();
+      editImg.style.display = "block";
+      trashCanImg.style.display = "block";
+    });
+
+    appendChildren(parent, [cancel, ok]);
+
+    editImg.style["display"] = "none";
+    trashCanImg.style["display"] = "none";
+  });
 
   if (isMe) {
     trashCanImg.addEventListener("click", () => {
@@ -598,12 +663,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
               ],
             ),
             appendChildren(buildComponent("div", {}, ["comment-info"]), [
-              buildComponent(
-                "span",
-                { id: `comment-textarea-${comment.id}` },
-                ["comment-content__text-span"],
-                comment.content,
-              ),
+              textareaComment,
             ]),
           ]),
         ]),
@@ -627,7 +687,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
               buildComponent("div", { id: `comment-redact-${comment.id}` }, [
                 "comment-redact",
               ]),
-              [trashCanImg], //add edit image
+              [trashCanImg, editImg],
             ),
           ],
         ),
@@ -636,6 +696,12 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
   );
 }
 
+/**
+ * Makes sticker
+ *
+ * @param {*} param0
+ * @returns
+ */
 export function makeSticker({ name, fileName, id, staticUrl, eventBus, isMe }) {
   const deleteBlock = appendChildren(
     buildComponent("div", { "data-id": id }, ["sticker__delete-block"]),
@@ -680,6 +746,12 @@ export function makeSticker({ name, fileName, id, staticUrl, eventBus, isMe }) {
   );
 }
 
+/**
+ * Makes a small sticker
+ *
+ * @param {*} param0
+ * @returns
+ */
 export function makeSmallSticker({
   companionId,
   id,
@@ -693,6 +765,9 @@ export function makeSmallSticker({
 
   smallSticker.addEventListener("click", () => {
     eventBus.emit("clickedSendSticker", { companionId, stickerId: id });
+    document
+      .getElementById("sticker-message-place")
+      .classList.add("sticker-message-place_invisible");
   });
 
   return appendChildren(smallSticker, [
@@ -700,4 +775,309 @@ export function makeSmallSticker({
       "sticker__img",
     ]),
   ]);
+}
+
+/**
+ * Makes a message
+ *
+ * @param {*} param0
+ * @param {*} staticUrl
+ * @param {*} companionId
+ * @param {*} eventBus
+ * @returns
+ */
+export function makeMessage(
+  {
+    isMe,
+    attachments,
+    fullCreatedAt,
+    createdAt,
+    id,
+    content,
+    isUpdated,
+    sticker,
+  },
+  staticUrl,
+  companionId,
+  eventBus,
+) {
+  const sideMessage = isMe ? "right" : "left";
+  const deletedFiles = [];
+  const messageContent = buildComponent("div", {}, ["message-content-div"]);
+
+  let firstIndexAppleEmoji = content.search(/<img src=".*\/appleEmoji\//g);
+
+  while (firstIndexAppleEmoji !== -1) {
+    content =
+      content.slice(0, firstIndexAppleEmoji + 5) +
+      `class="sticker-message-place-content__emoji-img" alt="emoji" ` +
+      content.slice(firstIndexAppleEmoji + 5);
+    firstIndexAppleEmoji = content.search(/<img src=".*\/appleEmoji\//g);
+  }
+
+  const textMessage = appendChildren(
+    buildComponent("div", { id: `message-${id}` }, [
+      "message",
+      `${sideMessage}-message`,
+    ]),
+    [
+      !sticker
+        ? appendChildren(messageContent, [
+            buildComponent(
+              "div",
+              { id: `message-content-${id}` },
+              ["message-content"],
+              content,
+            ),
+          ])
+        : appendChildren(buildComponent("div", {}, ["sticker_item"]), [
+            buildComponent(
+              "img",
+              { src: `${staticUrl}/stickers/${sticker?.fileName}` },
+              ["sticker__img"],
+            ),
+          ]),
+      appendChildren(
+        buildComponent("div", { id: `message-time-edited-${id}` }, [
+          "message-time-edited",
+        ]),
+        isUpdated
+          ? [
+              buildComponent(
+                "span",
+                {},
+                ["message-time-edited__span-time"],
+                createdAt,
+              ),
+              buildComponent(
+                "span",
+                { id: `message-edited-${id}` },
+                ["message-time-edited__span-edited"],
+                ".ред",
+              ),
+            ]
+          : [
+              buildComponent(
+                "span",
+                {},
+                ["message-time-edited__span-time"],
+                createdAt,
+              ),
+            ],
+      ),
+    ],
+  );
+
+  attachments?.forEach((attachment) => {
+    if (imageTypes.includes(typeFile(attachment))) {
+      appendChildren(messageContent, [
+        appendChildren(buildComponent("div", {}, ["message-image-content"]), [
+          buildComponent(
+            "img",
+            { src: `${staticUrl}/message-attachments/${attachment}` },
+            ["message-attachment__img"],
+          ),
+        ]),
+      ]);
+    } else {
+      appendChildren(messageContent, [
+        appendChildren(buildComponent("div", {}, ["message-file-content"]), [
+          appendChildren(
+            buildComponent(
+              "a",
+              {
+                target: "_blank",
+                rel: "noopener",
+                href: `${staticUrl}/message-attachments/${attachment}`,
+                download: attachment,
+              },
+              ["message-file-content__a"],
+            ),
+            [
+              buildComponent(
+                "span",
+                {},
+                ["message-file-content__name-span"],
+                attachment,
+              ),
+              buildComponent("img", { src: "dist/images/document.png" }, [
+                "message-file-content__img",
+              ]),
+            ],
+          ),
+        ]),
+      ]);
+    }
+  });
+
+  const editAble = buildComponent(
+    "img",
+    { id: `edit-img-${id}`, "data-id": id, src: "dist/images/edit.png" },
+    ["message__edit-img"],
+  );
+  const trashCan = buildComponent(
+    "img",
+    {
+      id: `trash-basket-${id}`,
+      "data-id": id,
+      src: "dist/images/trash-can.png",
+    },
+    ["message__trash-basket-img"],
+  );
+
+  editAble.addEventListener("click", () => {
+    const inputMessage = document.getElementById("print-message__text-input");
+    const sendMessage = document.getElementById("message-menu__send-button");
+    const messageId = editAble.dataset.id;
+    const messageContent = document.getElementById(
+      `message-content-${messageId}`,
+    );
+    const okMessage = document.createElement("img");
+    const parentSend = sendMessage.parentElement;
+
+    Array.from(
+      document.getElementsByClassName("message-menu__accept-img"),
+    ).forEach((elem) => {
+      elem.remove();
+    });
+
+    okMessage.setAttribute("src", "dist/images/check.png");
+    okMessage.setAttribute("data-id", messageId);
+    okMessage.classList.add("message-menu__accept-img");
+
+    okMessage.addEventListener("click", () => {
+      if (
+        inputMessage.value !== messageContent.innerHTML &&
+        inputMessage.value.trim() !== ""
+      ) {
+        this.eventBus.emit("clickedUpdateMessage", {
+          messageId: messageId,
+          textContent: inputMessage.value,
+          receiver: this.companionId,
+        });
+        inputMessage.focus();
+      }
+
+      sendMessage.style.display = "block";
+      okMessage.remove();
+
+      inputMessage.onkeydown = (event) => {
+        if (event.key === "Enter") {
+          sendMessage.click();
+        }
+      };
+
+      inputMessage.value = "";
+    });
+
+    inputMessage.onkeydown = (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        okMessage.click();
+      }
+    };
+
+    inputMessage.value = messageContent.innerHTML;
+    sendMessage.style.display = "none";
+    parentSend.insertBefore(okMessage, sendMessage);
+
+    document
+      .querySelectorAll(`#message-content-${id} .message-image-content`)
+      .forEach((block) => {
+        const deleteFileImg = buildComponent(
+          "img",
+          { src: "dist/images/cancel.png" },
+          [`news-img-content__cancel-img`],
+        );
+
+        appendChildren(block, [deleteFileImg]);
+
+        deleteFileImg.addEventListener("click", () => {
+          deletedFiles.push(block.dataset.filename);
+          block?.remove();
+        });
+      });
+  });
+
+  trashCan.addEventListener("click", () => {
+    customConfirm(
+      () => {
+        eventBus.emit("clickedDeleteMessage", {
+          messageId: id,
+          receiver: companionId,
+        });
+      },
+      "Удалить сообщение?",
+      "Вы уверены, что хотите удалить сообщение?",
+      "Удалить",
+      "Отмена",
+    );
+  });
+  const ables = buildComponent("div", {}, ["ables"]);
+  sticker
+    ? appendChildren(ables, [trashCan])
+    : appendChildren(ables, [editAble, trashCan]);
+
+  let stickerMessage;
+  if (sticker) {
+    stickerMessage = appendChildren(
+      buildComponent("div", { id: `message-${id}` }, [
+        "sticker-message",
+        `${sideMessage}-message`,
+      ]),
+      [
+        appendChildren(buildComponent("div", {}, ["sticker__item"]), [
+          buildComponent(
+            "img",
+            { src: `${staticUrl}/stickers/${sticker?.fileName}` },
+            ["sticker__img"],
+          ),
+        ]),
+        appendChildren(
+          buildComponent("div", { id: `message-time-edited-${id}` }, [
+            "message-time-edited",
+          ]),
+          isUpdated
+            ? [
+                buildComponent(
+                  "span",
+                  {},
+                  ["message-time-edited__span-time"],
+                  createdAt,
+                ),
+                buildComponent(
+                  "span",
+                  { id: `message-edited-${id}` },
+                  ["message-time-edited__span-edited"],
+                  "ред.",
+                ),
+              ]
+            : [
+                buildComponent(
+                  "span",
+                  {},
+                  ["message-time-edited__span-time"],
+                  createdAt,
+                ),
+              ],
+        ),
+      ],
+    );
+  }
+
+  if (isMe) {
+    return appendChildren(
+      buildComponent("div", { "data-timeCreated": fullCreatedAt }, [
+        "message-ables",
+      ]),
+      [sticker ? stickerMessage : textMessage, ables],
+    );
+  }
+
+  return appendChildren(
+    buildComponent("div", { "data-timeCreated": fullCreatedAt }, [
+      "message-ables",
+    ]),
+    [sticker ? stickerMessage : textMessage],
+  );
 }

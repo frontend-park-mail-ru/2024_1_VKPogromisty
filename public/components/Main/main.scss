@@ -108,6 +108,10 @@
       }
     }
   }
+
+  &_invisible {
+    display: none;
+  }
 }
 
 .toolbar-list {
