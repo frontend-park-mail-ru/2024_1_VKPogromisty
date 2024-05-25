@@ -14,6 +14,7 @@ const incomingEvents = [
   "updateMessageSuccess",
   "deleteMessageSuccess",
   "clickedSendSticker",
+  "needPresentAttachments",
   "serverError",
 ];
 

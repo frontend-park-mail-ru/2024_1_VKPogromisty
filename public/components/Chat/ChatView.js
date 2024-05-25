@@ -8,8 +8,9 @@ import { Main } from "../Main/main.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
 import "./message.scss";
-import { customAlert, customConfirm } from "../../modules/windows.js";
+import { customAlert } from "../../modules/windows.js";
 import { buildComponent, appendChildren } from "../createComponent.js";
+import { makeMessage } from "../../modules/makeComponents.js";
 
 /**
  * A User structure
@@ -39,7 +40,7 @@ const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
 const MB = 1024 * 1024;
 const maxMessageMemory = 20;
 const staticUrl = `${API_URL}/static`;
-const maxMessageLength = 500;
+const maxMessageLength = 1000;
 const typeFile = (file) => {
   const parts = file.name.split(".");
   return parts[parts.length - 1];
@@ -60,7 +61,6 @@ class ChatView extends BaseView {
     this.router = router;
     this.stickerController = stickerController;
     this.isAddedListener = false;
-    this.rememberMessageWithAttachments = {};
     this.stickerController = stickerController;
     this.isAddedListener = false;
     this.rememberMessageWithAttachments = {};
@@ -108,6 +108,7 @@ class ChatView extends BaseView {
       lastName,
     });
     new Main(document.body).renderForm(userId);
+    document.getElementById("toolbar").classList.add("toolbar_invisible");
 
     this.mainElement = document.getElementById("activity");
     this.lastMessageId = 0;
@@ -119,6 +120,8 @@ class ChatView extends BaseView {
         this.router.redirect("/messenger");
       }
     };
+
+    this.stickerController.updateStickers(UserState.userId);
 
     this.eventBus.emit("readyRenderCompanion", this.companionId);
   }
@@ -173,6 +176,16 @@ class ChatView extends BaseView {
     const imgContent = document.getElementById("captured-images");
     const fileContent = document.getElementById("captured-files");
 
+    input.addEventListener("paste", (event) => {
+      event.preventDefault();
+
+      let text = (event.originalEvent || event).clipboardData.getData(
+        "text/plain",
+      );
+
+      input.innerHTML += text;
+    });
+
     addFiles.addEventListener("click", () => {
       chatFileInput.click();
     });
@@ -182,7 +195,7 @@ class ChatView extends BaseView {
 
       Array.from(files).forEach((file) => {
         if (dtMemory + file.size > maxMessageMemory * MB) {
-          customAlert("error", "Максимальноый размер сообщения - 15мб");
+          customAlert("error", "Максимальный размер сообщения - 15мб");
           return;
         }
         if (dt.items.length === 5) {
@@ -282,23 +295,47 @@ class ChatView extends BaseView {
     });
 
     sendButton.addEventListener("click", () => {
-      let textMessage = input.value;
+      let textMessage = input.innerHTML;
 
       if (textMessage.trim() === "" && dt.items.length === 0) {
         return;
       }
 
+      textMessage = textMessage.replaceAll(
+        ' class="sticker-message-place-content__emoji-img"',
+        "",
+      );
+      textMessage = textMessage.replaceAll(
+        ' style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; font-size: 16px; font-family: Inter, sans-serif;"',
+        "",
+      );
+      textMessage = textMessage.replaceAll('<img src="dist/images', "*_");
+      textMessage = textMessage.replaceAll(
+        '<img src="http://localhost:3000/chat/dist/images',
+        "*_",
+      );
+      textMessage = textMessage.replaceAll(
+        '<img src="https://socio-project.ru/chat/dist/images',
+        "*_",
+      );
+      textMessage = textMessage.replaceAll('.png">', ".png");
+
       this.chatElement.scrollTop = 0;
 
       if (dt.items.length > 0) {
-        this.eventBus.emit("needPresentAttachments", dt.files);
-        this.rememberMessageWithAttachments;
+        this.eventBus.emit("needPresentAttachments", {
+          companionId: this.companionId,
+          textContent: textMessage,
+          attachments: dt.files,
+        });
 
-        dt.files = null;
+        dt.items.clear();
+
+        fileContent.innerHTML = "";
+        imgContent.innerHTML = "";
         return;
       }
-
-      while (textMessage.length > maxMessageLength) {
+      while (textMessage.length > 0) {
         this.eventBus.emit("clickedSendMessage", {
           companionId: this.companionId,
           textContent: textMessage.substring(0, maxMessageLength),
@@ -307,14 +344,7 @@ class ChatView extends BaseView {
         textMessage = textMessage.substring(maxMessageLength);
       }
 
-      if (textMessage.length > 0) {
-        this.eventBus.emit("clickedSendMessage", {
-          companionId: this.companionId,
-          textContent: textMessage,
-        });
-      }
-
-      input.value = "";
+      input.innerHTML = "";
       input.focus();
     });
 
@@ -325,18 +355,6 @@ class ChatView extends BaseView {
       }
     };
 
-    const printMessage = document.getElementById("print-message");
-    const messageTextarea = document.getElementById(
-      "print-message__text-input",
-    );
-
-    messageTextarea.addEventListener("input", () => {
-      messageTextarea.style.height = "auto";
-      messageTextarea.style.height = messageTextarea.scrollHeight - 4 + "px";
-      printMessage.style.height = "auto";
-      printMessage.style.height = printMessage.scrollHeight - 4 + "px";
-    });
-
     document
       .getElementById("all-message-sticker")
       .addEventListener("click", () => {
@@ -346,10 +364,7 @@ class ChatView extends BaseView {
     document
       .getElementById("my-message-sticker")
       .addEventListener("click", () => {
-        this.stickerController.renderMessageUserStickers(
-          this.companionId,
-          UserState.userId,
-        );
+        this.stickerController.renderMessageUserStickers(this.companionId);
       });
 
     document
@@ -359,16 +374,37 @@ class ChatView extends BaseView {
           "sticker-message-place",
         );
 
-        this.stickerController.renderMessageAllStickers(this.companionId);
+        if (
+          stickerMessagePlace.classList.contains(
+            "sticker-message-place_invisible",
+          ) ||
+          stickerMessagePlace.classList.contains(
+            "sticker-message-place_invisible-not-first",
+          )
+        ) {
+          this.stickerController.renderMessageEmoji();
+        }
 
-        stickerMessagePlace.classList.toggle("sticker-message-place_invisible");
+        if (
+          stickerMessagePlace.classList.contains(
+            "sticker-message-place_invisible",
+          )
+        ) {
+          stickerMessagePlace.classList.remove(
+            "sticker-message-place_invisible",
+          );
+        } else {
+          stickerMessagePlace.classList.toggle(
+            "sticker-message-place_invisible-not-first",
+          );
+        }
 
         if (!this.isAddedListener) {
           this.isAddedListener = true;
           document.addEventListener("click", (event) => {
             if (!this.clickedOnStickerMessagePlace(event)) {
               stickerMessagePlace.classList.add(
-                "sticker-message-place_invisible",
+                "sticker-message-place_invisible-not-first",
               );
             }
           });
@@ -376,39 +412,15 @@ class ChatView extends BaseView {
       });
 
     document
-      .getElementById("all-message-sticker")
+      .getElementById("message-place-stickers")
       .addEventListener("click", () => {
         this.stickerController.renderMessageAllStickers(this.companionId);
       });
 
     document
-      .getElementById("my-message-sticker")
+      .getElementById("message-place-emoji")
       .addEventListener("click", () => {
-        this.stickerController.renderMessageUserStickers(
-          this.companionId,
-          UserState.userId,
-        );
-      });
-
-    document
-      .getElementById("message-menu__send-sticker-button")
-      .addEventListener("click", () => {
-        const stickerMessagePlace = document.getElementById(
-          "sticker-message-place",
-        );
-
-        this.stickerController.renderMessageAllStickers(this.companionId);
-
-        if (!this.isAddedListener) {
-          this.isAddedListener = true;
-          document.addEventListener("click", (event) => {
-            if (!this.clickedOnStickerMessagePlace(event)) {
-              stickerMessagePlace.classList.add(
-                "sticker-message-place_invisible",
-              );
-            }
-          });
-        }
+        this.stickerController.renderMessageEmoji();
       });
 
     this.chatElement.addEventListener(
@@ -456,7 +468,6 @@ class ChatView extends BaseView {
     document.getElementById("messages-sceleton")?.remove();
 
     this.isWaitMessages = false;
-    const template = require("./message.hbs");
     const noMessages = messages.length === 0;
 
     messages.forEach((elem) => {
@@ -477,9 +488,25 @@ class ChatView extends BaseView {
       if (elem.id < this.lastMessageId || this.lastMessageId === 0) {
         this.lastMessageId = elem.id;
       }
-    });
 
-    this.chatElement.innerHTML += template({ messages, noMessages, staticUrl });
+      if (elem.changedDay) {
+        this.chatElement.appendChild(
+          appendChildren(buildComponent("div", {}, ["changed-day"]), [
+            buildComponent("span", {}, ["changed-day__span"], elem.changedDay),
+          ]),
+        );
+      }
+
+      elem.content = elem.content.replaceAll(
+        "*_/aE/",
+        '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
+      );
+      elem.content = elem.content.replaceAll(".png", '.png" >');
+
+      this.chatElement.appendChild(
+        makeMessage(elem, staticUrl, this.companionId, this.eventBus),
+      );
+    });
 
     if (noMessages || messages.length < 20) {
       this.isAllMessages = true;
@@ -495,31 +522,16 @@ class ChatView extends BaseView {
 
         this.chatElement.appendChild(lastChangedDay);
       }
+
+      this.chatElement.appendChild(
+        buildComponent(
+          "span",
+          { id: "messages__start-dialog-span" },
+          ["messages__start-dialog-span"],
+          "Начните диалог",
+        ),
+      );
     }
-
-    const trashes = document.querySelectorAll(".message__trash-basket-img");
-    const edits = document.querySelectorAll(".message__edit-img");
-
-    trashes.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        customConfirm(
-          (() => {
-            this.eventBus.emit("clickedDeleteMessage", {
-              messageId: elem.dataset.id,
-              receiver: this.companionId,
-            });
-          }).bind(this),
-          "Удалить сообщение?",
-          "Вы уверены, что хотите удалить сообщение?",
-          "Удалить",
-          "Отмена",
-        );
-      });
-    });
-
-    edits.forEach((elem) => {
-      this.acceptUpdateListener(elem);
-    });
 
     if (!this.isAllMessages) {
       const imgSceleton = document.createElement("img");
@@ -571,15 +583,19 @@ class ChatView extends BaseView {
       );
     }
 
-    const template = require("./message.hbs");
-    const messages = [message];
-
     message.isMe = message.senderId === UserState.userId;
     message.fullCreatedAt = formatDayMonthYear(message.createdAt);
     message.createdAt = formatMinutesHours(message.createdAt);
+    message.content = message.content.replaceAll(
+      "*_/aE/",
+      '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
+    );
+    message.content = message.content.replaceAll(".png", '.png" >');
 
-    this.chatElement.innerHTML =
-      template({ messages, staticUrl }) + this.chatElement.innerHTML;
+    this.chatElement.insertBefore(
+      makeMessage(message, staticUrl, this.companionId, this.eventBus),
+      this.chatElement.firstElementChild,
+    );
 
     const noMessagesSpan = document.getElementById(
       "messages__start-dialog-span",
@@ -588,94 +604,6 @@ class ChatView extends BaseView {
     if (noMessagesSpan) {
       noMessagesSpan.remove();
     }
-
-    const trashes = document.querySelectorAll(".message__trash-basket-img");
-    const edits = document.querySelectorAll(".message__edit-img");
-
-    trashes.forEach((elem) => {
-      elem.addEventListener("click", () => {
-        customConfirm(
-          (() => {
-            this.eventBus.emit("clickedDeleteMessage", {
-              messageId: elem.dataset.id,
-              receiver: this.companionId,
-            });
-          }).bind(this),
-          "Удалить сообщение?",
-          "Вы уверены, что хотите удалить сообщение?",
-          "Удалить",
-          "Отмена",
-        );
-      });
-    });
-
-    edits.forEach((elem) => {
-      this.acceptUpdateListener(elem);
-    });
-  }
-
-  /**
-   * Adds listener to accepting changing message element
-   *
-   * @param {Element} elem
-   */
-  acceptUpdateListener(elem) {
-    elem.addEventListener("click", () => {
-      const inputMessage = document.getElementById("print-message__text-input");
-      const sendMessage = document.getElementById("message-menu__send-button");
-      const messageId = elem.dataset.id;
-      const messageContent = document.getElementById(
-        `message-content-${messageId}`,
-      );
-      const okMessage = document.createElement("img");
-      const parentSend = sendMessage.parentElement;
-
-      Array.from(
-        document.getElementsByClassName("message-menu__accept-img"),
-      ).forEach((elem) => {
-        elem.remove();
-      });
-
-      okMessage.setAttribute("src", "dist/images/check.png");
-      okMessage.setAttribute("data-id", messageId);
-      okMessage.classList.add("message-menu__accept-img");
-
-      okMessage.addEventListener("click", () => {
-        if (
-          inputMessage.value !== messageContent.innerHTML &&
-          inputMessage.value.trim() !== ""
-        ) {
-          this.eventBus.emit("clickedUpdateMessage", {
-            messageId: messageId,
-            textContent: inputMessage.value,
-            receiver: this.companionId,
-          });
-          inputMessage.focus();
-        }
-
-        sendMessage.style.display = "block";
-        okMessage.remove();
-
-        inputMessage.onkeydown = (event) => {
-          if (event.key === "Enter") {
-            sendMessage.click();
-          }
-        };
-
-        inputMessage.value = "";
-      });
-
-      inputMessage.onkeydown = (event) => {
-        if (event.key === "Enter" && !event.shiftKey) {
-          event.preventDefault();
-          okMessage.click();
-        }
-      };
-
-      inputMessage.value = messageContent.innerHTML;
-      sendMessage.style.display = "none";
-      parentSend.insertBefore(okMessage, sendMessage);
-    });
   }
 
   /**

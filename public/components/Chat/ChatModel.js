@@ -70,6 +70,10 @@ class ChatModel extends BaseModel {
       "clickedUpdateMessage",
       this.updateMessage.bind(this),
     );
+    this.eventBus.addEventListener(
+      "needPresentAttachments",
+      this.sendAttachments.bind(this),
+    );
 
     this.addWebSocketHandlers();
   }
@@ -154,8 +158,8 @@ class ChatModel extends BaseModel {
    *
    * @param {SendMessage} sendMessage - The sended message
    */
-  async sendMessage({ companionId, textContent }) {
-    this.webSocket.sendMessage(companionId, textContent);
+  async sendMessage({ companionId, textContent, attachments }) {
+    this.webSocket.sendMessage(companionId, textContent, attachments);
   }
 
   /**
@@ -168,12 +172,39 @@ class ChatModel extends BaseModel {
   }
 
   /**
-   * Delete the message in conversation with current companion
+   * Deletes the message in conversation with current companion
    *
    * @param {number} messageId - The ID of deleted message
    */
   async deleteMessage({ messageId, receiver }) {
     this.webSocket.deleteMessage(messageId, receiver);
+  }
+
+  /**
+   * Sends attachments of message to the server
+   *
+   * @param {*} param0
+   */
+  async sendAttachments({ companionId, textContent, attachments }) {
+    const result = await this.chatService.sendAttachments(
+      companionId,
+      attachments,
+    );
+
+    switch (result.status) {
+      case 201:
+        this.sendMessage({
+          companionId,
+          textContent,
+          attachments: result.body,
+        });
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
   }
 }
 

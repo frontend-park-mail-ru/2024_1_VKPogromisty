@@ -4,8 +4,11 @@
 .message__trash-basket-img {
   width: 14px;
   height: 14px;
-  margin-right: 0px;
   cursor: pointer;
+}
+
+.message__edit-img {
+  margin-right: 5px;
 }
 
 .conversation {
@@ -47,6 +50,61 @@
   }
 }
 
+.message-file-content {
+  @include column-flexible;
+  min-height: 20px;
+  align-items: start;
+  position: relative;
+  width: 100%;
+  padding: 0 10px 10px;
+  box-sizing: border-box;
+
+  &__a {
+    @include row-flexible;
+    position: relative;
+    width: 50px;
+    height: 50px;
+
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__img {
+    width: 100%;
+    border-radius: 7px;
+    box-sizing: border-box;
+    padding: 5px;
+  }
+
+  &__name-span {
+    position: absolute;
+    left: 45px;
+    top: 5px;
+    text-decoration: underline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+
+  &-block {
+    @include row-flexible;
+    border-radius: 7px;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  &__cancel-img {
+    width: 25px;
+    position: absolute;
+    top: 0;
+    background-color: white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+
 .message {
   max-width: 300px;
   border-radius: 7px;
@@ -68,6 +126,11 @@
       border-radius: 7px;
       box-shadow: 0 0 5px 1px #918f8f4f;
     }
+  }
+
+  &-attachment__img {
+    width: 100%;
+    border-radius: 12px;
   }
 
   &-time-edited {
@@ -193,7 +256,6 @@
   border: 1px solid #8e8787;
   border-radius: 7px;
   background-color: #fceeeb;
-  height: 40px;
   padding: 1px 10px 1px 5px;
 
   &__text-input {
@@ -202,9 +264,11 @@
     background-color: inherit;
     border-radius: 7px 0px 0px 7px;
     font-family: $ordinary-text;
-    resize: none;
     box-sizing: border-box;
     max-height: 60px;
+    min-height: 40px;
+    overflow: scroll;
+    word-break: break-word;
   }
 }
 
@@ -257,6 +321,7 @@
   @include row-flexible;
   flex-wrap: wrap;
   background-color: #f8dada;
+  justify-content: space-around;
 }
 
 .news-message-img-content {
@@ -328,7 +393,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 200px;
+    max-width: 60px;
   }
 
   &-block {
