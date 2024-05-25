@@ -456,17 +456,37 @@ export class PostService {
 
   /**
    * Updates the post from the server
+   *
    * @param {number} post_id - The ID of post
    * @param {string} content - The text content of current post
+   * @param {string[]} attachmentsToDelete - The names of attachments which we need to delete
+   * @param {File[]} attachmentsToAdd - The new attachments to add
+   *
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async updatePost(post_id, content) {
-    const postId = Number(post_id);
+  async updatePost(
+    post_id,
+    content,
+    attachmentsToAdd = [],
+    attachmentsToDelete = [],
+  ) {
+    const formData = new FormData();
+
+    formData.append("postId", +post_id);
+    formData.append("content", content);
+
+    attachmentsToAdd.forEach((attachment) => {
+      formData.append("attachments", attachment);
+    });
+
+    attachmentsToDelete.forEach((attachment) => {
+      formData.append("attachmentsToDelete", attachment);
+    });
 
     const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "PUT",
       credentials: "include",
-      body: JSON.stringify({ postId, content }),
+      body: formData,
     });
 
     const data = await response.json();
@@ -584,6 +604,28 @@ export class PostService {
 
     return genResponse(response.status, data.body, data.message);
   }
+
+  /**
+   * Updates current comment
+   *
+   * @param {string} content - The content of comment
+   * @param {number} commentId - The ID of current comment
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async updateComment(content, commentId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments",
+      {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify({ content, commentId: +commentId }),
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
 }
 
 /**
@@ -630,6 +672,35 @@ export class ChatService {
       {
         method: "GET",
         credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Sends attachments of message
+   *
+   * @param {number} companionId - The ID of companion
+   * @param {File[]} attachments - The attachments of message
+   *
+   * @returns {Promise<APIResponse>} {@link ApiResponse}
+   */
+  async sendAttachments(companionId, attachments) {
+    const formData = new FormData();
+
+    Array.from(attachments).forEach((attachment) => {
+      formData.append("attachment", attachment);
+    });
+
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `/dialogs/${companionId}/unsent-attachments/`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
       },
     );
 
