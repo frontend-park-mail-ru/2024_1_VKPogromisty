@@ -442,6 +442,21 @@
   margin-left: 5px;
 }
 
+.post-image-content {
+  @include column-flexible;
+  width: 100%;
+}
+
+.post-image-block {
+  @include row-flexible;
+  width: 100%;
+  position: relative;
+}
+
+.post-file-block {
+  position: relative;
+}
+
 .post-comment {
   box-sizing: border-box;
   height: 50px;
@@ -724,6 +739,7 @@
     margin-top: 5px;
     color: #7c6d6d;
     font-size: 14px;
+    max-height: 70px;
 
     &::-webkit-scrollbar {
       display: none;

@@ -20,6 +20,10 @@ class CommentModel extends BaseModel {
       "clickedLikeComment",
       this.likeComment.bind(this),
     );
+    this.eventBus.addEventListener(
+      "clickedUpdateComment",
+      this.updateComment.bind(this),
+    );
   }
   /**
    * Gets all comments of post
@@ -113,6 +117,27 @@ class CommentModel extends BaseModel {
     switch (result.status) {
       case 204:
         this.eventBus.emit("commentUnlikedSuccess", commentId);
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
+  }
+
+  /**
+   * Updates current comment
+   *
+   * @param {number} commentId - The ID of comment
+   * @param {string} content - The content of comment
+   */
+  async updateComment({ content, commentId }) {
+    const result = await this.postService.updateComment(content, commentId);
+
+    switch (result.status) {
+      case 200:
+        this.eventBus.emit("commentUpdatedSuccess", commentId);
         break;
       case 401:
         this.router.redirect("/login");

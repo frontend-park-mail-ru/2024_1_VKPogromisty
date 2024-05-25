@@ -11,6 +11,8 @@ const incomingEvents = [
   "commentDeletedSuccess",
   "commentLikedSuccess",
   "commentUnlikedSuccess",
+  "clickedUpdateComment",
+  "commentUpdatedSuccess",
   "serverError",
 ];
 
