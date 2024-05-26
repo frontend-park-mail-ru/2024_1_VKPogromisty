@@ -211,6 +211,12 @@
     font-size: 15px;
     color: #574d4d;
     word-break: break-word;
+    max-height: 100px;
+    overflow: scroll;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
