@@ -298,6 +298,8 @@ class ChatView extends BaseView {
           ]);
         }
       });
+
+      chatFileInput.value = null;
     });
 
     sendButton.addEventListener("click", () => {
