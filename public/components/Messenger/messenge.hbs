@@ -30,17 +30,7 @@
           id="chatter-content__message-span-{{ elem.companion.userId }}-{{
             elem.lastMessage.id
           }}"
-        >
-          {{#unless elem.lastMessage.sticker}}
-          {{#unless elem.lastMessage.content}}
-          Фотография
-          {{else}}
-          {{ elem.lastMessage.content }}
-          {{/unless}}
-          {{else}}
-          Стикер
-          {{/unless}}
-        </div>
+        ></div>
         <span
           class="chatter-content__time-span"
           id="chatter-content__time-span-{{ elem.companion.userId }}"

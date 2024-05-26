@@ -394,6 +394,17 @@ class MessengerView extends BaseView {
       const isMe = elem.user1.userId === elem.user2.userId;
       this.dialogsElement.innerHTML += template({ staticUrl, elem, isMe });
 
+      const chatterContent = document.getElementById(
+        `chatter-content__message-span-${elem.companion.userId}-${elem.lastMessage.id}`,
+      );
+      if (elem.lastMessage.sticker) {
+        chatterContent.innerHTML = "Стикер";
+      } else if (elem.lastMessage.content) {
+        chatterContent.innerHTML = elem.lastMessage.content;
+      } else {
+        chatterContent.innerHTML = "Вложение";
+      }
+
       noDialogs?.remove();
     });
 
