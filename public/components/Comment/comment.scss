@@ -1,0 +1,18 @@
+@import "public/index.scss";
+
+.comment-reactions {
+  @include row-flexible;
+  box-sizing: border-box;
+  align-items: center;
+  width: 100px;
+  padding-left: 15px;
+
+  @each $type in unliked, liked {
+    &__heart-img_#{$type} {
+      box-sizing: border-box;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+    }
+  }
+}

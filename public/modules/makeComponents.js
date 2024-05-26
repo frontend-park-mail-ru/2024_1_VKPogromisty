@@ -630,7 +630,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
           src: "dist/images/filled-heart.png",
           "data-id": comment.id,
         },
-        ["reactions__heart-img_liked"],
+        ["comment-reactions__heart-img_liked"],
       )
     : buildComponent(
         "img",
@@ -638,7 +638,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
           src: "dist/images/heart.png",
           "data-id": comment.id,
         },
-        ["reactions__heart-img_unliked"],
+        ["comment-reactions__heart-img_unliked"],
       );
 
   const editImg = buildComponent(

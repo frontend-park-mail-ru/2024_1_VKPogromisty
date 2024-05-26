@@ -3,6 +3,7 @@ import { formatFullDate } from "../../modules/dateRemaking";
 import UserState from "../UserState";
 import { makeComment } from "../../modules/makeComponents";
 import { modifyComponent } from "../createComponent";
+import "./comment.scss";
 
 class CommentView extends BaseView {
   constructor(eventBus) {
