@@ -21,7 +21,7 @@ import { buildComponent } from "../createComponent.js";
  */
 
 const MBToByte = 1024 * 1024;
-const maxMB = 5;
+const maxMB = 1.5;
 const correct = "form__input_correct";
 const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
 const incorrectType = "Недопустимый тип файла";
@@ -49,7 +49,7 @@ class StickerView extends BaseView {
 
     this.emojis = [];
 
-    for (let i = 11; i < 45; ++i) {
+    for (let i = 11; i < 164; ++i) {
       this.emojis.push(`${(i - (i % 10)) / 10}f${i % 10}`);
     }
 
