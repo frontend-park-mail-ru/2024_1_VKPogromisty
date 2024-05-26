@@ -547,7 +547,7 @@ export class PostService {
       {
         method: "DELETE",
         credentials: "include",
-        body: JSON.stringify({ commentID: +commentId }),
+        body: JSON.stringify({ commentId: +commentId }),
       },
     );
 
