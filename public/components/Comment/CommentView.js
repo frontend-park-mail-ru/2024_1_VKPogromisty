@@ -154,12 +154,12 @@ class CommentView extends BaseView {
    */
   likedComment(commentId) {
     const likedCommentParent = document.querySelector(
-      `#comment-${commentId} .reactions__heart-img_unliked`,
+      `#comment-${commentId} .comment-reactions__heart-img_unliked`,
     ).parentElement;
     const likedComment = document.createElement("img");
     likedComment.setAttribute("src", "dist/images/filled-heart.png");
     likedComment.dataset.id = commentId;
-    likedComment.classList.add("reactions__heart-img_liked");
+    likedComment.classList.add("comment-reactions__heart-img_liked");
     const likesCount = document.querySelector(
       `#comment-${commentId} .comment__likes-count-span`,
     );
@@ -191,12 +191,12 @@ class CommentView extends BaseView {
    */
   unlikedComment(commentId) {
     const unlikedCommentParent = document.querySelector(
-      `#comment-${commentId} .reactions__heart-img_liked`,
+      `#comment-${commentId} .comment-reactions__heart-img_liked`,
     ).parentElement;
     const unlikedComment = document.createElement("img");
     unlikedComment.dataset.id = commentId;
     unlikedComment.setAttribute("src", "dist/images/heart.png");
-    unlikedComment.classList.add("reactions__heart-img_unliked");
+    unlikedComment.classList.add("comment-reactions__heart-img_unliked");
     const likesCount = document.querySelector(
       `#comment-${commentId} .comment__likes-count-span`,
     );

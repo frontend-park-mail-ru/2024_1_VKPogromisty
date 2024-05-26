@@ -81,6 +81,13 @@
 
   &__name-span {
     font-weight: bolder;
+    overflow: hidden;
+    max-width: 250px;
+    text-overflow: ellipsis;
+
+    @include mobile-style {
+      max-width: 150px;
+    }
   }
 
   &__name-href {
@@ -203,6 +210,7 @@
     padding: 5px;
     font-size: 15px;
     color: #574d4d;
+    word-break: break-word;
   }
 }
 

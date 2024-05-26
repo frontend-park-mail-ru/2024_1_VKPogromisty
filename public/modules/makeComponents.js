@@ -816,7 +816,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
               buildComponent("div", { id: `comment-redact-${comment.id}` }, [
                 "comment-redact",
               ]),
-              [trashCanImg, editImg],
+              isMe ? [trashCanImg, editImg] : [],
             ),
           ],
         ),
