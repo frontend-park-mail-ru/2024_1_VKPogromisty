@@ -934,6 +934,8 @@ export function makeMessage(
   const deletedFiles = [];
   const messageContent = buildComponent("div", {}, ["message-content-div"]);
 
+  attachments = attachments || [];
+
   const textMessage = appendChildren(
     buildComponent("div", { id: `message-${id}` }, [
       "message",
