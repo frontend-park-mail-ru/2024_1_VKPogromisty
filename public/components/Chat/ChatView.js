@@ -45,6 +45,10 @@ const typeFile = (file) => {
   const parts = file.name.split(".");
   return parts[parts.length - 1];
 };
+const typeName = (file) => {
+  const parts = file.split(".");
+  return parts[parts.length - 1];
+};
 
 /**
  * ChatView - класс для работы с визуалом на странице.
@@ -171,7 +175,7 @@ class ChatView extends BaseView {
     let dtMemory = 0;
     const input = document.getElementById("print-message__text-input");
     const sendButton = document.getElementById("message-menu__send-button");
-    const addFiles = document.getElementById("news__file-place");
+    const addFiles = document.getElementById("news__img");
     const chatFileInput = document.getElementById("news-chat__file-input");
     const imgContent = document.getElementById("captured-images");
     const fileContent = document.getElementById("captured-files");
@@ -198,6 +202,7 @@ class ChatView extends BaseView {
           customAlert("error", "Максимальный размер сообщения - 15мб");
           return;
         }
+
         if (dt.items.length === 5) {
           customAlert(
             "error",
@@ -234,6 +239,7 @@ class ChatView extends BaseView {
             }
           });
         });
+
         if (isImage) {
           const imgBlock = buildComponent(
             "div",
@@ -322,6 +328,15 @@ class ChatView extends BaseView {
 
       this.chatElement.scrollTop = 0;
 
+      while (textMessage.length > maxMessageLength) {
+        this.eventBus.emit("clickedSendMessage", {
+          companionId: this.companionId,
+          textContent: textMessage.substring(0, maxMessageLength),
+        });
+
+        textMessage = textMessage.substring(maxMessageLength);
+      }
+
       if (dt.items.length > 0) {
         this.eventBus.emit("needPresentAttachments", {
           companionId: this.companionId,
@@ -333,15 +348,11 @@ class ChatView extends BaseView {
 
         fileContent.innerHTML = "";
         imgContent.innerHTML = "";
-        return;
-      }
-      while (textMessage.length > 0) {
+      } else {
         this.eventBus.emit("clickedSendMessage", {
           companionId: this.companionId,
-          textContent: textMessage.substring(0, maxMessageLength),
+          textContent: textMessage,
         });
-
-        textMessage = textMessage.substring(maxMessageLength);
       }
 
       input.innerHTML = "";
@@ -615,11 +626,28 @@ class ChatView extends BaseView {
     if (window.location.pathname !== `/chat/${this.companionId}`) {
       return;
     }
-    const contentPlace = document.getElementById(
-      `message-content-${message.id}`,
+
+    document.getElementById("captured-images").innerHTML = "";
+    document.getElementById("captured-files").innerHTML = "";
+    const messageContentDiv = document.querySelector(
+      `#message-${message.id} .message-content-div`,
+    );
+    messageContentDiv.innerHTML = "";
+
+    message.content = message.content.replaceAll(
+      "*_/aE/",
+      '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
+    );
+    message.content = message.content.replaceAll(".png", '.png" >');
+
+    const contentPlace = buildComponent(
+      "div",
+      { id: `message-content-${message.id}` },
+      ["message-content"],
+      message.content,
     );
 
-    contentPlace.innerHTML = message.content;
+    appendChildren(messageContentDiv, [contentPlace]);
 
     if (!document.getElementById(`message-edited-${message.id}`)) {
       const messageEdited = document.createElement("span");
@@ -632,6 +660,48 @@ class ChatView extends BaseView {
         .getElementById(`message-time-edited-${message.id}`)
         .appendChild(messageEdited);
     }
+
+    message.attachments?.forEach((attachment) => {
+      if (imageTypes.includes(typeName(attachment))) {
+        appendChildren(messageContentDiv, [
+          appendChildren(buildComponent("div", {}, ["message-image-content"]), [
+            buildComponent(
+              "img",
+              { src: `${staticUrl}/message-attachments/${attachment}` },
+              ["message-attachment__img"],
+            ),
+          ]),
+        ]);
+      } else {
+        appendChildren(messageContentDiv, [
+          appendChildren(buildComponent("div", {}, ["message-file-content"]), [
+            appendChildren(
+              buildComponent(
+                "a",
+                {
+                  target: "_blank",
+                  rel: "noopener",
+                  href: `${staticUrl}/message-attachments/${attachment}`,
+                  download: attachment,
+                },
+                ["message-file-content__a"],
+              ),
+              [
+                buildComponent(
+                  "span",
+                  {},
+                  ["message-file-content__name-span"],
+                  attachment,
+                ),
+                buildComponent("img", { src: "dist/images/document.png" }, [
+                  "message-file-content__img",
+                ]),
+              ],
+            ),
+          ]),
+        ]);
+      }
+    });
   }
 
   /**

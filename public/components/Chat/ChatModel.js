@@ -28,6 +28,7 @@ import BaseModel from "../../MVC/BaseModel.js";
  * @property {number} messageId - The ID of current message
  * @property {string} textContent - The text content of current message
  * @property {number} receiverId - The ID of receiver updated message
+ * @property {string[]} attachmentsToDelete - The attachments that were deleted
  */
 
 /**
@@ -167,8 +168,18 @@ class ChatModel extends BaseModel {
    *
    * @param {UpdateMessage} UpdateMessage - The updated message
    */
-  async updateMessage({ messageId, textContent, receiver }) {
-    this.webSocket.updateMessage(messageId, textContent, receiver);
+  async updateMessage({
+    messageId,
+    textContent,
+    receiver,
+    attachmentsToDelete,
+  }) {
+    this.webSocket.updateMessage(
+      messageId,
+      textContent,
+      receiver,
+      attachmentsToDelete,
+    );
   }
 
   /**
@@ -185,7 +196,14 @@ class ChatModel extends BaseModel {
    *
    * @param {*} param0
    */
-  async sendAttachments({ companionId, textContent, attachments }) {
+  async sendAttachments({
+    companionId,
+    textContent,
+    attachments,
+    messageId,
+    attachmentsToDelete,
+    needToUpdate,
+  }) {
     const result = await this.chatService.sendAttachments(
       companionId,
       attachments,
@@ -193,11 +211,21 @@ class ChatModel extends BaseModel {
 
     switch (result.status) {
       case 201:
-        this.sendMessage({
-          companionId,
-          textContent,
-          attachments: result.body,
-        });
+        if (needToUpdate) {
+          this.updateMessage({
+            receiver: companionId,
+            attachmentsToDelete,
+            messageId,
+            textContent,
+          });
+        } else {
+          this.sendMessage({
+            companionId,
+            textContent,
+            attachments: result.body,
+          });
+        }
+
         break;
       case 401:
         this.router.redirect("/login");

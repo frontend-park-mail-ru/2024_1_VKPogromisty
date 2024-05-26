@@ -55,8 +55,7 @@
   min-height: 20px;
   align-items: start;
   position: relative;
-  width: 100%;
-  padding: 0 10px 10px;
+  width: 120px;
   box-sizing: border-box;
 
   &__a {
@@ -85,7 +84,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 200px;
+    max-width: 70px;
   }
 
   &-block {
@@ -125,6 +124,12 @@
       width: 100%;
       border-radius: 7px;
       box-shadow: 0 0 5px 1px #918f8f4f;
+    }
+  }
+
+  &-image-content {
+    &:not(:last-child) {
+      margin-bottom: 10px;
     }
   }
 
@@ -294,8 +299,8 @@
   }
 
   &__accept-img {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
   }
 }
@@ -315,6 +320,7 @@
   border-radius: 7px;
   background-color: #f8dada;
   justify-content: space-around;
+  align-items: start;
 }
 
 .captured-files {
