@@ -1121,7 +1121,7 @@ export function makeMessage(
           return;
         }
 
-        if (addedAttachments.length === 5) {
+        if (addedAttachments.length + attachments.length === 5) {
           customAlert(
             "error",
             "Максимальное количество прикрепляемых файлов - 5",
@@ -1220,6 +1220,8 @@ export function makeMessage(
           ]);
         }
       });
+
+      newsInput2.value = null;
     });
 
     imgContent.innerHTML = "";
