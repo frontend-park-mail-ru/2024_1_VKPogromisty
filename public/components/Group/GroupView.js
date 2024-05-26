@@ -491,7 +491,7 @@ class GroupView extends BaseView {
       this.eventBus.emit("clickedPublishPost", {
         groupId: this.groupId,
         content: content,
-        attachments: fileInput.files,
+        attachments: dt.files,
       });
 
       dtMemory = 0;
