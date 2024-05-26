@@ -995,7 +995,10 @@ export function makeMessage(
         appendChildren(buildComponent("div", {}, ["message-image-content"]), [
           buildComponent(
             "img",
-            { src: `${staticUrl}/message-attachments/${attachment}` },
+            {
+              src: `${staticUrl}/message-attachments/${attachment}`,
+              "data-filename": attachment,
+            },
             ["message-attachment__img"],
           ),
         ]),
@@ -1049,6 +1052,21 @@ export function makeMessage(
   editAble.addEventListener("click", () => {
     const deletedAttachments = [];
     const addedAttachments = [];
+
+    attachments = [];
+    document
+      .querySelectorAll(`#message-${id} .message-file-content`)
+      .forEach((fileContent) => {
+        attachments.push(
+          fileContent.firstElementChild.getAttribute("download"),
+        );
+      });
+    document
+      .querySelectorAll(`#message-${id} .message-image-content`)
+      .forEach((imgContent) => {
+        attachments.push(imgContent.firstElementChild.dataset.filename);
+      });
+
     let atMemory = 0;
     const imgContent = document.getElementById("captured-images");
     const fileContent = document.getElementById("captured-files");
@@ -1151,7 +1169,11 @@ export function makeMessage(
             appendChildren(imgBlock, [
               buildComponent(
                 "img",
-                { src: src, "data-id": `news-file-content-${fileName}` },
+                {
+                  src: src,
+                  "data-id": `news-file-content-${fileName}`,
+                  "data-filename": fileName,
+                },
                 ["news-message-img-content__img"],
               ),
               cancelImg,

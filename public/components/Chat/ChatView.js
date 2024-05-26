@@ -667,7 +667,10 @@ class ChatView extends BaseView {
           appendChildren(buildComponent("div", {}, ["message-image-content"]), [
             buildComponent(
               "img",
-              { src: `${staticUrl}/message-attachments/${attachment}` },
+              {
+                src: `${staticUrl}/message-attachments/${attachment}`,
+                "data-filename": attachment,
+              },
               ["message-attachment__img"],
             ),
           ]),
