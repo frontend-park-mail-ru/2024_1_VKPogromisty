@@ -138,6 +138,12 @@ class MessengerView extends BaseView {
         oldDialog.remove();
         updatedDialog.setAttribute("id", `dialog-${message.receiverId}`);
 
+        message.content = message.content.replaceAll(
+          "*_/aE/",
+          '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
+        );
+        message.content = message.content.replaceAll(".png", '.png" >');
+
         messageChatter.firstElementChild.innerHTML =
           message.content || (message.sticker ? "Стикер" : "Фотография");
         messageChatter.firstElementChild.nextElementSibling.innerHTML =
@@ -160,6 +166,13 @@ class MessengerView extends BaseView {
         );
         messageChatter.setAttribute("id", `chatter-content-${message.id}`);
         const messageContent = messageChatter.firstElementChild;
+
+        message.content = message.content.replaceAll(
+          "*_/aE/",
+          '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
+        );
+        message.content = message.content.replaceAll(".png", '.png" >');
+
         messageContent.innerHTML =
           message.content || (message.sticker ? "Стикер" : "Фотография");
         messageContent.setAttribute(
@@ -207,6 +220,13 @@ class MessengerView extends BaseView {
     if (window.location.pathname !== "/messenger") {
       return;
     }
+
+    message.content = message.content.replaceAll(
+      "*_/aE/",
+      '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
+    );
+    message.content = message.content.replaceAll(".png", '.png" >');
+
     if (message.senderId === UserState.userId) {
       document.getElementById(
         `chatter-info__message-span-${message.receiverId}`,
@@ -259,6 +279,13 @@ class MessengerView extends BaseView {
 
       if (deletedPlace) {
         deletedPlace.setAttribute("id", `chatter-content-${message.id}`);
+
+        message.content = message.content.replaceAll(
+          "*_/aE/",
+          '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
+        );
+        message.content = message.content.replaceAll(".png", '.png" >');
+
         deletedPlace.firstElementChild.innerHTML =
           message.content || (message.sticker ? "Стикер" : "Фотография");
         deletedPlace.firstElementChild.setAttribute(
@@ -290,13 +317,22 @@ class MessengerView extends BaseView {
 
   addDialog(profile) {
     const lastMessage = this.promissedMessages.get(profile.User.userId);
+
+    lastMessage.content = lastMessage.content.replaceAll(
+      "*_/aE/",
+      '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
+    );
+    lastMessage.content = lastMessage.content.replaceAll(".png", '.png" >');
+
     this.promissedMessages.delete(profile.User.userId);
     this.dialogsElement.innerHTML =
       require("./messenge.hbs")({
         staticUrl,
         elem: { companion: profile.User, lastMessage },
       }) + this.dialogsElement.innerHTML;
+
     const chats = document.querySelectorAll(".dialog");
+
     chats.forEach((elem) => {
       elem.addEventListener("click", () => {
         this.router.redirect(`/chat/${elem.dataset.id}`);
@@ -345,6 +381,15 @@ class MessengerView extends BaseView {
           elem.lastMessage.createdAt,
         );
       }
+
+      elem.lastMessage.content = elem.lastMessage.content.replaceAll(
+        "*_/aE/",
+        '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
+      );
+      elem.lastMessage.content = elem.lastMessage.content.replaceAll(
+        ".png",
+        '.png" >',
+      );
 
       const isMe = elem.user1.userId === elem.user2.userId;
       this.dialogsElement.innerHTML += template({ staticUrl, elem, isMe });

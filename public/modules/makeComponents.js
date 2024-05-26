@@ -3,7 +3,7 @@ import {
   appendChildren,
   modifyComponent,
 } from "../components/createComponent.js";
-import { customConfirm } from "/public/modules/windows.js";
+import { customConfirm, customAlert } from "/public/modules/windows.js";
 import { API_URL } from "/public/modules/consts.js";
 
 const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
@@ -127,15 +127,15 @@ export function makePost(
     ],
   );
 
+  let attachmentsCount = post.attachments?.length;
+
   post.attachments?.forEach((elem) => {
     if (imageTypes.includes(typeFile(elem))) {
       appendChildren(postImageContent, [
         appendChildren(
-          buildComponent(
-            "div",
-            { id: `post-image-block-${post.postId}`, "data-filename": elem },
-            ["post-image-block"],
-          ),
+          buildComponent("div", { "data-filename": elem }, [
+            "post-image-block",
+          ]),
           [
             buildComponent(
               "img",
@@ -148,11 +148,7 @@ export function makePost(
     } else {
       appendChildren(postFileContent, [
         appendChildren(
-          buildComponent(
-            "div",
-            { id: `post-file-block-${post.postId}`, "data-filename": elem },
-            ["post-file-block"],
-          ),
+          buildComponent("div", { "data-filename": elem }, ["post-file-block"]),
           [
             appendChildren(buildComponent("div", {}, ["post-file-content"]), [
               appendChildren(
@@ -267,6 +263,7 @@ export function makePost(
 
   editImg.addEventListener("click", () => {
     const deletedFiles = [];
+    const addedFiles = [];
     const parent = editImg.parentNode;
     const nextElem = editImg.nextElementSibling;
     const id = editImg.dataset.id;
@@ -276,6 +273,21 @@ export function makePost(
       textarea.style.height = "auto";
     });
     textarea.focus();
+
+    const addAttachment = buildComponent(
+      "img",
+      { src: "dist/images/plus.png" },
+      ["news-plus-attachment__img"],
+    );
+    const emptyInputFile = buildComponent(
+      "input",
+      { multiple: true, type: "file" },
+      ["news-plus-attachment__input"],
+    );
+
+    addAttachment.addEventListener("click", () => {
+      emptyInputFile.click();
+    });
 
     const ok = document.createElement("img");
     ok.classList.add("post-author__accept-img");
@@ -295,6 +307,7 @@ export function makePost(
         content: textarea.value,
         attachmentsToDelete: deletedFiles,
         postId: id,
+        attachmentsToAdd: addedFiles,
       });
     });
 
@@ -304,18 +317,132 @@ export function makePost(
     cancel.setAttribute("src", "dist/images/cancel.png");
     cancel.addEventListener("click", () => {
       document
-        .querySelectorAll(".post-image-content .news-img-content__cancel-img")
+        .querySelectorAll(
+          `#post-image-content-${id} .news-img-content__cancel-img`,
+        )
         .forEach((cancelElem) => {
           cancelElem?.remove();
         });
+
+      document
+        .querySelectorAll(
+          `#post-file-content-${id} .news-file-content__cancel-img`,
+        )
+        .forEach((cancelElem) => {
+          cancelElem?.remove();
+        });
+
       eventBus.emit("canceledUpdatePost", {
         postId: id,
         isCanceled: true,
       });
     });
 
-    parent.appendChild(ok);
-    parent.appendChild(cancel);
+    emptyInputFile.addEventListener("change", () => {
+      Array.from(emptyInputFile.files).forEach((file) => {
+        if (attachmentsCount === 10) {
+          customAlert();
+          return;
+        }
+
+        ++attachmentsCount;
+        addedFiles.push(file);
+
+        const src = URL.createObjectURL(file);
+        const fileName = file.name;
+        const isImage = imageTypes.includes(typeFile(fileName));
+
+        const cancelImg = buildComponent(
+          "img",
+          { src: "dist/images/cancel.png", "data-id": fileName },
+          [`news-${isImage ? "img" : "file"}-content__cancel-img`],
+        );
+
+        const imgContent = document.getElementById(
+          `post-image-content-${post.postId}`,
+        );
+        const fileContent = document.getElementById(
+          `post-file-content-${post.postId}`,
+        );
+
+        if (isImage) {
+          const imgBlock = buildComponent("div", {}, ["post-image-block"]);
+
+          cancelImg.addEventListener("click", () => {
+            imgBlock?.remove();
+
+            addedFiles.forEach((addedFile, index) => {
+              if (addedFile === file) {
+                addedFiles.splice(index, 1);
+                return;
+              }
+            });
+          });
+
+          appendChildren(imgContent, [
+            appendChildren(imgBlock, [
+              buildComponent(
+                "img",
+                { src: src, "data-id": `news-img-content-${fileName}` },
+                ["post-content__img"],
+              ),
+              cancelImg,
+            ]),
+          ]);
+        } else {
+          const fileBlock = buildComponent("div", {}, ["post-file-block"]);
+
+          cancelImg.addEventListener("click", () => {
+            fileBlock?.remove();
+
+            addedFiles.forEach((addedFile, index) => {
+              if (addedFile === file) {
+                addedFiles.splice(index, 1);
+                return;
+              }
+            });
+          });
+
+          appendChildren(fileContent, [
+            appendChildren(fileBlock, [
+              appendChildren(
+                buildComponent(
+                  "a",
+                  {
+                    target: "_blank",
+                    rel: "noopener",
+                    href: src,
+                    download: fileName,
+                  },
+                  ["news-file-content__a"],
+                ),
+                [
+                  buildComponent(
+                    "span",
+                    {},
+                    ["news-file-content__name-span"],
+                    fileName,
+                  ),
+                  buildComponent(
+                    "img",
+                    {
+                      src: "dist/images/document.png",
+                      id: `news-file-content-${fileName}`,
+                    },
+                    ["news-file-content__img"],
+                  ),
+                ],
+              ),
+              cancelImg,
+            ]),
+          ]);
+        }
+      });
+
+      emptyInputFile.value = null;
+    });
+
+    appendChildren(parent, [emptyInputFile, addAttachment, ok, cancel]);
     editImg.style["display"] = "none";
     nextElem.style["display"] = "none";
 
@@ -332,6 +459,7 @@ export function makePost(
 
         deleteFileImg.addEventListener("click", () => {
           deletedFiles.push(block.dataset.filename);
+          --attachmentsCount;
           block?.remove();
         });
       });
@@ -349,6 +477,7 @@ export function makePost(
 
         deleteFileImg.addEventListener("click", () => {
           deletedFiles.push(block.dataset.filename);
+          --attachmentsCount;
           block?.remove();
         });
       });
@@ -767,7 +896,7 @@ export function makeSmallSticker({
     eventBus.emit("clickedSendSticker", { companionId, stickerId: id });
     document
       .getElementById("sticker-message-place")
-      .classList.add("sticker-message-place_invisible");
+      .classList.add("sticker-message-place_invisible-not-first");
   });
 
   return appendChildren(smallSticker, [
@@ -804,16 +933,6 @@ export function makeMessage(
   const sideMessage = isMe ? "right" : "left";
   const deletedFiles = [];
   const messageContent = buildComponent("div", {}, ["message-content-div"]);
-
-  let firstIndexAppleEmoji = content.search(/<img src=".*\/appleEmoji\//g);
-
-  while (firstIndexAppleEmoji !== -1) {
-    content =
-      content.slice(0, firstIndexAppleEmoji + 5) +
-      `class="sticker-message-place-content__emoji-img" alt="emoji" ` +
-      content.slice(firstIndexAppleEmoji + 5);
-    firstIndexAppleEmoji = content.search(/<img src=".*\/appleEmoji\//g);
-  }
 
   const textMessage = appendChildren(
     buildComponent("div", { id: `message-${id}` }, [
@@ -926,14 +1045,161 @@ export function makeMessage(
   );
 
   editAble.addEventListener("click", () => {
+    const deletedAttachments = [];
+    const addedAttachments = [];
+    let atMemory = 0;
+    const imgContent = document.getElementById("captured-images");
+    const fileContent = document.getElementById("captured-files");
     const inputMessage = document.getElementById("print-message__text-input");
     const sendMessage = document.getElementById("message-menu__send-button");
     const messageId = editAble.dataset.id;
     const messageContent = document.getElementById(
       `message-content-${messageId}`,
     );
-    const okMessage = document.createElement("img");
+    const okMessage = buildComponent(
+      "img",
+      {
+        id: "message-menu__accept-img",
+        src: "dist/images/check.png",
+        "data-id": messageId,
+      },
+      ["message-menu__accept-img"],
+    );
     const parentSend = sendMessage.parentElement;
+    const newsFilePlace = document.getElementById("news__file-place");
+    newsFilePlace.firstElementChild.style.display = "none";
+    const newsImg2 = buildComponent(
+      "img",
+      { src: "dist/images/attach-paperclip-symbol.png", id: "news__img2" },
+      ["news__img"],
+    );
+    const newsInput2 = buildComponent("input", {
+      type: "file",
+      multiple: true,
+      class: "news-chat__file-input",
+    });
+
+    appendChildren(newsFilePlace, [
+      appendChildren(
+        buildComponent("button", { type: "button", id: "news__file-button2" }, [
+          "news__file-button",
+        ]),
+        [newsImg2, newsInput2],
+      ),
+    ]);
+
+    newsImg2.addEventListener("click", () => {
+      newsInput2.click();
+    });
+
+    newsInput2.addEventListener("change", () => {
+      const files = newsInput2.files;
+
+      Array.from(files).forEach((file) => {
+        if (atMemory + file.size > 20 * 1024 * 1024) {
+          customAlert("error", "Максимальный размер сообщения - 20мб");
+          return;
+        }
+
+        if (addedAttachments.length === 5) {
+          customAlert(
+            "error",
+            "Максимальное количество прикрепляемых файлов - 5",
+          );
+          return;
+        }
+
+        atMemory += file.size;
+        addedAttachments.push(file);
+
+        const src = URL.createObjectURL(file);
+        const fileName = file.name;
+        const isImage = imageTypes.includes(typeFile(fileName));
+
+        const cancelImg = buildComponent(
+          "img",
+          { src: "dist/images/cancel.png", "data-id": fileName },
+          [`news-message-${isImage ? "img" : "file"}-content__cancel-img`],
+        );
+
+        cancelImg.addEventListener("click", () => {
+          document
+            .getElementById(
+              `news-message-${isImage ? "img" : "file"}-content-block-${fileName}`,
+            )
+            ?.remove();
+
+          Array.from(addedAttachments).forEach((file, index) => {
+            if (file.name === fileName) {
+              atMemory -= file.size;
+              addedAttachments.remove(index);
+              return;
+            }
+          });
+        });
+
+        if (isImage) {
+          const imgBlock = buildComponent(
+            "div",
+            { id: `news-message-img-content-block-${fileName}` },
+            ["news-message-img-content-block"],
+          );
+
+          appendChildren(imgContent, [
+            appendChildren(imgBlock, [
+              buildComponent(
+                "img",
+                { src: src, "data-id": `news-file-content-${fileName}` },
+                ["news-message-img-content__img"],
+              ),
+              cancelImg,
+            ]),
+          ]);
+        } else {
+          const fileBlock = buildComponent(
+            "div",
+            { id: `news-message-file-content-block-${fileName}` },
+            ["news-message-file-content-block"],
+          );
+          appendChildren(fileContent, [
+            appendChildren(fileBlock, [
+              appendChildren(
+                buildComponent(
+                  "a",
+                  {
+                    target: "_blank",
+                    rel: "noopener",
+                    href: src,
+                    download: fileName,
+                  },
+                  ["news-message-file-content__a"],
+                ),
+                [
+                  buildComponent(
+                    "span",
+                    {},
+                    ["news-message-file-content__name-span"],
+                    fileName,
+                  ),
+                  buildComponent(
+                    "img",
+                    {
+                      src: "dist/images/document.png",
+                      id: `news-message-file-content-${fileName}`,
+                    },
+                    ["news-message-file-content__img"],
+                  ),
+                ],
+              ),
+              cancelImg,
+            ]),
+          ]);
+        }
+      });
+    });
+
+    imgContent.innerHTML = "";
+    fileContent.innerHTML = "";
 
     Array.from(
       document.getElementsByClassName("message-menu__accept-img"),
@@ -941,25 +1207,166 @@ export function makeMessage(
       elem.remove();
     });
 
-    okMessage.setAttribute("src", "dist/images/check.png");
-    okMessage.setAttribute("data-id", messageId);
-    okMessage.classList.add("message-menu__accept-img");
+    attachments?.forEach((attachment) => {
+      const isImage = imageTypes.includes(typeFile(attachment));
+
+      const cancelImg = buildComponent(
+        "img",
+        { src: "dist/images/cancel.png", "data-id": attachment },
+        [`news-message-${isImage ? "img" : "file"}-content__cancel-img`],
+      );
+
+      cancelImg.addEventListener("click", () => {
+        document
+          .getElementById(
+            `news-message-${isImage ? "img" : "file"}-content-block-${attachment}`,
+          )
+          ?.remove();
+
+        deletedAttachments.push(attachment);
+      });
+
+      if (isImage) {
+        const imgBlock = buildComponent(
+          "div",
+          { id: `news-message-img-content-block-${attachment}` },
+          ["news-message-img-content-block"],
+        );
+
+        appendChildren(imgContent, [
+          appendChildren(imgBlock, [
+            buildComponent(
+              "img",
+              {
+                src: `${staticUrl}/message-attachments/${attachment}`,
+                "data-id": `news-file-content-${attachment}`,
+              },
+              ["news-message-img-content__img"],
+            ),
+            cancelImg,
+          ]),
+        ]);
+      } else {
+        const fileBlock = buildComponent(
+          "div",
+          { id: `news-message-file-content-block-${attachment}` },
+          ["news-message-file-content-block"],
+        );
+        appendChildren(fileContent, [
+          appendChildren(fileBlock, [
+            appendChildren(
+              buildComponent(
+                "a",
+                {
+                  target: "_blank",
+                  rel: "noopener",
+                  href: `${staticUrl}/message-attachments/${attachment}`,
+                  download: attachment,
+                },
+                ["news-message-file-content__a"],
+              ),
+              [
+                buildComponent(
+                  "span",
+                  {},
+                  ["news-message-file-content__name-span"],
+                  attachment,
+                ),
+                buildComponent(
+                  "img",
+                  {
+                    src: "dist/images/document.png",
+                    id: `news-message-file-content-${attachment}`,
+                  },
+                  ["news-message-file-content__img"],
+                ),
+              ],
+            ),
+            cancelImg,
+          ]),
+        ]);
+      }
+    });
 
     okMessage.addEventListener("click", () => {
       if (
-        inputMessage.value !== messageContent.innerHTML &&
-        inputMessage.value.trim() !== ""
+        inputMessage.innerHTML.trim() !== "" ||
+        deletedAttachments.length !== (attachments?.length || 0) ||
+        addedAttachments.length > 0
       ) {
-        this.eventBus.emit("clickedUpdateMessage", {
-          messageId: messageId,
-          textContent: inputMessage.value,
-          receiver: this.companionId,
+        deletedAttachments.forEach((deletedAttachment) => {
+          attachments.forEach((attachment, index) => {
+            if (attachment === deletedAttachment) {
+              attachments.splice(index, 1);
+              return;
+            }
+          });
         });
+
+        addedAttachments.forEach((addedAttachment) => {
+          attachments.push(addedAttachment.name);
+        });
+
+        let textMessage = inputMessage.innerHTML;
+
+        textMessage = textMessage.replaceAll(
+          ' class="sticker-message-place-content__emoji-img"',
+          "",
+        );
+        textMessage = textMessage.replaceAll(
+          ' style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; font-size: 16px; font-family: Inter, sans-serif;"',
+          "",
+        );
+        textMessage = textMessage.replaceAll('<img src="dist/images', "*_");
+        textMessage = textMessage.replaceAll(
+          '<img src="http://localhost:3000/chat/dist/images',
+          "*_",
+        );
+        textMessage = textMessage.replaceAll(
+          '<img src="https://socio-project.ru/chat/dist/images',
+          "*_",
+        );
+        textMessage = textMessage.replaceAll('.png">', ".png");
+
+        while (textMessage.length > 1000) {
+          this.eventBus.emit("clickedSendMessage", {
+            companionId: this.companionId,
+            textContent: textMessage.substring(0, 1000),
+          });
+
+          textMessage = textMessage.substring(1000);
+        }
+
+        if (addedAttachments.length > 0) {
+          eventBus.emit("needPresentAttachments", {
+            needToUpdate: true,
+            messageId,
+            companionId,
+            textContent: textMessage,
+            attachments: addedAttachments,
+            attachmentsToDelete: deletedAttachments,
+          });
+        } else {
+          eventBus.emit("clickedUpdateMessage", {
+            messageId: messageId,
+            textContent: textMessage,
+            receiver: companionId,
+            attachmentsToDelete: deletedAttachments,
+          });
+        }
+
         inputMessage.focus();
+      } else {
+        eventBus.emit("clickedDeleteMessage", {
+          messageId: messageId,
+          receiver: companionId,
+        });
       }
 
       sendMessage.style.display = "block";
       okMessage.remove();
+      newsFilePlace.firstElementChild.style.display = "block";
+      newsFilePlace.removeChild(newsFilePlace.lastElementChild);
 
       inputMessage.onkeydown = (event) => {
         if (event.key === "Enter") {
@@ -967,7 +1374,7 @@ export function makeMessage(
         }
       };
 
-      inputMessage.value = "";
+      inputMessage.innerHTML = "";
     });
 
     inputMessage.onkeydown = (event) => {
@@ -977,7 +1384,7 @@ export function makeMessage(
       }
     };
 
-    inputMessage.value = messageContent.innerHTML;
+    inputMessage.innerHTML = messageContent.innerHTML;
     sendMessage.style.display = "none";
     parentSend.insertBefore(okMessage, sendMessage);
 
@@ -1013,6 +1420,7 @@ export function makeMessage(
       "Отмена",
     );
   });
+
   const ables = buildComponent("div", {}, ["ables"]);
   sticker
     ? appendChildren(ables, [trashCan])

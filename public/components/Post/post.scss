@@ -75,6 +75,18 @@
   }
 }
 
+.news-plus-attachment {
+  &__input {
+    display: none;
+  }
+
+  &__img {
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+  }
+}
+
 .publish-button {
   box-sizing: border-box;
   font-family: $ordinary-text;
@@ -191,6 +203,7 @@
     width: 25px;
     position: absolute;
     top: 0;
+    left: 0;
     background-color: white;
     border-radius: 50%;
     cursor: pointer;
@@ -266,13 +279,10 @@
     }
   }
 
-  &__accept-img {
-    cursor: pointer;
-  }
-
+  &__accept-img,
   &__cancel-img {
     cursor: pointer;
-    margin-left: 10px;
+    margin-left: 8px;
   }
 }
 
@@ -313,11 +323,9 @@
 
 .post-menu {
   box-sizing: border-box;
-  width: 30px;
   height: 30px;
   margin-top: 15px;
   padding-top: 5px;
-  margin-right: 20px;
   display: flex;
   flex-direction: row;
 }
@@ -372,7 +380,7 @@
 }
 
 .post-file-content {
-  @include row-flexible;
+  @include column-flexible;
   justify-content: start;
 
   &:not(:last-child) {

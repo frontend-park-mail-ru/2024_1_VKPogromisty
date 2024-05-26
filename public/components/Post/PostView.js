@@ -6,6 +6,8 @@ import { Main } from "../Main/main.js";
 import "./post.scss";
 import { makePost } from "../../modules/makeComponents.js";
 import CommentController from "../Comment/CommentController.js";
+import { appendChildren, buildComponent } from "../createComponent.js";
+import { API_URL } from "../../modules/consts.js";
 
 /**
  * @typedef {Object} UpdateInfo
@@ -43,6 +45,13 @@ import CommentController from "../Comment/CommentController.js";
  * @property {Author} author - The author of current post
  * @property {boolean} publish - Is published now?
  */
+
+const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
+const staticUrl = `${API_URL}/static`;
+const typeFile = (file) => {
+  const parts = file.split(".");
+  return parts[parts.length - 1];
+};
 
 /**
  * PostView - класс для работы с визуалом на странице.
@@ -435,7 +444,25 @@ class PostView extends BaseView {
       postAuthorTime.appendChild(span);
     }
 
+    document
+      .querySelectorAll(
+        `#post-image-content-${postId} .news-img-content__cancel-img`,
+      )
+      .forEach((cancelElem) => {
+        cancelElem?.remove();
+      });
+
+    document
+      .querySelectorAll(
+        `#post-file-content-${postId} .news-file-content__cancel-img`,
+      )
+      .forEach((fileElem) => {
+        fileElem?.remove();
+      });
+
     textarea.toggleAttribute("readonly");
+    postMenu.lastChild.remove();
+    postMenu.lastChild.remove();
     postMenu.lastChild.remove();
     postMenu.lastChild.remove();
     postMenu.firstElementChild.style.display = "block";
@@ -453,6 +480,73 @@ class PostView extends BaseView {
 
     textarea.toggleAttribute("readonly");
     textarea.value = post.content;
+
+    const postImageContent = document.getElementById(
+      `post-image-content-${post.postId}`,
+    );
+    const postFileContent = document.getElementById(
+      `post-file-content-${post.postId}`,
+    );
+
+    postImageContent.innerHTML = "";
+    postFileContent.innerHTML = "";
+
+    post.attachments.forEach((attachmentName) => {
+      if (imageTypes.includes(typeFile(attachmentName))) {
+        appendChildren(postImageContent, [
+          appendChildren(
+            buildComponent("div", { "data-filename": attachmentName }, [
+              "post-image-block",
+            ]),
+            [
+              buildComponent(
+                "img",
+                { src: `${staticUrl}/post-attachments/${attachmentName}` },
+                ["post-content__img"],
+              ),
+            ],
+          ),
+        ]);
+      } else {
+        appendChildren(postFileContent, [
+          appendChildren(
+            buildComponent("div", { "data-filename": attachmentName }, [
+              "post-file-block",
+            ]),
+            [
+              appendChildren(buildComponent("div", {}, ["post-file-content"]), [
+                appendChildren(
+                  buildComponent(
+                    "a",
+                    {
+                      target: "_blank",
+                      rel: "noopener",
+                      href: `${staticUrl}/post-attachments/${attachmentName}`,
+                      download: attachmentName,
+                    },
+                    ["news-file-content__a"],
+                  ),
+                  [
+                    buildComponent(
+                      "span",
+                      {},
+                      ["news-file-content__name-span"],
+                      attachmentName,
+                    ),
+                    buildComponent("img", { src: "dist/images/document.png" }, [
+                      "news-file-content__img",
+                    ]),
+                  ],
+                ),
+              ]),
+            ],
+          ),
+        ]);
+      }
+    });
+
+    postMenu.lastChild.remove();
+    postMenu.lastChild.remove();
     postMenu.lastChild.remove();
     postMenu.lastChild.remove();
     postMenu.firstElementChild.style.display = "block";

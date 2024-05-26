@@ -96,14 +96,16 @@ class WSocket {
    * @param {number} messageId - The ID of current message
    * @param {string} textContent - The text content of message
    * @param {number} receiverId - The ID of current receiver
+   * @param {string[]} attachmentsToDelete - The attachments that were deleted
    */
-  updateMessage(messageId, textContent, receiverId) {
+  updateMessage(messageId, textContent, receiverId, attachmentsToDelete) {
     CSRFProtection.addCSRFTokenWebSocket(this.ws, {
       type: "UPDATE_MESSAGE",
       receiver: +receiverId,
       payload: {
         messageId: +messageId,
         content: textContent,
+        attachmentsToDelete,
       },
     });
   }

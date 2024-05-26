@@ -59,7 +59,7 @@ class MessengerModel extends BaseModel {
       const data = JSON.parse(event.data);
 
       switch (data.type) {
-        case "SENT_STICKER_MESSAGE":
+        case "SEND_STICKER_MESSAGE":
         case "SEND_MESSAGE":
           this.eventBus.emit("sendMessageSuccess", data.payload);
           break;

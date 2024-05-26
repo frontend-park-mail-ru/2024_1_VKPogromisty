@@ -79,11 +79,11 @@ class PostModel extends BaseModel {
    *
    * @param {UpdateInfo} updateInfo - The info about updated post
    */
-  async updatePost({ postId, content, attachmentsToDelete }) {
+  async updatePost({ postId, content, attachmentsToDelete, attachmentsToAdd }) {
     const result = await this.postService.updatePost(
       postId,
       content,
-      [],
+      attachmentsToAdd,
       attachmentsToDelete,
     );
 
