@@ -974,7 +974,7 @@ export function makeMessage(
                 "span",
                 { id: `message-edited-${id}` },
                 ["message-time-edited__span-edited"],
-                ".ред",
+                "ред.",
               ),
             ]
           : [
