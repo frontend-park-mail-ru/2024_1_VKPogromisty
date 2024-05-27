@@ -51,9 +51,10 @@ class FriendsView extends BaseView {
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {UserState} userState - Текущее состояние юзера
    */
-  constructor(eventBus) {
+  constructor(eventBus, router) {
     super(eventBus);
 
+    this.router = router;
     this.template = require("./friendsMain.hbs");
 
     this.eventBus.addEventListener(
@@ -113,6 +114,12 @@ class FriendsView extends BaseView {
         rightSidebar,
       });
     }
+    document.querySelectorAll(".right-sidebar-friends a").forEach((elem) => {
+      elem.classList.replace(
+        "right-sidebar__a_bigger",
+        "right-sidebar__a_common",
+      );
+    });
 
     this.friendElem = document.getElementById("friends");
 
@@ -154,13 +161,34 @@ class FriendsView extends BaseView {
 
     switch (path) {
       case "subscriptions":
+        document
+          .getElementById("subscriptions-label")
+          .classList.replace(
+            "right-sidebar__a_common",
+            "right-sidebar__a_bigger",
+          );
         this.eventBus.emit("readyRenderSubscriptions", {});
         break;
       case "subscribers":
+        document
+          .getElementById("subscribers-label")
+          .classList.replace(
+            "right-sidebar__a_common",
+            "right-sidebar__a_bigger",
+          );
         this.eventBus.emit("readyRenderSubscribers", {});
         break;
-      default:
+      case "friends":
+        document
+          .getElementById("friends-label")
+          .classList.replace(
+            "right-sidebar__a_common",
+            "right-sidebar__a_bigger",
+          );
         this.eventBus.emit("readyRenderFriends", {});
+        break;
+      default:
+        this.router.redirect("/community/friends");
     }
   }
 
@@ -192,11 +220,6 @@ class FriendsView extends BaseView {
       document.getElementById("no-something").innerHTML = "У вас нет друзей";
     }
 
-    const friendsLabel = document.getElementById("friends-label");
-
-    friendsLabel.classList.remove("right-sidebar__a_common");
-    friendsLabel.classList.add("right-sidebar__a_bigger");
-
     const addFriends = document.querySelectorAll(
       ".friend-ables__delete-friend-button",
     );
@@ -215,6 +238,8 @@ class FriendsView extends BaseView {
         );
       });
     });
+
+    this.addHrefing();
   }
 
   /**
@@ -245,11 +270,6 @@ class FriendsView extends BaseView {
         "У вас нет подписчиков";
     }
 
-    const subscribersLabel = document.getElementById("subscribers-label");
-
-    subscribersLabel.classList.remove("right-sidebar__a_common");
-    subscribersLabel.classList.add("right-sidebar__a_bigger");
-
     const addFriends = document.querySelectorAll(
       ".friend-ables__add-friend-button",
     );
@@ -260,6 +280,8 @@ class FriendsView extends BaseView {
         this.eventBus.emit("clickedSubscribeButton", friendId);
       });
     });
+
+    this.addHrefing();
   }
 
   /**
@@ -299,11 +321,6 @@ class FriendsView extends BaseView {
         "Вы ни на кого не подписаны";
     }
 
-    const subscriptionsLabel = document.getElementById("subscriptions-label");
-
-    subscriptionsLabel.classList.remove("right-sidebar__a_common");
-    subscriptionsLabel.classList.add("right-sidebar__a_bigger");
-
     const addFriends = document.querySelectorAll(
       ".friend-ables__unsubscribe-button",
     );
@@ -314,6 +331,8 @@ class FriendsView extends BaseView {
         this.eventBus.emit("clickedUnsubscribeButton", friendId);
       });
     });
+
+    this.addHrefing();
   }
 
   renderFoundFriend(people) {
@@ -338,6 +357,22 @@ class FriendsView extends BaseView {
     } else {
       document.getElementById("no-something").innerHTML = "Нет результатов";
     }
+
+    this.addHrefing();
+  }
+
+  addHrefing() {
+    document.querySelectorAll(".friends-field").forEach((elem) => {
+      elem.addEventListener("click", (event) => {
+        if (
+          event.target.tagName === "BUTTON" ||
+          event.target.classList.contains("friend-ables__send-message-img")
+        ) {
+          return;
+        }
+        this.router.redirect(`/profile/${elem.dataset.id}`);
+      });
+    });
   }
 
   /**

@@ -5,6 +5,7 @@ import { PostService, ProfileService } from "../../modules/services.js";
  * @typedef {Object} UpdateInfo
  * @property {number} postId - The ID of current post
  * @property {string} content - The text of current post
+ * @property {string[]} attachmentsToDelete - The attachments to delete
  */
 
 /**
@@ -42,19 +43,28 @@ class PostModel extends BaseModel {
       "clickedDeleteButton",
       this.deletePost.bind(this),
     );
+    this.eventBus.addEventListener(
+      "readyRenderPost",
+      this.getCurrentPost.bind(this),
+    );
   }
 
   /**
    * Gets current post
    *
    * @param {number} postId - The ID of current post
+   * @param {boolean} isCanceled - Was post necessary for updating
    */
-  async getCurrentPost(postId) {
+  async getCurrentPost({ postId, isCanceled }) {
     const result = await this.postService.getCurrentPost(postId);
 
     switch (result.status) {
       case 200:
-        this.eventBus.emit("postCanceledSuccess", result.body);
+        if (isCanceled) {
+          this.eventBus.emit("postCanceledSuccess", result.body);
+        } else {
+          this.eventBus.emit("postLoadedSuccess", result.body);
+        }
         break;
       case 401:
         this.router.redirect("/login");
@@ -69,8 +79,13 @@ class PostModel extends BaseModel {
    *
    * @param {UpdateInfo} updateInfo - The info about updated post
    */
-  async updatePost({ postId, content }) {
-    const result = await this.postService.updatePost(postId, content);
+  async updatePost({ postId, content, attachmentsToDelete, attachmentsToAdd }) {
+    const result = await this.postService.updatePost(
+      postId,
+      content,
+      attachmentsToAdd,
+      attachmentsToDelete,
+    );
 
     switch (result.status) {
       case 200:

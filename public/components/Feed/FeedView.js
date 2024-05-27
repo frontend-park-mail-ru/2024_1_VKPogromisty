@@ -4,7 +4,9 @@ import { Main } from "../Main/main.js";
 import { API_URL } from "../../modules/consts.js";
 import PostController from "../Post/PostController.js";
 import UserState from "../UserState.js";
+import { buildComponent, appendChildren } from "../createComponent.js";
 import "./feed.scss";
+import { customAlert } from "../../modules/windows.js";
 
 /**
  * A Author structure
@@ -37,20 +39,30 @@ import "./feed.scss";
  * @property {Author} author - The author of post
  */
 
+const MB = 1024 * 1024;
+const maxPostMemory = 50;
+const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
 const staticUrl = `${API_URL}/static`;
+const typeFile = (file) => {
+  const parts = file.name.split(".");
+  return parts[parts.length - 1];
+};
 
 const rightSidebar = [
   {
     href: "/feed/news",
     text: "НОВОСТИ",
+    id: "news",
   },
   {
     href: "/feed/groups",
     text: "СООБЩЕСТВА",
+    id: "groups",
   },
   {
     href: "/feed/friends",
     text: "ДРУЗЬЯ",
+    id: "friends",
   },
 ];
 
@@ -145,6 +157,7 @@ class FeedView extends BaseView {
 
     this.mainElement = document.getElementById("activity");
     this.mainElement.innerHTML = template({ userId, userAvatar, rightSidebar });
+
     this.lastPostMyId = 0;
     this.lastPostAllId = 0;
     this.isAllMyPosts = false;
@@ -164,6 +177,8 @@ class FeedView extends BaseView {
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
     const fileButton = document.getElementById("news__file-button");
+    const dt = new DataTransfer();
+    let dtMemory = 0;
 
     if (fileButton) {
       fileButton.addEventListener("click", () => {
@@ -175,18 +190,109 @@ class FeedView extends BaseView {
       fileInput.addEventListener("change", () => {
         const files = fileInput.files;
         const imgContent = document.getElementById("news-img-content");
+        const fileContent = document.getElementById("news-file-content");
 
-        imgContent.innerHTML = "";
+        Array.from(files).forEach((file) => {
+          if (dtMemory + file.size > maxPostMemory * MB) {
+            customAlert("error", "Максимальный размер поста - 50Мб");
+            return;
+          }
 
-        Array.from(files).forEach((elem) => {
-          const src = URL.createObjectURL(elem);
+          if (dt.items.length === 10) {
+            customAlert(
+              "error",
+              "Максимальное количество прикрепляемых файлов - 10",
+            );
+            return;
+          }
 
-          const img = document.createElement("img");
-          img.setAttribute("src", src);
-          img.classList.add("news-img-content__img", "post-content__img");
+          dt.items.add(file);
+          dtMemory += file.size;
 
-          imgContent.appendChild(img);
+          const src = URL.createObjectURL(file);
+          const fileName = file.name;
+          const isImage = imageTypes.includes(typeFile(file));
+
+          const cancelImg = buildComponent(
+            "img",
+            { src: "dist/images/cancel.png", "data-id": fileName },
+            [`news-${isImage ? "img" : "file"}-content__cancel-img`],
+          );
+
+          cancelImg.addEventListener("click", () => {
+            document
+              .getElementById(
+                `news-${isImage ? "img" : "file"}-content-block-${fileName}`,
+              )
+              ?.remove();
+
+            Array.from(dt.files).forEach((file, index) => {
+              if (file.name === fileName) {
+                dtMemory -= file.size;
+                dt.items.remove(index);
+                return;
+              }
+            });
+          });
+          if (isImage) {
+            const imgBlock = buildComponent(
+              "div",
+              { id: `news-img-content-block-${fileName}` },
+              ["news-img-content-block"],
+            );
+            appendChildren(imgContent, [
+              appendChildren(imgBlock, [
+                buildComponent(
+                  "img",
+                  { src: src, "data-id": `news-file-content-${fileName}` },
+                  ["news-img-content__img", "post-content__img"],
+                ),
+                cancelImg,
+              ]),
+            ]);
+          } else {
+            const fileBlock = buildComponent(
+              "div",
+              { id: `news-file-content-block-${fileName}` },
+              ["news-file-content-block"],
+            );
+            appendChildren(fileContent, [
+              appendChildren(fileBlock, [
+                appendChildren(
+                  buildComponent(
+                    "a",
+                    {
+                      target: "_blank",
+                      rel: "noopener",
+                      href: src,
+                      download: fileName,
+                    },
+                    ["news-file-content__a"],
+                  ),
+                  [
+                    buildComponent(
+                      "span",
+                      {},
+                      ["news-file-content__name-span"],
+                      fileName,
+                    ),
+                    buildComponent(
+                      "img",
+                      {
+                        src: "dist/images/document.png",
+                        id: `news-file-content-${fileName}`,
+                      },
+                      ["news-file-content__img"],
+                    ),
+                  ],
+                ),
+                cancelImg,
+              ]),
+            ]);
+          }
         });
+
+        fileInput.value = "";
       });
     }
 
@@ -194,16 +300,19 @@ class FeedView extends BaseView {
       publishButton.addEventListener("click", () => {
         const content = document.getElementById("news-content__textarea").value;
 
-        if (content === "" && fileInput.files.length === 0) {
+        if (content.trim() === "" && dt.files.length === 0) {
           return;
         }
 
         this.eventBus.emit("clickedPublishPost", {
           content: content,
-          attachments: fileInput.files,
+          attachments: dt.files,
         });
 
+        dt.items.clear();
+        dtMemory = 0;
         document.getElementById("news-img-content").innerHTML = "";
+        document.getElementById("news-file-content").innerHTML = "";
         const textarea = document.getElementById("news-content__textarea");
         textarea.value = "";
         textarea.style.height = "60px";
@@ -217,13 +326,30 @@ class FeedView extends BaseView {
 
     switch (this.path) {
       case "news":
+        document
+          .getElementById("a-news")
+          .classList.replace(
+            "right-sidebar__a_common",
+            "right-sidebar__a_bigger",
+          );
         this.eventBus.emit("readyRenderPosts", this.lastPostMyId);
         break;
       case "friends":
-        document.getElementById("");
+        document
+          .getElementById("a-friends")
+          .classList.replace(
+            "right-sidebar__a_common",
+            "right-sidebar__a_bigger",
+          );
         this.eventBus.emit("readyRenderFriendsPosts", this.lastPostAllId);
         break;
       case "groups":
+        document
+          .getElementById("a-groups")
+          .classList.replace(
+            "right-sidebar__a_common",
+            "right-sidebar__a_bigger",
+          );
         this.eventBus.emit("readyRenderGroupsPosts", this.lastPostAllId);
         break;
     }
@@ -255,24 +381,24 @@ class FeedView extends BaseView {
         }
       });
       posts.forEach((elem) => {
-        let author = elem.author;
         if (elem.group) {
-          author = {
-            name: elem.group?.name,
-            groupId: elem.group?.id,
-            avatar: elem.group?.avatar,
-          };
+          elem.group.authorId = elem.author.authorId;
+          this.postController.renderGroupPostView({
+            post: elem.post,
+            group: elem.group,
+          });
+        } else {
+          this.postController.renderFriendPostView({
+            post: elem.post,
+            author: elem.author,
+          });
         }
-        this.postController.renderPostView({
-          isGroup: elem.group,
-          post: elem.post,
-          author,
-        });
       });
     } else {
       if (isMy) {
         this.isAllMyPosts = true;
       } else {
+        this.isAllPosts = true;
         document
           .getElementById("no-more-posts")
           .classList.replace("no-more-posts_hidden", "no-more-posts_visible");
@@ -309,7 +435,7 @@ class FeedView extends BaseView {
         }
       });
       posts.forEach((elem) => {
-        this.postController.renderPostView({
+        this.postController.renderFriendPostView({
           post: elem.post,
           author: elem.author,
         });
@@ -352,14 +478,11 @@ class FeedView extends BaseView {
         }
       });
       posts.forEach((elem) => {
-        this.postController.renderPostView({
+        elem.group.authorId = elem.author.authorId;
+        this.postController.renderGroupPostView({
           isGroup: true,
           post: elem.post,
-          author: {
-            name: elem.group?.name,
-            groupId: elem.group?.id,
-            avatar: elem.group?.avatar,
-          },
+          group: elem.group,
         });
       });
     } else {
@@ -390,7 +513,7 @@ class FeedView extends BaseView {
    */
   renderPublishedSuccess(postInfo) {
     const { post, author } = postInfo;
-    this.postController.renderPostView({
+    this.postController.renderFriendPostView({
       post: post,
       author: author,
       publish: true,

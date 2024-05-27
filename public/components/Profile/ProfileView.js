@@ -5,10 +5,18 @@ import PostController from "../Post/PostController.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
-import { customConfirm } from "../../modules/windows.js";
+import { customAlert, customConfirm } from "../../modules/windows.js";
+import { buildComponent, appendChildren } from "../createComponent.js";
 import "./profile.scss";
 
+const MB = 1024 * 1024;
+const maxPostMemory = 50;
+const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
 const staticUrl = `${API_URL}/static`;
+const typeFile = (file) => {
+  const parts = file.name.split(".");
+  return parts[parts.length - 1];
+};
 
 /**
  * A Author structure
@@ -169,7 +177,7 @@ class ProfileView extends BaseView {
       avatar,
       firstName,
       lastName,
-      dateOfBirth,
+      dateOfBirth: dateOfBirth.toLowerCase(),
       userId,
       staticUrl,
       isMe,
@@ -197,43 +205,138 @@ class ProfileView extends BaseView {
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
     const fileButton = document.getElementById("news__file-button");
+    const dt = new DataTransfer();
+    let dtMemory = 0;
 
     fileButton?.addEventListener("click", () => {
       fileInput.click();
     });
 
+    const imgContent = document.getElementById("news-img-content");
+    const fileContent = document.getElementById("news-file-content");
+
     if (fileInput) {
       fileInput.addEventListener("change", () => {
         const files = fileInput.files;
-        const imgContent = document.getElementById("news-img-content");
 
-        imgContent.innerHTML = "";
+        Array.from(files).forEach((file) => {
+          if (dtMemory + file.size > MB * maxPostMemory) {
+            customAlert("error", "Максимальный размер файлов - 10");
+            return;
+          }
+          if (dt.items.length === 10) {
+            customAlert(
+              "error",
+              "Максимальное количество прикрепляемых файлов - 10",
+            );
+            return;
+          }
+          dt.items.add(file);
 
-        Array.from(files).forEach((elem) => {
-          const src = URL.createObjectURL(elem);
+          const src = URL.createObjectURL(file);
+          const fileName = file.name;
+          const isImage = imageTypes.includes(typeFile(file));
 
-          const img = document.createElement("img");
-          img.setAttribute("src", src);
-          img.classList.add("news-img-content__img", "post-content__img");
+          const cancelImg = buildComponent(
+            "img",
+            { src: "dist/images/cancel.png", "data-id": fileName },
+            [`news-${isImage ? "img" : "file"}-content__cancel-img`],
+          );
 
-          imgContent.appendChild(img);
+          cancelImg.addEventListener("click", () => {
+            document
+              .getElementById(
+                `news-${isImage ? "img" : "file"}-content-block-${fileName}`,
+              )
+              ?.remove();
+
+            Array.from(dt.files).forEach((file, index) => {
+              if (file.name === fileName) {
+                dtMemory -= file.size;
+                dt.items.remove(index);
+                return;
+              }
+            });
+          });
+
+          if (isImage) {
+            const imgBlock = buildComponent(
+              "div",
+              { id: `news-img-content-block-${fileName}` },
+              ["news-img-content-block"],
+            );
+            appendChildren(imgContent, [
+              appendChildren(imgBlock, [
+                buildComponent(
+                  "img",
+                  { src: src, "data-id": `news-file-content-${fileName}` },
+                  ["news-img-content__img", "post-content__img"],
+                ),
+                cancelImg,
+              ]),
+            ]);
+          } else {
+            const fileBlock = buildComponent(
+              "div",
+              { id: `news-file-content-block-${fileName}` },
+              ["news-file-content-block"],
+            );
+            appendChildren(fileContent, [
+              appendChildren(fileBlock, [
+                appendChildren(
+                  buildComponent(
+                    "a",
+                    {
+                      target: "_blank",
+                      rel: "noopener",
+                      href: src,
+                      download: fileName,
+                    },
+                    ["news-file-content__a"],
+                  ),
+                  [
+                    buildComponent(
+                      "span",
+                      {},
+                      ["news-file-content__name-span"],
+                      fileName,
+                    ),
+                    buildComponent(
+                      "img",
+                      {
+                        src: "dist/images/document.png",
+                        id: `news-file-content-${fileName}`,
+                      },
+                      ["news-file-content__img"],
+                    ),
+                  ],
+                ),
+                cancelImg,
+              ]),
+            ]);
+          }
         });
+
+        fileInput.value = "";
       });
     }
 
     publishButton?.addEventListener("click", () => {
       const content = document.getElementById("news-content__textarea").value;
 
-      if (content.trim() === "" && fileInput.files.length === 0) {
+      if (content.trim() === "" && dt.files.length === 0) {
         return;
       }
 
       this.eventBus.emit("clickedPublishPost", {
         content: content,
-        attachments: fileInput.files,
+        attachments: dt.files,
       });
 
+      dtMemory = 0;
+      dt.items.clear();
       document.getElementById("news-img-content").innerHTML = "";
+      document.getElementById("news-file-content").innerHTML = "";
       const textarea = document.getElementById("news-content__textarea");
       textarea.value = "";
       textarea.style.height = "60px";
@@ -343,7 +446,10 @@ class ProfileView extends BaseView {
         }
       });
       posts.forEach((elem) => {
-        this.postController.renderPostView({ post: elem, author: author });
+        this.postController.renderFriendPostView({
+          post: elem,
+          author: author,
+        });
       });
     } else {
       this.isAllPosts = true;
@@ -371,7 +477,7 @@ class ProfileView extends BaseView {
    * @return {void}
    */
   postPublishedSuccess({ post, author }) {
-    this.postController.renderPostView({
+    this.postController.renderFriendPostView({
       post: post,
       author: author,
       publish: true,

@@ -35,22 +35,40 @@
       src="dist/images/loading.png"
     />
   </div>
-  <div class="add-message">
-    <button type="button" class="news__file-button" id="news__file-button">
-      <img
-        class="news__img"
-        src="dist/images/attach-paperclip-symbol.png"
-        id="news__img"
-      />
-    </button>
+  <div class="add-message" id="add-message">
+    <div class="news__file-place" id="news__file-place">
+      <button type="button" class="news__file-button" id="news__file-button">
+        <img
+          class="news__img"
+          src="dist/images/attach-paperclip-symbol.png"
+          id="news__img"
+        />
+        <input
+          type="file"
+          class="news-chat__file-input"
+          id="news-chat__file-input"
+          multiple
+        />
+      </button>
+    </div>
     <div class="print-message" id="print-message">
-      <textarea
+      <div
         class="print-message__text-input"
         id="print-message__text-input"
-        placeholder="Напишите сообщение..."
+        contenteditable="true"
         autocomplete="off"
-      ></textarea>
+      ></div>
       <div class="message-menu" id="message-menu">
+        <button
+          type="button"
+          class="message-menu__send-sticker-button"
+          id="message-menu__send-sticker-button"
+        >
+          <img
+            src="dist/images/happiness.png"
+            class="message-menu__send-sticker-img"
+          />
+        </button>
         <button
           type="button"
           class="message-menu__send-button"
@@ -60,5 +78,51 @@
         </button>
       </div>
     </div>
+    <div
+      class="sticker-message-place sticker-message-place_invisible"
+      id="sticker-message-place"
+    >
+      <div
+        class="sticker-message-place-header"
+        id="sticker-message-place-header"
+      >
+        <span
+          class="sticker-message-place-header__span"
+          id="all-message-sticker"
+          >ВСЕ</span
+        >
+        <span class="sticker-message-place-header__span" id="my-message-sticker"
+          >МОИ</span
+        >
+      </div>
+      <div
+        class="sticker-message-place-content"
+        id="sticker-message-place-content"
+      ></div>
+      <div
+        class="sticker-message-place-footer"
+        id="sticker-message-place-footer"
+      >
+        <img
+          src="dist/images/happiness.png"
+          class="sticker-message-place-footer__img"
+          id="message-place-emoji"
+        />
+        <img
+          src="dist/images/stickers.png"
+          class="sticker-message-place-footer__img"
+          id="message-place-stickers"
+        />
+      </div>
+      <div
+        class="no-message-stickers no-message-stickers_invisible"
+        id="no-message-stickers"
+      >
+        Стикеров нет
+      </div>
+      <div class="sticker-message-place-footer"></div>
+    </div>
   </div>
+  <div class="captured-images" id="captured-images"></div>
+  <div class="captured-files" id="captured-files"></div>
 </div>

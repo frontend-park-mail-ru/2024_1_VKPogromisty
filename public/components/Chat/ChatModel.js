@@ -28,6 +28,7 @@ import BaseModel from "../../MVC/BaseModel.js";
  * @property {number} messageId - The ID of current message
  * @property {string} textContent - The text content of current message
  * @property {number} receiverId - The ID of receiver updated message
+ * @property {string[]} attachmentsToDelete - The attachments that were deleted
  */
 
 /**
@@ -70,6 +71,10 @@ class ChatModel extends BaseModel {
       "clickedUpdateMessage",
       this.updateMessage.bind(this),
     );
+    this.eventBus.addEventListener(
+      "needPresentAttachments",
+      this.sendAttachments.bind(this),
+    );
 
     this.addWebSocketHandlers();
   }
@@ -102,6 +107,7 @@ class ChatModel extends BaseModel {
       const data = JSON.parse(event.data);
 
       switch (data.type) {
+        case "SEND_STICKER_MESSAGE":
         case "SEND_MESSAGE":
           this.eventBus.emit("sendMessageSuccess", data.payload);
           break;
@@ -153,8 +159,8 @@ class ChatModel extends BaseModel {
    *
    * @param {SendMessage} sendMessage - The sended message
    */
-  async sendMessage({ companionId, textContent }) {
-    this.webSocket.sendMessage(companionId, textContent);
+  async sendMessage({ companionId, textContent, attachments }) {
+    this.webSocket.sendMessage(companionId, textContent, attachments);
   }
 
   /**
@@ -162,17 +168,71 @@ class ChatModel extends BaseModel {
    *
    * @param {UpdateMessage} UpdateMessage - The updated message
    */
-  async updateMessage({ messageId, textContent, receiver }) {
-    this.webSocket.updateMessage(messageId, textContent, receiver);
+  async updateMessage({
+    messageId,
+    textContent,
+    receiver,
+    attachmentsToDelete,
+  }) {
+    this.webSocket.updateMessage(
+      messageId,
+      textContent,
+      receiver,
+      attachmentsToDelete,
+    );
   }
 
   /**
-   * Delete the message in conversation with current companion
+   * Deletes the message in conversation with current companion
    *
    * @param {number} messageId - The ID of deleted message
    */
   async deleteMessage({ messageId, receiver }) {
     this.webSocket.deleteMessage(messageId, receiver);
+  }
+
+  /**
+   * Sends attachments of message to the server
+   *
+   * @param {*} param0
+   */
+  async sendAttachments({
+    companionId,
+    textContent,
+    attachments,
+    messageId,
+    attachmentsToDelete,
+    needToUpdate,
+  }) {
+    const result = await this.chatService.sendAttachments(
+      companionId,
+      attachments,
+    );
+
+    switch (result.status) {
+      case 201:
+        if (needToUpdate) {
+          this.updateMessage({
+            receiver: companionId,
+            attachmentsToDelete,
+            messageId,
+            textContent,
+          });
+        } else {
+          this.sendMessage({
+            companionId,
+            textContent,
+            attachments: result.body,
+          });
+        }
+
+        break;
+      case 401:
+        this.router.redirect("/login");
+        break;
+      default:
+        this.eventBus.emit("serverError", {});
+    }
   }
 }
 

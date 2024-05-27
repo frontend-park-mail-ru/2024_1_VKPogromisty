@@ -456,18 +456,171 @@ export class PostService {
 
   /**
    * Updates the post from the server
+   *
    * @param {number} post_id - The ID of post
    * @param {string} content - The text content of current post
+   * @param {string[]} attachmentsToDelete - The names of attachments which we need to delete
+   * @param {File[]} attachmentsToAdd - The new attachments to add
+   *
    * @returns {Promise<APIResponse>} {@link APIResponse}
    */
-  async updatePost(post_id, content) {
-    const postId = Number(post_id);
+  async updatePost(
+    post_id,
+    content,
+    attachmentsToAdd = [],
+    attachmentsToDelete = [],
+  ) {
+    const formData = new FormData();
+
+    formData.append("postId", +post_id);
+    formData.append("content", content);
+
+    attachmentsToAdd.forEach((attachment) => {
+      formData.append("attachments", attachment);
+    });
+
+    attachmentsToDelete.forEach((attachment) => {
+      formData.append("attachmentsToDelete", attachment);
+    });
 
     const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
       method: "PUT",
       credentials: "include",
-      body: JSON.stringify({ postId, content }),
+      body: formData,
     });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Gets the all comments of post from the server
+   *
+   * @param {number} postId - The ID of post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getPostComments(postId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `/${postId}/comments`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Adds new comment of post to the server
+   *
+   * @param {number} postId - The ID of post
+   * @param {string} content - The content of new comment
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async addPostComments(postId, content) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments",
+      {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ content, postId }),
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Deletes the comment of post from the server
+   * @param {number} commentId - The ID of post
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async deleteComment(commentId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments",
+      {
+        method: "DELETE",
+        credentials: "include",
+        body: JSON.stringify({ commentId: +commentId }),
+      },
+    );
+
+    if (response.status === 204) {
+      return genResponse(response.status, null, null);
+    }
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Likes current comment
+   *
+   * @param {number} commentId - The ID of current comment
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async likeComment(commentId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments/like",
+      {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ commentId: +commentId }),
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Unlikes current comment
+   *
+   * @param {number} commentId - The ID of current comment
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async unlikeComment(commentId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments/unlike",
+      {
+        method: "DELETE",
+        credentials: "include",
+        body: JSON.stringify({ commentId: +commentId }),
+      },
+    );
+
+    if (response.status === 204) {
+      return genResponse(response.status, null, null);
+    }
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Updates current comment
+   *
+   * @param {string} content - The content of comment
+   * @param {number} commentId - The ID of current comment
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async updateComment(content, commentId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + "comments",
+      {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify({ content, commentId: +commentId }),
+      },
+    );
 
     const data = await response.json();
 
@@ -519,6 +672,35 @@ export class ChatService {
       {
         method: "GET",
         credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Sends attachments of message
+   *
+   * @param {number} companionId - The ID of companion
+   * @param {File[]} attachments - The attachments of message
+   *
+   * @returns {Promise<APIResponse>} {@link ApiResponse}
+   */
+  async sendAttachments(companionId, attachments) {
+    const formData = new FormData();
+
+    Array.from(attachments).forEach((attachment) => {
+      formData.append("attachment", attachment);
+    });
+
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + `/dialogs/${companionId}/unsent-attachments/`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
       },
     );
 
@@ -965,6 +1147,98 @@ export class GroupService {
         body: JSON.stringify({ userId: +userId }),
       },
     );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+}
+
+/**
+ * Service for working with the sticker's API
+ * @class
+ * @property {string} baseUrl - The base URL for the server sticker service
+ */
+export class StickerService {
+  baseUrl = `${API_URL}/chat/stickers/`;
+
+  /**
+   * Gets all stickers from the server
+   *
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getAllStickers() {
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Gets all stickers of current user
+   *
+   * @param {number} authorId - The ID of current user
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async getUserStickers(authorId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + authorId,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Creates a new sticker
+   *
+   * @param {string} name - The name of new sticker
+   * @param {File} image - The image of new sticker
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async createSticker(name, image) {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("image", image);
+
+    const response = await CSRFProtection.addCSRFToken(this.baseUrl, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    return genResponse(response.status, data.body, data.message);
+  }
+
+  /**
+   * Deletes current sticker
+   *
+   * @param {number} stickerId - The ID of sticker
+   * @returns {Promise<APIResponse>} {@link APIResponse}
+   */
+  async deleteSticker(stickerId) {
+    const response = await CSRFProtection.addCSRFToken(
+      this.baseUrl + stickerId,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
+
+    if (response.status === 204) {
+      return genResponse(response.status, null, null);
+    }
 
     const data = await response.json();
 

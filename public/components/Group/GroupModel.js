@@ -17,13 +17,11 @@ class GroupModel extends BaseModel {
    *
    * @param {EventBus} eventBus - Объект класса EventBus.
    * @param {Routing} router - Объект класса Routing
-   * @param {WSocket} webSocket - Текущий сокет
    */
-  constructor(eventBus, router, webSocket) {
+  constructor(eventBus, router) {
     super(eventBus);
 
     this.router = router;
-    this.webSocket = webSocket;
     this.groupService = new GroupService();
     this.profileService = new ProfileService();
 
