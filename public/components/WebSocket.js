@@ -55,9 +55,9 @@ class WSocket {
       };
       this.ws.onclose = (event) => {
         if (event.code !== 1000) {
-          this.intervalId = setInterval(() => {
+          this.intervalId = setTimeout(() => {
             this.openWebSocket();
-          }, 5000);
+          }, 2000);
         }
       };
     }
@@ -82,11 +82,11 @@ class WSocket {
    * @param {number} companionId - The ID of current companion
    * @param {string} textContent - The text content of message
    */
-  sendMessage(companionId, textContent) {
+  sendMessage(companionId, textContent, attachments) {
     CSRFProtection.addCSRFTokenWebSocket(this.ws, {
       type: "SEND_MESSAGE",
       receiver: +companionId,
-      payload: { content: textContent },
+      payload: { content: textContent, attachments },
     });
   }
 
@@ -96,14 +96,16 @@ class WSocket {
    * @param {number} messageId - The ID of current message
    * @param {string} textContent - The text content of message
    * @param {number} receiverId - The ID of current receiver
+   * @param {string[]} attachmentsToDelete - The attachments that were deleted
    */
-  updateMessage(messageId, textContent, receiverId) {
+  updateMessage(messageId, textContent, receiverId, attachmentsToDelete) {
     CSRFProtection.addCSRFTokenWebSocket(this.ws, {
       type: "UPDATE_MESSAGE",
       receiver: +receiverId,
       payload: {
         messageId: +messageId,
         content: textContent,
+        attachmentsToDelete,
       },
     });
   }
@@ -119,6 +121,20 @@ class WSocket {
       type: "DELETE_MESSAGE",
       receiver: +receiverId,
       payload: { messageId: +messageId },
+    });
+  }
+
+  /**
+   * Sends sticker message to current companion
+   *
+   * @param {number} stickerId - The ID of current sticker
+   * @param {number} receiverId - The ID of current receiver
+   */
+  sendStickerMessage(stickerId, receiverId) {
+    CSRFProtection.addCSRFTokenWebSocket(this.ws, {
+      type: "SEND_STICKER_MESSAGE",
+      receiver: +receiverId,
+      payload: { stickerId: +stickerId },
     });
   }
 

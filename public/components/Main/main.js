@@ -22,6 +22,11 @@ const sidebar = [
     icon: "people",
   },
   {
+    href: "/stickers/all",
+    text: "Стикеры",
+    icon: "stickers",
+  },
+  {
     href: "/profile/settings",
     text: "Настройки",
     icon: "settings",
@@ -48,6 +53,11 @@ const toolbar = [
     href: "/groups",
     text: "Сообщества",
     icon: "people",
+  },
+  {
+    href: "/stickers/all",
+    text: "Стикеры",
+    icon: "stickers",
   },
   {
     href: "/profile/settings",
@@ -102,6 +112,7 @@ export class Main {
     document.getElementById("activity").classList.remove("activity_invisible");
     document.getElementById("post-main").classList.add("post-main_invisible");
     postMain.innerHTML = "";
+    document.getElementById("toolbar").classList.remove("toolbar_invisible");
 
     document
       .getElementById("server-error-500")

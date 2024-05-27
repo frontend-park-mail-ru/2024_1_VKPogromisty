@@ -68,7 +68,11 @@ export function replaceChildren(parent, newChildren) {
  */
 export function modifyComponent(currentNode, attrs, classes, innerHTML) {
   for (const [attr, value] of Object.entries(attrs) || {}) {
-    currentNode.setAttribute(attr, value);
+    if (!value) {
+      currentNode.removeAttribute(attr);
+    } else {
+      currentNode.setAttribute(attr, value);
+    }
   }
 
   classes?.forEach((ownClass) => {

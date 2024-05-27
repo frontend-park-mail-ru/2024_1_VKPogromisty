@@ -6,6 +6,7 @@ import PostController from "../Post/PostController.js";
 import UserState from "../UserState.js";
 import { buildComponent, appendChildren } from "../createComponent.js";
 import "./feed.scss";
+import { customAlert } from "../../modules/windows.js";
 
 /**
  * A Author structure
@@ -38,6 +39,8 @@ import "./feed.scss";
  * @property {Author} author - The author of post
  */
 
+const MB = 1024 * 1024;
+const maxPostMemory = 50;
 const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
 const staticUrl = `${API_URL}/static`;
 const typeFile = (file) => {
@@ -174,6 +177,8 @@ class FeedView extends BaseView {
     const publishButton = document.getElementById("publish-post-button");
     const fileInput = document.getElementById("news__file-input");
     const fileButton = document.getElementById("news__file-button");
+    const dt = new DataTransfer();
+    let dtMemory = 0;
 
     if (fileButton) {
       fileButton.addEventListener("click", () => {
@@ -187,42 +192,107 @@ class FeedView extends BaseView {
         const imgContent = document.getElementById("news-img-content");
         const fileContent = document.getElementById("news-file-content");
 
-        imgContent.innerHTML = "";
-        fileContent.innerHTML = "";
+        Array.from(files).forEach((file) => {
+          if (dtMemory + file.size > maxPostMemory * MB) {
+            customAlert("error", "Максимальный размер поста - 50Мб");
+            return;
+          }
 
-        Array.from(files).forEach((elem) => {
-          const src = URL.createObjectURL(elem);
-          const fileName = elem.name;
-
-          if (imageTypes.includes(typeFile(elem))) {
-            imgContent.appendChild(
-              buildComponent("img", { src: src }, [
-                "news-img-content__img",
-                "post-content__img",
-              ]),
+          if (dt.items.length === 10) {
+            customAlert(
+              "error",
+              "Максимальное количество прикрепляемых файлов - 10",
             );
-          } else {
-            fileContent.appendChild(
-              appendChildren(
+            return;
+          }
+
+          dt.items.add(file);
+          dtMemory += file.size;
+
+          const src = URL.createObjectURL(file);
+          const fileName = file.name;
+          const isImage = imageTypes.includes(typeFile(file));
+
+          const cancelImg = buildComponent(
+            "img",
+            { src: "dist/images/cancel.png", "data-id": fileName },
+            [`news-${isImage ? "img" : "file"}-content__cancel-img`],
+          );
+
+          cancelImg.addEventListener("click", () => {
+            document
+              .getElementById(
+                `news-${isImage ? "img" : "file"}-content-block-${fileName}`,
+              )
+              ?.remove();
+
+            Array.from(dt.files).forEach((file, index) => {
+              if (file.name === fileName) {
+                dtMemory -= file.size;
+                dt.items.remove(index);
+                return;
+              }
+            });
+          });
+          if (isImage) {
+            const imgBlock = buildComponent(
+              "div",
+              { id: `news-img-content-block-${fileName}` },
+              ["news-img-content-block"],
+            );
+            appendChildren(imgContent, [
+              appendChildren(imgBlock, [
                 buildComponent(
-                  "a",
-                  {
-                    target: "_blank",
-                    rel: "noopener",
-                    href: src,
-                    download: fileName,
-                  },
-                  ["news-file-content__a"],
+                  "img",
+                  { src: src, "data-id": `news-file-content-${fileName}` },
+                  ["news-img-content__img", "post-content__img"],
                 ),
-                [
-                  buildComponent("img", { src: "dist/images/document.png" }, [
-                    "news-file-content__img",
-                  ]),
-                ],
-              ),
+                cancelImg,
+              ]),
+            ]);
+          } else {
+            const fileBlock = buildComponent(
+              "div",
+              { id: `news-file-content-block-${fileName}` },
+              ["news-file-content-block"],
             );
+            appendChildren(fileContent, [
+              appendChildren(fileBlock, [
+                appendChildren(
+                  buildComponent(
+                    "a",
+                    {
+                      target: "_blank",
+                      rel: "noopener",
+                      href: src,
+                      download: fileName,
+                    },
+                    ["news-file-content__a"],
+                  ),
+                  [
+                    buildComponent(
+                      "span",
+                      {},
+                      ["news-file-content__name-span"],
+                      fileName,
+                    ),
+                    buildComponent(
+                      "img",
+                      {
+                        src: "dist/images/document.png",
+                        id: `news-file-content-${fileName}`,
+                      },
+                      ["news-file-content__img"],
+                    ),
+                  ],
+                ),
+                cancelImg,
+              ]),
+            ]);
           }
         });
+
+        fileInput.value = "";
       });
     }
 
@@ -230,15 +300,17 @@ class FeedView extends BaseView {
       publishButton.addEventListener("click", () => {
         const content = document.getElementById("news-content__textarea").value;
 
-        if (content === "" && fileInput.files.length === 0) {
+        if (content.trim() === "" && dt.files.length === 0) {
           return;
         }
 
         this.eventBus.emit("clickedPublishPost", {
           content: content,
-          attachments: fileInput.files,
+          attachments: dt.files,
         });
 
+        dt.items.clear();
+        dtMemory = 0;
         document.getElementById("news-img-content").innerHTML = "";
         document.getElementById("news-file-content").innerHTML = "";
         const textarea = document.getElementById("news-content__textarea");
@@ -441,7 +513,7 @@ class FeedView extends BaseView {
    */
   renderPublishedSuccess(postInfo) {
     const { post, author } = postInfo;
-    this.postController.renderPostView({
+    this.postController.renderFriendPostView({
       post: post,
       author: author,
       publish: true,

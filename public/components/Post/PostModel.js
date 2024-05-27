@@ -5,6 +5,7 @@ import { PostService, ProfileService } from "../../modules/services.js";
  * @typedef {Object} UpdateInfo
  * @property {number} postId - The ID of current post
  * @property {string} content - The text of current post
+ * @property {string[]} attachmentsToDelete - The attachments to delete
  */
 
 /**
@@ -78,8 +79,13 @@ class PostModel extends BaseModel {
    *
    * @param {UpdateInfo} updateInfo - The info about updated post
    */
-  async updatePost({ postId, content }) {
-    const result = await this.postService.updatePost(postId, content);
+  async updatePost({ postId, content, attachmentsToDelete, attachmentsToAdd }) {
+    const result = await this.postService.updatePost(
+      postId,
+      content,
+      attachmentsToAdd,
+      attachmentsToDelete,
+    );
 
     switch (result.status) {
       case 200:

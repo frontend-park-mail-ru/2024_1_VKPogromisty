@@ -2,6 +2,8 @@ import BaseView from "../../MVC/BaseView";
 import { formatFullDate } from "../../modules/dateRemaking";
 import UserState from "../UserState";
 import { makeComment } from "../../modules/makeComponents";
+import { modifyComponent } from "../createComponent";
+import "./comment.scss";
 
 class CommentView extends BaseView {
   constructor(eventBus) {
@@ -26,6 +28,10 @@ class CommentView extends BaseView {
     this.eventBus.addEventListener(
       "commentUnlikedSuccess",
       this.unlikedComment.bind(this),
+    );
+    this.eventBus.addEventListener(
+      "commentUpdatedSuccess",
+      this.updateComment.bind(this),
     );
   }
 
@@ -62,6 +68,14 @@ class CommentView extends BaseView {
         .getElementById("no-comments")
         .classList.add("no-comments_visible");
     }
+
+    [...document.getElementsByClassName("comment-content__text-span")].forEach(
+      (textArea) => {
+        textArea.style.height = "auto";
+        textArea.style.height =
+          (textArea.scrollHeight < 30 ? 30 : textArea.scrollHeight) + "px";
+      },
+    );
   }
 
   /**
@@ -72,13 +86,24 @@ class CommentView extends BaseView {
   addComment({ comment }) {
     const isMe = true;
     const hasUpdated = comment.createdAt !== comment.updatedAt;
+
     comment.createdAt = formatFullDate(comment.createdAt);
     comment.updatedAt = formatFullDate(comment.updatedAt);
     comment.likesCount = 0;
     comment.isLikedByMe = false;
+
     this.commentsElement.appendChild(
       makeComment(comment, hasUpdated, isMe, UserState, this.eventBus),
     );
+
+    const currentTextarea = document.getElementById(
+      `comment-textarea-${comment.id}`,
+    );
+    currentTextarea.style.height = "auto";
+    currentTextarea.style.height =
+      (currentTextarea.scrollHeight < 30 ? 30 : currentTextarea.scrollHeight) +
+      "px";
+
     document
       .getElementById("no-comments")
       ?.classList.remove("no-comments_visible");
@@ -100,18 +125,41 @@ class CommentView extends BaseView {
   }
 
   /**
+   * Updates current comment
+   *
+   * @param {number} commentId - The ID of comment
+   */
+  updateComment(commentId) {
+    const currentTextArea = document.getElementById(
+      `comment-textarea-${commentId}`,
+    );
+
+    modifyComponent(currentTextArea, { readonly: true });
+
+    const commentRedact = document.getElementById(
+      `comment-redact-${commentId}`,
+    );
+
+    commentRedact.removeChild(commentRedact.lastChild);
+    commentRedact.removeChild(commentRedact.lastChild);
+
+    commentRedact.firstChild.style.display = "block";
+    commentRedact.firstChild.nextSibling.style.display = "block";
+  }
+
+  /**
    * Set comment liked
    *
    * @param {number} commentId - The ID of current comment
    */
   likedComment(commentId) {
     const likedCommentParent = document.querySelector(
-      `#comment-${commentId} .reactions__heart-img_unliked`,
+      `#comment-${commentId} .comment-reactions__heart-img_unliked`,
     ).parentElement;
     const likedComment = document.createElement("img");
     likedComment.setAttribute("src", "dist/images/filled-heart.png");
     likedComment.dataset.id = commentId;
-    likedComment.classList.add("reactions__heart-img_liked");
+    likedComment.classList.add("comment-reactions__heart-img_liked");
     const likesCount = document.querySelector(
       `#comment-${commentId} .comment__likes-count-span`,
     );
@@ -143,12 +191,12 @@ class CommentView extends BaseView {
    */
   unlikedComment(commentId) {
     const unlikedCommentParent = document.querySelector(
-      `#comment-${commentId} .reactions__heart-img_liked`,
+      `#comment-${commentId} .comment-reactions__heart-img_liked`,
     ).parentElement;
     const unlikedComment = document.createElement("img");
     unlikedComment.dataset.id = commentId;
     unlikedComment.setAttribute("src", "dist/images/heart.png");
-    unlikedComment.classList.add("reactions__heart-img_unliked");
+    unlikedComment.classList.add("comment-reactions__heart-img_unliked");
     const likesCount = document.querySelector(
       `#comment-${commentId} .comment__likes-count-span`,
     );

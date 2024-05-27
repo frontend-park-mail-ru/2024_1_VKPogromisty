@@ -178,7 +178,7 @@ class FriendsView extends BaseView {
           );
         this.eventBus.emit("readyRenderSubscribers", {});
         break;
-      default:
+      case "friends":
         document
           .getElementById("friends-label")
           .classList.replace(
@@ -186,6 +186,9 @@ class FriendsView extends BaseView {
             "right-sidebar__a_bigger",
           );
         this.eventBus.emit("readyRenderFriends", {});
+        break;
+      default:
+        this.router.redirect("/community/friends");
     }
   }
 
@@ -362,8 +365,8 @@ class FriendsView extends BaseView {
     document.querySelectorAll(".friends-field").forEach((elem) => {
       elem.addEventListener("click", (event) => {
         if (
-          event.target.classList.contains("friend-ables__send-message-img") ||
-          event.target.classList.contains("friend-ables__send-message-button")
+          event.target.tagName === "BUTTON" ||
+          event.target.classList.contains("friend-ables__send-message-img")
         ) {
           return;
         }
