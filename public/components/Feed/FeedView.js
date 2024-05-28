@@ -41,7 +41,7 @@ import { customAlert } from "../../modules/windows.js";
 
 const MB = 1024 * 1024;
 const maxPostMemory = 50;
-const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
+const imageTypes = ["webp", "jpg", "jpeg", "png", "gif"];
 const staticUrl = `${API_URL}/static`;
 const typeFile = (file) => {
   const parts = file.name.split(".");
@@ -144,7 +144,7 @@ class FeedView extends BaseView {
   renderFeedMain(path) {
     let { userId, avatar, firstName, lastName } = UserState;
     const template = require("./feedMain.hbs");
-    avatar = avatar || "default_avatar.png";
+    avatar = avatar || "default_avatar.webp";
     const userAvatar = `${staticUrl}/user-avatars/${avatar}`;
 
     new Header(document.body).renderForm({
@@ -215,7 +215,7 @@ class FeedView extends BaseView {
 
           const cancelImg = buildComponent(
             "img",
-            { src: "dist/images/cancel.png", "data-id": fileName },
+            { src: "dist/images/cancel.webp", "data-id": fileName },
             [`news-${isImage ? "img" : "file"}-content__cancel-img`],
           );
 
@@ -279,7 +279,7 @@ class FeedView extends BaseView {
                     buildComponent(
                       "img",
                       {
-                        src: "dist/images/document.png",
+                        src: "dist/images/document.webp",
                         id: `news-file-content-${fileName}`,
                       },
                       ["news-file-content__img"],
@@ -410,7 +410,7 @@ class FeedView extends BaseView {
 
       imgSceleton.classList.add("sceleton-img");
       imgSceleton.setAttribute("id", "posts-sceleton");
-      imgSceleton.setAttribute("src", "dist/images/loading.png");
+      imgSceleton.setAttribute("src", "dist/images/loading.webp");
 
       this.postsElement.appendChild(imgSceleton);
     }
@@ -453,7 +453,7 @@ class FeedView extends BaseView {
 
       imgSceleton.classList.add("sceleton-img");
       imgSceleton.setAttribute("id", "posts-sceleton");
-      imgSceleton.setAttribute("src", "dist/images/loading.png");
+      imgSceleton.setAttribute("src", "dist/images/loading.webp");
 
       this.postsElement.appendChild(imgSceleton);
     }
@@ -498,7 +498,7 @@ class FeedView extends BaseView {
 
       imgSceleton.classList.add("sceleton-img");
       imgSceleton.setAttribute("id", "posts-sceleton");
-      imgSceleton.setAttribute("src", "dist/images/loading.png");
+      imgSceleton.setAttribute("src", "dist/images/loading.webp");
 
       this.postsElement.appendChild(imgSceleton);
     }

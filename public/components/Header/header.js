@@ -44,7 +44,7 @@ export class Header {
     document.onscroll = null;
     if (!document.getElementById("header")) {
       const template = require("./header.hbs");
-      avatar = avatar || "default_avatar.png";
+      avatar = avatar || "default_avatar.webp";
 
       this.#parent.innerHTML = template({
         avatar,

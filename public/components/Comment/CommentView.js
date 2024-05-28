@@ -157,7 +157,7 @@ class CommentView extends BaseView {
       `#comment-${commentId} .comment-reactions__heart-img_unliked`,
     ).parentElement;
     const likedComment = document.createElement("img");
-    likedComment.setAttribute("src", "dist/images/filled-heart.png");
+    likedComment.setAttribute("src", "dist/images/filled-heart.webp");
     likedComment.dataset.id = commentId;
     likedComment.classList.add("comment-reactions__heart-img_liked");
     const likesCount = document.querySelector(
@@ -170,12 +170,12 @@ class CommentView extends BaseView {
     );
 
     likedComment.addEventListener("mouseenter", () => {
-      likedComment.setAttribute("src", "dist/images/broken-heart.png");
+      likedComment.setAttribute("src", "dist/images/broken-heart.webp");
       likedComment.style.width = "28px";
       likedComment.style.height = "28px";
     });
     likedComment.addEventListener("mouseleave", () => {
-      likedComment.setAttribute("src", "dist/images/filled-heart.png");
+      likedComment.setAttribute("src", "dist/images/filled-heart.webp");
       likedComment.style.width = "25px";
       likedComment.style.height = "25px";
     });
@@ -195,7 +195,7 @@ class CommentView extends BaseView {
     ).parentElement;
     const unlikedComment = document.createElement("img");
     unlikedComment.dataset.id = commentId;
-    unlikedComment.setAttribute("src", "dist/images/heart.png");
+    unlikedComment.setAttribute("src", "dist/images/heart.webp");
     unlikedComment.classList.add("comment-reactions__heart-img_unliked");
     const likesCount = document.querySelector(
       `#comment-${commentId} .comment__likes-count-span`,
@@ -207,12 +207,12 @@ class CommentView extends BaseView {
     );
 
     unlikedComment.addEventListener("mouseenter", () => {
-      unlikedComment.setAttribute("src", "dist/images/filled-heart.png");
+      unlikedComment.setAttribute("src", "dist/images/filled-heart.webp");
       unlikedComment.style.width = "28px";
       unlikedComment.style.height = "28px";
     });
     unlikedComment.addEventListener("mouseleave", () => {
-      unlikedComment.setAttribute("src", "dist/images/heart.png");
+      unlikedComment.setAttribute("src", "dist/images/heart.webp");
       unlikedComment.style.width = "25px";
       unlikedComment.style.height = "25px";
     });

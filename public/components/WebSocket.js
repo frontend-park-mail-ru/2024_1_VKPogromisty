@@ -36,8 +36,8 @@ class WSocket {
     ) {
       this.ws = new WebSocket(this.url);
       this.ws.onopen = () => {
-        if (this.intervalId) {
-          clearInterval(this.intervalId);
+        if (this.timeoutId) {
+          clearTimeout(this.timeoutId);
         }
         this.promisedEvents.forEach(({ method, eventName, func }) => {
           switch (method) {
@@ -55,7 +55,7 @@ class WSocket {
       };
       this.ws.onclose = (event) => {
         if (event.code !== 1000) {
-          this.intervalId = setTimeout(() => {
+          this.timeoutId = setTimeout(() => {
             this.openWebSocket();
           }, 2000);
         }

@@ -159,6 +159,8 @@ class FriendsView extends BaseView {
       }
     });
 
+    this.path = path;
+
     switch (path) {
       case "subscriptions":
         document
@@ -206,7 +208,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       friends.forEach((elem) => {
-        elem.avatar = elem.avatar || "default_avatar.png";
+        elem.avatar = elem.avatar || "default_avatar.webp";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
         this.friendElem.innerHTML += template({
           staticUrl,
@@ -255,7 +257,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       friends.forEach((elem) => {
-        elem.avatar = elem.avatar || "default_avatar.png";
+        elem.avatar = elem.avatar || "default_avatar.webp";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
         this.friendElem.innerHTML += template({
           staticUrl,
@@ -291,6 +293,21 @@ class FriendsView extends BaseView {
    */
   deleteSubscribe(userId) {
     document.getElementById(`friends-field-${userId}`).remove();
+
+    if (document.getElementById("friends").childElementCount === 0) {
+      let noSomething = "";
+      switch (this.path) {
+        case "friends":
+          noSomething = "У вас нет друзей";
+          break;
+        case "subscribers":
+          noSomething = "У вас нет подписчиков";
+          break;
+        case "subscriptions":
+          noSomething = "Вы ни на кого не подписаны";
+      }
+      document.getElementById("no-something").innerHTML = noSomething;
+    }
   }
 
   /**
@@ -306,7 +323,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       friends.forEach((elem) => {
-        elem.avatar = elem.avatar || "default_avatar.png";
+        elem.avatar = elem.avatar || "default_avatar.webp";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
         this.friendElem.innerHTML += template({
           staticUrl,
@@ -345,7 +362,7 @@ class FriendsView extends BaseView {
 
     if (!noFriends) {
       people.forEach((elem) => {
-        elem.avatar = elem.avatar || "default_avatar.png";
+        elem.avatar = elem.avatar || "default_avatar.webp";
         elem.dateOfBirth = formatDayMonthYear(elem.dateOfBirth);
         this.friendElem.innerHTML += template({
           staticUrl,

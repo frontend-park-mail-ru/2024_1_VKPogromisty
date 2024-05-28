@@ -12,7 +12,7 @@ import "./settings.scss";
 import { customConfirm } from "../../modules/windows.js";
 
 const correct = "form__input_correct";
-const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
+const validExtensions = ["webp", "jpg", "jpeg", "png", "gif"];
 const staticUrl = `${API_URL}/static`;
 const MBToByte = 1024 * 1024;
 const maxMB = 5;
@@ -54,7 +54,7 @@ class SettingsView extends BaseView {
    */
   renderSettingsMain() {
     let { userId, avatar, firstName, lastName, email } = UserState;
-    avatar = avatar || "default_avatar.png";
+    avatar = avatar || "default_avatar.webp";
 
     new Header(document.body).renderForm({
       userId,

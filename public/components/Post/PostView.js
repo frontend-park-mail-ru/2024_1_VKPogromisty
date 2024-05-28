@@ -46,7 +46,7 @@ import { API_URL } from "../../modules/consts.js";
  * @property {boolean} publish - Is published now?
  */
 
-const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
+const imageTypes = ["webp", "jpg", "jpeg", "png", "gif"];
 const staticUrl = `${API_URL}/static`;
 const typeFile = (file) => {
   const parts = file.split(".");
@@ -170,8 +170,8 @@ class PostView extends BaseView {
    */
   renderFriendPost({ post, author, publish }) {
     let { userId, avatar } = UserState;
-    avatar = avatar || "default_avatar.png";
-    author.avatar = author.avatar || "default_avatar.png";
+    avatar = avatar || "default_avatar.webp";
+    author.avatar = author.avatar || "default_avatar.webp";
 
     let isMe = Number(author.userId) === Number(userId);
     const isPostPage = this.isPostPage;
@@ -254,8 +254,8 @@ class PostView extends BaseView {
    */
   renderGroupPost({ post, publish, group }) {
     let { userId, avatar } = UserState;
-    avatar = avatar || "default_avatar.png";
-    group.avatar = group.avatar || "default_avatar.png";
+    avatar = avatar || "default_avatar.webp";
+    group.avatar = group.avatar || "default_avatar.webp";
 
     let isMe = Number(post.authorId) === Number(userId);
     const isPostPage = this.isPostPage;
@@ -350,19 +350,19 @@ class PostView extends BaseView {
     }
 
     const likedPost = document.createElement("img");
-    likedPost.setAttribute("src", "dist/images/filled-heart.png");
+    likedPost.setAttribute("src", "dist/images/filled-heart.webp");
     likedPost.dataset.id = postId;
     likedPost.classList.add("reactions__heart-img_liked");
     likesCount.innerHTML = +likesCount.innerHTML + 1;
     likedPostParent.replaceChild(likedPost, likedPostParent.firstElementChild);
 
     likedPost.addEventListener("mouseenter", () => {
-      likedPost.setAttribute("src", "dist/images/broken-heart.png");
+      likedPost.setAttribute("src", "dist/images/broken-heart.webp");
       likedPost.style.width = "28px";
       likedPost.style.height = "28px";
     });
     likedPost.addEventListener("mouseleave", () => {
-      likedPost.setAttribute("src", "dist/images/filled-heart.png");
+      likedPost.setAttribute("src", "dist/images/filled-heart.webp");
       likedPost.style.width = "25px";
       likedPost.style.height = "25px";
     });
@@ -391,7 +391,7 @@ class PostView extends BaseView {
     }
     const unlikedPost = document.createElement("img");
     unlikedPost.dataset.id = postId;
-    unlikedPost.setAttribute("src", "dist/images/heart.png");
+    unlikedPost.setAttribute("src", "dist/images/heart.webp");
     unlikedPost.classList.add("reactions__heart-img_unliked");
     likesCount.innerHTML = +likesCount.innerHTML - 1;
     unlikedPostParent.replaceChild(
@@ -400,12 +400,12 @@ class PostView extends BaseView {
     );
 
     unlikedPost.addEventListener("mouseenter", () => {
-      unlikedPost.setAttribute("src", "dist/images/filled-heart.png");
+      unlikedPost.setAttribute("src", "dist/images/filled-heart.webp");
       unlikedPost.style.width = "28px";
       unlikedPost.style.height = "28px";
     });
     unlikedPost.addEventListener("mouseleave", () => {
-      unlikedPost.setAttribute("src", "dist/images/heart.png");
+      unlikedPost.setAttribute("src", "dist/images/heart.webp");
       unlikedPost.style.width = "25px";
       unlikedPost.style.height = "25px";
     });
@@ -432,7 +432,7 @@ class PostView extends BaseView {
       );
 
       const img = document.createElement("img");
-      img.setAttribute("src", "dist/images/dot.png");
+      img.setAttribute("src", "dist/images/dot.webp");
       img.classList.add("post-author-time__dot-img");
 
       const span = document.createElement("span");
@@ -533,9 +533,11 @@ class PostView extends BaseView {
                       ["news-file-content__name-span"],
                       attachmentName,
                     ),
-                    buildComponent("img", { src: "dist/images/document.png" }, [
-                      "news-file-content__img",
-                    ]),
+                    buildComponent(
+                      "img",
+                      { src: "dist/images/document.webp" },
+                      ["news-file-content__img"],
+                    ),
                   ],
                 ),
               ]),

@@ -172,10 +172,9 @@ class StickerView extends BaseView {
       .getElementById("all-message-sticker")
       .classList.add("sticker-message-place-header__span_small");
 
-    if (!stickers) {
-      document
-        .getElementById("no-message-stickers")
-        ?.classList.remove("no-message-stickers_invisible");
+    if (!stickers.length) {
+      document.getElementById("sticker-message-place-content").innerHTML =
+        '<span class="no-stickers-message__span">Стикеров нет</span><span class="suggest-create-sticker__span">Вы можете создать их</span><a href="/stickers/my" class="suggest-create-sticker__a">тут</a>';
       return;
     }
 
@@ -208,7 +207,7 @@ class StickerView extends BaseView {
     this.emojis.forEach((emoji) => {
       const messageEmoji = buildComponent(
         "img",
-        { src: `dist/images/aE/${emoji}.png` },
+        { src: `dist/images/aE/${emoji}.webp` },
         ["sticker-message-place-content__emoji-img"],
       );
 
@@ -216,7 +215,7 @@ class StickerView extends BaseView {
 
       messageEmoji.addEventListener("click", () => {
         document.getElementById("print-message__text-input").innerHTML +=
-          `<img src="dist/images/aE/${emoji}.png" class="sticker-message-place-content__emoji-img" />`;
+          `<img src="dist/images/aE/${emoji}.webp" class="sticker-message-place-content__emoji-img" />`;
       });
     });
   }
@@ -285,7 +284,7 @@ class StickerView extends BaseView {
         inputFile.files = null;
         document
           .getElementById("prewatch")
-          .setAttribute("src", "dist/images/nothing.png");
+          .setAttribute("src", "dist/images/nothing.webp");
       } else {
         if (file.size / MBToByte > maxMB) {
           incorrectAvatar.innerHTML = exceededSize;
@@ -293,7 +292,7 @@ class StickerView extends BaseView {
           inputFile.files = null;
           document
             .getElementById("prewatch")
-            .setAttribute("src", "dist/images/nothing.png");
+            .setAttribute("src", "dist/images/nothing.webp");
         } else {
           document.getElementById("prewatch").setAttribute("src", img);
         }
@@ -349,7 +348,7 @@ class StickerView extends BaseView {
       flag = false;
     }
 
-    if (!validateName(inputName.value)) {
+    if (!validateName(inputName.value.trim())) {
       incorrectName.classList.remove(correct);
       flag = false;
     }
@@ -368,7 +367,7 @@ class StickerView extends BaseView {
     document.getElementById("new-sticker-name-field__input").value = "";
     document
       .getElementById("prewatch")
-      .setAttribute("src", "dist/images/nothing.png");
+      .setAttribute("src", "dist/images/nothing.webp");
   }
 
   /**

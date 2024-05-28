@@ -1,4 +1,6 @@
 import "./confirm/confirm.scss";
+import "./loopedImage/loopedImage.scss";
+
 /**
  * Shows alert with current text and meaning
  *
@@ -65,4 +67,15 @@ export function customConfirm(reason, title, brief, ok = "Да", cancel = "Не�
       confirmWindow.remove();
       main.classList.remove("blured");
     });
+}
+
+/**
+ * Looped an existing on page image
+ *
+ * @param {string} hrefImage - The href of image
+ */
+export function loopedImage(hrefImage) {
+  const template = require("./loopedImage/loopedImage.hbs");
+
+  document.body.appendChild(template({ hrefImage }));
 }

@@ -160,7 +160,7 @@ class GroupView extends BaseView {
   renderGroups() {
     const template = require("./groupsMain.hbs");
     let { userId, avatar, firstName, lastName } = UserState;
-    avatar = avatar || "default_avatar.png";
+    avatar = avatar || "default_avatar.webp";
 
     new Header(document.body).renderForm({
       userId,
@@ -218,7 +218,7 @@ class GroupView extends BaseView {
 
     if (groups) {
       groups.forEach((elem) => {
-        elem.avatar = elem.avatar || "default_avatar.png";
+        elem.avatar = elem.avatar || "default_avatar.webp";
         elem.createdAt = formatDayMonthYear(elem.createdAt);
         this.groupElement.innerHTML += template({
           staticUrl,
@@ -312,7 +312,7 @@ class GroupView extends BaseView {
 
     let { id, name, createdAt, avatar, subscribersCount, description } =
       publicGroup;
-    avatar = avatar || "default_avatar.png";
+    avatar = avatar || "default_avatar.webp";
     this.mainElement = document.getElementById("activity");
     this.groupId = id;
     this.groupAvatar = avatar;
@@ -381,7 +381,7 @@ class GroupView extends BaseView {
 
         Array.from(files).forEach((file) => {
           if (dtMemory + file.size > MBToByte * maxPostMemory) {
-            customAlert("error", "Максимальный размер файлов - 10");
+            customAlert("error", "Максимальный размер поста - 50МБ");
             return;
           }
           if (dt.items.length === 10) {
@@ -392,6 +392,7 @@ class GroupView extends BaseView {
             return;
           }
           dt.items.add(file);
+          dtMemory += file.size;
 
           const src = URL.createObjectURL(file);
           const fileName = file.name;
@@ -399,7 +400,7 @@ class GroupView extends BaseView {
 
           const cancelImg = buildComponent(
             "img",
-            { src: "dist/images/cancel.png", "data-id": fileName },
+            { src: "dist/images/cancel.webp", "data-id": fileName },
             [`news-${isImage ? "img" : "file"}-content__cancel-img`],
           );
 
@@ -464,7 +465,7 @@ class GroupView extends BaseView {
                     buildComponent(
                       "img",
                       {
-                        src: "dist/images/document.png",
+                        src: "dist/images/document.webp",
                         id: `news-file-content-${fileName}`,
                       },
                       ["news-file-content__img"],
@@ -582,7 +583,7 @@ class GroupView extends BaseView {
 
       imgSceleton.classList.add("sceleton-img");
       imgSceleton.setAttribute("id", "posts-sceleton");
-      imgSceleton.setAttribute("src", "dist/images/loading.png");
+      imgSceleton.setAttribute("src", "dist/images/loading.webp");
 
       this.postsElement.appendChild(imgSceleton);
     }
@@ -624,7 +625,7 @@ class GroupView extends BaseView {
     if (!noGroups) {
       groups.forEach((elem) => {
         elem.publicGroup.avatar =
-          elem.publicGroup.avatar || "default_avatar.png";
+          elem.publicGroup.avatar || "default_avatar.webp";
         elem.publicGroup.createdAt = formatDayMonthYear(
           elem.publicGroup.createdAt,
         );
@@ -746,7 +747,7 @@ class GroupView extends BaseView {
     const template = require("./groupSettings.hbs");
 
     let { name, avatar, description } = publicGroup;
-    avatar = avatar || "default_avatar.png";
+    avatar = avatar || "default_avatar.webp";
     this.groupAvatar = avatar;
     this.groupName = name;
     this.description = description;
