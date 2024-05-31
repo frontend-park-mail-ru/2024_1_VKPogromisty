@@ -140,6 +140,7 @@
   @include row-flexible;
   width: 100%;
   justify-content: space-between;
+  max-height: 20px;
 
   &__message-span {
     font-size: medium;
