@@ -16,11 +16,10 @@
 https://socio-project.ru
 
 <b>Swagger-документация API:</b>
-http://94.139.246.134:8001/swagger/index.html
+https://socio-project.ru/swagger/index.html
 
 Разработчики:
 <ul>
-  <li>Никита Плёнкин - https://github.com/kond9</li>
   <li>Горбунов Алексей - https://github.com/Famelbyby</li>
   <li>Митин Пётр - https://github.com/Petr09Mitin</li>
 </ul>
