@@ -174,7 +174,7 @@ class StickerView extends BaseView {
 
     if (!stickers.length) {
       document.getElementById("sticker-message-place-content").innerHTML =
-        '<span class="no-stickers-message__span">Стикеров нет</span><span class="suggest-create-sticker__span">Вы можете создать их</span><a href="/stickers/my" class="suggest-create-sticker__a">тут</a>';
+        '<span class="no-stickers-message__span">Стикеров нет</span><div><span class="suggest-create-sticker__span">Вы можете создать их </span><a href="/stickers/my" class="suggest-create-sticker__a">тут</a></div>';
       return;
     }
 

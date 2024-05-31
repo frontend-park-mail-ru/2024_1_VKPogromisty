@@ -1,4 +1,5 @@
 <div class="messenger">
+  {{#if canSearch}}
   <div class="search-place">
     <div class="search-dialog">
       <img
@@ -8,6 +9,7 @@
       <input class="search-dialog__input" type="text" placeholder="Поиск" />
     </div>
   </div>
+  {{/if}}
   <div class="dialogs" id="dialogs"></div>
   <img
     class="sceleton-img"
