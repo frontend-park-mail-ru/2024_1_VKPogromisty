@@ -157,7 +157,7 @@ class ChatView extends BaseView {
 
     const template = require("./chatMain.hbs");
     const isMe = userId === UserState.userId;
-    avatar = avatar || "default_avatar.webp";
+    avatar = avatar || "default_avatar.png";
 
     this.mainElement.innerHTML = template({
       userId,

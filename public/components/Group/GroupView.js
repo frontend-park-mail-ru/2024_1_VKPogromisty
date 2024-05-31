@@ -160,7 +160,7 @@ class GroupView extends BaseView {
   renderGroups() {
     const template = require("./groupsMain.hbs");
     let { userId, avatar, firstName, lastName } = UserState;
-    avatar = avatar || "default_avatar.webp";
+    avatar = avatar || "default_avatar.png";
 
     new Header(document.body).renderForm({
       userId,
@@ -218,7 +218,7 @@ class GroupView extends BaseView {
 
     if (groups) {
       groups.forEach((elem) => {
-        elem.avatar = elem.avatar || "default_avatar.webp";
+        elem.avatar = elem.avatar || "default_avatar.png";
         elem.createdAt = formatDayMonthYear(elem.createdAt);
         this.groupElement.innerHTML += template({
           staticUrl,
@@ -312,7 +312,7 @@ class GroupView extends BaseView {
 
     let { id, name, createdAt, avatar, subscribersCount, description } =
       publicGroup;
-    avatar = avatar || "default_avatar.webp";
+    avatar = avatar || "default_avatar.png";
     this.mainElement = document.getElementById("activity");
     this.groupId = id;
     this.groupAvatar = avatar;
@@ -625,7 +625,7 @@ class GroupView extends BaseView {
     if (!noGroups) {
       groups.forEach((elem) => {
         elem.publicGroup.avatar =
-          elem.publicGroup.avatar || "default_avatar.webp";
+          elem.publicGroup.avatar || "default_avatar.png";
         elem.publicGroup.createdAt = formatDayMonthYear(
           elem.publicGroup.createdAt,
         );
@@ -747,7 +747,7 @@ class GroupView extends BaseView {
     const template = require("./groupSettings.hbs");
 
     let { name, avatar, description } = publicGroup;
-    avatar = avatar || "default_avatar.webp";
+    avatar = avatar || "default_avatar.png";
     this.groupAvatar = avatar;
     this.groupName = name;
     this.description = description;

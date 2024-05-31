@@ -167,7 +167,7 @@ class ProfileView extends BaseView {
     User.dateOfBirth = formatDayMonthYear(User.dateOfBirth);
 
     let { userId, firstName, lastName, dateOfBirth, avatar } = User;
-    avatar = avatar || "default_avatar.webp";
+    avatar = avatar || "default_avatar.png";
     this.mainElement = document.getElementById("activity");
     this.isSubscriber = isSubscriber;
     const isMe = (this.isMe = Number(this.userId) === Number(UserState.userId));

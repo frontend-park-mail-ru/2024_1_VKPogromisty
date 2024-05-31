@@ -170,8 +170,8 @@ class PostView extends BaseView {
    */
   renderFriendPost({ post, author, publish }) {
     let { userId, avatar } = UserState;
-    avatar = avatar || "default_avatar.webp";
-    author.avatar = author.avatar || "default_avatar.webp";
+    avatar = avatar || "default_avatar.png";
+    author.avatar = author.avatar || "default_avatar.png";
 
     let isMe = Number(author.userId) === Number(userId);
     const isPostPage = this.isPostPage;
@@ -254,8 +254,8 @@ class PostView extends BaseView {
    */
   renderGroupPost({ post, publish, group }) {
     let { userId, avatar } = UserState;
-    avatar = avatar || "default_avatar.webp";
-    group.avatar = group.avatar || "default_avatar.webp";
+    avatar = avatar || "default_avatar.png";
+    group.avatar = group.avatar || "default_avatar.png";
 
     let isMe = Number(post.authorId) === Number(userId);
     const isPostPage = this.isPostPage;

@@ -144,7 +144,7 @@ class FeedView extends BaseView {
   renderFeedMain(path) {
     let { userId, avatar, firstName, lastName } = UserState;
     const template = require("./feedMain.hbs");
-    avatar = avatar || "default_avatar.webp";
+    avatar = avatar || "default_avatar.png";
     const userAvatar = `${staticUrl}/user-avatars/${avatar}`;
 
     new Header(document.body).renderForm({

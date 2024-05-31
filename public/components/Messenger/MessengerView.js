@@ -362,8 +362,8 @@ class MessengerView extends BaseView {
     const noDialogs = document.getElementById("no-dialogs__span");
 
     dialogs.forEach((elem) => {
-      elem.user1.avatar = elem.user1.avatar || "default_avatar.webp";
-      elem.user2.avatar = elem.user2.avatar || "default_avatar.webp";
+      elem.user1.avatar = elem.user1.avatar || "default_avatar.png";
+      elem.user2.avatar = elem.user2.avatar || "default_avatar.png";
 
       if (elem.user1.userId === UserState.userId) {
         elem.companion = elem.user2;

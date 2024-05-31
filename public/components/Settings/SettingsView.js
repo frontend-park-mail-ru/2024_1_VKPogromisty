@@ -54,7 +54,7 @@ class SettingsView extends BaseView {
    */
   renderSettingsMain() {
     let { userId, avatar, firstName, lastName, email } = UserState;
-    avatar = avatar || "default_avatar.webp";
+    avatar = avatar || "default_avatar.png";
 
     new Header(document.body).renderForm({
       userId,
