@@ -209,7 +209,8 @@
   }
 
   &__name {
-    margin-bottom: 5px;
+    margin-bottom: 3px;
+    padding-bottom: 2px;
     font-size: 20px;
     max-width: 120px;
     overflow: hidden;
@@ -260,7 +261,7 @@
   border-radius: 8%;
   background: linear-gradient(309deg, #ecbfbf, #f4dddd);
   box-sizing: border-box;
-  padding: 5px;
+  padding: 10px;
 
   &_invisible {
     display: none;
@@ -313,5 +314,24 @@
 
   &_invisible {
     display: none;
+  }
+}
+
+.no-stickers-message {
+  &__span {
+    font-size: 24px;
+    color: #928888;
+  }
+}
+
+.suggest-create-sticker {
+  &__span {
+    font-size: 18px;
+    color: #906262;
+  }
+
+  &__a {
+    font-size: 18px;
+    color: #906262;
   }
 }

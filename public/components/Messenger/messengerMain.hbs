@@ -1,18 +1,20 @@
 <div class="messenger">
+  {{#if canSearch}}
   <div class="search-place">
     <div class="search-dialog">
       <img
         class="search-dialog__magnifier-img"
-        src="dist/images/magnifying-glass.png"
+        src="dist/images/magnifying-glass.webp"
       />
       <input class="search-dialog__input" type="text" placeholder="Поиск" />
     </div>
   </div>
+  {{/if}}
   <div class="dialogs" id="dialogs"></div>
   <img
     class="sceleton-img"
     id="dialogs-sceleton"
-    src="dist/images/loading.png"
+    src="dist/images/loading.webp"
   />
 </div>
 <div class="no-dialogs">

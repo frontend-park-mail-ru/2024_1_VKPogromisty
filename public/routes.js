@@ -42,7 +42,10 @@ export class Routing {
 
         while (target.nodeName.toLowerCase() !== "body") {
           if (target.nodeName.toLowerCase() === "a") {
-            if (target.classList.contains("news-file-content__a")) {
+            if (
+              target.classList.contains("news-file-content__a") ||
+              target.classList.contains("message-file-content__a")
+            ) {
               break;
             }
             event.preventDefault();

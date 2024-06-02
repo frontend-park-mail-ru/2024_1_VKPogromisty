@@ -6,7 +6,7 @@ import {
 import { customConfirm, customAlert } from "/public/modules/windows.js";
 import { API_URL } from "/public/modules/consts.js";
 
-const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
+const imageTypes = ["webp", "jpg", "jpeg", "png", "gif"];
 const staticUrl = `${API_URL}/static`;
 const typeFile = (file) => {
   const parts = file.split(".");
@@ -65,7 +65,7 @@ export function makePost(
 
   if (hasUpdated) {
     appendChildren(postAuthorTime, [
-      buildComponent("img", { src: "dist/images/dot.png" }, [
+      buildComponent("img", { src: "dist/images/dot.webp" }, [
         "post-author-time__dot-img",
       ]),
       buildComponent(
@@ -169,7 +169,7 @@ export function makePost(
                     ["news-file-content__name-span"],
                     elem,
                   ),
-                  buildComponent("img", { src: "dist/images/document.png" }, [
+                  buildComponent("img", { src: "dist/images/document.webp" }, [
                     "news-file-content__img",
                   ]),
                 ],
@@ -185,8 +185,8 @@ export function makePost(
     ? "reactions__heart-img_liked"
     : "reactions__heart-img_unliked";
   const sourceIsLiked = post.isLikedByMe
-    ? "dist/images/filled-heart.png"
-    : "dist/images/heart.png";
+    ? "dist/images/filled-heart.webp"
+    : "dist/images/heart.webp";
   const imgIsLiked = buildComponent(
     "img",
     {
@@ -198,7 +198,7 @@ export function makePost(
   const showCommentsButton = appendChildren(
     buildComponent("button", {}, ["show-comments"]),
     [
-      buildComponent("img", { src: "dist/images/messenger.png" }, [
+      buildComponent("img", { src: "dist/images/messenger.webp" }, [
         "show-comments__messenger-img",
       ]),
     ],
@@ -214,12 +214,12 @@ export function makePost(
 
   if (post.isLikedByMe) {
     imgIsLiked.addEventListener("mouseenter", () => {
-      imgIsLiked.setAttribute("src", "dist/images/broken-heart.png");
+      imgIsLiked.setAttribute("src", "dist/images/broken-heart.webp");
       imgIsLiked.style.width = "28px";
       imgIsLiked.style.height = "28px";
     });
     imgIsLiked.addEventListener("mouseleave", () => {
-      imgIsLiked.setAttribute("src", "dist/images/filled-heart.png");
+      imgIsLiked.setAttribute("src", "dist/images/filled-heart.webp");
       imgIsLiked.style.width = "25px";
       imgIsLiked.style.height = "25px";
     });
@@ -228,12 +228,12 @@ export function makePost(
     });
   } else {
     imgIsLiked.addEventListener("mouseenter", () => {
-      imgIsLiked.setAttribute("src", "dist/images/filled-heart.png");
+      imgIsLiked.setAttribute("src", "dist/images/filled-heart.webp");
       imgIsLiked.style.width = "28px";
       imgIsLiked.style.height = "28px";
     });
     imgIsLiked.addEventListener("mouseleave", () => {
-      imgIsLiked.setAttribute("src", "dist/images/heart.png");
+      imgIsLiked.setAttribute("src", "dist/images/heart.webp");
       imgIsLiked.style.width = "25px";
       imgIsLiked.style.height = "25px";
     });
@@ -247,7 +247,7 @@ export function makePost(
     {
       id: `edit-img-${post.postId}`,
       "data-id": post.postId,
-      src: "dist/images/edit.png",
+      src: "dist/images/edit.webp",
     },
     ["post-author__edit-img"],
   );
@@ -256,7 +256,7 @@ export function makePost(
     {
       id: `trash-basket-${post.postId}`,
       "data-id": post.postId,
-      src: "dist/images/trash-can.png",
+      src: "dist/images/trash-can.webp",
     },
     ["post-author__trash-basket-img"],
   );
@@ -276,7 +276,7 @@ export function makePost(
 
     const addAttachment = buildComponent(
       "img",
-      { src: "dist/images/plus.png" },
+      { src: "dist/images/plus.webp" },
       ["news-plus-attachment__img"],
     );
     const emptyInputFile = buildComponent(
@@ -292,7 +292,7 @@ export function makePost(
     const ok = document.createElement("img");
     ok.classList.add("post-author__accept-img");
     ok.setAttribute("data-id", id);
-    ok.setAttribute("src", "dist/images/check.png");
+    ok.setAttribute("src", "dist/images/check.webp");
     ok.addEventListener("click", () => {
       if (
         textarea.value.trim() === "" &&
@@ -314,7 +314,7 @@ export function makePost(
     const cancel = document.createElement("img");
     cancel.classList.add("post-author__cancel-img");
     cancel.setAttribute("data-id", id);
-    cancel.setAttribute("src", "dist/images/cancel.png");
+    cancel.setAttribute("src", "dist/images/cancel.webp");
     cancel.addEventListener("click", () => {
       document
         .querySelectorAll(
@@ -354,7 +354,7 @@ export function makePost(
 
         const cancelImg = buildComponent(
           "img",
-          { src: "dist/images/cancel.png", "data-id": fileName },
+          { src: "dist/images/cancel.webp", "data-id": fileName },
           [`news-${isImage ? "img" : "file"}-content__cancel-img`],
         );
 
@@ -426,7 +426,7 @@ export function makePost(
                   buildComponent(
                     "img",
                     {
-                      src: "dist/images/document.png",
+                      src: "dist/images/document.webp",
                       id: `news-file-content-${fileName}`,
                     },
                     ["news-file-content__img"],
@@ -451,7 +451,7 @@ export function makePost(
       .forEach((block) => {
         const deleteFileImg = buildComponent(
           "img",
-          { src: "dist/images/cancel.png" },
+          { src: "dist/images/cancel.webp" },
           [`news-img-content__cancel-img`],
         );
 
@@ -469,7 +469,7 @@ export function makePost(
       .forEach((block) => {
         const deleteFileImg = buildComponent(
           "img",
-          { src: "dist/images/cancel.png" },
+          { src: "dist/images/cancel.webp" },
           [`news-file-content__cancel-img`],
         );
 
@@ -521,7 +521,7 @@ export function makePost(
     const postComment = buildComponent(
       "img",
       {
-        src: "dist/images/send.png",
+        src: "dist/images/send.webp",
         "data-id": post.postId,
       },
       ["post-comment-img"],
@@ -546,7 +546,7 @@ export function makePost(
       appendChildren(buildComponent("div", {}, ["comment-buttons"]), [
         buildComponent(
           "img",
-          { src: "dist/images/attach-paperclip-symbol.png" },
+          { src: "dist/images/attach-paperclip-symbol.webp" },
           ["comment-buttons__paper-clip-img"],
         ),
         postComment,
@@ -576,7 +576,12 @@ export function makePost(
           appendChildren(buildComponent("button", {}, ["reactions-like"]), [
             imgIsLiked,
           ]),
-          buildComponent("span", {}, ["likes-count__span"], post.likesCount),
+          buildComponent(
+            "span",
+            {},
+            ["likes-count__span"],
+            post.likesCount === 0 ? "0" : post.likesCount,
+          ),
           showCommentsButton,
           buildComponent("span", {}, ["show-comments-label__span"]),
         ]),
@@ -611,7 +616,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
   );
   if (hasUpdated) {
     appendChildren(commentAuthorTime, [
-      buildComponent("img", { src: "dist/images/dot.png" }, [
+      buildComponent("img", { src: "dist/images/dot.webp" }, [
         "comment-author-time__dot-img",
       ]),
       buildComponent(
@@ -627,7 +632,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
     ? buildComponent(
         "img",
         {
-          src: "dist/images/filled-heart.png",
+          src: "dist/images/filled-heart.webp",
           "data-id": comment.id,
         },
         ["comment-reactions__heart-img_liked"],
@@ -635,7 +640,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
     : buildComponent(
         "img",
         {
-          src: "dist/images/heart.png",
+          src: "dist/images/heart.webp",
           "data-id": comment.id,
         },
         ["comment-reactions__heart-img_unliked"],
@@ -644,7 +649,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
   const editImg = buildComponent(
     "img",
     {
-      src: "dist/images/edit.png",
+      src: "dist/images/edit.webp",
       "data-id": comment.id,
       id: `edit-img-${comment.id}`,
     },
@@ -654,7 +659,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
   const trashCanImg = buildComponent(
     "img",
     {
-      src: "dist/images/trash-can.png",
+      src: "dist/images/trash-can.webp",
       "data-id": comment.id,
       id: `trash-basket-${comment.id}`,
     },
@@ -678,7 +683,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
     const ok = document.createElement("img");
     ok.classList.add("comment-author__accept-img");
     ok.setAttribute("data-id", id);
-    ok.setAttribute("src", "dist/images/check.png");
+    ok.setAttribute("src", "dist/images/check.webp");
     ok.addEventListener("click", () => {
       if (textareaComment.value.trim() === "") {
         cancel.click();
@@ -694,7 +699,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
     const cancel = document.createElement("img");
     cancel.classList.add("comment-author__cancel-img");
     cancel.setAttribute("data-id", id);
-    cancel.setAttribute("src", "dist/images/cancel.png");
+    cancel.setAttribute("src", "dist/images/cancel.webp");
     cancel.addEventListener("click", () => {
       textareaComment.value = comment.content;
 
@@ -728,12 +733,12 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
 
   if (comment.isLikedByMe) {
     reactionsHeart.addEventListener("mouseenter", () => {
-      reactionsHeart.setAttribute("src", "dist/images/broken-heart.png");
+      reactionsHeart.setAttribute("src", "dist/images/broken-heart.webp");
       reactionsHeart.style.width = "25px";
       reactionsHeart.style.height = "25px";
     });
     reactionsHeart.addEventListener("mouseleave", () => {
-      reactionsHeart.setAttribute("src", "dist/images/filled-heart.png");
+      reactionsHeart.setAttribute("src", "dist/images/filled-heart.webp");
       reactionsHeart.style.width = "22px";
       reactionsHeart.style.height = "22px";
     });
@@ -742,12 +747,12 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
     });
   } else {
     reactionsHeart.addEventListener("mouseenter", () => {
-      reactionsHeart.setAttribute("src", "dist/images/filled-heart.png");
+      reactionsHeart.setAttribute("src", "dist/images/filled-heart.webp");
       reactionsHeart.style.width = "25px";
       reactionsHeart.style.height = "25px";
     });
     reactionsHeart.addEventListener("mouseleave", () => {
-      reactionsHeart.setAttribute("src", "dist/images/heart.png");
+      reactionsHeart.setAttribute("src", "dist/images/heart.webp");
       reactionsHeart.style.width = "22px";
       reactionsHeart.style.height = "22px";
     });
@@ -809,7 +814,7 @@ export function makeComment(comment, hasUpdated, isMe, author, eventBus) {
                 "span",
                 {},
                 ["comment__likes-count-span"],
-                `${comment.likesCount}`,
+                comment.likesCount === 0 ? "0" : comment.likesCount,
               ),
             ]),
             appendChildren(
@@ -835,7 +840,7 @@ export function makeSticker({ name, fileName, id, staticUrl, eventBus, isMe }) {
   const deleteBlock = appendChildren(
     buildComponent("div", { "data-id": id }, ["sticker__delete-block"]),
     [
-      buildComponent("img", { src: "dist/images/remove.png" }, [
+      buildComponent("img", { src: "dist/images/remove.webp" }, [
         "sticker__delete-img",
       ]),
     ],
@@ -1024,7 +1029,7 @@ export function makeMessage(
                 ["message-file-content__name-span"],
                 attachment,
               ),
-              buildComponent("img", { src: "dist/images/document.png" }, [
+              buildComponent("img", { src: "dist/images/document.webp" }, [
                 "message-file-content__img",
               ]),
             ],
@@ -1036,7 +1041,7 @@ export function makeMessage(
 
   const editAble = buildComponent(
     "img",
-    { id: `edit-img-${id}`, "data-id": id, src: "dist/images/edit.png" },
+    { id: `edit-img-${id}`, "data-id": id, src: "dist/images/edit.webp" },
     ["message__edit-img"],
   );
   const trashCan = buildComponent(
@@ -1044,7 +1049,7 @@ export function makeMessage(
     {
       id: `trash-basket-${id}`,
       "data-id": id,
-      src: "dist/images/trash-can.png",
+      src: "dist/images/trash-can.webp",
     },
     ["message__trash-basket-img"],
   );
@@ -1080,7 +1085,7 @@ export function makeMessage(
       "img",
       {
         id: "message-menu__accept-img",
-        src: "dist/images/check.png",
+        src: "dist/images/check.webp",
         "data-id": messageId,
       },
       ["message-menu__accept-img"],
@@ -1090,7 +1095,7 @@ export function makeMessage(
     newsFilePlace.firstElementChild.style.display = "none";
     const newsImg2 = buildComponent(
       "img",
-      { src: "dist/images/attach-paperclip-symbol.png", id: "news__img2" },
+      { src: "dist/images/attach-paperclip-symbol.webp", id: "news__img2" },
       ["news__img"],
     );
     const newsInput2 = buildComponent("input", {
@@ -1138,7 +1143,7 @@ export function makeMessage(
 
         const cancelImg = buildComponent(
           "img",
-          { src: "dist/images/cancel.png", "data-id": fileName },
+          { src: "dist/images/cancel.webp", "data-id": fileName },
           [`news-message-${isImage ? "img" : "file"}-content__cancel-img`],
         );
 
@@ -1208,7 +1213,7 @@ export function makeMessage(
                   buildComponent(
                     "img",
                     {
-                      src: "dist/images/document.png",
+                      src: "dist/images/document.webp",
                       id: `news-message-file-content-${fileName}`,
                     },
                     ["news-message-file-content__img"],
@@ -1238,7 +1243,7 @@ export function makeMessage(
 
       const cancelImg = buildComponent(
         "img",
-        { src: "dist/images/cancel.png", "data-id": attachment },
+        { src: "dist/images/cancel.webp", "data-id": attachment },
         [`news-message-${isImage ? "img" : "file"}-content__cancel-img`],
       );
 
@@ -1301,7 +1306,7 @@ export function makeMessage(
                 buildComponent(
                   "img",
                   {
-                    src: "dist/images/document.png",
+                    src: "dist/images/document.webp",
                     id: `news-message-file-content-${attachment}`,
                   },
                   ["news-message-file-content__img"],
@@ -1352,7 +1357,7 @@ export function makeMessage(
           '<img src="https://socio-project.ru/chat/dist/images',
           "*_",
         );
-        textMessage = textMessage.replaceAll('.png">', ".png");
+        textMessage = textMessage.replaceAll('.webp">', ".webp");
 
         while (textMessage.length > 1000) {
           this.eventBus.emit("clickedSendMessage", {
@@ -1419,7 +1424,7 @@ export function makeMessage(
       .forEach((block) => {
         const deleteFileImg = buildComponent(
           "img",
-          { src: "dist/images/cancel.png" },
+          { src: "dist/images/cancel.webp" },
           [`news-img-content__cancel-img`],
         );
 

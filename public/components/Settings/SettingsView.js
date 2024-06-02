@@ -12,7 +12,7 @@ import "./settings.scss";
 import { customConfirm } from "../../modules/windows.js";
 
 const correct = "form__input_correct";
-const validExtensions = ["webp", "jpg", "jpeg", "png", "bmp", "gif"];
+const validExtensions = ["webp", "jpg", "jpeg", "png", "gif"];
 const staticUrl = `${API_URL}/static`;
 const MBToByte = 1024 * 1024;
 const maxMB = 5;

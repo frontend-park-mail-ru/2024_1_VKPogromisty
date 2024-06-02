@@ -159,6 +159,8 @@ class FriendsView extends BaseView {
       }
     });
 
+    this.path = path;
+
     switch (path) {
       case "subscriptions":
         document
@@ -291,6 +293,21 @@ class FriendsView extends BaseView {
    */
   deleteSubscribe(userId) {
     document.getElementById(`friends-field-${userId}`).remove();
+
+    if (document.getElementById("friends").childElementCount === 0) {
+      let noSomething = "";
+      switch (this.path) {
+        case "friends":
+          noSomething = "У вас нет друзей";
+          break;
+        case "subscribers":
+          noSomething = "У вас нет подписчиков";
+          break;
+        case "subscriptions":
+          noSomething = "Вы ни на кого не подписаны";
+      }
+      document.getElementById("no-something").innerHTML = noSomething;
+    }
   }
 
   /**

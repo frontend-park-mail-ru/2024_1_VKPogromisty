@@ -214,7 +214,7 @@ class SignupView extends BaseView {
         avatar.files = null;
         document
           .getElementById("prewatch")
-          .setAttribute("src", "dist/images/user.png");
+          .setAttribute("src", "dist/images/user.webp");
       } else {
         if (file.size / MBToByte > maxMB) {
           incorrectAvatar.innerHTML = exceededSize;
@@ -222,7 +222,7 @@ class SignupView extends BaseView {
           avatar.files = null;
           document
             .getElementById("prewatch")
-            .setAttribute("src", "dist/images/user.png");
+            .setAttribute("src", "dist/images/user.webp");
         } else {
           document.getElementById("prewatch").setAttribute("src", img);
         }
