@@ -36,7 +36,7 @@ import { makeMessage } from "../../modules/makeComponents.js";
  * @property {string} updatedAt - The last date of updating
  */
 
-const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
+const imageTypes = ["webp", "jpg", "jpeg", "png", "gif"];
 const MB = 1024 * 1024;
 const maxMessageMemory = 20;
 const staticUrl = `${API_URL}/static`;
@@ -199,7 +199,10 @@ class ChatView extends BaseView {
 
       Array.from(files).forEach((file) => {
         if (dtMemory + file.size > maxMessageMemory * MB) {
-          customAlert("error", "Максимальный размер сообщения - 15мб");
+          customAlert(
+            "error",
+            `Максимальный размер сообщения - ${maxMessageMemory}мб`,
+          );
           return;
         }
 
@@ -220,7 +223,7 @@ class ChatView extends BaseView {
 
         const cancelImg = buildComponent(
           "img",
-          { src: "dist/images/cancel.png", "data-id": fileName },
+          { src: "dist/images/cancel.webp", "data-id": fileName },
           [`news-message-${isImage ? "img" : "file"}-content__cancel-img`],
         );
 
@@ -286,7 +289,7 @@ class ChatView extends BaseView {
                   buildComponent(
                     "img",
                     {
-                      src: "dist/images/document.png",
+                      src: "dist/images/document.webp",
                       id: `news-message-file-content-${fileName}`,
                     },
                     ["news-message-file-content__img"],
@@ -326,7 +329,7 @@ class ChatView extends BaseView {
         '<img src="https://socio-project.ru/chat/dist/images',
         "*_",
       );
-      textMessage = textMessage.replaceAll('.png">', ".png");
+      textMessage = textMessage.replaceAll('.webp">', ".webp");
 
       this.chatElement.scrollTop = 0;
 
@@ -514,7 +517,7 @@ class ChatView extends BaseView {
         "*_/aE/",
         '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
       );
-      elem.content = elem.content.replaceAll(".png", '.png" >');
+      elem.content = elem.content.replaceAll(".webp", '.webp" >');
 
       this.chatElement.appendChild(
         makeMessage(elem, staticUrl, this.companionId, this.eventBus),
@@ -551,7 +554,7 @@ class ChatView extends BaseView {
 
       imgSceleton.classList.add("sceleton-img");
       imgSceleton.setAttribute("id", "messages-sceleton");
-      imgSceleton.setAttribute("src", "dist/images/loading.png");
+      imgSceleton.setAttribute("src", "dist/images/loading.webp");
 
       this.chatElement.appendChild(imgSceleton);
     }
@@ -603,7 +606,7 @@ class ChatView extends BaseView {
       "*_/aE/",
       '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
     );
-    message.content = message.content.replaceAll(".png", '.png" >');
+    message.content = message.content.replaceAll(".webp", '.webp" >');
 
     this.chatElement.insertBefore(
       makeMessage(message, staticUrl, this.companionId, this.eventBus),
@@ -640,7 +643,7 @@ class ChatView extends BaseView {
       "*_/aE/",
       '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
     );
-    message.content = message.content.replaceAll(".png", '.png" >');
+    message.content = message.content.replaceAll(".webp", '.webp" >');
 
     const contentPlace = buildComponent(
       "div",
@@ -698,7 +701,7 @@ class ChatView extends BaseView {
                   ["message-file-content__name-span"],
                   attachment,
                 ),
-                buildComponent("img", { src: "dist/images/document.png" }, [
+                buildComponent("img", { src: "dist/images/document.webp" }, [
                   "message-file-content__img",
                 ]),
               ],

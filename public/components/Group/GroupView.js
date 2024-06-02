@@ -381,7 +381,7 @@ class GroupView extends BaseView {
 
         Array.from(files).forEach((file) => {
           if (dtMemory + file.size > MBToByte * maxPostMemory) {
-            customAlert("error", "Максимальный размер файлов - 10");
+            customAlert("error", "Максимальный размер поста - 50МБ");
             return;
           }
           if (dt.items.length === 10) {
@@ -392,6 +392,7 @@ class GroupView extends BaseView {
             return;
           }
           dt.items.add(file);
+          dtMemory += file.size;
 
           const src = URL.createObjectURL(file);
           const fileName = file.name;
@@ -399,7 +400,7 @@ class GroupView extends BaseView {
 
           const cancelImg = buildComponent(
             "img",
-            { src: "dist/images/cancel.png", "data-id": fileName },
+            { src: "dist/images/cancel.webp", "data-id": fileName },
             [`news-${isImage ? "img" : "file"}-content__cancel-img`],
           );
 
@@ -464,7 +465,7 @@ class GroupView extends BaseView {
                     buildComponent(
                       "img",
                       {
-                        src: "dist/images/document.png",
+                        src: "dist/images/document.webp",
                         id: `news-file-content-${fileName}`,
                       },
                       ["news-file-content__img"],
@@ -582,7 +583,7 @@ class GroupView extends BaseView {
 
       imgSceleton.classList.add("sceleton-img");
       imgSceleton.setAttribute("id", "posts-sceleton");
-      imgSceleton.setAttribute("src", "dist/images/loading.png");
+      imgSceleton.setAttribute("src", "dist/images/loading.webp");
 
       this.postsElement.appendChild(imgSceleton);
     }

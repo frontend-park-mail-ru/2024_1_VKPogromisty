@@ -11,36 +11,37 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    (async () => {
-      if (navigator.onLine) {
-        return fetch(event.request).then((response) => {
-          if (event.request.method !== "GET") {
-            return response;
-          }
-
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            try {
-              cache.put(event.request, responseClone);
-            } catch (e) {
-              // eslint-disable-next-line
-              console.error(e);
+  if (event.request.url.startsWith("http")) {
+    event.respondWith(
+      (async () => {
+        if (navigator.onLine) {
+          return fetch(event.request).then((response) => {
+            if (event.request.method !== "GET") {
+              return response;
             }
+
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              try {
+                cache.put(event.request, responseClone);
+              } catch (e) {
+                //may be not enough memory
+              }
+            });
+
+            return response;
           });
+        }
 
-          return response;
+        return caches.match(event.request).then((response) => {
+          return (
+            response ||
+            new Response(JSON.stringify({ status: 408 }), { status: 200 })
+          );
         });
-      }
-
-      return caches.match(event.request).then((response) => {
-        return (
-          response ||
-          new Response(JSON.stringify({ status: 408 }), { status: 200 })
-        );
-      });
-    })(),
-  );
+      })(),
+    );
+  }
 });
 
 self.addEventListener("activate", (event) => {

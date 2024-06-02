@@ -11,7 +11,7 @@ import "./profile.scss";
 
 const MB = 1024 * 1024;
 const maxPostMemory = 50;
-const imageTypes = ["png", "jpg", "jpeg", "webp", "gif"];
+const imageTypes = ["webp", "jpg", "jpeg", "png", "gif"];
 const staticUrl = `${API_URL}/static`;
 const typeFile = (file) => {
   const parts = file.name.split(".");
@@ -221,7 +221,7 @@ class ProfileView extends BaseView {
 
         Array.from(files).forEach((file) => {
           if (dtMemory + file.size > MB * maxPostMemory) {
-            customAlert("error", "Максимальный размер файлов - 10");
+            customAlert("error", "Максимальный размер поста - 50МБ");
             return;
           }
           if (dt.items.length === 10) {
@@ -232,6 +232,7 @@ class ProfileView extends BaseView {
             return;
           }
           dt.items.add(file);
+          dtMemory += file.size;
 
           const src = URL.createObjectURL(file);
           const fileName = file.name;
@@ -239,7 +240,7 @@ class ProfileView extends BaseView {
 
           const cancelImg = buildComponent(
             "img",
-            { src: "dist/images/cancel.png", "data-id": fileName },
+            { src: "dist/images/cancel.webp", "data-id": fileName },
             [`news-${isImage ? "img" : "file"}-content__cancel-img`],
           );
 
@@ -304,7 +305,7 @@ class ProfileView extends BaseView {
                     buildComponent(
                       "img",
                       {
-                        src: "dist/images/document.png",
+                        src: "dist/images/document.webp",
                         id: `news-file-content-${fileName}`,
                       },
                       ["news-file-content__img"],
@@ -463,7 +464,7 @@ class ProfileView extends BaseView {
 
       imgSceleton.classList.add("sceleton-img");
       imgSceleton.setAttribute("id", "posts-sceleton");
-      imgSceleton.setAttribute("src", "dist/images/loading.png");
+      imgSceleton.setAttribute("src", "dist/images/loading.webp");
 
       this.postsElement.appendChild(imgSceleton);
     }

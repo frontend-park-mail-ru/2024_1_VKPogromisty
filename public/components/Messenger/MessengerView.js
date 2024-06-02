@@ -142,7 +142,7 @@ class MessengerView extends BaseView {
           "*_/aE/",
           '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
         );
-        message.content = message.content.replaceAll(".png", '.png" >');
+        message.content = message.content.replaceAll(".webp", '.webp" >');
 
         messageChatter.firstElementChild.innerHTML =
           message.content || (message.sticker ? "Стикер" : "Фотография");
@@ -171,7 +171,7 @@ class MessengerView extends BaseView {
           "*_/aE/",
           '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
         );
-        message.content = message.content.replaceAll(".png", '.png" >');
+        message.content = message.content.replaceAll(".webp", '.webp" >');
 
         messageContent.innerHTML =
           message.content || (message.sticker ? "Стикер" : "Фотография");
@@ -225,7 +225,7 @@ class MessengerView extends BaseView {
       "*_/aE/",
       '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
     );
-    message.content = message.content.replaceAll(".png", '.png" >');
+    message.content = message.content.replaceAll(".webp", '.webp" >');
 
     if (message.senderId === UserState.userId) {
       document.getElementById(
@@ -284,7 +284,7 @@ class MessengerView extends BaseView {
           "*_/aE/",
           '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
         );
-        message.content = message.content.replaceAll(".png", '.png" >');
+        message.content = message.content.replaceAll(".webp", '.webp" >');
 
         deletedPlace.firstElementChild.innerHTML =
           message.content || (message.sticker ? "Стикер" : "Фотография");
@@ -322,7 +322,7 @@ class MessengerView extends BaseView {
       "*_/aE/",
       '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
     );
-    lastMessage.content = lastMessage.content.replaceAll(".png", '.png" >');
+    lastMessage.content = lastMessage.content.replaceAll(".webp", '.webp" >');
 
     this.promissedMessages.delete(profile.User.userId);
     this.dialogsElement.innerHTML =
@@ -387,8 +387,8 @@ class MessengerView extends BaseView {
         '<img class="sticker-message-place-content__emoji-img" src="dist/images/aE/',
       );
       elem.lastMessage.content = elem.lastMessage.content.replaceAll(
-        ".png",
-        '.png" >',
+        ".webp",
+        '.webp" >',
       );
 
       const isMe = elem.user1.userId === elem.user2.userId;

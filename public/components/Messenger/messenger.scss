@@ -140,6 +140,7 @@
   @include row-flexible;
   width: 100%;
   justify-content: space-between;
+  max-height: 20px;
 
   &__message-span {
     font-size: medium;
@@ -147,7 +148,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 1px;
-    max-width: 500px;
+    max-width: 360px;
 
     @include mobile-style {
       max-width: 200px;
