@@ -19,6 +19,7 @@
 
   &__input {
     background-color: inherit;
+    flex-grow: 1;
   }
 
   &__button {
@@ -46,11 +47,16 @@
   width: 100%;
   border-radius: 7px;
   border: 1px solid black;
+
+  &-wrap {
+    padding-bottom: 10px;
+  }
 }
 
 .friend {
   @include flexible;
   align-items: center;
+  max-width: 100%;
 
   &__avatar-img {
     width: 50px;
@@ -88,9 +94,12 @@
   justify-content: space-between;
   padding-bottom: 10px;
   margin-right: 5px;
+  max-width: 100%;
 
   &__name-span {
     font-weight: bolder;
+    max-width: 90%;
+    overflow: hidden;
   }
 
   &__name-href {

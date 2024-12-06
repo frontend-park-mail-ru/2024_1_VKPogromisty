@@ -51,6 +51,7 @@
   align-items: center;
   font-family: $ordinary-text;
   font-size: 26px;
+  max-width: 100%;
 
   &__username-span {
     color: #fff;
@@ -68,6 +69,11 @@
 
   &__username-href {
     text-decoration: none;
+    overflow: hidden;
+  }
+
+  &__avatar-href {
+    margin-left: 10px;
   }
 
   &__avatar-img {

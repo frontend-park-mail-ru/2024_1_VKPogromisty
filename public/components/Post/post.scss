@@ -534,6 +534,7 @@
   visibility: visible;
   text-align: center;
   margin: 40px auto 80px;
+  padding-bottom: 40px;
 
   @include mobile-style {
     margin-top: 10px;
