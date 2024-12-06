@@ -5,7 +5,7 @@ import PostController from "../Post/PostController.js";
 import BaseView from "/public/MVC/BaseView.js";
 import { API_URL } from "/public/modules/consts.js";
 import UserState from "../UserState.js";
-import { validateName } from "/public/modules/validators.js";
+import { validateName, validateGroupName } from "/public/modules/validators.js";
 import { customConfirm, customAlert } from "../../modules/windows.js";
 import { buildComponent, appendChildren } from "../createComponent.js";
 import "./group.scss";
@@ -214,6 +214,7 @@ class GroupView extends BaseView {
   readyRenderGroups(groups) {
     const template = require("./groups.hbs");
 
+    document.getElementById("no-something").innerHTML = "";
     this.groupElement.innerHTML = "";
 
     if (groups) {
@@ -671,7 +672,7 @@ class GroupView extends BaseView {
     groupName.addEventListener("focusout", () => {
       incorrectGroupName.classList.add(correct);
 
-      if (!validateName(groupName.value.trim())) {
+      if (!validateGroupName(groupName.value.trim())) {
         incorrectGroupName.classList.remove(correct);
       }
     });
@@ -885,7 +886,7 @@ class GroupView extends BaseView {
 
     let flag = true;
 
-    if (!validateName(groupName.value.trim())) {
+    if (!validateGroupName(groupName.value.trim())) {
       incorrectGroupName.classList.remove(correct);
       flag = false;
     }

@@ -63,6 +63,7 @@ class LoginModel extends BaseModel {
         }
         break;
       case 401:
+      case 404:
         this.eventBus.emit("receiveLoginResult", false);
         break;
       default:

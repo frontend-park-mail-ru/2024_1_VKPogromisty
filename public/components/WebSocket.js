@@ -60,6 +60,13 @@ class WSocket {
           }, 2000);
         }
       };
+      this.ws.onerror = (event) => {
+        if (event.code !== 1000) {
+          this.timeoutId = setTimeout(() => {
+            this.openWebSocket();
+          }, 2000);
+        }
+      };
     }
   }
 

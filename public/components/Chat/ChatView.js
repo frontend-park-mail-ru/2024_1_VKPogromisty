@@ -539,14 +539,16 @@ class ChatView extends BaseView {
         this.chatElement.appendChild(lastChangedDay);
       }
 
-      this.chatElement.appendChild(
-        buildComponent(
-          "span",
-          { id: "messages__start-dialog-span" },
-          ["messages__start-dialog-span"],
-          "Начните диалог",
-        ),
-      );
+      if (this.chatElement.innerHTML.trim() === "") {
+        this.chatElement.appendChild(
+          buildComponent(
+            "span",
+            { id: "messages__start-dialog-span" },
+            ["messages__start-dialog-span"],
+            "Начните диалог",
+          ),
+        );
+      }
     }
 
     if (!this.isAllMessages) {
@@ -735,6 +737,17 @@ class ChatView extends BaseView {
       undeletedChangedDay.classList.contains("changed-day")
     ) {
       undeletedChangedDay.remove();
+    }
+
+    if (this.chatElement.innerHTML.trim() === "") {
+      this.chatElement.appendChild(
+        buildComponent(
+          "span",
+          { id: "messages__start-dialog-span" },
+          ["messages__start-dialog-span"],
+          "Начните диалог",
+        ),
+      );
     }
   }
 
