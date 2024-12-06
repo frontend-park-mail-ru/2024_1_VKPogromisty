@@ -18,7 +18,7 @@
             class="form__input_error form__input_correct"
             id="incorrect-form-login"
           >
-            Некорректные данные
+            Неправильный пароль или почта
           </div>
           <div id="server-error" class="form__input_error form__input_correct">
             Неожиданная ошибка сервера
@@ -28,14 +28,25 @@
             <div class="inscription-form">
               {{ this.inscription }}
             </div>
+            {{#if this.isPassword}}
             <input
-              class="input-group__input"
+              class="input-group__input-password"
               type="{{ this.type }}"
               id="{{ this.id }}"
               name="{{ this.name }}"
               placeholder="{{ this.placeholder }}"
               required
             />
+            {{else}}
+            <input
+              class="input-group__input-common"
+              type="{{ this.type }}"
+              id="{{ this.id }}"
+              name="{{ this.name }}"
+              placeholder="{{ this.placeholder }}"
+              required
+            />
+            {{/if}}
             <div
               class="form__input_error form__input_correct"
               id="{{ this.incorrect }}"
