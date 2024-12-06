@@ -40,3 +40,12 @@ export function validateDateOfBirth(date) {
 export function validateName(name) {
   return name.match(/^[a-zа-я ,.'-]+$/i) !== null;
 }
+
+/**
+ * Validates the group name
+ * @param {string} name
+ * @returns {boolean}
+ */
+export function validateGroupName(name) {
+  return name.match(/^[a-zа-я ,.'-?!0-9]+$/i) !== null;
+}

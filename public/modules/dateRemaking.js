@@ -13,6 +13,8 @@ const monthes = [
   "декабря",
 ];
 
+const dayDurationMS = 86400000;
+
 /**
  * Remakes the date of birth in next format 'day month year'
  * @param {string} dateOfBirth - The date of birth
@@ -22,14 +24,16 @@ export function formatDayMonthYear(dateOfBirth) {
   const date = new Date(dateOfBirth);
   const today = new Date();
 
-  switch (today.getDate() - date.getDate()) {
-    case 0:
-      return "Сегодня";
-    case 1:
-      return "Вчера";
-    default:
-      return `${date.getDate()} ${monthes[date.getMonth()]} ${date.getFullYear()}`;
+  if (today - date < 2 * dayDurationMS) {
+    switch (today.getDate() - date.getDate()) {
+      case 0:
+        return "Сегодня";
+      case 1:
+        return "Вчера";
+    }
   }
+
+  return `${date.getDate()} ${monthes[date.getMonth()]} ${date.getFullYear()}`;
 }
 
 /**
